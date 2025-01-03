@@ -335,6 +335,10 @@ func remove_group_suggestions(from_tag: int, groups: Array[int]) -> void:
 	tag_database.query("DELETE FROM group_suggestions WHERE tag_id = " + str(from_tag) + " AND group_id IN " + groups_string + ";")
 
 
+func remove_all_group_suggestions(from_tag: int) -> void:
+	tag_database.delete_rows("group_suggestions", "tag_id = " + str(from_tag))
+
+
 func get_groups_and_tags(groups: Array[int]) -> Dictionary:
 	# group_id: group_name, tags:
 	var prompt_string: String = "(" + ", ".join(groups) + ")"
@@ -721,6 +725,10 @@ func remove_parents(from: int, remove: Array[int]) -> void:
 	tag_database.query("DELETE FROM relationships WHERE child = " + str(from) + " AND parent IN " + remove_these + ";")
 
 
+func remove_all_parents_from(from: int) -> void:
+	tag_database.delete_rows("relationships", "child = " + str(from))
+
+
 func get_parents(from: int) -> Array[int]:
 	var parents: Array[int] = []
 	
@@ -784,6 +792,10 @@ func remove_suggestions(from: int, remove: Array[int]) -> void:
 	var remove_these: String = "(" + ", ".join(remove) + ")"
 	
 	tag_database.query("DELETE FROM suggestions WHERE tag_id = " + str(from) + " AND suggestion_id IN " + remove_these + ";")
+
+
+func remove_all_suggestions(from: int) -> void:
+	tag_database.delete_rows("suggestions", "tag_id = " + str(from))
 
 
 func get_suggestions(for_tag: int) -> Array[int]:

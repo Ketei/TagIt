@@ -2133,17 +2133,27 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 		var group_id: int = 0 if not group_dict.has(tag["group"].to_lower()) else group_dict[tag["group"].to_lower()]
 		var cat_id: int = 1 if not cat_dict.has(tag["category"].to_lower()) else cat_dict[tag["category"].to_lower()]
 		
-		if TagIt.has_tag(clean_tag) and TagIt.has_data(TagIt.get_tag_id(clean_tag)) and overwrite:
-				var tag_id: int = TagIt.get_tag_id(clean_tag)
-				TagIt.update_tag(tag_id, {"is_valid": tag["is_valid"]})
+		if TagIt.has_tag(clean_tag) and TagIt.has_data(TagIt.get_tag_id(clean_tag)):
+			if overwrite:
+				var _tag_id: int = TagIt.get_tag_id(clean_tag)
+				TagIt.update_tag(_tag_id, {"is_valid": tag["is_valid"]})
 				TagIt.update_tag_data(
-					tag_id,
+					_tag_id,
 					{
 						"group_id": group_id,
 						"description": tag["wiki"],
 						"tooltip": tag["tooltip"],
 						"priority": tag["priority"]
 					})
+				TagIt.remove_aliases_to(_tag_id)
+				TagIt.remove_all_parents_from(_tag_id)
+				TagIt.remove_all_group_suggestions(_tag_id)
+				TagIt.remove_all_suggestions(_tag_id)
+			else:
+				TagIt.log_message(
+					"[TagIt] Tag \"" + clean_tag + "\" already in DB. Skipping.",
+					TagIt.LogLevel.INFO)
+				continue
 		else:
 			TagIt.create_tag(
 				clean_tag,
@@ -2152,30 +2162,30 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 				group_id,
 				tag["tooltip"].strip_edges())
 			
-			var tag_id: int = TagIt.get_tag_id(clean_tag)
-			var group_suggestions: Array[int] = []
-			
-			for group_text in tag["group_suggestions"]:
-				for key in group_dict.keys():
-					if Strings.nocasecmp_equal(group_text, key):
-						group_suggestions.append(group_dict[key])
-						break
-			
-			TagIt.add_parents(tag_id, tag["parents"])
-			TagIt.add_suggestions(
-					tag_id,
-					Array(
-								tag["suggestions"],
-								TYPE_STRING,
-								&"",
-								null))
-			TagIt.add_group_suggestions(tag_id, group_suggestions)
-			TagIt.add_aliases(
-					Array(tag["aliases"],
+		var tag_id: int = TagIt.get_tag_id(clean_tag)
+		var group_suggestions: Array[int] = []
+		
+		for group_text in tag["group_suggestions"]:
+			for key in group_dict.keys():
+				if Strings.nocasecmp_equal(group_text, key):
+					group_suggestions.append(group_dict[key])
+					break
+		
+		TagIt.add_parents(tag_id, tag["parents"])
+		TagIt.add_suggestions(
+				tag_id,
+				Array(
+							tag["suggestions"],
 							TYPE_STRING,
 							&"",
-							null),
-					clean_tag)
+							null))
+		TagIt.add_group_suggestions(tag_id, group_suggestions)
+		TagIt.add_aliases(
+				Array(tag["aliases"],
+						TYPE_STRING,
+						&"",
+						null),
+				clean_tag)
 
 
 func db_tag_to_json(tag_id: int, path: String) -> void:
