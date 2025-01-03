@@ -2125,51 +2125,52 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 					TagIt.set_category_icon(category_id, icon_dict[icon])
 					break
 	
-	for tag in json_result["tags"].keys():
-		if not json_result["tags"][tag].has_all(["aliases", "category", "group", "group_suggestions", "is_valid", "parents", "priority", "suggestions", "tooltip", "wiki"]):
-			TagIt.log_message("[JSON PARSER] Tag " + tag + " is missing some data.", TagIt.LogLevel.ERROR)
+	for tag:Dictionary in json_result["tags"]:
+		if not tag.has_all(["aliases", "category", "group", "group_suggestions", "is_valid", "parents", "priority", "suggestions", "tooltip", "wiki"]):
+			TagIt.log_message("[JSON PARSER] Tag " + tag["name"] + " is missing some data.", TagIt.LogLevel.ERROR)
 			continue # Skipping incomplete dictionaries.
-		var clean_tag: String = tag.strip_edges().to_lower()
-		var group_id: int = 0 if not group_dict.has(json_result["tags"][tag]["group"].to_lower()) else group_dict[json_result["tags"][tag]["group"].to_lower()]
-		var cat_id: int = 1 if not cat_dict.has(json_result["tags"][tag]["category"].to_lower()) else cat_dict[json_result["tags"][tag]["category"].to_lower()]
+		var clean_tag: String = tag["name"].strip_edges().to_lower()
+		var group_id: int = 0 if not group_dict.has(tag["group"].to_lower()) else group_dict[tag["group"].to_lower()]
+		var cat_id: int = 1 if not cat_dict.has(tag["category"].to_lower()) else cat_dict[tag["category"].to_lower()]
+		
 		if TagIt.has_tag(clean_tag) and TagIt.has_data(TagIt.get_tag_id(clean_tag)) and overwrite:
 				var tag_id: int = TagIt.get_tag_id(clean_tag)
-				TagIt.update_tag(tag_id, {"is_valid": json_result["tags"][tag]["is_valid"]})
+				TagIt.update_tag(tag_id, {"is_valid": tag["is_valid"]})
 				TagIt.update_tag_data(
 					tag_id,
 					{
 						"group_id": group_id,
-						"description": json_result["tags"][tag]["wiki"],
-						"tooltip": json_result["tags"][tag]["tooltip"],
-						"priority": json_result["tags"][tag]["priority"]
+						"description": tag["wiki"],
+						"tooltip": tag["tooltip"],
+						"priority": tag["priority"]
 					})
 		else:
 			TagIt.create_tag(
 				clean_tag,
 				cat_id,
-				json_result["tags"][tag]["wiki"],
+				tag["wiki"],
 				group_id,
-				json_result["tags"][tag]["tooltip"].strip_edges())
+				tag["tooltip"].strip_edges())
 			var tag_id: int = TagIt.get_tag_id(clean_tag)
 			var group_suggestions: Array[int] = []
 			
-			for group_text in json_result["tags"][tag]["group_suggestions"]:
+			for group_text in tag["group_suggestions"]:
 				for key in group_dict.keys():
 					if Strings.nocasecmp_equal(group_text, key):
 						group_suggestions.append(group_dict[key])
 						break
 			
-			TagIt.add_parents(tag_id, json_result["tags"][tag]["parents"])
+			TagIt.add_parents(tag_id, tag["parents"])
 			TagIt.add_suggestions(
 					tag_id,
 					Array(
-								json_result["tags"][tag]["suggestions"],
+								tag["suggestions"],
 								TYPE_STRING,
 								&"",
 								null))
 			TagIt.add_group_suggestions(tag_id, group_suggestions)
 			TagIt.add_aliases(
-					Array(json_result["tags"][tag]["aliases"],
+					Array(tag["aliases"],
 							TYPE_STRING,
 							&"",
 							null),
@@ -2216,7 +2217,7 @@ func db_tag_to_json(tag_id: int, path: String) -> void:
 func db_group_to_json(tag_ids: Array[int], path: String) -> void:
 	var icons: Dictionary = {}
 	var categories: Dictionary = {} 
-	var tags: Dictionary = {} 
+	var tags: Array[Dictionary] = [] 
 	var groups: Dictionary = {}
 	
 	var all_groups: Dictionary = TagIt.get_tag_groups()
@@ -2249,7 +2250,8 @@ func db_group_to_json(tag_ids: Array[int], path: String) -> void:
 			groups[group_name] = all_groups[data["group"]]["description"]#TagIt.get_tag_group_desc(data["tag_group"])
 		
 		
-		tags[data["tag"]] = {
+		tags.append({
+			"name": data["tag"],
 			"priority": data["priority"],
 			"is_valid": data["is_valid"],
 			"category": cat_name,
@@ -2259,7 +2261,7 @@ func db_group_to_json(tag_ids: Array[int], path: String) -> void:
 			"aliases": TagIt.get_tags_name(data["aliases"]).values(),
 			"parents": TagIt.get_tags_name(data["parents"]).values(),
 			"suggestions": TagIt.get_tags_name(data["suggestions"]).values(),
-			"group_suggestions": group_suggestions}
+			"group_suggestions": group_suggestions})
 	
 	var json_data: Dictionary = {
 		"type": 1,
