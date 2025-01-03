@@ -40,7 +40,7 @@ var loaded_tags: Dictionary = {} # Loaded in memory as need quick access. name -
 var invalid_tags: Array[int] = [] # MIGHT not be needed in memory. Check once working on the tag list
 var tag_search_array: PackedStringArray = []
 #var current_tags: int = 0
-var data_tags: Array[int] = []
+#var data_tags: Array[int] = []
 var settings: AppSettingsRes = null
 var _default_icon_color: Color = Color.WHITE
 
@@ -207,8 +207,8 @@ func _ready() -> void:
 		if not dict["is_valid"]:
 			invalid_tags.append(dict["id"])
 		
-		if bool(dict["has_data"]):
-			data_tags.append(dict["id"])
+		#if bool(dict["has_data"]):
+			#data_tags.append(dict["id"])
 	
 	#var _categories := get_categories()
 	#
@@ -221,7 +221,7 @@ func _ready() -> void:
 		icons[icon["id"]] = {"name": icon["name"], "texture": null}
 	
 	invalid_tags.sort()
-	data_tags.sort()
+	#data_tags.sort()
 	get_all_alias_names()
 	var all_tags: Array = loaded_tags.keys()
 	all_tags.sort_custom(func(a, b): return a.naturalnocasecmp_to(b) < 0)
@@ -571,8 +571,8 @@ func create_tag(tag_name: String, tag_category: int, tag_desc: String, tag_group
 	
 	var tag_id: int = get_tag_id(tag_name)
 	
-	if not has_data(tag_id):
-		Arrays.insert_sorted_asc(data_tags, tag_id)
+	#if not has_data(tag_id):
+		#Arrays.insert_sorted_asc(data_tags, tag_id)
 	
 	@warning_ignore("incompatible_ternary")
 	var new_data: Dictionary = {
@@ -968,7 +968,7 @@ func get_tags(id_list: Array[int]) -> Dictionary:
 
 
 func has_data(tag_id: int) -> bool:
-	return Arrays.binary_search(data_tags, tag_id) != -1
+	return not tag_database.select_rows("data", "tag_id = " + str(tag_id), ["id"]).is_empty()
 
 
 func has_tag(tag_name: String) -> bool: 

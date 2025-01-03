@@ -2009,19 +2009,21 @@ func json_tag_to_db(data: Dictionary, overwrite: bool = false) -> void:
 	var icon_id: int = 0
 	var cat_id: int = 0
 	var group_id: int = 0
+	var group_sugg_data: Dictionary = TagIt.get_tag_groups()
+	var category_data: Dictionary = TagIt.get_categories()
 	
 	for icon in TagIt.icons.keys():
-		if TagIt.icons[icon]["name"].to_upper() == data["category"]["icon_name"].to_upper():
+		if Strings.nocasecmp_equal(TagIt.icons[icon]["name"], data["category"]["icon_name"]):
 			icon_id = icon
 			break
 	
-	for category in TagIt.get_categories():
-		if category["name"].to_upper() == data["category"]["name"].to_upper():
-			cat_id = category["id"]
+	for category_id in category_data:
+		if Strings.nocasecmp_equal(category_data[category_id]["name"], data["category"]["name"]):
+			cat_id = category_id
 			break
 	
-	for group in TagIt.get_tag_groups():
-		if group["name"].to_upper() == data["group"].to_upper():
+	for group in group_sugg_data:
+		if Strings.nocasecmp_equal(group["name"], data["group"]):
 			group_id = group["id"]
 			break
 	
@@ -2032,28 +2034,46 @@ func json_tag_to_db(data: Dictionary, overwrite: bool = false) -> void:
 	
 	if cat_id == 0:
 		cat_id = TagIt.create_category(data["category"]["name"], data["category"]["description"])
-		TagIt.set_category_icon_color(cat_id, data["category"]["category_color"])
+		TagIt.set_category_icon_color(
+				cat_id,
+				data["category"]["category_color"] if Color.html_is_valid(data["category"]["category_color"]) else "ffffff")
 		TagIt.set_category_icon(cat_id, icon_id)
 	
 	if group_id == 0 and not data["group"].is_empty():
 		group_id = TagIt.create_tag_group(data["group"], data["group_desc"])
+		group_sugg_data[group_id] = {"name": data["group"], "description": data["group_desc"]}
 	
-	#var tag_name: String = data["name"].to_lower()
-	
-	if TagIt.has_tag(clean_name):
+	if TagIt.has_tag(clean_name) and TagIt.has_data(TagIt.get_tag_id(clean_name)):
 		if overwrite:
+			var tag_id: int = TagIt.get_tag_id(clean_name)
 			TagIt.update_tag_data(
-				TagIt.get_tag_id(clean_name),
-				{
-					"category_id": cat_id,
-					"group_id": group_id,
-					"description": data["wiki"],
-					"tooltip": data["tooltip"],
-					"priority": data["priority"]
-				}
-			)
-			TagIt.remove_aliases_to(TagIt.get_tag_id(clean_name))
-			TagIt.add_aliases(data["aliases"], clean_name)
+					tag_id,
+					{
+						"category_id": cat_id,
+						"group_id": group_id,
+						"description": data["wiki"],
+						"tooltip": data["tooltip"],
+						"priority": data["priority"]
+					})
+			TagIt.remove_aliases_to(tag_id)
+			if not data["aliases"].is_empty():
+				TagIt.add_aliases(data["aliases"], clean_name)
+			TagIt.remove_all_parents_from(tag_id)
+			if not data["parents"].is_empty():
+				TagIt.add_parents(tag_id, Array(data["parents"], TYPE_STRING, &"", null))
+			TagIt.remove_all_group_suggestions(tag_id)
+			var _new_suggestions: Array[int] = []
+			
+			for group_sugg_text in data["group_suggestions"]:
+				for grp_id in group_sugg_data:
+					if Strings.nocasecmp_equal(group_sugg_text, group_sugg_data[grp_id]["name"]):
+						_new_suggestions.append(grp_id)
+			if not _new_suggestions.is_empty():
+				TagIt.add_group_suggestions(tag_id, _new_suggestions)
+		else:
+			TagIt.log_message(
+					"[TagIt] Tag \"" + clean_name + "\" already in DB. Skipping.",
+					TagIt.LogLevel.INFO)
 		return
 
 	TagIt.create_tag(
@@ -2065,73 +2085,123 @@ func json_tag_to_db(data: Dictionary, overwrite: bool = false) -> void:
 	
 	var new_tag_id: int = TagIt.get_tag_id(clean_name)
 	
-	TagIt.add_aliases(data["aliases"], clean_name)
+	if not data["aliases"].is_empty():
+		TagIt.add_aliases(data["aliases"], clean_name)
 	
-	TagIt.add_parents(new_tag_id, data["parents"])
-	TagIt.add_suggestions(new_tag_id, data["suggestions"])
+	if not data["parents"].is_empty():
+		TagIt.add_parents(new_tag_id, data["parents"])
+	if not data["suggestions"].is_empty():
+		TagIt.add_suggestions(new_tag_id, data["suggestions"])
 	TagIt.set_tag_priority(new_tag_id, data["priority"])
 	TagIt.set_tag_valid(new_tag_id, data["is_valid"])
-	TagIt.add_group_suggestions(new_tag_id, data["group_suggestions"])
+	
+	var _new_tag_suggestions: Array[int] = []
+	for group_sugg_text in data["group_suggestions"]:
+		for grp_id in group_sugg_data:
+			if Strings.nocasecmp_equal(group_sugg_text, group_sugg_data[grp_id]["name"]):
+				_new_tag_suggestions.append(grp_id)
+	if not _new_tag_suggestions.is_empty():
+		TagIt.add_group_suggestions(new_tag_id, _new_tag_suggestions)
 
 
 func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
-	var all_cats := TagIt.get_categories()
-	var all_groups := TagIt.get_tag_groups()
+	var cats_data := TagIt.get_categories()
+	var groups_data := TagIt.get_tag_groups()
 	
-	var icon_dict: Dictionary = {}
-	var cat_dict: Dictionary = {}
-	var group_dict: Dictionary = {}
+	var all_icons: Dictionary = {} # name: -> ID
+	var all_cats: Dictionary = {}
+	var all_groups: Dictionary = {}
+	
+	var json_icons: Dictionary = {} # idx -> ID
+	var json_cats: Dictionary = {}
+	var json_groups: Dictionary = {}
 	
 	for icon_id in TagIt.icons:
-		icon_dict[TagIt.icons[icon_id]["name"].to_lower()] = icon_id
-	for cat in all_cats:
-		cat_dict[all_cats[cat]["name"].to_lower()] = cat
-	for group_id in all_groups:
-		group_dict[all_groups[group_id]["name"].to_lower()] = group_id
+		all_icons[TagIt.icons[icon_id]["name"].to_lower()] = icon_id
+	for cat in cats_data:
+		all_cats[cats_data[cat]["name"].to_lower()] = cat
+	for group_id in groups_data:
+		all_groups[groups_data[group_id]["name"].to_lower()] = group_id
 	
-	for icon in json_result["icons"].keys():
-		if not typeof(json_result["icons"][icon]) == TYPE_ARRAY:
-			continue # Don't know if this works properly
+	var icon_idx: int = -1
+	for icon_dict in json_result["icons"]:
+		icon_idx += 1
+		
+		if typeof(icon_dict) != TYPE_DICTIONARY:
+			continue
+		
 		var has_icon: bool = false
-		for i_name in icon_dict.keys():
-			if Strings.nocasecmp_equal(i_name, icon):
+		for i_name in all_icons.keys():
+			if Strings.nocasecmp_equal(i_name, icon_dict["name"]):
 				has_icon = true
-				break
-		if has_icon:
-			continue
-		var image_data: Image = Image.new()
-		if image_data.load_webp_from_buffer(json_result["icons"][icon]) == OK:
-			icon_dict[icon.to_lower()] = TagIt.save_icon(icon, image_data)
-	
-	for category in json_result["categories"].keys():
-		if not json_result["categories"][category].has_all(["color", "icon", "description"]):
-			TagIt.log_message("[JSON PARSER] Category " + category + " is missing data.", TagIt.LogLevel.ERROR)
-			continue
-		var id_found: bool = false
-		for cat_name in cat_dict.keys():
-			if Strings.nocasecmp_equal(cat_name, category):
-				id_found = true
+				json_icons[icon_idx] = all_icons[i_name]
 				break
 		
-		if not id_found:
-			var category_id: int = TagIt.create_category(category, json_result["categories"][category]["description"])
-			var valid_color: String = json_result["categories"][category]["color"]
-			cat_dict[category.to_lower()] = category_id
-			
-			TagIt.set_category_icon_color(category_id, valid_color if Color.html_is_valid(valid_color) else "ffffff")
-			
-			for icon in icon_dict.keys():
-				if Strings.nocasecmp_equal(icon, json_result["categories"][category]["icon"]):
-					TagIt.set_category_icon(category_id, icon_dict[icon])
-					break
+		if has_icon:
+			continue
+		
+		var image_data: Image = Image.new()
+		if image_data.load_webp_from_buffer(icon_dict["bits"]) == OK:
+			json_icons[icon_idx] = TagIt.save_icon(icon_dict["name"], image_data)
 	
-	for tag:Dictionary in json_result["tags"]:
-		if not tag.has_all(["aliases", "category", "group", "group_suggestions", "is_valid", "parents", "priority", "suggestions", "tooltip", "wiki"]):
-			TagIt.log_message("[JSON PARSER] Tag " + tag["name"] + " is missing some data.", TagIt.LogLevel.ERROR)
+	var cat_idx: int = -1
+	for category_dict: Dictionary in json_result["categories"]:
+		cat_idx += 1
+		if not typeof(category_dict) == TYPE_DICTIONARY or not category_dict.has_all(["name", "color", "icon", "description"]):
+			TagIt.log_message("[JSON PARSER] Category with index " + str(cat_idx) + " is missing data.", TagIt.LogLevel.ERROR)
+			continue
+		
+		var id_found: bool = false
+		for cat_name in all_cats.keys():
+			if Strings.nocasecmp_equal(cat_name, category_dict["name"]):
+				id_found = true
+				json_cats[cat_idx] = all_cats[cat_name]
+				break
+		
+		if id_found:
+			continue
+		
+		var category_id: int = TagIt.create_category(category_dict["name"], category_dict["description"])
+		var valid_color: String = category_dict["color"] if Color.html_is_valid(category_dict["color"]) else "ffffff"
+		json_cats[cat_idx] = category_id
+		
+		TagIt.set_category_icon_color(category_id, valid_color)
+		
+		if json_icons.has(category_dict["icon"]):
+			TagIt.set_category_icon(category_id, json_icons[category_dict["icon"]])
+	
+	var group_idx: int = -1
+	for group_dict in json_result["groups"]:
+		group_idx += 1
+		
+		if typeof(group_dict) != TYPE_DICTIONARY or not group_dict.has_all(["name", "description"]):
+			TagIt.log_message("[JSON PARSER] Group with index " + str(group_idx) + " is missing some data.", TagIt.LogLevel.ERROR)
 			continue # Skipping incomplete dictionaries.
+		
+		var group_id: int = 0
+		var has_group: bool = false
+		for group_name in all_groups:
+			if Strings.nocasecmp_equal(group_name, group_dict["name"]):
+				has_group = true
+				json_groups[group_idx] = all_groups[group_name]
+				break
+		
+		if has_group:
+			continue
+		
+		group_id = TagIt.create_tag_group(group_dict["name"], group_dict["description"])
+		all_groups[group_id] = {"name": group_dict["name"], "description": group_dict["description"]}
+		json_groups[group_idx] = group_id
+	
+	var tag_idx: int = -1
+	for tag:Dictionary in json_result["tags"]:
+		if typeof(tag) != TYPE_DICTIONARY or not tag.has_all(["name", "priority", "is_valid", "category", "wiki", "tooltip", "group", "aliases", "parents", "suggestions", "group_suggestions"]):
+			TagIt.log_message("[JSON PARSER] Tag with index " + str(tag_idx) + " is missing some data.", TagIt.LogLevel.ERROR)
+			continue # Skipping incomplete dictionaries.
+		
 		var clean_tag: String = tag["name"].strip_edges().to_lower()
-		var group_id: int = 0 if not group_dict.has(tag["group"].to_lower()) else group_dict[tag["group"].to_lower()]
-		var cat_id: int = 1 if not cat_dict.has(tag["category"].to_lower()) else cat_dict[tag["category"].to_lower()]
+		var group_id: int = 0 if not json_groups.has(tag["group"]) else json_groups[tag["group"]]
+		var cat_id: int = 1 if not json_cats.has(tag["category"]) else json_cats[tag["category"]]
 		
 		if TagIt.has_tag(clean_tag) and TagIt.has_data(TagIt.get_tag_id(clean_tag)):
 			if overwrite:
@@ -2145,6 +2215,7 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 						"tooltip": tag["tooltip"],
 						"priority": tag["priority"]
 					})
+				
 				TagIt.remove_aliases_to(_tag_id)
 				TagIt.remove_all_parents_from(_tag_id)
 				TagIt.remove_all_group_suggestions(_tag_id)
@@ -2164,28 +2235,34 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 			
 		var tag_id: int = TagIt.get_tag_id(clean_tag)
 		var group_suggestions: Array[int] = []
-		
+	
 		for group_text in tag["group_suggestions"]:
-			for key in group_dict.keys():
-				if Strings.nocasecmp_equal(group_text, key):
-					group_suggestions.append(group_dict[key])
+			for _group_id in groups_data:
+				if Strings.nocasecmp_equal(group_text, groups_data[_group_id]["name"]):
+					group_suggestions.append(_group_id)
 					break
 		
-		TagIt.add_parents(tag_id, tag["parents"])
-		TagIt.add_suggestions(
-				tag_id,
-				Array(
-							tag["suggestions"],
+		if not tag["parents"].is_empty():
+			TagIt.add_parents(tag_id, Array(tag["parents"], TYPE_STRING, &"", null))
+		
+		if not tag["suggestions"].is_empty():
+			TagIt.add_suggestions(
+					tag_id,
+					Array(
+								tag["suggestions"],
+								TYPE_STRING,
+								&"",
+								null))
+		if not group_suggestions.is_empty():
+			TagIt.add_group_suggestions(tag_id, group_suggestions)
+		 
+		if not tag["aliases"].is_empty():
+			TagIt.add_aliases(
+					Array(tag["aliases"],
 							TYPE_STRING,
 							&"",
-							null))
-		TagIt.add_group_suggestions(tag_id, group_suggestions)
-		TagIt.add_aliases(
-				Array(tag["aliases"],
-						TYPE_STRING,
-						&"",
-						null),
-				clean_tag)
+							null),
+					clean_tag)
 
 
 func db_tag_to_json(tag_id: int, path: String) -> void:
@@ -2226,10 +2303,10 @@ func db_tag_to_json(tag_id: int, path: String) -> void:
 
 
 func db_group_to_json(tag_ids: Array[int], path: String) -> void:
-	var icons: Dictionary = {}
-	var categories: Dictionary = {} 
+	var icons: Array[Dictionary] = []
+	var categories: Array[Dictionary] = []
 	var tags: Array[Dictionary] = [] 
-	var groups: Dictionary = {}
+	var groups: Array[Dictionary] = []
 	
 	var all_groups: Dictionary = TagIt.get_tag_groups()
 	var all_categories: Dictionary = TagIt.get_categories()
@@ -2243,32 +2320,66 @@ func db_group_to_json(tag_ids: Array[int], path: String) -> void:
 		var cat_name: String = all_categories[category]["name"]
 		var group_suggestions: PackedStringArray = []
 		
+		var _icon_idx: int = -1
+		var _group_idx: int = -1
+		var _cat_idx: int = -1
+		
 		for grp_sugg in data["suggested_groups"]:
 			group_suggestions.append(all_groups[grp_sugg]["name"])
 		
-		if not icons.has(icon):
+		var has_icon: bool = false
+		
+		for icon_dict in icons:
+			_icon_idx += 1
+			if Strings.nocasecmp_equal(icon_dict["name"], icon):
+				has_icon = true
+				break
+		
+		if not has_icon:
+			_icon_idx = icons.size()
 			var bits: Array[int] = []
 			bits.assign(TagIt.get_icon_texture(all_categories[category]["icon_id"]).get_image().save_webp_to_buffer())
-			icons[icon] = bits
+			icons.append({"name": icon, "bits": bits})
 		
-		if not categories.has(cat_name):
-			categories[cat_name] = {
+		var has_category: bool = false
+		
+		for cat_dict in categories:
+			_cat_idx += 1
+			if Strings.nocasecmp_equal(cat_dict["name"], cat_name):
+				has_category = true
+				break
+		
+		if not has_category:
+			_cat_idx = categories.size()
+			categories.append({
+				"name": cat_name,
 				"color": all_categories[category]["icon_color"],
-				"icon": icon,
-				"description": all_categories[category]["description"]}
+				"icon": _icon_idx,
+				"description": all_categories[category]["description"]})
 		
-		if not group_name.is_empty() and not groups.has(group_name):
-			groups[group_name] = all_groups[data["group"]]["description"]#TagIt.get_tag_group_desc(data["tag_group"])
+		var has_group: bool = false
 		
+		if not group_name.is_empty():
+			for group_dict in groups:
+				_group_idx += 1
+				if Strings.nocasecmp_equal(group_dict["name"], group_name):
+					has_group = true
+					break
+			
+			if not has_group:
+				_group_idx = groups.size()
+				groups.append({
+					"name": group_name,
+					"description": all_groups[data["group"]]["description"]})
 		
 		tags.append({
 			"name": data["tag"],
 			"priority": data["priority"],
 			"is_valid": data["is_valid"],
-			"category": cat_name,
+			"category": _cat_idx,
 			"wiki": data["description"],
 			"tooltip": data["tooltip"],
-			"group": group_name,
+			"group": _group_idx,
 			"aliases": TagIt.get_tags_name(data["aliases"]).values(),
 			"parents": TagIt.get_tags_name(data["parents"]).values(),
 			"suggestions": TagIt.get_tags_name(data["suggestions"]).values(),
@@ -2283,6 +2394,7 @@ func db_group_to_json(tag_ids: Array[int], path: String) -> void:
 	
 	var json_file := FileAccess.open(path,FileAccess.WRITE)
 	var json_text: String = JSON.stringify(json_data, "\t")
+	
 	json_file.store_string(json_text)
 	json_file.close()
 

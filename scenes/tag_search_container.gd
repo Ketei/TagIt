@@ -16,10 +16,16 @@ func _ready() -> void:
 	set_prev_arrow_disabled(true)
 	set_next_arrow_disabled(true)
 	current_page_spn_bx.value_changed.connect(on_value_changed)
+	
+	categories = TagIt.get_categories()
+	groups = TagIt.get_tag_groups()
+	
 	next_page.pressed.connect(on_arrow_button_pressed.bind(1))
 	prev_page.pressed.connect(on_arrow_button_pressed.bind(-1))
 	TagIt.category_created.connect(on_categories_changed)
 	TagIt.category_deleted.connect(on_categories_changed)
+	TagIt.group_created.connect(on_groups_changed)
+	TagIt.group_deleted.connect(on_groups_changed)
 	TagIt.category_color_updated.connect(on_category_color_changed)
 	TagIt.category_icon_updated.connect(on_category_icon_changed)
 
@@ -39,12 +45,12 @@ func on_arrow_button_pressed(val_change: int) -> void:
 
 
 func add_tag_to_table(id: int, tag_name: String, category: int, priority: int, group: int, valid: bool) -> void:
-	groups = TagIt.get_tag_group_data(group) if 0 < group else {}
-	categories = TagIt.get_categories()
 	all_tags_tree.add_tag(id, tag_name, category, categories[category]["name"], priority, group, groups[group]["name"] if 0 < group else "", categories[category]["icon_id"], Color.from_string(categories[category]["icon_color"], Color.WHITE), valid)
 
 
 func update_table_tag(tag_id: int, tag_name: String, tag_category: String, category_id: int, tag_priority: String, tag_group: String, group_id: int, valid: bool) -> void:
+	if all_tags_tree.get_root().get_child_count() == 0:
+		return
 	all_tags_tree.update_tag(
 			tag_id,
 			tag_name,
@@ -58,9 +64,12 @@ func update_table_tag(tag_id: int, tag_name: String, tag_category: String, categ
 			valid)
 
 
-func on_categories_changed(_id: Variant) -> void:
-	if not categories.is_empty():
-		categories = TagIt.get_categories()
+func on_categories_changed(_id: Variant = null) -> void:
+	categories = TagIt.get_categories()
+
+
+func on_groups_changed(_id: Variant = null, _name: Variant = null) -> void:
+	groups = TagIt.get_tag_groups()
 
 
 func on_category_color_changed(id: int, color: String) -> void:
