@@ -2151,6 +2151,7 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 				tag["wiki"],
 				group_id,
 				tag["tooltip"].strip_edges())
+			
 			var tag_id: int = TagIt.get_tag_id(clean_tag)
 			var group_suggestions: Array[int] = []
 			

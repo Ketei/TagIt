@@ -160,7 +160,7 @@ func _ready() -> void:
 				child INTEGER NOT NULL, 
 				PRIMARY KEY (parent, child), 
 				FOREIGN KEY (parent) REFERENCES tags (id) ON DELETE CASCADE ON UPDATE NO ACTION, 
-				FOREIGN KEY (child) REFERENCES data (id) ON DELETE CASCADE ON UPDATE NO ACTION);")
+				FOREIGN KEY (child) REFERENCES tags (id) ON DELETE CASCADE ON UPDATE NO ACTION);")
 		tag_database.create_table("sites", sites_table)
 		
 		tag_database.insert_rows(
@@ -673,7 +673,11 @@ func get_tags_data(tags:Array[int]) -> Dictionary:
 func delete_tag_data(tag_id: int) -> void:
 	tag_database.delete_rows(
 			"data",
-			"id = " + str(tag_id))
+			"tag_id = " + str(tag_id))
+	tag_database.delete_rows(
+		"relationships",
+		"child = " + str(tag_id))
+	
 	tag_deleted.emit(tag_id)
 
 
@@ -692,11 +696,11 @@ func add_parents(to: int, add: Array) -> void:
 			"relationships",
 			"child = " + str(to),
 			["parent"])
-
+	
 	var existing_ids: Array[int] = []
 	
 	for parent in existing_parents:
-		existing_parents.append(parent["parent"])
+		existing_ids.append(parent["parent"])
 	
 	existing_ids.sort()
 	
