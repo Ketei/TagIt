@@ -1,0 +1,72 @@
+[gd_scene load_steps=4 format=3 uid="uid://dhabageb65lbx"]
+
+[ext_resource type="Script" path="res://scenes/suggenstion_blacklist_script.gd" id="1_34jdv"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0g8el"]
+bg_color = Color(0, 0, 0, 0.392157)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xt2ey"]
+bg_color = Color(0.180392, 0.180392, 0.180392, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+expand_margin_left = 5.0
+expand_margin_top = 5.0
+expand_margin_right = 5.0
+expand_margin_bottom = 5.0
+
+[node name="SuggenstionBlacklist" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_0g8el")
+script = ExtResource("1_34jdv")
+
+[node name="MainCenter" type="CenterContainer" parent="."]
+layout_mode = 2
+
+[node name="MainPanel" type="PanelContainer" parent="MainCenter"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xt2ey")
+
+[node name="MainMargin" type="MarginContainer" parent="MainCenter/MainPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="MainContainer" type="VBoxContainer" parent="MainCenter/MainPanel/MainMargin"]
+custom_minimum_size = Vector2(350, 500)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainCenter/MainPanel/MainMargin/MainContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text = "Suggestion Blacklist"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TagsTree" type="Tree" parent="MainCenter/MainPanel/MainMargin/MainContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+hide_folding = true
+hide_root = true
+
+[node name="ButtonContainer" type="HBoxContainer" parent="MainCenter/MainPanel/MainMargin/MainContainer"]
+layout_mode = 2
+
+[node name="CancelButton" type="Button" parent="MainCenter/MainPanel/MainMargin/MainContainer/ButtonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "Cancel"
+
+[node name="SaveButton" type="Button" parent="MainCenter/MainPanel/MainMargin/MainContainer/ButtonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+text = "Save"

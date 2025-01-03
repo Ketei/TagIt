@@ -1,0 +1,24 @@
+[gd_scene load_steps=2 format=3 uid="uid://diatl0quh6tby"]
+
+[ext_resource type="Script" path="res://scenes/dialogs/new_tag_dialog.gd" id="1_jx5ep"]
+
+[node name="NewTagConfirmation" type="ConfirmationDialog"]
+auto_translate_mode = 1
+title = "Create New Tag..."
+initial_position = 1
+size = Vector2i(300, 100)
+ok_button_text = "Create"
+script = ExtResource("1_jx5ep")
+
+[node name="MainContainer" type="HBoxContainer" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 292.0
+offset_bottom = 51.0
+
+[node name="NewTagLnEdt" type="LineEdit" parent="MainContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+placeholder_text = "Tag Name"

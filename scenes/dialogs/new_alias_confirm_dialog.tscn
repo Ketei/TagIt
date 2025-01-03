@@ -1,0 +1,35 @@
+[gd_scene load_steps=2 format=3 uid="uid://bv2mlr5cow71v"]
+
+[ext_resource type="Script" path="res://scenes/dialogs/new_alias_confirm_dialog.gd" id="1_jaho8"]
+
+[node name="NewAliasConfirmDialog" type="ConfirmationDialog"]
+auto_translate_mode = 1
+title = "Create Alias..."
+initial_position = 1
+size = Vector2i(350, 115)
+ok_button_text = "Create"
+script = ExtResource("1_jaho8")
+
+[node name="MainContainer" type="HBoxContainer" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 342.0
+offset_bottom = 66.0
+
+[node name="AntecedentLnEdt" type="LineEdit" parent="MainContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+placeholder_text = "Old Name"
+
+[node name="Label" type="Label" parent="MainContainer"]
+layout_mode = 2
+text = "->"
+
+[node name="ConsequentLnEdt" type="LineEdit" parent="MainContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+placeholder_text = "New Name"

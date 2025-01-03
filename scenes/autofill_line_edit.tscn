@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=3 uid="uid://djrqboi0xp74"]
+
+[ext_resource type="Script" path="res://scenes/autofill_line_edit_script.gd" id="1_rnmwe"]
+
+[node name="AutofillLineEdit" type="LineEdit"]
+offset_right = 186.0
+offset_bottom = 32.0
+script = ExtResource("1_rnmwe")
+
+[node name="AutofillList" type="ItemList" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+focus_neighbor_left = NodePath(".")
+focus_neighbor_top = NodePath(".")
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath(".")
+focus_next = NodePath(".")
+focus_previous = NodePath(".")
+auto_height = true

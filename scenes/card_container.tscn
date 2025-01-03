@@ -1,0 +1,179 @@
+[gd_scene load_steps=10 format=3 uid="uid://ueqfate2vd1b"]
+
+[ext_resource type="Script" path="res://scenes/card_container_script.gd" id="1_twnfc"]
+[ext_resource type="Texture2D" uid="uid://wjx754svcd1w" path="res://card_gradient.tres" id="1_yvdt5"]
+[ext_resource type="StyleBox" uid="uid://c2ilnkvgxg1mc" path="res://card_title.tres" id="2_brswe"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6gdsv"]
+texture = ExtResource("1_yvdt5")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lgn1x"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0.625597, 0.625597, 0.625597, 0.6)
+shadow_size = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k5bv8"]
+bg_color = Color(0, 0, 0, 0.392157)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wbdxc"]
+bg_color = Color(0.366508, 0.394677, 0.446898, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3atdk"]
+bg_color = Color(0.185873, 0.20218, 0.2348, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="Theme" id="Theme_gt3bb"]
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/styles/hover = SubResource("StyleBoxFlat_wbdxc")
+Button/styles/normal = SubResource("StyleBoxFlat_wbdxc")
+Button/styles/pressed = SubResource("StyleBoxFlat_3atdk")
+
+[node name="CardContainer" type="VBoxContainer"]
+offset_right = 350.0
+offset_bottom = 480.0
+alignment = 2
+script = ExtResource("1_twnfc")
+
+[node name="MenuCard" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(350, 480)
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxTexture_6gdsv")
+
+[node name="GlowContainer" type="PanelContainer" parent="MenuCard"]
+visible = false
+show_behind_parent = true
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_lgn1x")
+
+[node name="MainMargin" type="MarginContainer" parent="MenuCard"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="MainContainer" type="VBoxContainer" parent="MenuCard/MainMargin"]
+layout_mode = 2
+
+[node name="TitlePanel" type="PanelContainer" parent="MenuCard/MainMargin/MainContainer"]
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/panel = ExtResource("2_brswe")
+
+[node name="TitleMargin" type="MarginContainer" parent="MenuCard/MainMargin/MainContainer/TitlePanel"]
+layout_mode = 2
+theme_override_constants/margin_top = 3
+theme_override_constants/margin_bottom = 3
+
+[node name="TitleLabel" type="Label" parent="MenuCard/MainMargin/MainContainer/TitlePanel/TitleMargin"]
+visible = false
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+mouse_filter = 1
+theme_override_font_sizes/font_size = 25
+text = "[Title]"
+horizontal_alignment = 1
+vertical_alignment = 1
+text_overrun_behavior = 3
+
+[node name="EditTitleLineEdit" type="LineEdit" parent="MenuCard/MainMargin/MainContainer/TitlePanel/TitleMargin"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+placeholder_text = "Set Title"
+alignment = 1
+
+[node name="ImagePanel" type="PanelContainer" parent="MenuCard/MainMargin/MainContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 4.0
+mouse_filter = 1
+theme_override_styles/panel = ExtResource("2_brswe")
+
+[node name="ImageMargin" type="MarginContainer" parent="MenuCard/MainMargin/MainContainer/ImagePanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Image" type="TextureRect" parent="MenuCard/MainMargin/MainContainer/ImagePanel/ImageMargin"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 4.0
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DescLabel" type="Label" parent="MenuCard/MainMargin/MainContainer"]
+custom_minimum_size = Vector2(330, 80)
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 0
+text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut in consequat magna. Vivamus accumsan sed ipsum vitae pretium. AAAAAAAAA"
+autowrap_mode = 3
+text_overrun_behavior = 3
+
+[node name="DescEditTextEdit" type="TextEdit" parent="MenuCard/MainMargin/MainContainer"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+wrap_mode = 1
+
+[node name="CardSelectButton" type="Button" parent="MenuCard"]
+layout_mode = 2
+focus_mode = 0
+flat = true
+
+[node name="PanelContainer" type="PanelContainer" parent="MenuCard"]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_k5bv8")
+
+[node name="MarginContainer" type="MarginContainer" parent="MenuCard/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="ButtonsContaintainer" type="VBoxContainer" parent="MenuCard/PanelContainer/MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="SelectButton" type="Button" parent="MenuCard/PanelContainer/MarginContainer/ButtonsContaintainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 1
+theme = SubResource("Theme_gt3bb")
+text = "Select"
+
+[node name="DeleteButton" type="Button" parent="MenuCard/PanelContainer/MarginContainer/ButtonsContaintainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 1
+theme = SubResource("Theme_gt3bb")
+text = "Delete"
+
+[node name="SaveButton" type="Button" parent="."]
+visible = false
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text = "Save"
+
+[node name="CancelButton" type="Button" parent="."]
+visible = false
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text = "Cancel"

@@ -1,0 +1,48 @@
+[gd_scene load_steps=2 format=3 uid="uid://k4ufd6i87omb"]
+
+[ext_resource type="Script" path="res://scenes/dialogs/icon_selection_dialog.gd" id="1_yxfq7"]
+
+[node name="ConfirmationDialog" type="ConfirmationDialog"]
+auto_translate_mode = 1
+title = "Select Icon..."
+initial_position = 1
+size = Vector2i(300, 131)
+script = ExtResource("1_yxfq7")
+
+[node name="MainContainer" type="VBoxContainer" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 292.0
+offset_bottom = 82.0
+theme_override_constants/separation = 10
+
+[node name="DataContainer" type="HBoxContainer" parent="MainContainer"]
+layout_mode = 2
+
+[node name="IconNameTxtEdt" type="LineEdit" parent="MainContainer/DataContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_next = NodePath("../BrowseBtn")
+placeholder_text = "Icon Name"
+
+[node name="BrowseBtn" type="Button" parent="MainContainer/DataContainer"]
+layout_mode = 2
+focus_previous = NodePath("../IconNameTxtEdt")
+text = "Browse..."
+
+[node name="IconTexture" type="TextureRect" parent="MainContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="FileDialog" type="FileDialog" parent="."]
+auto_translate_mode = 1
+title = "Open a File"
+initial_position = 1
+size = Vector2i(500, 300)
+ok_button_text = "Open"
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.jpg,*.png,*.svg,*.webp;Images")
+use_native_dialog = true

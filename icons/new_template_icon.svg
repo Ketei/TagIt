@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 22.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1"
+	 id="icon" inkscape:version="1.3 (0e150ed6c4, 2023-07-21)" sodipodi:docname="template-icon-original.svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:svg="http://www.w3.org/2000/svg"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24"
+	 style="enable-background:new 0 0 24 24;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#FFFFFF;}
+	.st1{fill:#6FBE44;}
+</style>
+<sodipodi:namedview  bordercolor="#000000" borderopacity="0.25" id="namedview3" inkscape:current-layer="icon" inkscape:cx="13.398374" inkscape:cy="12.655052" inkscape:deskcolor="#d1d1d1" inkscape:pagecheckerboard="0" inkscape:pageopacity="0.0" inkscape:showpageshadow="2" inkscape:window-height="1057" inkscape:window-maximized="1" inkscape:window-width="1920" inkscape:window-x="-8" inkscape:window-y="-8" inkscape:zoom="26.90625" pagecolor="#ffffff">
+	</sodipodi:namedview>
+<title  id="title1">template</title>
+<path id="path1" class="st0" d="M20.5,6.6h-17C3.3,6.6,3,6.4,3,6.1V3.5C3,3.3,3.3,3,3.5,3h16.9C20.7,3,21,3.3,21,3.5v2.6
+	C21,6.4,20.7,6.6,20.5,6.6z M21,1.2H3C2,1.2,1.2,2,1.2,3l0,0v3.6c0,1,0.8,1.8,1.8,1.8l0,0h18c1,0,1.8-0.8,1.8-1.8V3
+	C22.8,2,22,1.2,21,1.2z"/>
+<path id="path2" class="st0" d="M6.1,21H3.5C3.2,21,3,20.8,3,20.5v-8C3,12.2,3.2,12,3.5,12h2.6c0.3,0,0.5,0.2,0.5,0.5v8
+	C6.6,20.8,6.4,21,6.1,21z M6.6,10.2H3c-1,0-1.8,0.8-1.8,1.8l0,0v9c0,1,0.8,1.8,1.8,1.8h3.6c1,0,1.8-0.8,1.8-1.8v-9
+	C8.4,11,7.6,10.2,6.6,10.2L6.6,10.2z"/>
+<polygon class="st1" points="17.8,22.8 17.8,19.8 14.8,19.8 14.8,17.8 17.8,17.8 17.8,14.8 19.8,14.8 19.8,17.8 22.8,17.8 
+	22.8,19.8 19.8,19.8 19.8,22.8 "/>
+<path class="st0" d="M12.8,21h-0.3c-0.3,0-0.5-0.2-0.5-0.5v-8c0-0.3,0.2-0.5,0.5-0.5h8c0.3,0,0.5,0.2,0.5,0.5v0.3h1.8V12
+	c0-1-0.8-1.8-1.8-1.8h-9c-1,0-1.8,0.8-1.8,1.8v9c0,1,0.8,1.8,1.8,1.8h0.8V21z"/>
+</svg>

@@ -1,0 +1,54 @@
+[gd_scene load_steps=4 format=3 uid="uid://bmse2jmhjyjo5"]
+
+[ext_resource type="Script" path="res://scripts/angle_button_script.gd" id="1_xveed"]
+[ext_resource type="Texture2D" uid="uid://bowshto8a3l5u" path="res://icons/check_cross_icon.svg" id="2_uhkkw"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_joq8p"]
+bg_color = Color(0, 0, 0, 0.392157)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="AngleContainer" type="Button"]
+custom_minimum_size = Vector2(110, 130)
+anchors_preset = -1
+anchor_right = 0.0859375
+anchor_bottom = 0.180556
+flat = true
+script = ExtResource("1_xveed")
+metadata/_edit_use_anchors_ = true
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_joq8p")
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="TextureContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="AngleTexture" type="TextureRect" parent="PanelContainer/MarginContainer/TextureContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 3.0
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CheckedTexture" type="TextureRect" parent="PanelContainer/MarginContainer/TextureContainer"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+texture = ExtResource("2_uhkkw")
+expand_mode = 1
+stretch_mode = 5

@@ -1,0 +1,52 @@
+[gd_scene load_steps=2 format=3 uid="uid://bajlrodmmrhoa"]
+
+[ext_resource type="Script" path="res://scenes/dialogs/site_confirmation_dialog.gd" id="1_l3ibe"]
+
+[node name="SiteConfirmationDialog" type="ConfirmationDialog"]
+auto_translate_mode = 1
+title = "Create Site..."
+initial_position = 1
+size = Vector2i(250, 150)
+ok_button_text = "Create"
+script = ExtResource("1_l3ibe")
+
+[node name="MainContainer" type="VBoxContainer" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 242.0
+offset_bottom = 101.0
+
+[node name="SiteNameLnEdt" type="LineEdit" parent="MainContainer"]
+layout_mode = 2
+placeholder_text = "Site Name"
+
+[node name="DataContainer" type="HBoxContainer" parent="MainContainer"]
+layout_mode = 2
+
+[node name="WhitespaceContainer" type="VBoxContainer" parent="MainContainer/DataContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MainContainer/DataContainer/WhitespaceContainer"]
+layout_mode = 2
+text = "Whitespace"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="WhitespaceLnEdt" type="LineEdit" parent="MainContainer/DataContainer/WhitespaceContainer"]
+layout_mode = 2
+placeholder_text = "Whitespace"
+
+[node name="SeparatorContainer" type="VBoxContainer" parent="MainContainer/DataContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MainContainer/DataContainer/SeparatorContainer"]
+layout_mode = 2
+text = "Separator"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SeparatorLnEdit" type="LineEdit" parent="MainContainer/DataContainer/SeparatorContainer"]
+layout_mode = 2
+placeholder_text = "Separator"

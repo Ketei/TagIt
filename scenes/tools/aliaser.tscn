@@ -1,0 +1,67 @@
+[gd_scene load_steps=5 format=3 uid="uid://68qtoj5l80pr"]
+
+[ext_resource type="Script" path="res://scenes/tools/aliaser_tools.gd" id="1_0nn1x"]
+[ext_resource type="Theme" uid="uid://u13wuypqagrc" path="res://style/table_theme.tres" id="2_h4r6u"]
+[ext_resource type="Texture2D" uid="uid://dhtitxxmyoujx" path="res://icons/create_link_icon.svg" id="2_v18hs"]
+[ext_resource type="Script" path="res://scenes/settings_aliases_tree.gd" id="3_gsod2"]
+
+[node name="AliasContainer" type="VBoxContainer"]
+size_flags_horizontal = 3
+script = ExtResource("1_0nn1x")
+
+[node name="ButtonsContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 2
+
+[node name="Label" type="Label" parent="ButtonsContainer"]
+layout_mode = 2
+text = "Aliases"
+
+[node name="InteractContainer" type="HBoxContainer" parent="ButtonsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SearchAliasLnEdt" type="LineEdit" parent="ButtonsContainer/InteractContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Search Alias"
+
+[node name="NewAliasBtn" type="Button" parent="ButtonsContainer/InteractContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "Create Alias"
+icon = ExtResource("2_v18hs")
+flat = true
+icon_alignment = 1
+
+[node name="AliasesTree" type="Tree" parent="."]
+custom_minimum_size = Vector2(0, 160)
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("2_h4r6u")
+columns = 4
+column_titles_visible = true
+hide_folding = true
+hide_root = true
+select_mode = 1
+script = ExtResource("3_gsod2")
+
+[node name="PagesMargin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_right = 10
+
+[node name="PageContainer" type="HBoxContainer" parent="PagesMargin"]
+layout_mode = 2
+alignment = 2
+
+[node name="PageSpinBox" type="SpinBox" parent="PagesMargin/PageContainer"]
+layout_mode = 2
+min_value = 1.0
+max_value = 1.0
+value = 1.0
+alignment = 1
+
+[node name="PageLabel" type="Label" parent="PagesMargin/PageContainer"]
+layout_mode = 2
+text = "/ 1"

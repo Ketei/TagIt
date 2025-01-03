@@ -1,5 +1,6 @@
 # Godot 4+ specific ignores
 .godot/
+/android/
 
 # Godot-specific ignores
 .import/
@@ -13,3 +14,10 @@ export_presets.cfg
 .mono/
 data_*/
 mono_crash.*.json
+
+# Project-specific
+test_tag_database.db
+data_info.gd.bak
+
+# Windows-specific
+desktop.ini

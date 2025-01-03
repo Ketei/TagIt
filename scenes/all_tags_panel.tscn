@@ -1,0 +1,331 @@
+[gd_scene load_steps=11 format=3 uid="uid://n3q3ndxi2p0s"]
+
+[ext_resource type="Texture2D" uid="uid://vypb46ut3fil" path="res://icons/x_icon.svg" id="1_iy0q1"]
+[ext_resource type="Texture2D" uid="uid://d83q0hy74uit" path="res://icons/search_icon.svg" id="2_5e10h"]
+[ext_resource type="Texture2D" uid="uid://npwxg0xrpf8j" path="res://icons/pointer_left.svg" id="2_pn42h"]
+[ext_resource type="Texture2D" uid="uid://cdtejl0p8c4cr" path="res://icons/pointer_right.svg" id="3_5x0m5"]
+[ext_resource type="Texture2D" uid="uid://bw5u0gth430jt" path="res://icons/spin_load.svg" id="5_ivlcl"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dojr1"]
+bg_color = Color(0.22, 0.22, 0.22, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="GDScript" id="GDScript_odxxx"]
+script/source = "extends Control
+
+
+signal tags_selected(tags: PackedStringArray)
+signal panel_close_pressed
+
+@export var step: int = 10
+
+var value = 0:
+	set(new_page):
+		value = new_page
+		current_lbl.text = str(value + 1)
+var _current_search: String = \"\"
+var current_tags: PackedStringArray = []
+var _api_working: bool = false
+
+@onready var close_button: Button = $MarginContainer/MainContainer/TitlePanel/CloseButton
+@onready var tags_tree: Tree = $MarginContainer/MainContainer/TagsTree
+@onready var search_tag_ln_edt: LineEdit = $MarginContainer/MainContainer/SearchMargin/SerchTagLnEdt
+@onready var prev_button: Button = $MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer/LeftButton
+@onready var current_lbl: Label = $MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer/PageContainer/CurrentLbl
+@onready var pages_lbl: Label = $MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer/PageContainer/PagesLbl
+@onready var next_button: Button = $MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer/NextButton
+@onready var add_button: Button = $MarginContainer/MainContainer/MarginContainer/BottomPanel/AddButton
+@onready var search_cooldown: Timer = $SearchCooldown
+@onready var esix_cooldown_bar: TextureProgressBar = $MarginContainer/MainContainer/MarginContainer/BottomPanel/eSixCooldownBar
+
+
+func _ready() -> void:
+	tags_tree.create_item()
+	search_tag_ln_edt.text_submitted.connect(on_search_text_submitted)
+	next_button.pressed.connect(on_arrow_page_pressed.bind(1))
+	prev_button.pressed.connect(on_arrow_page_pressed.bind(-1))
+	add_button.pressed.connect(on_add_selected_pressed)
+	search_cooldown.timeout.connect(on_cooldown_finished)
+	ESixAPI.tag_search_results_found.connect(on_api_tag_responded)
+	close_button.pressed.connect(panel_close_pressed.emit)
+
+
+func on_search_text_submitted(text: String) -> void:
+	var clean_text: String = text.strip_edges()
+	
+	var as_prefix: bool = text.ends_with(TagIt.SEARCH_WILDCARD)
+	var as_suffix: bool = text.begins_with(TagIt.SEARCH_WILDCARD)
+	
+	if as_prefix:
+		clean_text = clean_text.trim_suffix(TagIt.SEARCH_WILDCARD)
+		clean_text = clean_text.strip_edges(false, true)
+	if as_suffix:
+		clean_text = clean_text.trim_prefix(TagIt.SEARCH_WILDCARD)
+		clean_text = clean_text.strip_edges(true, false)
+	
+	while clean_text.ends_with(TagIt.SEARCH_WILDCARD):
+		clean_text = clean_text.trim_suffix(TagIt.SEARCH_WILDCARD)
+		clean_text = clean_text.strip_edges(false, true)
+	
+	while clean_text.begins_with(TagIt.SEARCH_WILDCARD):
+		clean_text = clean_text.trim_prefix(TagIt.SEARCH_WILDCARD)
+		clean_text = clean_text.strip_edges(true, false)
+	
+	current_tags.clear()
+	value = 0
+	_current_search = clean_text
+	
+	if clean_text.is_empty():
+		pages_lbl.text = \"/ 1\"
+		set_next_arrow_disabled(true)
+		set_prev_arrow_disabled(true)
+		clear_tags()
+		return
+	else:
+		if as_prefix and as_suffix:
+			current_tags = TagIt.search_for_tag_contains(clean_text, 100)
+		elif as_suffix:
+			current_tags = TagIt.search_for_tag_suffix(clean_text, 100)
+		else:
+			current_tags = TagIt.search_for_tag_prefix(clean_text, 100)
+	
+	pages_lbl.text = \"/ \" + str(maxi(1, ceili(current_tags.size() / float(step))))
+	
+	if TagIt.settings.search_tags_on_esix and not _api_working:
+		esix_cooldown_bar.radial_fill_degrees = 360.0
+		esix_cooldown_bar.tooltip_text = \"Cooldown on the e621 API.\"
+		var e_tag: String = \"\"
+		if as_suffix:
+			e_tag += \"*\"
+		e_tag += clean_text + \"*\"
+		ESixAPI.search_for_tags(e_tag)
+		_api_working = true
+	
+	on_arrow_page_pressed(0)
+
+
+func on_arrow_page_pressed(sum_val: int) -> void:
+	value += sum_val
+	set_prev_arrow_disabled(value <= 0)
+	set_next_arrow_disabled(current_tags.size() < ((value + 1) * step))
+	clear_tags()
+	
+	var sub_array: PackedStringArray = current_tags.slice(value * step, (value + 1) * step)
+	
+	for tag in sub_array:
+		tags_tree.get_root().create_child().set_text(0, tag)
+
+
+func has_tag(tag_text: String) -> bool:
+	for tag in tags_tree.get_root().get_children():
+		if tag.get_text(0) == tag_text:
+			return true
+	return false
+
+
+func on_add_selected_pressed() -> void:
+	var selected_tags: PackedStringArray = []
+	var current: TreeItem = tags_tree.get_next_selected(null)
+	while current != null:
+		selected_tags.append(current.get_text(0))
+		current.set_custom_color(0, Color.LIME_GREEN)
+		current = tags_tree.get_next_selected(current)
+	tags_selected.emit(selected_tags)
+
+
+func on_api_tag_responded(for_search: String, tags: PackedStringArray) -> void:
+	search_cooldown.start()
+	var tween: Tween = create_tween()
+	tween.tween_callback(clear_progress_tooltip)
+	tween.tween_property(esix_cooldown_bar, ^\"radial_fill_degrees\", 0.0, search_cooldown.wait_time)
+	
+	if not for_search.trim_prefix(\"*\").trim_suffix(\"*\") == _current_search:
+		return
+	
+	for item in tags:
+		if not current_tags.has(item):
+			current_tags.append(item)
+	#print(current_tags)
+	
+	var current_count: int = tags_tree.get_root().get_child_count()
+	
+	if current_count < step:
+		for tag in tags:
+			if has_tag(tag):
+				continue
+			tags_tree.get_root().create_child().set_text(0, tag)
+			current_count += 1
+			if step <= current_count:
+				break
+	
+	pages_lbl.text = \"/ \" + str(maxi(1, ceili(current_tags.size() / float(step))))
+	set_next_arrow_disabled(current_tags.size() < ((value + 1) * step))
+
+
+func clear_progress_tooltip() -> void:
+	esix_cooldown_bar.tooltip_text = \"\"
+
+
+func on_cooldown_finished() -> void:
+	_api_working = false
+
+
+func clear_tags() -> void:
+	for tag in tags_tree.get_root().get_children():
+		tag.free()
+
+
+func set_prev_arrow_disabled(set_disabled: bool) -> void:
+	prev_button.disabled = set_disabled
+	prev_button.focus_mode = Control.FOCUS_ALL if not set_disabled else Control.FOCUS_NONE
+
+
+func set_next_arrow_disabled(set_disabled: bool) -> void:
+	next_button.disabled = set_disabled
+	next_button.focus_mode = Control.FOCUS_ALL if not set_disabled else Control.FOCUS_NONE
+"
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v4kdy"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_apoyc"]
+bg_color = Color(0.14, 0.14, 0.14, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jm62d"]
+
+[node name="AllTags" type="PanelContainer"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -431.0
+offset_right = 382.0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_dojr1")
+script = SubResource("GDScript_odxxx")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 6
+
+[node name="MainContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="TitlePanel" type="PanelContainer" parent="MarginContainer/MainContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_v4kdy")
+
+[node name="Label" type="Label" parent="MarginContainer/MainContainer/TitlePanel"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "All Tags"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CloseButton" type="Button" parent="MarginContainer/MainContainer/TitlePanel"]
+custom_minimum_size = Vector2(26, 26)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+icon = ExtResource("1_iy0q1")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="TagsTree" type="Tree" parent="MarginContainer/MainContainer"]
+custom_minimum_size = Vector2(370, 315)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_apoyc")
+hide_folding = true
+hide_root = true
+
+[node name="SearchMargin" type="MarginContainer" parent="MarginContainer/MainContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="SerchTagLnEdt" type="LineEdit" parent="MarginContainer/MainContainer/SearchMargin"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+placeholder_text = "Search Tag"
+clear_button_enabled = true
+right_icon = ExtResource("2_5e10h")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/MainContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="BottomPanel" type="PanelContainer" parent="MarginContainer/MainContainer/MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_jm62d")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/MainContainer/MarginContainer/BottomPanel"]
+layout_mode = 2
+alignment = 1
+
+[node name="LeftButton" type="Button" parent="MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer"]
+custom_minimum_size = Vector2(34, 24)
+layout_mode = 2
+size_flags_vertical = 4
+tooltip_text = "Previous Page"
+focus_mode = 0
+disabled = true
+icon = ExtResource("2_pn42h")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="PageContainer" type="HBoxContainer" parent="MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer"]
+layout_mode = 2
+
+[node name="CurrentLbl" type="Label" parent="MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer/PageContainer"]
+layout_mode = 2
+text = "1"
+
+[node name="PagesLbl" type="Label" parent="MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer/PageContainer"]
+layout_mode = 2
+text = "/ 1"
+
+[node name="NextButton" type="Button" parent="MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer"]
+custom_minimum_size = Vector2(34, 24)
+layout_mode = 2
+size_flags_vertical = 4
+tooltip_text = "Next Page"
+focus_mode = 0
+disabled = true
+icon = ExtResource("3_5x0m5")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="AddButton" type="Button" parent="MarginContainer/MainContainer/MarginContainer/BottomPanel"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+text = "Add Selected"
+
+[node name="eSixCooldownBar" type="TextureProgressBar" parent="MarginContainer/MainContainer/MarginContainer/BottomPanel"]
+modulate = Color(0.233693, 0.62897, 0.826345, 1)
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 0
+mouse_filter = 0
+value = 100.0
+fill_mode = 5
+radial_fill_degrees = 0.0
+nine_patch_stretch = true
+texture_progress = ExtResource("5_ivlcl")
+
+[node name="SearchCooldown" type="Timer" parent="."]
+wait_time = 1.25
+one_shot = true

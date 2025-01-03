@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://do1myf3yjxotk"]
+
+[ext_resource type="Script" path="res://scenes/dialogs/set_desc_dialog_script.gd" id="1_uo7ki"]
+
+[node name="SetDescDialog" type="ConfirmationDialog"]
+title = "Set Description"
+initial_position = 1
+size = Vector2i(400, 250)
+script = ExtResource("1_uo7ki")
+
+[node name="DescTxtEdt" type="TextEdit" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 392.0
+offset_bottom = 201.0
+placeholder_text = "Description"
+wrap_mode = 1

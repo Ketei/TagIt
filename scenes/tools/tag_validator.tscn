@@ -1,0 +1,116 @@
+[gd_scene load_steps=8 format=3 uid="uid://bpt667xe6g7q"]
+
+[ext_resource type="Script" path="res://scenes/tools/tag_validator.gd" id="1_ytlwd"]
+[ext_resource type="Theme" uid="uid://u13wuypqagrc" path="res://style/table_theme.tres" id="2_ar7j6"]
+[ext_resource type="Script" path="res://scenes/validator_tree_script.gd" id="3_tfj57"]
+[ext_resource type="Texture2D" uid="uid://d83q0hy74uit" path="res://icons/search_icon.svg" id="4_67t5w"]
+[ext_resource type="Texture2D" uid="uid://dahtjy0xwoxxi" path="res://icons/load_file_icon.svg" id="5_qq4ue"]
+[ext_resource type="Script" path="res://scenes/tools/create_valid_tag_tree_script.gd" id="6_4ta2e"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nnevd"]
+
+[node name="TagValidator" type="HBoxContainer"]
+offset_right = 812.0
+offset_bottom = 255.0
+script = ExtResource("1_ytlwd")
+
+[node name="TreeContainer" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_horizontal = 6
+
+[node name="Label" type="Label" parent="TreeContainer"]
+layout_mode = 2
+text = "Set Tags Validity"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ValidatorTree" type="Tree" parent="TreeContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("2_ar7j6")
+columns = 2
+column_titles_visible = true
+hide_folding = true
+hide_root = true
+select_mode = 1
+script = ExtResource("3_tfj57")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TreeContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="PageSpinbox" type="SpinBox" parent="TreeContainer/HBoxContainer"]
+layout_mode = 2
+min_value = 1.0
+max_value = 1.0
+value = 1.0
+alignment = 1
+
+[node name="MaxPageLabel" type="Label" parent="TreeContainer/HBoxContainer"]
+layout_mode = 2
+text = "/ 1"
+
+[node name="SearchContainer" type="HBoxContainer" parent="TreeContainer"]
+layout_mode = 2
+
+[node name="InvalidSearchLnEdt" type="LineEdit" parent="TreeContainer/SearchContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Search Tag"
+
+[node name="Button" type="Button" parent="TreeContainer/SearchContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+icon = ExtResource("4_67t5w")
+icon_alignment = 1
+expand_icon = true
+
+[node name="VSeparator" type="VSeparator" parent="."]
+layout_mode = 2
+
+[node name="CreatorContainer" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_horizontal = 6
+
+[node name="PanelContainer" type="PanelContainer" parent="CreatorContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_nnevd")
+
+[node name="Label" type="Label" parent="CreatorContainer/PanelContainer"]
+layout_mode = 2
+text = "Create Invalid Tags"
+horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="CreatorContainer/PanelContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+tooltip_text = "Add From Text"
+icon = ExtResource("5_qq4ue")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="CreateValidTree" type="Tree" parent="CreatorContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("2_ar7j6")
+column_titles_visible = true
+hide_folding = true
+hide_root = true
+select_mode = 1
+script = ExtResource("6_4ta2e")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CreatorContainer"]
+layout_mode = 2
+
+[node name="CreateValidLnEdt" type="LineEdit" parent="CreatorContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Add Tag"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CreatorContainer"]
+layout_mode = 2

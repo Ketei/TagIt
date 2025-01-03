@@ -1,0 +1,1727 @@
+[gd_scene load_steps=61 format=3 uid="uid://eaxngd263vbi"]
+
+[ext_resource type="Script" path="res://scenes/tagit_main_window.gd" id="1_3rneb"]
+[ext_resource type="Texture2D" uid="uid://kkvcqst6wv4k" path="res://icons/new_icon.svg" id="2_3s1fn"]
+[ext_resource type="StyleBox" uid="uid://bhixcdmu2tfx" path="res://style/tab_panel_style.tres" id="2_u628d"]
+[ext_resource type="Texture2D" uid="uid://dexng5s3jsdw6" path="res://a982a66d33ed166371cc52da11d8a946.png" id="3_kmnjd"]
+[ext_resource type="Script" path="res://scenes/tags_tree_script.gd" id="4_e0v1j"]
+[ext_resource type="Texture2D" uid="uid://c5jnim6mqdp43" path="res://icons/save_icon.svg" id="4_n5y6n"]
+[ext_resource type="Texture2D" uid="uid://b20kul7evr05i" path="res://icons/open_folder_icon.svg" id="4_wynjg"]
+[ext_resource type="Texture2D" uid="uid://c6670pbdsimcl" path="res://icons/save_copy_icon.svg" id="5_2nyt6"]
+[ext_resource type="Texture2D" uid="uid://t6mfaockxxjw" path="res://icons/new_alt_list_icon.svg" id="5_5kn0o"]
+[ext_resource type="Texture2D" uid="uid://neg5mtby2xtv" path="res://icons/sort_icon.svg" id="5_m11cu"]
+[ext_resource type="Script" path="res://scripts/tags/tags_tree_script.gd" id="6_fucip"]
+[ext_resource type="Script" path="res://scenes/wiki_delta_timer.gd" id="6_kbhuc"]
+[ext_resource type="Texture2D" uid="uid://dhnj5fgmhx4jk" path="res://icons/create_tag_icon.svg" id="6_wbwch"]
+[ext_resource type="Texture2D" uid="uid://d83q0hy74uit" path="res://icons/search_icon.svg" id="7_cq671"]
+[ext_resource type="Texture2D" uid="uid://djfchfj7er3v6" path="res://icons/blacklist_icon.svg" id="8_1cbv1"]
+[ext_resource type="LabelSettings" uid="uid://dhe44w5njgeym" path="res://style/label_help_style.tres" id="8_2hfj2"]
+[ext_resource type="Script" path="res://scenes/tag_editor_script.gd" id="8_aldxp"]
+[ext_resource type="Script" path="res://scenes/settings_groups_tree_script.gd" id="8_dgt6a"]
+[ext_resource type="Script" path="res://scenes/cat_icon_script.gd" id="8_woxvm"]
+[ext_resource type="Texture2D" uid="uid://c30fb0dei48il" path="res://icons/wizard.svg" id="9_2kq2q"]
+[ext_resource type="Script" path="res://scenes/tag_editor_tree.gd" id="10_c408k"]
+[ext_resource type="Texture2D" uid="uid://bpsfmkt5otxmh" path="res://icons/import_icon.svg" id="10_oeg0m"]
+[ext_resource type="Texture2D" uid="uid://bgi8sigp64hck" path="res://icons/template_icon.svg" id="10_xx8s6"]
+[ext_resource type="Script" path="res://scenes/tag_editor_groups_tree.gd" id="11_18ujp"]
+[ext_resource type="Texture2D" uid="uid://dahtjy0xwoxxi" path="res://icons/load_file_icon.svg" id="11_e0od5"]
+[ext_resource type="Texture2D" uid="uid://q2hrsk2jw7vb" path="res://icons/export_icon.svg" id="11_ld45a"]
+[ext_resource type="Texture2D" uid="uid://lxri8nnbdbwb" path="res://icons/quit_icon.svg" id="12_yqt35"]
+[ext_resource type="Script" path="res://scenes/settings_icons_tree.gd" id="13_ofwxt"]
+[ext_resource type="Texture2D" uid="uid://04folbrctoj7" path="res://icons/bin_icon.svg" id="15_qjsyi"]
+[ext_resource type="Texture2D" uid="uid://c03por8vrxsy7" path="res://icons/image_icon.svg" id="15_uagwp"]
+[ext_resource type="Texture2D" uid="uid://doflm0070386w" path="res://icons/image_icon_crossed.svg" id="16_qydbo"]
+[ext_resource type="Script" path="res://scenes/tagger_groups_suggestions_tree.gd" id="17_gekb4"]
+[ext_resource type="Script" path="res://scenes/tagger_suggestion_tree.gd" id="17_u7ri3"]
+[ext_resource type="Texture2D" uid="uid://bd5h782h4qtqn" path="res://icons/export_file.svg" id="17_wyj33"]
+[ext_resource type="Texture2D" uid="uid://dxobus6vj5f1c" path="res://icons/copy_icon.svg" id="18_7o3j0"]
+[ext_resource type="PackedScene" uid="uid://djrqboi0xp74" path="res://scenes/autofill_line_edit.tscn" id="18_btkx1"]
+[ext_resource type="Texture2D" uid="uid://d2yy7bx5hatb8" path="res://icons/esix_icon.svg" id="23_cbccr"]
+[ext_resource type="Texture2D" uid="uid://b5axapqy7h8js" path="res://icons/refresh_icon.svg" id="24_npyuf"]
+[ext_resource type="Script" path="res://scenes/wiki_images_scrcontainer.gd" id="25_c3eal"]
+[ext_resource type="Script" path="res://scenes/tag_search_container.gd" id="25_l1y5q"]
+[ext_resource type="Theme" uid="uid://u13wuypqagrc" path="res://style/table_theme.tres" id="26_8xsa4"]
+[ext_resource type="Script" path="res://scenes/large_image_script.gd" id="26_cj3pc"]
+[ext_resource type="Texture2D" uid="uid://vypb46ut3fil" path="res://icons/x_icon.svg" id="29_gsfm7"]
+[ext_resource type="Texture2D" uid="uid://bw5u0gth430jt" path="res://icons/spin_load.svg" id="29_valht"]
+[ext_resource type="Script" path="res://addons/tnowe_extra_controls/elements/scroll_zoom_view.gd" id="29_vpytr"]
+[ext_resource type="Script" path="res://scenes/websites_opt_btn.gd" id="32_cix75"]
+[ext_resource type="Texture2D" uid="uid://otmkm27eyfy" path="res://icons/expand_down_icon.svg" id="33_crsq3"]
+[ext_resource type="Texture2D" uid="uid://bowshto8a3l5u" path="res://icons/check_cross_icon.svg" id="34_gixbi"]
+[ext_resource type="Texture2D" uid="uid://clhle5w66lto8" path="res://icons/new_site_icon.svg" id="35_7aqje"]
+[ext_resource type="Script" path="res://scenes/settings_sites_tree.gd" id="35_mgbqt"]
+[ext_resource type="Texture2D" uid="uid://dd8iryk1xpuuf" path="res://icons/icon_checked.svg" id="35_n2tab"]
+[ext_resource type="Script" path="res://scenes/tools_loader_script.gd" id="38_yel2c"]
+[ext_resource type="Texture2D" uid="uid://d24o3rwmiwpcp" path="res://icons/disconnected_icon.svg" id="45_kqm3t"]
+[ext_resource type="Script" path="res://scripts/hydrus.gd" id="46_jhrpg"]
+[ext_resource type="Script" path="res://scripts/e_six_requester.gd" id="55_iynx2"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0wwcl"]
+bg_color = Color(0.121569, 0.133333, 0.156863, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_citsd"]
+font_size = 40
+font_color = Color(0.890196, 0.478431, 0.329412, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_jrex2"]
+font_size = 22
+font_color = Color(0.840667, 0.431655, 0.205236, 1)
+
+[sub_resource type="GDScript" id="GDScript_olu0e"]
+script/source = "extends SpinBox
+
+
+func _ready() -> void:
+	get_line_edit().flat = true
+"
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ixesi"]
+bg_color = Color(0.180392, 0.180392, 0.180392, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="TagItMain" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_3rneb")
+
+[node name="MainContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="MenuMargin" type="MarginContainer" parent="MainContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_right = 8
+
+[node name="MenuContainer" type="HBoxContainer" parent="MainContainer/MenuMargin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="MenuButtonCont" type="HBoxContainer" parent="MainContainer/MenuMargin/MenuContainer"]
+layout_mode = 2
+
+[node name="MenuButton" type="MenuButton" parent="MainContainer/MenuMargin/MenuContainer/MenuButtonCont"]
+layout_mode = 2
+text = "Menu"
+switch_on_hover = true
+item_count = 14
+popup/item_0/text = "New List"
+popup/item_0/icon = ExtResource("2_3s1fn")
+popup/item_1/text = "New Alt List"
+popup/item_1/icon = ExtResource("5_5kn0o")
+popup/item_1/id = 14
+popup/item_2/text = "Save List"
+popup/item_2/icon = ExtResource("4_n5y6n")
+popup/item_2/id = 1
+popup/item_3/text = "Save As"
+popup/item_3/icon = ExtResource("5_2nyt6")
+popup/item_3/id = 16
+popup/item_4/text = "Load List"
+popup/item_4/icon = ExtResource("4_wynjg")
+popup/item_4/id = 2
+popup/item_5/id = 100
+popup/item_5/disabled = true
+popup/item_5/separator = true
+popup/item_6/text = "Sort Tags"
+popup/item_6/icon = ExtResource("5_m11cu")
+popup/item_6/id = 4
+popup/item_7/text = "Blacklist"
+popup/item_7/icon = ExtResource("8_1cbv1")
+popup/item_7/id = 7
+popup/item_8/id = 101
+popup/item_8/disabled = true
+popup/item_8/separator = true
+popup/item_9/text = "Tag Wizard"
+popup/item_9/icon = ExtResource("9_2kq2q")
+popup/item_9/id = 8
+popup/item_10/text = "Load Template"
+popup/item_10/icon = ExtResource("10_xx8s6")
+popup/item_10/id = 9
+popup/item_11/text = "Load from Text"
+popup/item_11/icon = ExtResource("11_e0od5")
+popup/item_11/id = 10
+popup/item_12/id = 102
+popup/item_12/disabled = true
+popup/item_12/separator = true
+popup/item_13/text = "Quit"
+popup/item_13/icon = ExtResource("12_yqt35")
+popup/item_13/id = 11
+
+[node name="HelpButton" type="MenuButton" parent="MainContainer/MenuMargin/MenuContainer/MenuButtonCont"]
+layout_mode = 2
+text = "Help"
+switch_on_hover = true
+
+[node name="VSeparator2" type="VSeparator" parent="MainContainer/MenuMargin/MenuContainer"]
+layout_mode = 2
+
+[node name="QuickAccessCtnr" type="HBoxContainer" parent="MainContainer/MenuMargin/MenuContainer"]
+layout_mode = 2
+
+[node name="NewBtn" type="Button" parent="MainContainer/MenuMargin/MenuContainer/QuickAccessCtnr"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+icon = ExtResource("2_3s1fn")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="SaveBtn" type="Button" parent="MainContainer/MenuMargin/MenuContainer/QuickAccessCtnr"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+icon = ExtResource("4_n5y6n")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="OpenBtn" type="Button" parent="MainContainer/MenuMargin/MenuContainer/QuickAccessCtnr"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+icon = ExtResource("4_wynjg")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="VSeparator" type="VSeparator" parent="MainContainer/MenuMargin/MenuContainer/QuickAccessCtnr"]
+layout_mode = 2
+
+[node name="NewAltListBtn" type="Button" parent="MainContainer/MenuMargin/MenuContainer/QuickAccessCtnr"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "New Alternate List"
+icon = ExtResource("5_5kn0o")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="WizardBtn" type="Button" parent="MainContainer/MenuMargin/MenuContainer/QuickAccessCtnr"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+icon = ExtResource("9_2kq2q")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="TemplateBtn" type="Button" parent="MainContainer/MenuMargin/MenuContainer/QuickAccessCtnr"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+icon = ExtResource("10_xx8s6")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="TabBar" type="TabBar" parent="MainContainer/MenuMargin/MenuContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+current_tab = 0
+tab_alignment = 2
+tab_count = 5
+tab_0/title = "Tagger"
+tab_1/title = "Wiki"
+tab_2/title = "Tags"
+tab_3/title = "Tools"
+tab_4/title = "Settings"
+
+[node name="TaggerContainer" type="PanelContainer" parent="MainContainer"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("2_u628d")
+
+[node name="MainMargin" type="MarginContainer" parent="MainContainer/TaggerContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="Containers" type="HSplitContainer" parent="MainContainer/TaggerContainer/MainMargin"]
+layout_mode = 2
+
+[node name="TagsContainer" type="HBoxContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CurrentTagsContainer" type="VBoxContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AltSelectContainer" type="HBoxContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer/CurrentTagsContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer/CurrentTagsContainer/AltSelectContainer"]
+layout_mode = 2
+text = "Tags on:"
+
+[node name="AltOptBtn" type="OptionButton" parent="MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer/CurrentTagsContainer/AltSelectContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+text_overrun_behavior = 3
+selected = 0
+item_count = 1
+popup/item_0/text = "All Lists"
+
+[node name="DeleteAltListBtn" type="Button" parent="MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer/CurrentTagsContainer/AltSelectContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "Delete Alternate List"
+icon = ExtResource("15_qjsyi")
+flat = true
+icon_alignment = 1
+
+[node name="TagsTree" type="Tree" parent="MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer/CurrentTagsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("26_8xsa4")
+hide_root = true
+select_mode = 2
+scroll_horizontal_enabled = false
+script = ExtResource("4_e0v1j")
+
+[node name="BarItems" type="HBoxContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer/CurrentTagsContainer"]
+layout_mode = 2
+
+[node name="SearchTagBtn" type="Button" parent="MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer/CurrentTagsContainer/BarItems"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "Search Tags"
+icon = ExtResource("7_cq671")
+icon_alignment = 1
+expand_icon = true
+
+[node name="AddTagLnEdt" parent="MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer/CurrentTagsContainer/BarItems" instance=ExtResource("18_btkx1")]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Add Tag"
+list_direction = 1
+item_limit = 15
+
+[node name="SuggestionContainer" type="VSplitContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SuggestionTree" type="Tree" parent="MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer/SuggestionContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 4.0
+theme = ExtResource("26_8xsa4")
+allow_reselect = true
+hide_folding = true
+hide_root = true
+select_mode = 2
+script = ExtResource("17_u7ri3")
+
+[node name="GroupsTree" type="Tree" parent="MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer/SuggestionContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.0
+theme = ExtResource("26_8xsa4")
+allow_reselect = true
+hide_root = true
+select_mode = 2
+script = ExtResource("17_gekb4")
+
+[node name="EndContainer" type="VBoxContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers"]
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ImageContainer" type="VBoxContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 4.0
+
+[node name="PanelContainer" type="PanelContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/ImageContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 3.0
+
+[node name="ProjectImage" type="TextureRect" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/ImageContainer/PanelContainer"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 3.0
+texture = ExtResource("3_kmnjd")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BtnCtnr" type="HBoxContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/ImageContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="OpenImgBtn" type="Button" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/ImageContainer/BtnCtnr"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "Add Image"
+icon = ExtResource("15_uagwp")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="ClearImgBtn" type="Button" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/ImageContainer/BtnCtnr"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "Remove Image"
+disabled = true
+icon = ExtResource("16_qydbo")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="TagsField" type="VBoxContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="ListVersionContainer" type="HBoxContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/ListVersionContainer"]
+layout_mode = 2
+text = "List Version:"
+
+[node name="GenerateVersionOptBtn" type="OptionButton" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/ListVersionContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TagsPanel" type="PanelContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="TagsContainer" type="HBoxContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/TagsPanel"]
+layout_mode = 2
+
+[node name="TextPanel" type="PanelContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/TagsPanel/TagsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_0wwcl")
+
+[node name="TextMargin" type="MarginContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/TagsPanel/TagsContainer/TextPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_right = 8
+
+[node name="TagsLabel" type="RichTextLabel" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/TagsPanel/TagsContainer/TextPanel/TextMargin"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ButtonsContainer" type="VBoxContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/TagsPanel/TagsContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="ExportBtn" type="Button" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/TagsPanel/TagsContainer/ButtonsContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Export List"
+theme_override_constants/icon_max_width = 32
+icon = ExtResource("17_wyj33")
+flat = true
+
+[node name="CopyBtn" type="Button" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/TagsPanel/TagsContainer/ButtonsContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Copy Tags"
+theme_override_constants/icon_max_width = 32
+icon = ExtResource("18_7o3j0")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="BtnCotnainer" type="HBoxContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField"]
+layout_mode = 2
+
+[node name="SiteOptBtn" type="OptionButton" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/BtnCotnainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text_overrun_behavior = 3
+script = ExtResource("32_cix75")
+
+[node name="GenerateBtn" type="Button" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/BtnCotnainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 3.0
+text = "Generate List"
+
+[node name="WikiPanel" type="PanelContainer" parent="MainContainer"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("2_u628d")
+script = ExtResource("26_cj3pc")
+
+[node name="WikiMargin" type="MarginContainer" parent="MainContainer/WikiPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="WikiContainer" type="HBoxContainer" parent="MainContainer/WikiPanel/WikiMargin"]
+layout_mode = 2
+
+[node name="WikiInfoContainer" type="VBoxContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 8.0
+
+[node name="InfoMargin" type="MarginContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_right = 16
+
+[node name="InfoContainer" type="VBoxContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="WikiTitleCtnr" type="VBoxContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer"]
+layout_mode = 2
+
+[node name="TitleLbl" type="Label" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/WikiTitleCtnr"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+text = "<Tag Wiki>"
+label_settings = SubResource("LabelSettings_citsd")
+horizontal_alignment = 1
+vertical_alignment = 1
+text_overrun_behavior = 3
+
+[node name="VSeparator" type="HSeparator" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/WikiTitleCtnr"]
+layout_mode = 2
+
+[node name="CatContainer" type="HBoxContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/WikiTitleCtnr"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="WikiCatLbl" type="Label" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/WikiTitleCtnr/CatContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "Actions"
+horizontal_alignment = 1
+vertical_alignment = 1
+text_overrun_behavior = 3
+
+[node name="PrioLabel" type="Label" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/WikiTitleCtnr/CatContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+size_flags_stretch_ratio = 0.5
+text = "Priority:"
+horizontal_alignment = 2
+vertical_alignment = 1
+text_overrun_behavior = 3
+
+[node name="WikiPrioLbl" type="Label" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/WikiTitleCtnr/CatContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+size_flags_stretch_ratio = 0.5
+vertical_alignment = 1
+text_overrun_behavior = 3
+
+[node name="VSeparator2" type="HSeparator" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer"]
+layout_mode = 2
+
+[node name="WikiScrollCtnr" type="ScrollContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="WikiRTL" type="RichTextLabel" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/WikiScrollCtnr"]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+fit_content = true
+
+[node name="ParentsContainer" type="VBoxContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer"]
+visible = false
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/ParentsContainer"]
+layout_mode = 2
+
+[node name="DataContainer" type="HBoxContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/ParentsContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/ParentsContainer/DataContainer"]
+layout_mode = 2
+theme_override_constants/margin_bottom = 8
+
+[node name="Label" type="Label" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/ParentsContainer/DataContainer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "Parents:"
+vertical_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/ParentsContainer/DataContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical_scroll_mode = 0
+
+[node name="ParentsLabel" type="Label" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/ParentsContainer/DataContainer/ScrollContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+vertical_alignment = 1
+
+[node name="SearchContainer" type="HBoxContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer"]
+layout_mode = 2
+
+[node name="WikiSearchLnEdt" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/SearchContainer" instance=ExtResource("18_btkx1")]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Search Wiki"
+list_direction = 1
+item_limit = 15
+replace_on_item_select = true
+
+[node name="SearchBtn" type="Button" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/SearchContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+icon = ExtResource("7_cq671")
+
+[node name="eSixSearchBtn" type="Button" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/SearchContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "Search on e621"
+icon = ExtResource("23_cbccr")
+
+[node name="ImageContainer" type="VBoxContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer"]
+custom_minimum_size = Vector2(630, 0)
+layout_mode = 2
+
+[node name="WikiDets" type="HBoxContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/ImageContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="ThumbSize" type="HBoxContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/ImageContainer/WikiDets"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/ImageContainer/WikiDets/ThumbSize"]
+layout_mode = 2
+text = "Size"
+
+[node name="ThumbnailSizeChanger" type="OptionButton" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/ImageContainer/WikiDets/ThumbSize"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+selected = 0
+item_count = 4
+popup/item_0/text = "Small"
+popup/item_1/text = "Normal"
+popup/item_1/id = 1
+popup/item_2/text = "Large"
+popup/item_2/id = 2
+popup/item_3/text = "Huge"
+popup/item_3/id = 3
+
+[node name="Button" type="Button" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/ImageContainer/WikiDets"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "Reload Images"
+icon = ExtResource("24_npyuf")
+flat = true
+icon_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/ImageContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+script = ExtResource("25_c3eal")
+
+[node name="ImagesContainer" type="HFlowContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/ImageContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="ViewerContainer" type="PanelContainer" parent="MainContainer/WikiPanel"]
+visible = false
+layout_mode = 2
+
+[node name="ScrollZoomView" type="MarginContainer" parent="MainContainer/WikiPanel/ViewerContainer"]
+clip_contents = true
+layout_mode = 2
+script = ExtResource("29_vpytr")
+pan_button = 3
+zoom_range = Vector2(0.8, 5)
+zoom_interp_speed = 0.1
+
+[node name="TextureRect" type="TextureRect" parent="MainContainer/WikiPanel/ViewerContainer/ScrollZoomView"]
+layout_mode = 2
+texture = ExtResource("3_kmnjd")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ThrobberContainer" type="MarginContainer" parent="MainContainer/WikiPanel"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Throbber" type="TextureProgressBar" parent="MainContainer/WikiPanel/ThrobberContainer"]
+modulate = Color(3.7542e-06, 0.69741, 0.798387, 1)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+value = 100.0
+fill_mode = 4
+radial_fill_degrees = 90.0
+texture_progress = ExtResource("29_valht")
+
+[node name="DeltaTimer" type="Node" parent="MainContainer/WikiPanel"]
+script = ExtResource("6_kbhuc")
+
+[node name="TagsPanel" type="PanelContainer" parent="MainContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("2_u628d")
+
+[node name="TagsMargin" type="MarginContainer" parent="MainContainer/TagsPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="TagSearchContainer" type="VBoxContainer" parent="MainContainer/TagsPanel/TagsMargin"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("25_l1y5q")
+
+[node name="MenuContainer" type="HBoxContainer" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer"]
+layout_mode = 2
+
+[node name="AllTagsSearchLnEdt" type="LineEdit" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Search Tag"
+clear_button_enabled = true
+right_icon = ExtResource("7_cq671")
+
+[node name="VSeparator" type="VSeparator" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer"]
+layout_mode = 2
+
+[node name="ButtonButtons" type="HBoxContainer" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.5
+
+[node name="NewTagBtn" type="Button" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer/ButtonButtons"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+icon = ExtResource("6_wbwch")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="ImportTagBtn" type="Button" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer/ButtonButtons"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+icon = ExtResource("10_oeg0m")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="ExportTagBtn" type="Button" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer/ButtonButtons"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+icon = ExtResource("11_ld45a")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="VSeparator" type="VSeparator" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer/ButtonButtons"]
+layout_mode = 2
+
+[node name="CurrentPageSpnBx" type="SpinBox" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer/ButtonButtons"]
+layout_mode = 2
+min_value = 1.0
+max_value = 1.0
+value = 1.0
+
+[node name="PagesLabel" type="Label" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer/ButtonButtons"]
+layout_mode = 2
+text = "/ 1"
+
+[node name="AllTagsTree" type="Tree" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("26_8xsa4")
+columns = 7
+column_titles_visible = true
+allow_reselect = true
+hide_folding = true
+hide_root = true
+select_mode = 1
+script = ExtResource("6_fucip")
+
+[node name="TagEditContainer" type="VBoxContainer" parent="MainContainer/TagsPanel/TagsMargin"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_aldxp")
+
+[node name="MainContainer" type="HBoxContainer" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="InfoContainer" type="VBoxContainer" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+
+[node name="BasicsContainer" type="HBoxContainer" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="NameContainer" type="VBoxContainer" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/BasicsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TagTitleLbl" type="Label" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/BasicsContainer/NameContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text = "[TAG NAME]"
+label_settings = SubResource("LabelSettings_jrex2")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ValidPanel" type="PanelContainer" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/BasicsContainer/NameContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+
+[node name="IsValidChkBx" type="CheckBox" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/BasicsContainer/NameContainer/ValidPanel"]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_constants/icon_max_width = 20
+theme_override_icons/checked = ExtResource("35_n2tab")
+theme_override_icons/unchecked = ExtResource("34_gixbi")
+text = "Is valid"
+
+[node name="CategoryPnl" type="PanelContainer" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/BasicsContainer/NameContainer"]
+layout_mode = 2
+
+[node name="MainContainer" type="HBoxContainer" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/BasicsContainer/NameContainer/CategoryPnl"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/BasicsContainer/NameContainer/CategoryPnl/MainContainer"]
+custom_minimum_size = Vector2(75, 0)
+layout_mode = 2
+text = "Category:"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="CategoryOptBtn" type="OptionButton" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/BasicsContainer/NameContainer/CategoryPnl/MainContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+flat = true
+text_overrun_behavior = 3
+
+[node name="PriorityPanel" type="PanelContainer" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/BasicsContainer/NameContainer"]
+layout_mode = 2
+
+[node name="MainContainer" type="HBoxContainer" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/BasicsContainer/NameContainer/PriorityPanel"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/BasicsContainer/NameContainer/PriorityPanel/MainContainer"]
+custom_minimum_size = Vector2(75, 0)
+layout_mode = 2
+text = "Priority:"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="PrioritySpnBx" type="SpinBox" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/BasicsContainer/NameContainer/PriorityPanel/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+allow_greater = true
+allow_lesser = true
+alignment = 1
+script = SubResource("GDScript_olu0e")
+
+[node name="GroupPanel" type="PanelContainer" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/BasicsContainer/NameContainer"]
+layout_mode = 2
+
+[node name="MainContainer" type="HBoxContainer" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/BasicsContainer/NameContainer/GroupPanel"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/BasicsContainer/NameContainer/GroupPanel/MainContainer"]
+custom_minimum_size = Vector2(75, 0)
+layout_mode = 2
+text = "Group:"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="GroupOptBtn" type="OptionButton" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/BasicsContainer/NameContainer/GroupPanel/MainContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+flat = true
+text_overrun_behavior = 3
+
+[node name="AliasesContainer" type="VBoxContainer" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/BasicsContainer/NameContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/BasicsContainer/NameContainer/AliasesContainer"]
+layout_mode = 2
+text = "Aliases"
+
+[node name="AliasesTree" type="Tree" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/BasicsContainer/NameContainer/AliasesContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+hide_folding = true
+hide_root = true
+select_mode = 1
+script = ExtResource("10_c408k")
+
+[node name="AddAliasLnEdt" type="LineEdit" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/BasicsContainer/NameContainer/AliasesContainer"]
+layout_mode = 2
+placeholder_text = "Alias Tag"
+
+[node name="GrSuggestionsContainer" type="VBoxContainer" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/BasicsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/BasicsContainer/GrSuggestionsContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text = "Group Suggestions"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SearchGroupLnEdt" type="LineEdit" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/BasicsContainer/GrSuggestionsContainer"]
+layout_mode = 2
+placeholder_text = "Search Group"
+clear_button_enabled = true
+
+[node name="GrSuggTree" type="Tree" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/BasicsContainer/GrSuggestionsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+hide_folding = true
+hide_root = true
+select_mode = 1
+script = ExtResource("11_18ujp")
+
+[node name="RelatedContainer" type="HBoxContainer" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ParentsContainer" type="VBoxContainer" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/RelatedContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/RelatedContainer/ParentsContainer"]
+layout_mode = 2
+text = "Parents"
+
+[node name="Parents" type="Tree" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/RelatedContainer/ParentsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+hide_folding = true
+hide_root = true
+select_mode = 1
+script = ExtResource("10_c408k")
+
+[node name="AddParentPanel" type="PanelContainer" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/RelatedContainer/ParentsContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/RelatedContainer/ParentsContainer/AddParentPanel"]
+layout_mode = 2
+
+[node name="AddParentLnEdt" type="LineEdit" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/RelatedContainer/ParentsContainer/AddParentPanel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Add Parent Tag"
+
+[node name="AddParentBtn" type="Button" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/RelatedContainer/ParentsContainer/AddParentPanel/HBoxContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+
+[node name="SuggestionsContainer" type="VBoxContainer" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/RelatedContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/RelatedContainer/SuggestionsContainer"]
+layout_mode = 2
+text = "Tag Suggestions"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SuggestionsTree" type="Tree" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/RelatedContainer/SuggestionsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+hide_folding = true
+hide_root = true
+select_mode = 1
+script = ExtResource("10_c408k")
+
+[node name="AddSgPanel" type="PanelContainer" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/RelatedContainer/SuggestionsContainer"]
+layout_mode = 2
+
+[node name="MainContainer" type="HBoxContainer" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/RelatedContainer/SuggestionsContainer/AddSgPanel"]
+layout_mode = 2
+
+[node name="AddSuggLnEdt" type="LineEdit" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/RelatedContainer/SuggestionsContainer/AddSgPanel/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Add Suggestion"
+clear_button_enabled = true
+
+[node name="AddSuggBtn" type="Button" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/RelatedContainer/SuggestionsContainer/AddSgPanel/MainContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+
+[node name="WikiContainer" type="VBoxContainer" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TitleContainer" type="HBoxContainer" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/WikiContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+alignment = 2
+
+[node name="Label" type="Label" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/WikiContainer/TitleContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Wiki"
+
+[node name="SaveTagBtn" type="Button" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/WikiContainer/TitleContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+icon = ExtResource("4_n5y6n")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="SavedNotification" type="PanelContainer" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/WikiContainer/TitleContainer/SaveTagBtn"]
+z_index = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -44.0
+offset_top = 19.0
+offset_right = 44.0
+offset_bottom = 59.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ixesi")
+metadata/_edit_group_ = true
+
+[node name="MarginContainer" type="MarginContainer" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/WikiContainer/TitleContainer/SaveTagBtn/SavedNotification"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 3
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 3
+
+[node name="Label" type="Label" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/WikiContainer/TitleContainer/SaveTagBtn/SavedNotification/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "Tag Saved"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CloseEditorBtn" type="Button" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/WikiContainer/TitleContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+icon = ExtResource("29_gsfm7")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="WikiTxtEdt" type="TextEdit" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/WikiContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TooltipLnEdt" type="LineEdit" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/WikiContainer"]
+layout_mode = 2
+placeholder_text = "Tooltip"
+
+[node name="ToolsPanel" type="PanelContainer" parent="MainContainer"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("2_u628d")
+script = ExtResource("38_yel2c")
+
+[node name="ToolsMargin" type="MarginContainer" parent="MainContainer/ToolsPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="ToolsContainer" type="VBoxContainer" parent="MainContainer/ToolsPanel/ToolsMargin"]
+layout_mode = 2
+
+[node name="HeaderContainer" type="HBoxContainer" parent="MainContainer/ToolsPanel/ToolsMargin/ToolsContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainContainer/ToolsPanel/ToolsMargin/ToolsContainer/HeaderContainer"]
+layout_mode = 2
+text = "Available tools: "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="OptionButton" type="OptionButton" parent="MainContainer/ToolsPanel/ToolsMargin/ToolsContainer/HeaderContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SaveButton" type="Button" parent="MainContainer/ToolsPanel/ToolsMargin/ToolsContainer/HeaderContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+icon = ExtResource("4_n5y6n")
+flat = true
+icon_alignment = 1
+
+[node name="SavedNotification" type="PanelContainer" parent="MainContainer/ToolsPanel/ToolsMargin/ToolsContainer/HeaderContainer/SaveButton"]
+z_index = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -70.0
+offset_top = 22.0
+offset_right = 70.0
+offset_bottom = 62.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ixesi")
+metadata/_edit_group_ = true
+
+[node name="MarginContainer" type="MarginContainer" parent="MainContainer/ToolsPanel/ToolsMargin/ToolsContainer/HeaderContainer/SaveButton/SavedNotification"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 3
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 3
+
+[node name="Label" type="Label" parent="MainContainer/ToolsPanel/ToolsMargin/ToolsContainer/HeaderContainer/SaveButton/SavedNotification/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "Changes Applied"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VSeparator2" type="VSeparator" parent="MainContainer/ToolsPanel/ToolsMargin/ToolsContainer/HeaderContainer"]
+layout_mode = 2
+
+[node name="ToolDescLbl" type="Label" parent="MainContainer/ToolsPanel/ToolsMargin/ToolsContainer/HeaderContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+size_flags_stretch_ratio = 5.0
+text = "[ToolDesc]"
+vertical_alignment = 1
+text_overrun_behavior = 3
+
+[node name="ToolPanel" type="PanelContainer" parent="MainContainer/ToolsPanel/ToolsMargin/ToolsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ToolMargin" type="MarginContainer" parent="MainContainer/ToolsPanel/ToolsMargin/ToolsContainer/ToolPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="SettingsPanel" type="PanelContainer" parent="MainContainer"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("2_u628d")
+
+[node name="SettingsMargin" type="MarginContainer" parent="MainContainer/SettingsPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="MainContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin"]
+layout_mode = 2
+
+[node name="AllScrlContainer" type="ScrollContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+
+[node name="SettingsContainer" type="VBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CategoryContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer"]
+layout_mode = 2
+
+[node name="LeftSeparator" type="HSeparator" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CategoryContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CategoryLabel" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CategoryContainer"]
+layout_mode = 2
+text = "General"
+
+[node name="RightSeparator" type="HSeparator" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CategoryContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SitePanel" type="PanelContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer"]
+layout_mode = 2
+
+[node name="MainContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/SitePanel"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="OptionsContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/SitePanel/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/SitePanel/MainContainer/OptionsContainer"]
+layout_mode = 2
+text = " Default Site:"
+
+[node name="DefaultSiteOptBtn" type="OptionButton" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/SitePanel/MainContainer/OptionsContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+text_overrun_behavior = 3
+script = ExtResource("32_cix75")
+
+[node name="AutofilLabel" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/SitePanel/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "The formatting selected when opening and creating new lists."
+label_settings = ExtResource("8_2hfj2")
+
+[node name="AutofillPanel" type="PanelContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer"]
+layout_mode = 2
+
+[node name="MainContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/AutofillPanel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="AutofillChkBtn" type="CheckButton" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/AutofillPanel/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+button_pressed = true
+text = "Autofill"
+
+[node name="AutofilLabel" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/AutofillPanel/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "Enable/Disable tag autofil through the application."
+label_settings = ExtResource("8_2hfj2")
+
+[node name="InvalidPanel" type="PanelContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer"]
+layout_mode = 2
+
+[node name="MainContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/InvalidPanel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="IncludeInvalidChkBtn" type="CheckButton" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/InvalidPanel/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Include Invalid"
+
+[node name="AutofilLabel" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/InvalidPanel/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "If a tag list should include invalid tags added to a list."
+label_settings = ExtResource("8_2hfj2")
+
+[node name="BlacklistPanel" type="PanelContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer"]
+layout_mode = 2
+
+[node name="MainContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/BlacklistPanel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="BlacklistRemoveChkBtn" type="CheckButton" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/BlacklistPanel/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Blacklist removed suggestions"
+
+[node name="AutofilLabel" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/BlacklistPanel/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "Makes it so tags you manually remove won't be suggested again on that list."
+label_settings = ExtResource("8_2hfj2")
+
+[node name="LinksPanel" type="PanelContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer"]
+layout_mode = 2
+
+[node name="MainContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/LinksPanel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="LinkESixChkBtn" type="CheckButton" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/LinksPanel/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Link to e621 wiki"
+
+[node name="AutofilLabel" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/LinksPanel/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "When clicking a tag link, if the wiki doensn't have it, open e621 in your browser."
+label_settings = ExtResource("8_2hfj2")
+
+[node name="ResultsPerSearchPanel" type="PanelContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer"]
+layout_mode = 2
+
+[node name="MainContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ResultsPerSearchPanel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ResultsPerSearchPanel/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ResultsPerSearchPanel/MainContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = " Results per Search"
+
+[node name="ResPerSrchSpnBx" type="SpinBox" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ResultsPerSearchPanel/MainContainer/HBoxContainer"]
+layout_mode = 2
+min_value = 10.0
+value = 20.0
+alignment = 1
+
+[node name="AutofilLabel" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ResultsPerSearchPanel/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "How many results will appear when searching on the Tags tab."
+label_settings = ExtResource("8_2hfj2")
+
+[node name="ImagesPanel" type="PanelContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer"]
+layout_mode = 2
+
+[node name="MainContainer" type="VBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel"]
+layout_mode = 2
+
+[node name="EnableContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="ToggleContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/EnableContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LoadImgChkBtn" type="CheckButton" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/EnableContainer/ToggleContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Load Images"
+
+[node name="ImageLoadSpnBx" type="SpinBox" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/EnableContainer/ToggleContainer"]
+layout_mode = 2
+max_value = 120.0
+editable = false
+
+[node name="InfoContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/EnableContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="Label" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/EnableContainer/InfoContainer"]
+layout_mode = 2
+text = "If the local wiki should try to load images from your"
+label_settings = ExtResource("8_2hfj2")
+
+[node name="HydrusLinkBtn" type="LinkButton" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/EnableContainer/InfoContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+tooltip_text = "https://github.com/hydrusnetwork/hydrus"
+theme_override_colors/font_color = Color(0.225237, 0.810605, 0.945651, 1)
+text = "Hydrus"
+uri = "https://github.com/hydrusnetwork/hydrus"
+
+[node name="Label2" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/EnableContainer/InfoContainer"]
+layout_mode = 2
+text = "installation."
+label_settings = ExtResource("8_2hfj2")
+
+[node name="ExpandBtn" type="Button" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/EnableContainer/InfoContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_constants/icon_max_width = 16
+icon = ExtResource("33_crsq3")
+flat = true
+icon_alignment = 1
+vertical_icon_alignment = 2
+
+[node name="ApiContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="PortContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/ApiContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/ApiContainer/PortContainer"]
+layout_mode = 2
+text = " Port:"
+
+[node name="PortSpnBx" type="SpinBox" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/ApiContainer/PortContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+allow_greater = true
+editable = false
+
+[node name="KeyContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/ApiContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="Label" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/ApiContainer/KeyContainer"]
+layout_mode = 2
+text = "API Key:"
+
+[node name="KeyLnEdt" type="LineEdit" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/ApiContainer/KeyContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+editable = false
+secret = true
+
+[node name="ButtonsContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/ApiContainer"]
+layout_mode = 2
+
+[node name="RequestAPIBtn" type="Button" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/ApiContainer/ButtonsContainer"]
+layout_mode = 2
+disabled = true
+text = "Request"
+
+[node name="ConnectAPIBtn" type="Button" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/ApiContainer/ButtonsContainer"]
+layout_mode = 2
+disabled = true
+text = "Connect"
+
+[node name="ConnectionStatusTxtRect" type="TextureRect" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/ApiContainer/ButtonsContainer"]
+modulate = Color(0.780392, 0.137255, 0.117647, 1)
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("45_kqm3t")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CategoryContainer2" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer"]
+layout_mode = 2
+
+[node name="LeftSeparator" type="HSeparator" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CategoryContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CategoryLabel" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CategoryContainer2"]
+layout_mode = 2
+text = "E621 API"
+
+[node name="RightSeparator" type="HSeparator" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CategoryContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ESixApiPanel" type="PanelContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer"]
+layout_mode = 2
+
+[node name="MainContainer" type="VBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ESixApiPanel"]
+layout_mode = 2
+
+[node name="SuggestionsContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ESixApiPanel/MainContainer"]
+layout_mode = 2
+
+[node name="RequestSuggChkBtn" type="CheckButton" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ESixApiPanel/MainContainer/SuggestionsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Request Suggestions"
+
+[node name="AutofilLabel" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ESixApiPanel/MainContainer/SuggestionsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "Request e621 API for tag suggestions."
+
+[node name="RelevancyContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ESixApiPanel/MainContainer"]
+layout_mode = 2
+
+[node name="MainContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ESixApiPanel/MainContainer/RelevancyContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ESixApiPanel/MainContainer/RelevancyContainer/MainContainer"]
+layout_mode = 2
+text = " Suggestion Relevancy:"
+
+[node name="RelevancySpnBx" type="SpinBox" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ESixApiPanel/MainContainer/RelevancyContainer/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 1.0
+value = 45.0
+alignment = 1
+editable = false
+suffix = "%"
+
+[node name="AutofilLabel" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ESixApiPanel/MainContainer/RelevancyContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "How much the suggestion has to appear with the tag to be included."
+
+[node name="SearchContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ESixApiPanel/MainContainer"]
+layout_mode = 2
+
+[node name="SearchESixTagsBtn" type="CheckButton" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ESixApiPanel/MainContainer/SearchContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Search tags on e621 database"
+
+[node name="AutofilLabel" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ESixApiPanel/MainContainer/SearchContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "Include e621 tag results when searching for tags."
+
+[node name="CategoryContainer4" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer"]
+layout_mode = 2
+
+[node name="LeftSeparator" type="HSeparator" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CategoryContainer4"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CategoryLabel" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CategoryContainer4"]
+layout_mode = 2
+text = "Custom Data"
+
+[node name="RightSeparator" type="HSeparator" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CategoryContainer4"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CustomDataPanel" type="PanelContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer"]
+custom_minimum_size = Vector2(0, 250)
+layout_mode = 2
+
+[node name="AllContainer" type="VBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel"]
+layout_mode = 2
+
+[node name="MainContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer"]
+custom_minimum_size = Vector2(0, 250)
+layout_mode = 2
+
+[node name="IconsContainer" type="VBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TitleContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/MainContainer/IconsContainer"]
+layout_mode = 2
+
+[node name="CategoryLabel" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/MainContainer/IconsContainer/TitleContainer"]
+layout_mode = 2
+text = "Icons"
+
+[node name="NewIconBtn" type="Button" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/MainContainer/IconsContainer/TitleContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 10
+text = "+"
+
+[node name="IconsTree" type="Tree" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/MainContainer/IconsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("26_8xsa4")
+columns = 2
+hide_folding = true
+hide_root = true
+select_mode = 1
+script = ExtResource("13_ofwxt")
+
+[node name="VSeparator" type="VSeparator" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/MainContainer"]
+layout_mode = 2
+
+[node name="GroupsContainer" type="VBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TitleContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/MainContainer/GroupsContainer"]
+layout_mode = 2
+
+[node name="CategoryLabel" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/MainContainer/GroupsContainer/TitleContainer"]
+layout_mode = 2
+text = "Groups"
+
+[node name="NewGroupBtn" type="Button" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/MainContainer/GroupsContainer/TitleContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 10
+text = "+"
+
+[node name="GroupsTree" type="Tree" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/MainContainer/GroupsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("26_8xsa4")
+theme_override_constants/icon_max_width = 16
+hide_folding = true
+hide_root = true
+select_mode = 1
+script = ExtResource("8_dgt6a")
+
+[node name="VSeparator2" type="VSeparator" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/MainContainer"]
+layout_mode = 2
+
+[node name="CategoryContainer" type="VBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TitleContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/MainContainer/CategoryContainer"]
+layout_mode = 2
+
+[node name="CategoryLabel" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/MainContainer/CategoryContainer/TitleContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text = "Categories"
+vertical_alignment = 1
+
+[node name="NewCatBtn" type="Button" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/MainContainer/CategoryContainer/TitleContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 10
+text = "+"
+
+[node name="CategoryTree" type="Tree" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/MainContainer/CategoryContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("26_8xsa4")
+columns = 2
+column_titles_visible = true
+allow_reselect = true
+hide_folding = true
+hide_root = true
+script = ExtResource("8_woxvm")
+
+[node name="SitesAliasContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer"]
+custom_minimum_size = Vector2(0, 250)
+layout_mode = 2
+
+[node name="DataContainer" type="VBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/SitesAliasContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ButtonsContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/SitesAliasContainer/DataContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="Label" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/SitesAliasContainer/DataContainer/ButtonsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Websites"
+
+[node name="NewSiteBtn" type="Button" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/SitesAliasContainer/DataContainer/ButtonsContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+icon = ExtResource("35_7aqje")
+flat = true
+icon_alignment = 1
+
+[node name="SitesTree" type="Tree" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/SitesAliasContainer/DataContainer"]
+custom_minimum_size = Vector2(0, 160)
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("26_8xsa4")
+hide_folding = true
+hide_root = true
+select_mode = 1
+script = ExtResource("35_mgbqt")
+
+[node name="VSeparator" type="VSeparator" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/SitesAliasContainer"]
+layout_mode = 2
+
+[node name="LogsContainer" type="VBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/LogsContainer"]
+layout_mode = 2
+text = "Logs:"
+
+[node name="PanelContainer" type="PanelContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/LogsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/LogsContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_right = 4
+
+[node name="LogsLabel" type="RichTextLabel" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/LogsContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+
+[node name="HydrusNode" type="Node" parent="."]
+process_thread_group = 2
+process_thread_group_order = 0
+process_thread_messages = 0
+physics_interpolation_mode = 2
+script = ExtResource("46_jhrpg")
+
+[node name="HydrusRequester" type="HTTPRequest" parent="."]
+timeout = 10.0
+
+[node name="HydrusLargeImage" type="HTTPRequest" parent="."]
+timeout = 10.0
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+
+[node name="WikiTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="eSixAPI" type="Node" parent="."]
+script = ExtResource("55_iynx2")

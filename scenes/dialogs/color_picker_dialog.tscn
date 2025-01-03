@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=3 uid="uid://bky3ohc435qx"]
+
+[ext_resource type="Script" path="res://scenes/dialogs/color_picker_dialog.gd" id="1_h7aqo"]
+
+[node name="ColorPickerDialog" type="ConfirmationDialog"]
+title = "Select Color..."
+initial_position = 1
+script = ExtResource("1_h7aqo")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 192.0
+offset_bottom = 51.0
+
+[node name="Label" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+text = "New Color: "
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+edit_alpha = false

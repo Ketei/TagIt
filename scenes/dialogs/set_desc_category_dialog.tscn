@@ -1,0 +1,35 @@
+[gd_scene load_steps=2 format=3 uid="uid://cumj48ox0v3pg"]
+
+[ext_resource type="Script" path="res://scenes/dialogs/set_desc_category_dialog_script.gd" id="1_yklc2"]
+
+[node name="SetDescCategoryDialog" type="ConfirmationDialog"]
+title = "Set Description"
+initial_position = 1
+size = Vector2i(400, 250)
+script = ExtResource("1_yklc2")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 392.0
+offset_bottom = 201.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="DescTxtEdt" type="TextEdit" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+placeholder_text = "Description"
+wrap_mode = 1
+
+[node name="HydrusContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HydrusContainer"]
+layout_mode = 2
+text = "Hydrus Prefix:"
+
+[node name="PrefixLnEdt" type="LineEdit" parent="VBoxContainer/HydrusContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Prefix"
