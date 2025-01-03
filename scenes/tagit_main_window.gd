@@ -437,6 +437,9 @@ func on_file_selected(file_path: String, overwrite: bool, file_dialog: FileDialo
 	file_dialog.queue_free()
 	
 	if file_string.is_empty():
+		TagIt.log_message(
+				"The file couldn't be loaded.",
+				DataManager.LogLevel.ERROR)
 		return
 	
 	if json.parse(file_string) != OK:
@@ -456,8 +459,11 @@ func on_file_selected(file_path: String, overwrite: bool, file_dialog: FileDialo
 		return
 		
 	var data: Dictionary = json.data.duplicate()
-	
-	if not data.has(["type"]):
+
+	if not json.data.has("type"):
+		TagIt.log_message(
+				"[JSON PARSER] JSON missing type.",
+				DataManager.LogLevel.ERROR)
 		return
 	
 	if data["type"] == 0:
@@ -2120,7 +2126,7 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 					break
 	
 	for tag in json_result["tags"].keys():
-		if json_result["tags"][tag].has_all(["aliases", "category", "group", "group_suggestions", "is_valid", "parents", "priority", "suggestions", "tooltip", "wiki"]):
+		if not json_result["tags"][tag].has_all(["aliases", "category", "group", "group_suggestions", "is_valid", "parents", "priority", "suggestions", "tooltip", "wiki"]):
 			TagIt.log_message("[JSON PARSER] Tag " + tag + " is missing some data.", TagIt.LogLevel.ERROR)
 			continue # Skipping incomplete dictionaries.
 		var clean_tag: String = tag.strip_edges().to_lower()
@@ -2154,7 +2160,13 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 						break
 			
 			TagIt.add_parents(tag_id, json_result["tags"][tag]["parents"])
-			TagIt.add_suggestions(tag_id, Array(json_result["tags"][tag]["suggestions"]))
+			TagIt.add_suggestions(
+					tag_id,
+					Array(
+								json_result["tags"][tag]["suggestions"],
+								TYPE_STRING,
+								&"",
+								null))
 			TagIt.add_group_suggestions(tag_id, group_suggestions)
 			TagIt.add_aliases(
 					Array(json_result["tags"][tag]["aliases"],
