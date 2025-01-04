@@ -1,14 +1,19 @@
 extends LineEdit
 
 
+signal timer_finished
+
 @export_enum("Down", "Up") var list_direction: int = 0
 @export_range(1, 20, 1, "or_greater") var item_limit: int = 10
 @export var replace_on_item_select: bool = false
+@export var use_timer: bool = false
+@export var list_timeout: float = 0.2
 
 var close_event: StringName = &""
 var open_event: StringName = &""
 
 @onready var autofill_list: ItemList = $AutofillList
+@onready var list_timer: Timer = $ListTimer
 
 
 func _ready() -> void:
@@ -31,6 +36,11 @@ func _ready() -> void:
 		autofill_list.grow_horizontal = Control.GROW_DIRECTION_END
 		autofill_list.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	
+	text_changed.connect(on_text_changed)
+	
+	list_timer.wait_time = list_timeout
+	
+	list_timer.timeout.connect(_on_timer_timeout)
 	autofill_list.item_clicked.connect(on_list_item_selected)
 	autofill_list.focus_exited.connect(on_list_focus_lost)
 	text_submitted.connect(on_text_submitted)
@@ -59,6 +69,11 @@ func _input(event: InputEvent) -> void:
 			caret_column = text.length()
 			autofill_list.visible = false
 			get_viewport().set_input_as_handled()
+		elif Input.is_action_just_pressed(&"ui_cancel"):
+			autofill_list.visible = false
+			grab_focus()
+			caret_column = text.length()
+			get_viewport().set_input_as_handled()
 		elif event.is_action_pressed(&"ui_left") or event.is_action_pressed(&"ui_right"):
 			get_viewport().set_input_as_handled()
 		elif event.is_action_pressed(&"ui_up") and list_direction == 1:
@@ -78,13 +93,29 @@ func _input(event: InputEvent) -> void:
 			autofill_list.select((autofill_list.item_count - 1) * list_direction)
 			autofill_list.ensure_current_is_visible()
 			get_viewport().set_input_as_handled()
+		elif Input.is_action_just_pressed(&"ui_cancel") and autofill_list.visible:
+			autofill_list.visible = false
+			get_viewport().set_input_as_handled()
+
+
+func _on_timer_timeout() -> void:
+	timer_finished.emit()
 
 
 func on_text_submitted(_text: String) -> void:
 	if autofill_list.visible:
 		autofill_list.visible = false
+	if not list_timer.is_stopped():
+		list_timer.stop()
 	if autofill_list.has_focus():
 		grab_focus()
+
+
+func on_text_changed(_text: String) -> void:
+	if autofill_list.visible:
+		autofill_list.visible = false
+	if use_timer:
+		list_timer.start()
 
 
 func on_list_focus_lost() -> void:

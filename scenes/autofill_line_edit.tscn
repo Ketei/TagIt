@@ -1,6 +1,17 @@
-[gd_scene load_steps=2 format=3 uid="uid://djrqboi0xp74"]
+[gd_scene load_steps=3 format=3 uid="uid://djrqboi0xp74"]
 
 [ext_resource type="Script" path="res://scenes/autofill_line_edit_script.gd" id="1_rnmwe"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3qawp"]
+content_margin_left = 6.0
+content_margin_top = 2.0
+content_margin_right = 6.0
+content_margin_bottom = 5.0
+bg_color = Color(0.201527, 0.201527, 0.201527, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [node name="AutofillLineEdit" type="LineEdit"]
 offset_right = 186.0
@@ -20,4 +31,8 @@ focus_neighbor_right = NodePath(".")
 focus_neighbor_bottom = NodePath(".")
 focus_next = NodePath(".")
 focus_previous = NodePath(".")
+theme_override_styles/panel = SubResource("StyleBoxFlat_3qawp")
 auto_height = true
+
+[node name="ListTimer" type="Timer" parent="."]
+one_shot = true

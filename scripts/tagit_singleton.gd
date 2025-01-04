@@ -40,6 +40,7 @@ var icons: Dictionary = {} # id: {name: string, texture: resource}
 var loaded_tags: Dictionary = {} # Loaded in memory as need quick access. name -> id
 var invalid_tags: Array[int] = [] # MIGHT not be needed in memory. Check once working on the tag list
 var tag_search_array: PackedStringArray = []
+var tag_search_data: PackedStringArray = []
 #var current_tags: int = 0
 #var data_tags: Array[int] = []
 var settings: AppSettingsRes = null
@@ -221,12 +222,13 @@ func _ready() -> void:
 	# ---------------------------------------------------------------
 	
 	
-	
+	var data_tags: Array[String] = []
 	tag_database.query("SELECT tags.id, tags.name, tags.is_valid, IIF(data.tag_id IS NULL, 0, 1) AS has_data FROM tags LEFT JOIN data ON data.tag_id = tags.id;")
-	
+	#tag_database.query("SELECT tags.id, tags.name, tags.is_valid FROM tags LEFT JOIN data ON data.tag_id = tags.id;")
 	for dict in tag_database.query_result:
-		
 		loaded_tags[dict["name"]] = dict["id"]
+		if dict["has_data"] == 1:
+			data_tags.append(dict["name"])
 		if not dict["is_valid"]:
 			invalid_tags.append(dict["id"])
 		
@@ -244,11 +246,12 @@ func _ready() -> void:
 		icons[icon["id"]] = {"name": icon["name"], "texture": null}
 	
 	invalid_tags.sort()
-	#data_tags.sort()
+	data_tags.sort_custom(Arrays.sort_custom_alphabetically_asc)
 	get_all_alias_names()
 	var all_tags: Array = loaded_tags.keys()
-	all_tags.sort_custom(func(a, b): return a.naturalnocasecmp_to(b) < 0)
+	all_tags.sort_custom(Arrays.sort_custom_alphabetically_asc)
 	tag_search_array = PackedStringArray(all_tags)
+	tag_search_data = PackedStringArray(data_tags)
 	check_version()
 
 
@@ -613,7 +616,7 @@ func create_tag(tag_name: String, tag_category: int, tag_desc: String, tag_group
 		"priority": 0,
 		"group_id": tag_group if 0 < tag_group else null,
 		"tooltip": tooltip if not tooltip.is_empty() else null}
-	#print(new_data)
+	tag_search_data.insert(tag_search_data.bsearch(tag_name, false), tag_name)
 	tag_database.insert_row("data", new_data)
 	tag_created.emit(tag_name, tag_id)
 
@@ -714,12 +717,18 @@ func get_tags_data(tags:Array[int]) -> Dictionary:
 
 
 func delete_tag_data(tag_id: int) -> void:
+	var tag_name: String = get_tag_name(tag_id)
+	var target_idx: int = tag_search_data.bsearch(tag_name)
+	
 	tag_database.delete_rows(
 			"data",
 			"tag_id = " + str(tag_id))
 	tag_database.delete_rows(
 		"relationships",
 		"child = " + str(tag_id))
+	
+	if tag_search_data[target_idx] == tag_name:
+		tag_search_data.remove_at(target_idx)
 	
 	tag_deleted.emit(tag_id)
 
@@ -883,8 +892,6 @@ func get_hydrus_category_prefix(category_id: int) -> String:
 		return ""
 	return data[0]["prefix"]
 
-
-
 # --- Sites ---
 
 func create_site(site_name: String, tag_whitespace: String, tag_separator: String) -> int:
@@ -964,13 +971,13 @@ func update_tag_data(tag_id: int, update_data: Dictionary) -> void:
 # --- Utility ---
 
 func get_all_tag_ids(with_data: bool) -> Array[int]:
-	var all_tags: Array[int] = []
-	tag_database.query("SELECT tags.id, data.tag_id FROM tags LEFT JOIN data ON data.tag_id = tags.id")
-	for result in tag_database.query_result:
-		if with_data and result["tag_id"] == null:
-			continue
-		all_tags.append(result["id"])
-	return all_tags
+	if with_data:
+		var all_tags: Array[int] = []
+		for result in tag_database.select_rows("data", "", ["tag_id"]):
+			all_tags.append(result["tag_id"])
+		return all_tags
+	else:
+		return Array(loaded_tags.values(), TYPE_INT, &"", null)
 
 
 func get_all_tag_names(with_data: bool) -> Array[String]:
@@ -1302,12 +1309,13 @@ func quit_request() -> void:
 
 
 
-func search_for_tag_prefix(text: String, limit: int = 10, use_distance: bool = false) -> PackedStringArray:
+func search_for_tag_prefix(text: String, limit: int = 10, use_distance: bool = false, with_data: bool = false) -> PackedStringArray:
+	var target_array: PackedStringArray = tag_search_data if with_data else tag_search_array
 	var results: PackedStringArray = []
-	var search_index: int = tag_search_array.bsearch(text)
+	var search_index: int = target_array.bsearch(text)
 	var current: int = 0
 	var loop: int = 0
-	var max_index: int = tag_search_array.size() - 1
+	var max_index: int = target_array.size() - 1
 	
 	if max_index < search_index:
 		return results
@@ -1318,29 +1326,29 @@ func search_for_tag_prefix(text: String, limit: int = 10, use_distance: bool = f
 		loop += 1
 		
 		if use_distance:
-			distance = Strings.levenshtein_distance(text, tag_search_array[search_index].substr(0, text.length()))
+			distance = Strings.levenshtein_distance(text, target_array[search_index].substr(0, text.length()))
 		else:
-			distance = 1.0 if tag_search_array[search_index].begins_with(text) else 0.0
+			distance = 1.0 if target_array[search_index].begins_with(text) else 0.0
 		
 		if LEV_DISTANCE <= distance:
 			current += 1
-			results.append(tag_search_array[search_index])
+			results.append(target_array[search_index])
 		
 		if max_index < search_index + 1 or (LEV_LOOP_LIMIT <= loop and use_distance):
 			break
 		
 		search_index += 1
-		
-
+	
 	return results
 
 
-func search_for_tag_suffix(text: String, limit: int = 10, use_distance: bool = false) -> PackedStringArray:
+func search_for_tag_suffix(text: String, limit: int = 10, use_distance: bool = false, with_data: bool = false) -> PackedStringArray:
+	var target_array: PackedStringArray = tag_search_data if with_data else tag_search_array
 	var results: PackedStringArray = []
 	var current: int = 0
 	var loop: int = 0
 	
-	for tag in tag_search_array:
+	for tag in target_array:
 		var distance = 0.0
 		loop += 1
 		
@@ -1355,15 +1363,17 @@ func search_for_tag_suffix(text: String, limit: int = 10, use_distance: bool = f
 		
 		if limit <= current or (LEV_LOOP_LIMIT <= loop and use_distance):
 			break
+	
 	return results
 
 
-func search_for_tag_contains(text: String, limit: int = 10, use_distance: bool = false) -> PackedStringArray:
+func search_for_tag_contains(text: String, limit: int = 10, use_distance: bool = false, with_data: bool = false) -> PackedStringArray:
+	var target_array: PackedStringArray = tag_search_data if with_data else tag_search_array
 	var results: PackedStringArray = []
 	var current: int = 0
 	var loop: int = 0
 	
-	for tag in tag_search_array:
+	for tag in target_array:
 		loop += 1
 		if use_distance:
 			#for piece in Strings.split_overlapping(tag, clampi(text.length(), 1, tag.length())):

@@ -172,9 +172,9 @@ var _suggestion_blacklist: PackedStringArray = []
 # ----- Backworkers -----
 #@onready var hydrus_worker: HydrusWorker = $HydrusNode
 @onready var hydrus_images: HydrusWorker = $HydrusNode
-@onready var search_timer: Timer = $SearchTimer
+#@onready var search_timer: Timer = $SearchTimer
 @onready var api_timer: Timer = $APITimer
-@onready var wiki_timer: Timer = $WikiTimer
+#@onready var wiki_timer: Timer = $WikiTimer
 #@onready var esix_api: Node = $eSixAPI
 
 # -----------------------
@@ -242,12 +242,14 @@ func _ready() -> void:
 	for group in groups:
 		settings_groups_tree.create_group(groups[group]["name"], groups[group]["description"], group)
 	
-	search_timer.wait_time = search_time
-	wiki_timer.wait_time = search_time
+	#search_timer.wait_time = search_time
+	#wiki_timer.wait_time = search_time
 	
 	generate_list_btn.disabled = TagIt.get_site_count() == 0
 	
 	# --- Loading and applying TagIt saved settings ---
+	wiki_search_ln_edt.use_timer = TagIt.settings.use_autofill
+	add_tag_ln_edt.use_timer = TagIt.settings.use_autofill
 	settings_results_per_srch_spn_bx.value = TagIt.settings.results_per_search
 	settings_autofill_chk_btn.button_pressed = TagIt.settings.use_autofill
 	settings_include_invalid_chk_btn.button_pressed = TagIt.settings.include_invalid
@@ -289,8 +291,7 @@ func _ready() -> void:
 	wizard_btn.pressed.connect(on_menu_button_id_selected.bind(8))
 	tagger_suggestion_tree.suggestions_deleted.connect(blacklist_tags)
 	menu_button.get_popup().id_pressed.connect(on_menu_button_id_selected)
-	add_tag_ln_edt.text_changed.connect(on_tag_line_changed)
-	search_timer.timeout.connect(on_search_timer_timeout)
+	add_tag_ln_edt.timer_finished.connect(on_search_timer_timeout)
 	search_tag_btn.pressed.connect(on_search_all_tags_pressed)
 	help_button.get_popup().id_pressed.connect(on_help_id_pressed)
 	# --- Edit Tag ---
@@ -312,8 +313,7 @@ func _ready() -> void:
 	wiki_panel.load_next_image.connect(on_wiki_next_image)
 	wiki_panel.load_previous_image.connect(on_wiki_previous_image)
 	wiki_esix_search_btn.pressed.connect(on_esix_wiki_search)
-	wiki_search_ln_edt.text_changed.connect(on_wiki_line_changed)
-	wiki_timer.timeout.connect(on_wiki_timer_timeout)
+	wiki_search_ln_edt.timer_finished.connect(on_wiki_timer_timeout)
 	# --- Settings ---
 	settings_load_img_chk_btn.toggled.connect(on_api_toggle_changed)
 	settings_expand_api_btn.pressed.connect(on_expand_api_pressed)
@@ -549,12 +549,12 @@ func on_search_esix_tags_toggled(is_toggled: bool) -> void:
 	TagIt.settings.search_tags_on_esix = is_toggled
 
 
-func on_tag_line_changed(_new_text: String) -> void:
-	if add_tag_ln_edt.items_visible():
-		add_tag_ln_edt.hide_items()
-	if not TagIt.settings.use_autofill:
-		return
-	search_timer.start()
+#func on_tag_line_changed(_new_text: String) -> void:
+	#if add_tag_ln_edt.items_visible():
+		#add_tag_ln_edt.hide_items()
+	#if not TagIt.settings.use_autofill:
+		#return
+	#search_timer.start()
 
 
 func on_search_timer_timeout() -> void:
@@ -590,12 +590,12 @@ func on_search_timer_timeout() -> void:
 		add_tag_ln_edt.show_items()
 
 
-func on_wiki_line_changed(_new_text: String) -> void:
-	if wiki_search_ln_edt.items_visible():
-		wiki_search_ln_edt.hide_items()
-	if not TagIt.settings.use_autofill:
-		return
-	wiki_timer.start()
+#func on_wiki_line_changed(_new_text: String) -> void:
+	#if wiki_search_ln_edt.items_visible():
+		#wiki_search_ln_edt.hide_items()
+	#if not TagIt.settings.use_autofill:
+		#return
+	#wiki_timer.start()
 
 
 func on_wiki_timer_timeout() -> void:
@@ -620,11 +620,11 @@ func on_wiki_timer_timeout() -> void:
 	var results: PackedStringArray = []
 	
 	if prefix and suffix:
-		results = TagIt.search_for_tag_contains(clean_text, wiki_search_ln_edt.item_limit, true)
+		results = TagIt.search_for_tag_contains(clean_text, wiki_search_ln_edt.item_limit, true, true)
 	elif suffix:
-		results = TagIt.search_for_tag_suffix(clean_text, wiki_search_ln_edt.item_limit, true)
+		results = TagIt.search_for_tag_suffix(clean_text, wiki_search_ln_edt.item_limit, true, true)
 	else:
-		results = TagIt.search_for_tag_prefix(clean_text, wiki_search_ln_edt.item_limit, true)
+		results = TagIt.search_for_tag_prefix(clean_text, wiki_search_ln_edt.item_limit, true, true)
 	
 	if not results.is_empty():
 		wiki_search_ln_edt.add_items(results)
@@ -1166,6 +1166,8 @@ func on_request_suggestions_toggled(is_toggled: bool) -> void:
 
 func on_autofill_toggled(is_toggled: bool) -> void:
 	TagIt.settings.use_autofill = is_toggled
+	wiki_search_ln_edt.use_timer = is_toggled
+	add_tag_ln_edt.use_timer = is_toggled
 
 
 func on_include_invalid_toggled(is_toggled: bool) -> void:
