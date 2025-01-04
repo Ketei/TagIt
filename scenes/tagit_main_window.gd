@@ -172,7 +172,8 @@ var _suggestion_blacklist: PackedStringArray = []
 # ----- Backworkers -----
 #@onready var hydrus_worker: HydrusWorker = $HydrusNode
 @onready var hydrus_images: HydrusWorker = $HydrusNode
-@onready var api_cooldown_timer: Timer = $Timer
+@onready var search_timer: Timer = $SearchTimer
+@onready var api_timer: Timer = $APITimer
 @onready var wiki_timer: Timer = $WikiTimer
 #@onready var esix_api: Node = $eSixAPI
 
@@ -241,7 +242,7 @@ func _ready() -> void:
 	for group in groups:
 		settings_groups_tree.create_group(groups[group]["name"], groups[group]["description"], group)
 	
-	api_cooldown_timer.wait_time = search_time
+	search_timer.wait_time = search_time
 	wiki_timer.wait_time = search_time
 	
 	generate_list_btn.disabled = TagIt.get_site_count() == 0
@@ -289,7 +290,7 @@ func _ready() -> void:
 	tagger_suggestion_tree.suggestions_deleted.connect(blacklist_tags)
 	menu_button.get_popup().id_pressed.connect(on_menu_button_id_selected)
 	add_tag_ln_edt.text_changed.connect(on_tag_line_changed)
-	api_cooldown_timer.timeout.connect(on_search_timer_timeout)
+	search_timer.timeout.connect(on_search_timer_timeout)
 	search_tag_btn.pressed.connect(on_search_all_tags_pressed)
 	help_button.get_popup().id_pressed.connect(on_help_id_pressed)
 	# --- Edit Tag ---
@@ -553,7 +554,7 @@ func on_tag_line_changed(_new_text: String) -> void:
 		add_tag_ln_edt.hide_items()
 	if not TagIt.settings.use_autofill:
 		return
-	api_cooldown_timer.start()
+	search_timer.start()
 
 
 func on_search_timer_timeout() -> void:
@@ -1664,8 +1665,9 @@ func add_tag(tag_name: String) -> void:
 			category,
 			icon_color)
 	
-	if TagIt.settings.request_suggestions and api_cooldown_timer.is_stopped():
+	if TagIt.settings.request_suggestions and api_timer.is_stopped():
 		ESixAPI.search_suggestions(clean_tag)
+		api_timer.start()
 	
 	_list_changed()
 
@@ -2204,8 +2206,8 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 		
 		TagIt.set_category_icon_color(category_id, valid_color)
 		
-		if json_icons.has(category_dict["icon"]):
-			TagIt.set_category_icon(category_id, json_icons[category_dict["icon"]])
+		if json_icons.has(int(category_dict["icon"])):
+			TagIt.set_category_icon(category_id, json_icons[int(category_dict["icon"])])
 	
 	var group_idx: int = -1
 	for group_dict in json_result["groups"]:
@@ -2230,7 +2232,41 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 		all_groups[group_id] = {"name": group_dict["name"], "description": group_dict["description"]}
 		json_groups[group_idx] = group_id
 	
-	var new_tags: Array[Dictionary] = []
+	var empty_tags: Dictionary = {}
+	for empty_entry in json_result["tags"]:
+		for empty_parent:String in empty_entry["parents"]:
+			if empty_parent.is_empty() or TagIt.has_tag(empty_parent):
+				continue
+			var key: String = empty_parent.left(1)
+			if not empty_tags.has(key):
+				empty_tags[key] = Array([], TYPE_STRING, &"", null)
+			if Arrays.binary_search(empty_tags[key], empty_parent) == -1:
+				Arrays.insert_sorted_asc(empty_tags[key], empty_parent)
+		
+		for empty_suggestion:String in empty_entry["suggestions"]:
+			if empty_suggestion.is_empty() or TagIt.has_tag(empty_suggestion):
+				continue
+			var key: String = empty_suggestion.left(1)
+			if not empty_tags.has(key):
+				empty_tags[key] = Array([], TYPE_STRING, &"", null)
+			if Arrays.binary_search(empty_tags[key], empty_suggestion) == -1:
+				Arrays.insert_sorted_asc(empty_tags[key], empty_suggestion)
+		
+		for empty_alias:String in empty_entry["aliases"]:
+			if empty_alias.is_empty() or TagIt.has_tag(empty_alias):
+				continue
+			var key: String = empty_alias.left(1)
+			if not empty_tags.has(key):
+				empty_tags[key] = Array([], TYPE_STRING, &"", null)
+			if Arrays.binary_search(empty_tags[key], empty_alias) == -1:
+				Arrays.insert_sorted_asc(empty_tags[key], empty_alias)
+	
+	var new_tags: Array[String] = []
+	for entry_key in empty_tags:
+		new_tags.append_array(empty_tags[entry_key])
+	
+	if not new_tags.is_empty():
+		TagIt.create_empty_tags(new_tags)
 	
 	var tag_idx: int = -1
 	for tag:Dictionary in json_result["tags"]:
@@ -2239,8 +2275,8 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 			continue # Skipping incomplete dictionaries.
 		
 		var clean_tag: String = tag["name"].strip_edges().to_lower()
-		var group_id: int = 0 if not json_groups.has(tag["group"]) else json_groups[tag["group"]]
-		var cat_id: int = 1 if not json_cats.has(tag["category"]) else json_cats[tag["category"]]
+		var group_id: int = 0 if not json_groups.has(int(tag["group"])) else json_groups[int(tag["group"])]
+		var cat_id: int = 1 if not json_cats.has(int(tag["category"])) else json_cats[int(tag["category"])]
 		
 		if TagIt.has_tag(clean_tag) and TagIt.has_data(TagIt.get_tag_id(clean_tag)):
 			if overwrite:
@@ -2252,7 +2288,8 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 						"group_id": group_id,
 						"description": tag["wiki"],
 						"tooltip": tag["tooltip"],
-						"priority": tag["priority"]
+						"priority": tag["priority"],
+						"category_id": cat_id
 					})
 				
 				TagIt.remove_aliases_to(_tag_id)
@@ -2271,7 +2308,7 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 				tag["wiki"],
 				group_id,
 				tag["tooltip"].strip_edges())
-			
+	
 		var tag_id: int = TagIt.get_tag_id(clean_tag)
 		var group_suggestions: Array[int] = []
 	

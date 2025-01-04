@@ -33,6 +33,7 @@ func _ready() -> void:
 	
 	autofill_list.item_clicked.connect(on_list_item_selected)
 	autofill_list.focus_exited.connect(on_list_focus_lost)
+	text_submitted.connect(on_text_submitted)
 
 
 func _input(event: InputEvent) -> void:
@@ -70,13 +71,20 @@ func _input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 		elif event.is_pressed() and event.unicode != 0:
 			grab_focus()
-		
-	elif has_focus() and Input.is_action_just_pressed(open_event) and 0 < autofill_list.item_count:
-		autofill_list.visible = true
-		autofill_list.grab_focus()
-		autofill_list.select((autofill_list.item_count - 1) * list_direction)
-		autofill_list.ensure_current_is_visible()
-		get_viewport().set_input_as_handled()
+	elif has_focus() and event is InputEventKey:
+		if Input.is_action_just_pressed(open_event) and 0 < autofill_list.item_count:
+			autofill_list.visible = true
+			autofill_list.grab_focus()
+			autofill_list.select((autofill_list.item_count - 1) * list_direction)
+			autofill_list.ensure_current_is_visible()
+			get_viewport().set_input_as_handled()
+
+
+func on_text_submitted(_text: String) -> void:
+	if autofill_list.visible:
+		autofill_list.visible = false
+	if autofill_list.has_focus():
+		grab_focus()
 
 
 func on_list_focus_lost() -> void:

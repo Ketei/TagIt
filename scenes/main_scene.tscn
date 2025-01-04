@@ -313,7 +313,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Add Tag"
 list_direction = 1
-item_limit = 15
 
 [node name="SuggestionContainer" type="VSplitContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer"]
 layout_mode = 2
@@ -473,7 +472,6 @@ size_flags_stretch_ratio = 3.0
 text = "Generate List"
 
 [node name="WikiPanel" type="PanelContainer" parent="MainContainer"]
-visible = false
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = ExtResource("2_u628d")
@@ -630,7 +628,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Search Wiki"
 list_direction = 1
-item_limit = 15
 replace_on_item_select = true
 
 [node name="SearchBtn" type="Button" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/SearchContainer"]
@@ -730,6 +727,7 @@ texture_progress = ExtResource("29_valht")
 script = ExtResource("6_kbhuc")
 
 [node name="TagsPanel" type="PanelContainer" parent="MainContainer"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = ExtResource("2_u628d")
@@ -1752,10 +1750,16 @@ timeout = 10.0
 [node name="HydrusLargeImage" type="HTTPRequest" parent="."]
 timeout = 10.0
 
-[node name="Timer" type="Timer" parent="."]
+[node name="SearchTimer" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
+
+[node name="APITimer" type="Timer" parent="."]
+wait_time = 1.25
 one_shot = true
 
 [node name="WikiTimer" type="Timer" parent="."]
+wait_time = 0.2
 one_shot = true
 
 [node name="eSixAPI" type="Node" parent="."]

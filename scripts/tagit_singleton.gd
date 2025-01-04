@@ -411,11 +411,27 @@ func add_alias(from: String, to: String) -> void:
 
 
 func add_aliases(from: Array[String], to: String) -> void:
-	var from_ids: Array[int] = []
-	var existing_aliases: Array[int] = [] 
-	var from_string: String = "(" + ", ".join(from_ids) + ")"
+	var from_ids: Array[int] = [] # Stores new
+	var existing_aliases: Array[int] = [] # Stores existing
+	
+	var new_empty: Array[String] = []
+	
+	for ant_string in from:
+		if has_tag(ant_string):
+			existing_aliases.append(get_tag_id(ant_string))
+		else:
+			new_empty.append(ant_string)
+	
+	if not new_empty.is_empty():
+		create_empty_tags(new_empty)
+	
+	from_ids.append_array(get_tags_ids(new_empty).values())
+	
+	var from_string: String = "(" + ", ".join(existing_aliases) + ")"
+	
 	if not has_tag(to):
 		create_empty_tag(to)
+	
 	var consequent_id: int = get_tag_id(to)
 	
 	tag_database.query(
@@ -423,20 +439,14 @@ func add_aliases(from: Array[String], to: String) -> void:
 			" AND antecedent in " + from_string + ";")
 	
 	for existing_antecedent in tag_database.query_result:
-		existing_aliases.append(existing_antecedent["antecedent"])
+		existing_aliases.erase(existing_antecedent["antecedent"])
 	
-	for antecedent in from:
-		if not has_tag(antecedent):
-			create_empty_tag(antecedent)
-		from_ids.append(get_tag_id(antecedent))
-	
-	existing_aliases.sort()
+	Arrays.append_uniques(from_ids, existing_aliases)
 	
 	var new_rows: Array[Dictionary] = []
 	
 	for new_alias in from_ids:
-		if Arrays.binary_search(existing_aliases, new_alias) == -1:
-			new_rows.append({"antecedent": new_alias, "consequent": consequent_id})
+		new_rows.append({"antecedent": new_alias, "consequent": consequent_id})
 	
 	tag_database.insert_rows("aliases", new_rows)
 
@@ -590,12 +600,10 @@ func create_tag(tag_name: String, tag_category: int, tag_desc: String, tag_group
 		tag_database.insert_row("tags", new_tag)
 		
 		register_tag_to_memory(tag_database.last_insert_rowid, tag_name, true)
+		log_message("Tag created: " + "\"" + tag_name + "\"", LogLevel.INFO)
 		#loaded_tags[tag_name] = tag_database.last_insert_rowid #tag_database.select_rows("tags", "tag = '" + tag_name + "'", ["id"])[0]["id"]
 	
 	var tag_id: int = get_tag_id(tag_name)
-	
-	#if not has_data(tag_id):
-		#Arrays.insert_sorted_asc(data_tags, tag_id)
 	
 	@warning_ignore("incompatible_ternary")
 	var new_data: Dictionary = {
@@ -605,10 +613,9 @@ func create_tag(tag_name: String, tag_category: int, tag_desc: String, tag_group
 		"priority": 0,
 		"group_id": tag_group if 0 < tag_group else null,
 		"tooltip": tooltip if not tooltip.is_empty() else null}
-	
+	#print(new_data)
 	tag_database.insert_row("data", new_data)
 	tag_created.emit(tag_name, tag_id)
-	log_message("Tag created: " + "\"" + tag_name + "\"", LogLevel.INFO)
 
 
 func create_empty_tag(tag_name: String) -> void:
@@ -625,14 +632,23 @@ func create_empty_tag(tag_name: String) -> void:
 	log_message("Tag created: " + "\"" + tag_name + "\"", LogLevel.INFO)
 
 
-func create_empty_tags(tag_names: Array[String], create_valid: bool = true) -> void:
-	#var new_rows: Array[Dictionary] = []
+func create_empty_tags(tags: Array[String], create_valid: bool = true) -> void:
+	var new_rows: Array[Dictionary] = []
+	for tag in tags:
+		new_rows.append({"name": tag, "is_valid": int(create_valid)})
 	
-	for tag in tag_names:
-		tag_database.insert_row("tags", {"name": tag, "is_valid": int(create_valid)})
-		register_tag_to_memory(tag_database.last_insert_rowid, tag, create_valid)
+	tag_database.insert_rows("tags", new_rows)
 	
-	#tag_database.insert_rows("tags", new_rows)
+	tag_database.query(
+			"SELECT id, name  
+			FROM tags 
+			ORDER BY id 
+			DESC LIMIT " + str(new_rows.size()) + ";")
+	
+	for new_tags in tag_database.query_result:
+		register_tag_to_memory(new_tags["id"], new_tags["name"], create_valid)
+	
+	log_message("Tags created: " + ", ".join(tags), LogLevel.INFO)
 
 
 func get_tag_data_column(tag_id: int, column: String) -> Variant:
@@ -714,11 +730,10 @@ func get_all_ids() -> Array[int]:
 
 # --- Parents ---
 
-func add_parents(to: int, add: Array) -> void:
+func add_parents(to: int, new_parent_tags: Array) -> void:
 	# add is an array full of STRINGS, not integers!
-	
+	var add: Array[String] = Array(new_parent_tags, TYPE_STRING, &"", null) # For now
 	var new_rows: Array[Dictionary] = [] # Storing the new cells to insert in 1 call
-
 	var existing_parents := tag_database.select_rows(
 			"relationships",
 			"child = " + str(to),
@@ -731,12 +746,17 @@ func add_parents(to: int, add: Array) -> void:
 	
 	existing_ids.sort()
 	
-	for parent in add:
+	var new_empty_parents: Array[String] = []
+	for parent in add: # Creating all parents in 1 call
 		if not has_tag(parent):
-			create_empty_tag(parent)
-		
-		if Arrays.binary_search(existing_ids, get_tag_id(parent)) == -1:
-			new_rows.append({"parent": get_tag_id(parent), "child": to})
+			new_empty_parents.append(parent)
+	if not new_empty_parents.is_empty():
+		create_empty_tags(new_empty_parents)
+	var all_tag_ids: Dictionary = get_tags_ids(add)
+	
+	for parent_string in all_tag_ids: # Assigning parents.
+		if Arrays.binary_search(existing_ids, all_tag_ids[parent_string]) == -1:
+			new_rows.append({"parent": all_tag_ids[parent_string], "child": to})
 	
 	tag_database.insert_rows("relationships", new_rows)
 
@@ -801,12 +821,19 @@ func add_suggestions(to: int, add: Array[String]) -> void:
 	
 	existing.sort()
 	
+	var new_empty: Array[String] = []
 	for suggestion in add:
 		if not has_tag(suggestion):
-			create_empty_tag(suggestion)
-		
-		if Arrays.binary_search(existing, get_tag_id(suggestion)) == -1:
-			new_rows.append({"tag_id": to, "suggestion_id": get_tag_id(suggestion)})
+			#create_empty_tag(suggestion)
+			new_empty.append(suggestion)
+	if not new_empty.is_empty():
+		create_empty_tags(new_empty)
+	
+	var ids: Dictionary = get_tags_ids(new_empty)
+	
+	for str in ids:
+		if Arrays.binary_search(existing, ids[str]) == -1:
+			new_rows.append({"tag_id": to, "suggestion_id": ids[str]})
 	
 	tag_database.insert_rows("suggestions", new_rows)
 
@@ -959,6 +986,14 @@ func get_all_tag_names(with_data: bool) -> Array[String]:
 
 func get_tag_id(tag_name: String) -> int:
 	return loaded_tags[tag_name]
+
+
+func get_tags_ids(tag_array: Array[String]) -> Dictionary:
+	var return_dict: Dictionary = {}
+	for tag in tag_array:
+		if has_tag(tag):
+			return_dict[tag] = get_tag_id(tag)
+	return return_dict
 
 
 # Use when you need to get the name of 1 tag. If you need a huge number
