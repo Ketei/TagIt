@@ -831,9 +831,9 @@ func add_suggestions(to: int, add: Array[String]) -> void:
 	
 	var ids: Dictionary = get_tags_ids(new_empty)
 	
-	for str in ids:
-		if Arrays.binary_search(existing, ids[str]) == -1:
-			new_rows.append({"tag_id": to, "suggestion_id": ids[str]})
+	for tag_str in ids:
+		if Arrays.binary_search(existing, ids[tag_str]) == -1:
+			new_rows.append({"tag_id": to, "suggestion_id": ids[tag_str]})
 	
 	tag_database.insert_rows("suggestions", new_rows)
 
