@@ -247,6 +247,7 @@ func _ready() -> void:
 	generate_list_btn.disabled = TagIt.get_site_count() == 0
 	
 	# --- Loading and applying TagIt saved settings ---
+	settings_results_per_srch_spn_bx.value = TagIt.settings.results_per_search
 	settings_autofill_chk_btn.button_pressed = TagIt.settings.use_autofill
 	settings_include_invalid_chk_btn.button_pressed = TagIt.settings.include_invalid
 	settings_blacklist_remove_chk_btn.button_pressed = TagIt.settings.blacklist_removed

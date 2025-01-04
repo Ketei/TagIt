@@ -77,12 +77,12 @@ func on_search_text_submitted(text: String) -> void:
 	current_tags.clear()
 	value = 0
 	_current_search = clean_text
+	clear_tags()
 	
 	if clean_text.is_empty():
 		pages_lbl.text = \"/ 1\"
 		set_next_arrow_disabled(true)
 		set_prev_arrow_disabled(true)
-		clear_tags()
 		return
 	else:
 		if as_prefix and as_suffix:

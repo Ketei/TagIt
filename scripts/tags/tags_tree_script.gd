@@ -119,9 +119,9 @@ func add_tag(id: int, tag_name: String, category: int, category_name: String, pr
 	new_tag.set_text_alignment(3, HORIZONTAL_ALIGNMENT_CENTER)
 	new_tag.set_text_alignment(4, HORIZONTAL_ALIGNMENT_CENTER)
 	
-	new_tag.add_button(6, EDIT_ICON, 0, false, "Edit Tag")
-	new_tag.add_button(6, EXPORT_ICON, 1, false, "Export Tag")
-	new_tag.add_button(6, BIN_ICON, 2, false, "Delete Tag")
+	new_tag.add_button(6, EDIT_ICON, 0)#, false, "Edit Tag")
+	new_tag.add_button(6, EXPORT_ICON, 1)#, false, "Export Tag")
+	new_tag.add_button(6, BIN_ICON, 2)#, false, "Delete Tag")
 
 
 func select_tag(idx: int) -> void:

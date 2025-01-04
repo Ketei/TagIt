@@ -74,6 +74,7 @@ func on_search_tag_text_submitted(text: String) -> void:
 		clean_text = clean_text.strip_edges(true, false)
 	
 	clear_tags()
+	search_results.clear()
 	value = 0
 	
 	if clean_text.is_empty():
@@ -85,10 +86,10 @@ func on_search_tag_text_submitted(text: String) -> void:
 			add_tag(tag, idx)
 			if STEP <= amount:
 				break
-		search_results.clear()
 		_using_search = false
 		set_prev_arrow_disabled(value <= 0)
 		set_next_arrow_disabled(all_valid_tags.size() < ((value + 1) * STEP))
+		pages_lbl.text = "/ " + str(maxi(1, ceili(all_valid_tags.size() / float(STEP))))
 	else:
 		if as_prefix and as_suffix:
 			for item_idx in range(all_valid_tags.size()):
@@ -111,9 +112,19 @@ func on_search_tag_text_submitted(text: String) -> void:
 			if STEP <= amount:
 				break
 		
+		current_lbl.text = "1"
+		
 		_using_search = true
-		set_next_arrow_disabled(search_results.size() < ((value + 1) * STEP))
 		set_prev_arrow_disabled(value <= 0)
+		
+		if _using_search:
+			pages_lbl.text = "/ " + str(maxi(1, ceili(search_results.size() / float(STEP))))
+			set_next_arrow_disabled(search_results.size() < ((value + 1) * STEP))
+		else:
+			pages_lbl.text = "/ " + str(maxi(1, ceili(all_valid_tags.size() / float(STEP))))
+			set_next_arrow_disabled(all_valid_tags.size() < ((value + 1) * STEP))
+			
+		
 
 
 func add_tag(tag_string: String, tag_idx: int) -> void:
@@ -126,6 +137,7 @@ func add_tag(tag_string: String, tag_idx: int) -> void:
 
 func on_arrow_page_pressed(sum_val: int) -> void:
 	value += sum_val
+	current_lbl.text = str(value + 1)
 	set_prev_arrow_disabled(value <= 0)
 	
 	if _using_search:
