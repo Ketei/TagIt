@@ -195,6 +195,8 @@ var current_title: String = ""
 
 
 func _ready() -> void:
+	DisplayServer.window_set_min_size(Vector2i(1280, 720))
+	DisplayServer.window_set_title("TagIt!")
 	hide_all_sections()
 	tab_bar.current_tab = 0
 	on_tab_changed(0)

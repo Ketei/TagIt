@@ -114,6 +114,8 @@ func _ready() -> void:
 	medium_opt_btn.select(0)
 	on_media_type_selected(0)
 	
+	media_type_opt_btn.get_popup().max_size.y = 200
+	
 	next_button.pressed.connect(on_next_pressed)
 	previous_button.pressed.connect(on_previous_pressed)
 	new_char_btn.pressed.connect(create_character)

@@ -69,7 +69,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_w38ic")
 script = ExtResource("1_fvq4v")
 
 [node name="MetaContainer" type="CenterContainer" parent="MainContainer/MainPanel"]
-visible = false
 layout_mode = 2
 
 [node name="MainContainer" type="VBoxContainer" parent="MainContainer/MainPanel/MetaContainer"]
@@ -146,6 +145,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="ImageContainer" type="CenterContainer" parent="MainContainer/MainPanel"]
+visible = false
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MainContainer/MainPanel/ImageContainer"]
