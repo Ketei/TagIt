@@ -23,6 +23,7 @@ func _input(event):
 			input_index += 1
 			if input_index == konami_code.size():
 				portrait_rect.texture = preload("res://textures/ready.png")
+				print("alskdjalsWh")
 				set_process_input(false)
 				input_index = 0
 		else:

@@ -69,7 +69,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_w38ic")
 script = ExtResource("1_fvq4v")
 
 [node name="MetaContainer" type="CenterContainer" parent="MainContainer/MainPanel"]
-visible = false
 layout_mode = 2
 
 [node name="MainContainer" type="VBoxContainer" parent="MainContainer/MainPanel/MetaContainer"]
@@ -723,6 +722,7 @@ tooltip_text = "Five or more characters having sex freely among each other."
 text = "Orgy"
 
 [node name="Characters" type="CenterContainer" parent="MainContainer/MainPanel"]
+visible = false
 layout_mode = 2
 
 [node name="MainContainer" type="HBoxContainer" parent="MainContainer/MainPanel/Characters"]

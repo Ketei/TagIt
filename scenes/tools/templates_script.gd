@@ -162,6 +162,7 @@ func _on_template_item_selected() -> void:
 func _on_field_edited(_arg: Variant = null) -> void:
 	if not template_edited:
 		template_edited = true
+		print("k")
 
 
 func _on_tree_focus_lost(tree: Tree) -> void:
@@ -276,7 +277,13 @@ func load_template(template_idx: int) -> void:
 			template_title.text = template["title"]
 			description_txt_edt.text = template["description"]
 			for tag in template["tags"]:
-				add_tag(tag)
+				var tax_exists: bool = false
+				for tag_item in tags_tree.get_root().get_children():
+					if Strings.nocasecmp_equal(tag, tag_item.get_text(0)):
+						tax_exists = true
+						break
+				if not tax_exists:
+					add_tag(tag)
 			for group in template["groups"]:
 				for group_item in group_tree.get_root().get_children():
 					if group_item.get_metadata(0) == group:
@@ -293,10 +300,22 @@ func load_template(template_idx: int) -> void:
 	template_title.text = template_dict["title"]
 	description_txt_edt.text = template_dict["description"]
 	template_index = template_idx
+	
 	for tag in template_dict["tags"]:
-		pass
+		var tax_exists: bool = false
+		for tag_item in tags_tree.get_root().get_children():
+			if Strings.nocasecmp_equal(tag, tag_item.get_text(0)):
+				tax_exists = true
+				break
+		if not tax_exists:
+			add_tag(tag)
+	
 	for group in template_dict["groups"]:
-		pass
+		for group_item in group_tree.get_root().get_children():
+			if group_item.get_metadata(0) == group:
+				group_item.set_checked(0, true)
+				break
+	
 	if not template_dict["thumbnail"].is_empty() and FileAccess.file_exists(TemplateResource.get_thumbnail_path() + template_dict["thumbnail"]):
 		var img := Image.load_from_file(TemplateResource.get_thumbnail_path() + template_dict["thumbnail"])
 		var text := ImageTexture.create_from_image(img)
@@ -313,6 +332,8 @@ func save_current_template(search_idx: int) -> void:
 		if group.is_checked(0):
 			groups.append(group.get_metadata(0))
 	
+	var template_saved: bool = false
+	
 	for template in template_memory:
 		if template["search_index"] == search_idx:
 			template["title"] = template_title.text.strip_edges()
@@ -321,7 +342,18 @@ func save_current_template(search_idx: int) -> void:
 			template["groups"] = groups
 			template["thumbnail"] = thumbnail_container.texture.duplicate() if thumbnail_container.texture != null else null
 			template["template_index"] = template_index
+			template_saved = true
 			break
+	
+	if not template_saved:
+		template_memory.append({
+			"title": template_title.text.strip_edges(),
+			"description": description_txt_edt.text.strip_edges(),
+			"tags": tags,
+			"groups": groups,
+			"thumbnail": thumbnail_container.texture.duplicate() if thumbnail_container.texture != null else null,
+			"template_index": template_index,})
+		
 
 
 func on_save_pressed() -> void:
@@ -353,12 +385,13 @@ func on_save_pressed() -> void:
 				img.save_jpg(TemplateResource.get_thumbnail_path() + img_path)
 			
 			target_resource.overwrite_template(
-				mem_template["index"],
+				mem_template["template_index"],
 				mem_template["title"],
 					mem_template["description"],
 					mem_template["tags"],
 					mem_template["groups"],
 					img_path)
 	
+	target_resource.save()
 	target_resource.save()
 	template_memory.clear()
