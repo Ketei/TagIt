@@ -184,7 +184,20 @@ func _ready() -> void:
 					"name": "Generic",
 					"description": "A category for tags that lacks specificity.",
 					"icon_color": "ffffff"})
-	
+	else:
+		# Clean up tags that are not found in any of the reference tables.
+		tag_database.query(
+			"DELETE FROM tags WHERE id NOT IN (
+				SELECT tag_id FROM data
+				UNION
+				SELECT parent FROM relationships
+				UNION
+				SELECT child FROM relationships
+				UNION
+				SELECT tag_id FROM suggestions
+			);"
+		)
+		
 	# ------------------- To be deleted -----------------------------
 	#if projects_database.query_result.is_empty():
 		#var project_table: Dictionary = {
