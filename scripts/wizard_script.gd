@@ -242,7 +242,7 @@ func on_character_tag_changed(new_char: String) -> void:
 	characters_tree.get_root().get_child(current_character).set_text(0, new_char.strip_edges())
 
 
-func create_character(default_name: String = "New Character") -> void:
+func create_character(default_name: String = "Unknown Character") -> void:
 	var new_character: TreeItem = characters_tree.get_root().create_child()
 	new_character.set_text(0, default_name)
 	new_character.add_button(0, BIN_ICON, 0, false, "Delete Character")
@@ -454,7 +454,7 @@ func generate_tags() -> Array[String]:
 		tags.append(bg_opt_btn.get_item_text(bg_opt_btn.selected))
 	
 	if 0 < bg_type_opt_btn.selected:
-		tags.append(bg_type_opt_btn.get_item_text(bg_type_opt_btn.selected))
+		tags.append(bg_type_opt_btn.get_item_text(bg_type_opt_btn.selected) + " background")
 	
 	if 0 < daytime_opt_btn.selected:
 		tags.append(daytime_opt_btn.get_item_text(daytime_opt_btn.selected))

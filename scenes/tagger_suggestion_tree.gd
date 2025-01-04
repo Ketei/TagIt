@@ -85,6 +85,14 @@ func delete_tags(tags: Array[String]) -> void:
 				break
 
 
+func delete_tag(tag: String) -> void:
+	for child in get_root().get_children():
+		if child.get_text(0) == tag:
+			child.free()
+			break
+
+
+
 func get_all_suggestions_text() -> Array[String]:
 	var all_tags: Array[String] = []
 	for tag in get_root().get_children():

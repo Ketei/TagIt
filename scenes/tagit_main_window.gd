@@ -1650,7 +1650,7 @@ func add_tag(tag_name: String) -> void:
 							group_id)
 			
 			for suggestion_id in suggestion_dict:
-				if not tagger_suggestion_tree.has_suggestion(suggestion_dict[suggestion_id]):
+				if not tagger_suggestion_tree.has_suggestion(suggestion_dict[suggestion_id]) and not clean_tag == suggestion_dict[suggestion_id]:
 					tagger_suggestion_tree.add_suggestion(suggestion_dict[suggestion_id])
 			
 			clean_tag = tag_data["tag"]
@@ -1666,6 +1666,9 @@ func add_tag(tag_name: String) -> void:
 			TagIt.get_icon_texture(icon_id),
 			category,
 			icon_color)
+	
+	if tagger_suggestion_tree.has_suggestion(clean_tag):
+		tagger_suggestion_tree.delete_tag(clean_tag)
 	
 	if TagIt.settings.request_suggestions and api_timer.is_stopped():
 		ESixAPI.search_suggestions(clean_tag)
