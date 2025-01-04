@@ -87,20 +87,32 @@ func set_search_results(result_array: Array[int]) -> void:
 		categories.clear()
 		groups.clear()
 		all_tags_tree.clear_tags()
+		current_page_spn_bx.set_value_no_signal(1)
+		current_page_spn_bx.max_value = 1.0
+		pages_label.text = "/ 1"
 		return
 	
-	categories = TagIt.get_categories()
-	groups = TagIt.get_tag_groups()
 	all_tags_tree.clear_tags()
 	
-	current_page_spn_bx.value = 1
 	results = result_array
+	
 	current_page_spn_bx.max_value = ceilf(result_array.size() / float(TagIt.settings.results_per_search)) if not result_array.is_empty() else 1.0
 	pages_label.text = "/ " + str(current_page_spn_bx.max_value)
+	current_page_spn_bx.set_value_no_signal(1)
+	on_value_changed(1)
+
+
+func on_value_changed(new_value: float) -> void:
+	var page: int = int(new_value)
+	
+	all_tags_tree.clear_tags()
+	
+	set_prev_arrow_disabled(new_value == 1)
+	set_next_arrow_disabled(current_page_spn_bx.max_value <= new_value)
 	
 	var display_results: Array[int] = results.slice(
-			0,
-			TagIt.settings.results_per_search)
+			(page - 1) * TagIt.settings.results_per_search,
+			TagIt.settings.results_per_search * page)
 	
 	var tags_data: Dictionary = TagIt.get_tags_data(display_results)
 	
@@ -116,28 +128,3 @@ func set_search_results(result_array: Array[int]) -> void:
 				categories[tags_data[id_tag]["category"]]["icon_id"],
 				categories[tags_data[id_tag]["category"]]["icon_color"],
 				tags_data[id_tag]["is_valid"])
-
-
-func on_value_changed(new_value: float) -> void:
-	var page: int = int(new_value)
-	all_tags_tree.clear_tags()
-	set_prev_arrow_disabled(new_value == 1)
-	set_next_arrow_disabled(new_value < current_page_spn_bx.max_value)
-	var display_results: Array[int] = results.slice(
-			(page - 1) * TagIt.settings.results_per_search,
-			TagIt.settings.results_per_search * page)
-	
-	var tags_data: Dictionary = TagIt.get_tags_data(display_results)
-	
-	for id_tag in tags_data:
-		all_tags_tree.add_tag(
-				id_tag,
-				tags_data[id_tag]["tag"],
-				tags_data[id_tag]["category"],
-				categories[tags_data[id_tag]["category"]]["name"],
-				tags_data[id_tag]["priority"],
-				tags_data["group"],
-				groups[tags_data["group"]]["name"],
-				categories[tags_data[id_tag]["category"]]["icon_id"],
-				categories[tags_data[id_tag]["category"]]["icon_color"],
-				tags_data["is_valid"])

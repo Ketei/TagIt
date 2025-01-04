@@ -19,6 +19,7 @@ const SUGGENSTION_BLACKLIST = preload("res://scenes/suggenstion_blacklist.tscn")
 const TEXT_LOADER = preload("res://scenes/text_loader.tscn")
 const ALL_TAGS_PANEL = preload("res://scenes/all_tags_panel.tscn")
 const TAG_EXPORTER = preload("res://scenes/tag_exporter.tscn")
+const ABOUT_WINDOW = preload("res://scenes/help_window.tscn")
 # ----- Script Preload -----
 const LineConfirmationDialog = preload("res://scenes/dialogs/line_confirmation_dialog.gd")
 const UnsavedConfirmationDialog = preload("res://scenes/dialogs/unsaved_confirmation_dialog.gd")
@@ -96,6 +97,7 @@ var _suggestion_blacklist: PackedStringArray = []
 @onready var list_version_container: HBoxContainer = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/ListVersionContainer
 @onready var generate_version_opt_btn: OptionButton = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/ListVersionContainer/GenerateVersionOptBtn
 @onready var menu_button: MenuButton = $MainContainer/MenuMargin/MenuContainer/MenuButtonCont/MenuButton
+@onready var help_button: MenuButton = $MainContainer/MenuMargin/MenuContainer/MenuButtonCont/HelpButton
 # ----------------
 # ----- Tag Review -----
 @onready var new_tag_btn: Button = $MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer/ButtonButtons/NewTagBtn
@@ -156,9 +158,12 @@ var _suggestion_blacklist: PackedStringArray = []
 @onready var wiki_rtl: RichTextLabel = $MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/WikiScrollCtnr/WikiRTL
 @onready var wiki_search_ln_edt: LineEdit = $MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/SearchContainer/WikiSearchLnEdt
 @onready var wiki_search_btn: Button = $MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/SearchContainer/SearchBtn
-#@onready var wiki_image_viewer: ScrollContainer = $MainContainer/WikiPanel/ScrollContainer
+
+@onready var wiki_section_separator: HSeparator = $MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/SectionSeparator
 @onready var wiki_images_container: HFlowContainer = $MainContainer/WikiPanel/WikiMargin/WikiContainer/ImageContainer/ScrollContainer/ImagesContainer
-@onready var parents_container: VBoxContainer = $MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/ParentsContainer
+@onready var wiki_aliases_container: VBoxContainer = $MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/AliasesContainer
+@onready var wiki_aliases_label: Label = $MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/AliasesContainer/DataContainer/ScrollContainer/AliasesLabel
+@onready var wiki_parents_container: VBoxContainer = $MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/ParentsContainer
 @onready var wiki_parents_label: Label = $MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/ParentsContainer/DataContainer/ScrollContainer/ParentsLabel
 @onready var wiki_image_side: VBoxContainer = $MainContainer/WikiPanel/WikiMargin/WikiContainer/ImageContainer
 @onready var wiki_esix_search_btn: Button = $MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/SearchContainer/eSixSearchBtn
@@ -199,6 +204,10 @@ func _ready() -> void:
 	alt_select_container.visible = false
 	delete_alt_list_btn.disabled = true
 	list_version_container.visible = false
+	
+	wiki_section_separator.visible = false
+	wiki_parents_container.visible = false
+	wiki_aliases_container.visible = false
 	
 	alt_lists.append([])
 	
@@ -279,6 +288,7 @@ func _ready() -> void:
 	add_tag_ln_edt.text_changed.connect(on_tag_line_changed)
 	api_cooldown_timer.timeout.connect(on_search_timer_timeout)
 	search_tag_btn.pressed.connect(on_search_all_tags_pressed)
+	help_button.get_popup().id_pressed.connect(on_help_id_pressed)
 	# --- Edit Tag ---
 	all_tags_search_ln_edt.text_submitted.connect(on_search_text_submitted)
 	new_tag_btn.pressed.connect(on_new_tag_pressed)
@@ -933,6 +943,16 @@ func on_menu_button_id_selected(id: int) -> void:
 			instantiate_save_selector()
 
 
+func on_help_id_pressed(id: int) -> void:
+	match id:
+		0:
+			var new_help := ABOUT_WINDOW.instantiate()
+			add_child(new_help)
+			await new_help.close_pressed
+			new_help.visible = false
+			new_help.queue_free()
+
+
 func instantiate_blacklist() -> void:
 	selector = SUGGENSTION_BLACKLIST.instantiate()
 	selector.suggestion_blacklist = _suggestion_blacklist
@@ -1463,13 +1483,23 @@ func on_wiki_searched(search_text: String) -> void:
 		wiki_rtl.text = tag_data["description"]
 		wiki_cat_lbl.text = TagIt.get_category_column(tag_data["category"], "name")
 		wiki_prio_lbl.text = str(tag_data["priority"])
+		
 		if tag_data["parents"].is_empty():
-			parents_container.visible = false
+			wiki_parents_container.visible = false
 		else:
 			var parents: Dictionary = TagIt.get_tags_name(tag_data["parents"])
 			wiki_parents_label.text = ", ".join(parents.values())
-			parents_container.visible = true
-	
+			wiki_parents_container.visible = true
+		
+		if tag_data["aliases"].is_empty():
+			wiki_aliases_container.visible = false
+		else:
+			var aliases: Dictionary = TagIt.get_tags_name(tag_data["aliases"])
+			wiki_aliases_label.text = ", ".join(aliases.values())
+			wiki_aliases_container.visible = true
+		
+		wiki_section_separator.visible = wiki_parents_container.visible or wiki_aliases_container.visible
+		
 		if TagIt.settings.load_wiki_images and hydrus_connected:
 			var files = await search_hydrus_files(
 					Array([wiki_search], TYPE_STRING, &"", null),
@@ -1481,6 +1511,11 @@ func on_wiki_searched(search_text: String) -> void:
 	else:
 		wiki_rtl.clear()
 		wiki_title_lbl.text = "[Not Found]"
+		wiki_parents_container.visible = false
+		wiki_aliases_container.visible = false
+		wiki_section_separator.visible = false
+		wiki_cat_lbl.text = ""
+		wiki_prio_lbl.text = ""
 
 
 
@@ -1503,7 +1538,6 @@ func on_tag_updated(tag_id: int) -> void:
 		group_name,
 		tag_data["group"],
 		tag_data["is_valid"])
-	# (tag_id: int, parents: Array[String], valid: bool)
 	tags_tree.update_tag(tag_id, Array(TagIt.get_tags_name(tag_data["parents"]).values(), TYPE_STRING, &"", null), tag_data["is_valid"])
 
 
@@ -1709,7 +1743,6 @@ func create_tag(tag_name: String) -> void:
 func on_search_text_submitted(search: String) -> void:
 	var clean_search: String = search.strip_edges().to_lower()
 	all_tags_tree.clear_tags()
-	
 	if clean_search.is_empty():
 		return
 	

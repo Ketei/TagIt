@@ -21,6 +21,7 @@ const DATABASE_PATH: String = "res://test_tag_database.db"
 const THUMBNAIL_FOLDER: String = "res://thumbnails/"
 const SEARCH_WILDCARD: String = "*"
 const DB_VERSION: int = 1
+const TAGIT_VERSION: String = "3.0.0"
 const MAX_PARENT_RECURSION: int = 100
 const IMAGE_LIMITS: Vector2i = Vector2i(700, 700)
 const LEV_DISTANCE: float = 0.60
@@ -76,7 +77,9 @@ func _ready() -> void:
 	if tag_database.query_result.is_empty():
 		var version_table: Dictionary = {
 			"version": {"data_type": "int", "not_null": true},#, "primary_key": true},
-			"author": {"data_type": "text"}}
+			"author": {"data_type": "text"},
+			"update_notified": {"data_type": "int"}}
+		
 		
 		var tags_table: Dictionary = {
 			"id": {"data_type": "int", "auto_increment": true, "not_null": true, "primary_key": true, "unique": true},
@@ -153,7 +156,7 @@ func _ready() -> void:
 					FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE SET DEFAULT ON UPDATE NO ACTION,
 					FOREIGN KEY (group_id) REFERENCES groups (id) ON DELETE SET NULL ON UPDATE NO ACTION);")
 		tag_database.create_table("_version", version_table)
-		tag_database.insert_row("_version", {"version": DB_VERSION, "author": "Ketei"})
+		tag_database.insert_row("_version", {"version": DB_VERSION, "author": "Ketei", "update_notified": 0})
 		tag_database.query( # relationships
 				"CREATE TABLE relationships ( 
 				parent INTEGER NOT NULL, 
@@ -226,7 +229,7 @@ func _ready() -> void:
 	var all_tags: Array = loaded_tags.keys()
 	all_tags.sort_custom(func(a, b): return a.naturalnocasecmp_to(b) < 0)
 	tag_search_array = PackedStringArray(all_tags)
-	#current_tags = tag_search_array.size()
+	check_version()
 
 
 # --- Icons ---
@@ -1395,9 +1398,60 @@ func set_group_desc(group_id: int, desc: String) -> void:
 #endregion
 
 
+func is_online_version_higher(local: Array[int], online: Array[int]) -> bool:
+	var max_length = max(local.size(), online.size())
+	local.resize(max_length)
+	online.resize(max_length)
+	
+	for i in range(max_length):
+		if local[i] < online[i]:
+			return true # Online is higher
+		elif local[i] > online[i]:
+			return false # Local is higher
+	
+	return false # Versions are equal
 
 
+func check_version() -> void:
+	if tag_database.select_rows("_version", "", ["update_notified"])[0]["update_notified"] == 1:
+		return
+	
+	var version_request := HTTPRequest.new()
+	add_child(version_request)
+	version_request.timeout = 10.0
+	var error = version_request.request(
+		"https://api.github.com/Ketei/repos/tagit-v3/releases/latest")
+	
+	var response = await version_request.request_completed
+	
+	if error == OK and response[0] == OK and response[1] == 200:
+		var json_decoder = JSON.new()
+		json_decoder.parse(response[3].get_string_from_utf8())
+		
+		if typeof(json_decoder.data) == TYPE_DICTIONARY:
+			if json_decoder.data.has("tag_name"):
+				var version_text: String = json_decoder.data["tag_name"].trim_prefix("v")
+				var online_version: Array[int] = []
+				var local_version: Array[int] = []
+				for version_number in version_text.split(".", false):
+					if version_number.is_valid_int():
+						online_version.append(int(version_number))
+				for version_number in TagIt.TAGIT_VERSION.split(".", false):
+					local_version.append(int(version_number))
+				
+				if is_online_version_higher(local_version, online_version):
+					var update_notif := preload("res://scenes/dialogs/update_notification.tscn").instantiate()
+					update_notif.canceled.connect(on_update_notified.bind(update_notif))
+					update_notif.confirmed.connect(on_update_notified.bind(update_notif))
+					add_child(update_notif)
+					update_notif.set_update_version(version_text)
+					update_notif.show()
+	version_request.queue_free()
 
+
+func on_update_notified(notif: AcceptDialog) -> void:
+	notif.queue_free()
+	tag_database.update_rows("_version", "*", {"update_notified": 1})
 
 
 func log_message(message: String, log_level: LogLevel) -> void:

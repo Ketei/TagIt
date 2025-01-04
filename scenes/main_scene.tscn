@@ -165,6 +165,8 @@ popup/item_13/id = 11
 layout_mode = 2
 text = "Help"
 switch_on_hover = true
+item_count = 1
+popup/item_0/text = "About"
 
 [node name="VSeparator2" type="VSeparator" parent="MainContainer/MenuMargin/MenuContainer"]
 layout_mode = 2
@@ -564,11 +566,10 @@ size_flags_horizontal = 3
 bbcode_enabled = true
 fit_content = true
 
-[node name="ParentsContainer" type="VBoxContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer"]
-visible = false
+[node name="SectionSeparator" type="HSeparator" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer"]
 layout_mode = 2
 
-[node name="HSeparator" type="HSeparator" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/ParentsContainer"]
+[node name="ParentsContainer" type="VBoxContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer"]
 layout_mode = 2
 
 [node name="DataContainer" type="HBoxContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/ParentsContainer"]
@@ -590,6 +591,32 @@ size_flags_horizontal = 3
 vertical_scroll_mode = 0
 
 [node name="ParentsLabel" type="Label" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/ParentsContainer/DataContainer/ScrollContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+vertical_alignment = 1
+
+[node name="AliasesContainer" type="VBoxContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer"]
+layout_mode = 2
+
+[node name="DataContainer" type="HBoxContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/AliasesContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/AliasesContainer/DataContainer"]
+layout_mode = 2
+theme_override_constants/margin_bottom = 8
+
+[node name="Label" type="Label" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/AliasesContainer/DataContainer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "Aliases:"
+vertical_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/AliasesContainer/DataContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical_scroll_mode = 0
+
+[node name="AliasesLabel" type="Label" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/AliasesContainer/DataContainer/ScrollContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 vertical_alignment = 1
@@ -715,7 +742,6 @@ theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
 [node name="TagSearchContainer" type="VBoxContainer" parent="MainContainer/TagsPanel/TagsMargin"]
-visible = false
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -814,6 +840,7 @@ select_mode = 1
 script = ExtResource("6_fucip")
 
 [node name="TagEditContainer" type="VBoxContainer" parent="MainContainer/TagsPanel/TagsMargin"]
+visible = false
 layout_mode = 2
 script = ExtResource("8_aldxp")
 

@@ -64,21 +64,21 @@ func _ready() -> void:
 		new_group.set_metadata(0, group_id)
 		new_group.set_editable(0, false)
 	
-	#template_title.text_changed.connect(_on_field_edited)
 	template_title.text_changed.connect(_on_title_changed)
 	description_txt_edt.text_changed.connect(_on_field_edited)
 	group_tree.item_edited.connect(_on_group_edited)
 	select_thumb_button.pressed.connect(_on_select_thumbnail_pressed)
 	add_tag_ln_edt.text_submitted.connect(_on_tag_text_submitted)
 	search_group_ln_edt.text_changed.connect(_on_search_group_text_changed)
+	search_template_ln_edt.text_changed.connect(_on_search_template_text_changed)
 	new_template_btn.pressed.connect(on_new_template_pressed)
 	template_tree.item_selected.connect(_on_template_item_selected)
 	TagIt.group_created.connect(_on_group_created)
 	TagIt.group_deleted.connect(_on_group_deleted)
 
 
-func _input(event: InputEvent) -> void:
-	if event.is_action_released(&"ui_text_delete"):
+func _input(_event: InputEvent) -> void:
+	if Input.is_action_just_pressed(&"ui_text_delete"):
 		if tags_tree.has_focus():
 			var current: TreeItem = tags_tree.get_next_selected(null)
 			
@@ -121,6 +121,12 @@ func _on_search_group_text_changed(text: String) -> void:
 	var clean_text: String = text.strip_edges().to_upper()
 	for group in group_tree.get_root().get_children():
 		group.visible = clean_text.is_empty() or group.get_text(0).containsn(clean_text)
+
+
+func _on_search_template_text_changed(text: String) -> void:
+	var clean_text: String = text.strip_edges().to_upper()
+	for template in template_tree.get_root().get_children():
+		template.visible = clean_text.is_empty() or template.get_text(0).containsn(clean_text)
 
 
 func _on_group_created(group_id: int, group_name: String) -> void:
