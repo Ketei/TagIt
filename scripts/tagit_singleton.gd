@@ -73,7 +73,6 @@ func _ready() -> void:
 	
 	tag_database.query("SELECT name FROM sqlite_master WHERE type = 'table';")
 	#projects_database.query("SELECT name FROM sqlite_master WHERE type = 'table';")
-	
 	if tag_database.query_result.is_empty():
 		var version_table: Dictionary = {
 			"version": {"data_type": "int", "not_null": true},#, "primary_key": true},
@@ -195,6 +194,12 @@ func _ready() -> void:
 				SELECT child FROM relationships
 				UNION
 				SELECT tag_id FROM suggestions
+				UNION
+				SELECT antecedent FROM aliases
+				UNION
+				SELECT consequent FROM aliases
+				UNION
+				SELECT suggestion_id FROM suggestions
 			);"
 		)
 		
@@ -214,6 +219,8 @@ func _ready() -> void:
 		#"image": {"data_type": "text"}}
 		#projects_database.create_table("projects", project_table)
 	# ---------------------------------------------------------------
+	
+	
 	
 	tag_database.query("SELECT tags.id, tags.name, tags.is_valid, IIF(data.tag_id IS NULL, 0, 1) AS has_data FROM tags LEFT JOIN data ON data.tag_id = tags.id;")
 	

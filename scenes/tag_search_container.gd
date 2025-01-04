@@ -85,11 +85,12 @@ func on_category_icon_changed(id: int, icon: int) -> void:
 func set_search_results(result_array: Array[int]) -> void:
 	if result_array.is_empty():
 		all_tags_tree.clear_tags()
+		set_next_arrow_disabled(true)
+		set_prev_arrow_disabled(true)
 		current_page_spn_bx.set_value_no_signal(1)
 		current_page_spn_bx.max_value = 1.0
 		pages_label.text = "/ 1"
 		return
-	
 	all_tags_tree.clear_tags()
 	
 	results = result_array

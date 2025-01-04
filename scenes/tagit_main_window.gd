@@ -1647,7 +1647,7 @@ func add_tag(tag_name: String) -> void:
 							group_id)
 			
 			for suggestion_id in suggestion_dict:
-				if not tagger_suggestion_tree.has_suggestion_id(suggestion_id):
+				if not tagger_suggestion_tree.has_suggestion(suggestion_dict[suggestion_id]):
 					tagger_suggestion_tree.add_suggestion(suggestion_dict[suggestion_id])
 			
 			clean_tag = tag_data["tag"]
@@ -1747,6 +1747,7 @@ func on_search_text_submitted(search: String) -> void:
 	var clean_search: String = search.strip_edges().to_lower()
 	all_tags_tree.clear_tags()
 	if clean_search.is_empty():
+		tag_search_container.set_search_results(Array([], TYPE_INT, &"", null))
 		return
 	
 	var search_mode: int = 0
@@ -2228,6 +2229,8 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 		group_id = TagIt.create_tag_group(group_dict["name"], group_dict["description"])
 		all_groups[group_id] = {"name": group_dict["name"], "description": group_dict["description"]}
 		json_groups[group_idx] = group_id
+	
+	var new_tags: Array[Dictionary] = []
 	
 	var tag_idx: int = -1
 	for tag:Dictionary in json_result["tags"]:

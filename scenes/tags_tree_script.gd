@@ -32,7 +32,7 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 	var names: Array[String] = []
 	
 	for tag in data["tag_names"]:
-		if TagIt.has_tag(tag):
+		if TagIt.has_tag(tag) and TagIt.has_data(TagIt.get_tag_id(tag)):
 			ids.append(TagIt.get_tag_id(tag))
 		else:
 			names.append(tag)
