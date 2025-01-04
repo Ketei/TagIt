@@ -24,7 +24,7 @@ const DB_VERSION: int = 1
 const TAGIT_VERSION: String = "3.0.0"
 const MAX_PARENT_RECURSION: int = 100
 const IMAGE_LIMITS: Vector2i = Vector2i(700, 700)
-const LEV_DISTANCE: float = 0.60
+const LEV_DISTANCE: float = 0.75
 const LEV_LOOP_LIMIT: int = 100
 
 enum LogLevel {

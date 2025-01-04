@@ -6,13 +6,6 @@
 [ext_resource type="Texture2D" uid="uid://cdtejl0p8c4cr" path="res://icons/pointer_right.svg" id="3_5x0m5"]
 [ext_resource type="Texture2D" uid="uid://bw5u0gth430jt" path="res://icons/spin_load.svg" id="5_ivlcl"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dojr1"]
-bg_color = Color(0.22, 0.22, 0.22, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-
 [sub_resource type="GDScript" id="GDScript_odxxx"]
 script/source = "extends Control
 
@@ -30,16 +23,16 @@ var _current_search: String = \"\"
 var current_tags: PackedStringArray = []
 var _api_working: bool = false
 
-@onready var close_button: Button = $MarginContainer/MainContainer/TitlePanel/CloseButton
-@onready var tags_tree: Tree = $MarginContainer/MainContainer/TagsTree
-@onready var search_tag_ln_edt: LineEdit = $MarginContainer/MainContainer/SearchMargin/SerchTagLnEdt
-@onready var prev_button: Button = $MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer/LeftButton
-@onready var current_lbl: Label = $MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer/PageContainer/CurrentLbl
-@onready var pages_lbl: Label = $MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer/PageContainer/PagesLbl
-@onready var next_button: Button = $MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer/NextButton
-@onready var add_button: Button = $MarginContainer/MainContainer/MarginContainer/BottomPanel/AddButton
+@onready var close_button: Button = $MainControl/MarginContainer/MainContainer/TitlePanel/CloseButton
+@onready var tags_tree: Tree = $MainControl/MarginContainer/MainContainer/TagsTree
+@onready var search_tag_ln_edt: LineEdit = $MainControl/MarginContainer/MainContainer/SearchMargin/SerchTagLnEdt
+@onready var prev_button: Button = $MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer/LeftButton
+@onready var current_lbl: Label = $MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer/PageContainer/CurrentLbl
+@onready var pages_lbl: Label = $MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer/PageContainer/PagesLbl
+@onready var next_button: Button = $MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer/NextButton
+@onready var add_button: Button = $MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel/AddButton
 @onready var search_cooldown: Timer = $SearchCooldown
-@onready var esix_cooldown_bar: TextureProgressBar = $MarginContainer/MainContainer/MarginContainer/BottomPanel/eSixCooldownBar
+@onready var esix_cooldown_bar: TextureProgressBar = $MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel/eSixCooldownBar
 
 
 func _ready() -> void:
@@ -188,6 +181,11 @@ func set_next_arrow_disabled(set_disabled: bool) -> void:
 	next_button.focus_mode = Control.FOCUS_ALL if not set_disabled else Control.FOCUS_NONE
 "
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tsgmn"]
+bg_color = Color(0.25, 0.25, 0.25, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v4kdy"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_apoyc"]
@@ -195,39 +193,48 @@ bg_color = Color(0.14, 0.14, 0.14, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jm62d"]
 
-[node name="AllTags" type="PanelContainer"]
+[node name="AllTags" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_odxxx")
+
+[node name="MainControl" type="PanelContainer" parent="."]
+layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_top = -431.0
-offset_right = 382.0
+offset_right = 400.0
 grow_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_dojr1")
-script = SubResource("GDScript_odxxx")
+theme_override_styles/panel = SubResource("StyleBoxFlat_tsgmn")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="MainControl"]
 layout_mode = 2
 theme_override_constants/margin_left = 6
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 6
 theme_override_constants/margin_bottom = 6
 
-[node name="MainContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="MainContainer" type="VBoxContainer" parent="MainControl/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="TitlePanel" type="PanelContainer" parent="MarginContainer/MainContainer"]
+[node name="TitlePanel" type="PanelContainer" parent="MainControl/MarginContainer/MainContainer"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_v4kdy")
 
-[node name="Label" type="Label" parent="MarginContainer/MainContainer/TitlePanel"]
+[node name="Label" type="Label" parent="MainControl/MarginContainer/MainContainer/TitlePanel"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "All Tags"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="CloseButton" type="Button" parent="MarginContainer/MainContainer/TitlePanel"]
+[node name="CloseButton" type="Button" parent="MainControl/MarginContainer/MainContainer/TitlePanel"]
 custom_minimum_size = Vector2(26, 26)
 layout_mode = 2
 size_flags_horizontal = 8
@@ -237,7 +244,7 @@ flat = true
 icon_alignment = 1
 expand_icon = true
 
-[node name="TagsTree" type="Tree" parent="MarginContainer/MainContainer"]
+[node name="TagsTree" type="Tree" parent="MainControl/MarginContainer/MainContainer"]
 custom_minimum_size = Vector2(370, 315)
 layout_mode = 2
 size_flags_vertical = 3
@@ -245,34 +252,34 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_apoyc")
 hide_folding = true
 hide_root = true
 
-[node name="SearchMargin" type="MarginContainer" parent="MarginContainer/MainContainer"]
+[node name="SearchMargin" type="MarginContainer" parent="MainControl/MarginContainer/MainContainer"]
 layout_mode = 2
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_bottom = 4
 
-[node name="SerchTagLnEdt" type="LineEdit" parent="MarginContainer/MainContainer/SearchMargin"]
+[node name="SerchTagLnEdt" type="LineEdit" parent="MainControl/MarginContainer/MainContainer/SearchMargin"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 placeholder_text = "Search Tag"
 clear_button_enabled = true
 right_icon = ExtResource("2_5e10h")
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/MainContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="MainControl/MarginContainer/MainContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
-[node name="BottomPanel" type="PanelContainer" parent="MarginContainer/MainContainer/MarginContainer"]
+[node name="BottomPanel" type="PanelContainer" parent="MainControl/MarginContainer/MainContainer/MarginContainer"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_jm62d")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/MainContainer/MarginContainer/BottomPanel"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel"]
 layout_mode = 2
 alignment = 1
 
-[node name="LeftButton" type="Button" parent="MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer"]
+[node name="LeftButton" type="Button" parent="MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer"]
 custom_minimum_size = Vector2(34, 24)
 layout_mode = 2
 size_flags_vertical = 4
@@ -284,18 +291,18 @@ flat = true
 icon_alignment = 1
 expand_icon = true
 
-[node name="PageContainer" type="HBoxContainer" parent="MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer"]
+[node name="PageContainer" type="HBoxContainer" parent="MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer"]
 layout_mode = 2
 
-[node name="CurrentLbl" type="Label" parent="MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer/PageContainer"]
+[node name="CurrentLbl" type="Label" parent="MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer/PageContainer"]
 layout_mode = 2
 text = "1"
 
-[node name="PagesLbl" type="Label" parent="MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer/PageContainer"]
+[node name="PagesLbl" type="Label" parent="MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer/PageContainer"]
 layout_mode = 2
 text = "/ 1"
 
-[node name="NextButton" type="Button" parent="MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer"]
+[node name="NextButton" type="Button" parent="MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer"]
 custom_minimum_size = Vector2(34, 24)
 layout_mode = 2
 size_flags_vertical = 4
@@ -307,14 +314,14 @@ flat = true
 icon_alignment = 1
 expand_icon = true
 
-[node name="AddButton" type="Button" parent="MarginContainer/MainContainer/MarginContainer/BottomPanel"]
+[node name="AddButton" type="Button" parent="MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
 text = "Add Selected"
 
-[node name="eSixCooldownBar" type="TextureProgressBar" parent="MarginContainer/MainContainer/MarginContainer/BottomPanel"]
+[node name="eSixCooldownBar" type="TextureProgressBar" parent="MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel"]
 modulate = Color(0.233693, 0.62897, 0.826345, 1)
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2

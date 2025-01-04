@@ -1104,7 +1104,7 @@ func on_search_all_tags_pressed() -> void:
 	var searcher := ALL_TAGS_PANEL.instantiate()
 	searcher.tags_selected.connect(on_search_tags_added)
 	searcher.panel_close_pressed.connect(on_searcher_close_pressed.bind(searcher))
-	add_child(searcher)
+	tagger_container.add_child(searcher)
 	search_tag_btn.disabled = true
 
 

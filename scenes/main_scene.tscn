@@ -93,6 +93,15 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_3rneb")
 
+[node name="BackgroundColor" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.29401, 0.300706, 0.330406, 1)
+
 [node name="MainContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -1750,16 +1759,8 @@ timeout = 10.0
 [node name="HydrusLargeImage" type="HTTPRequest" parent="."]
 timeout = 10.0
 
-[node name="SearchTimer" type="Timer" parent="."]
-wait_time = 0.2
-one_shot = true
-
 [node name="APITimer" type="Timer" parent="."]
 wait_time = 1.25
-one_shot = true
-
-[node name="WikiTimer" type="Timer" parent="."]
-wait_time = 0.2
 one_shot = true
 
 [node name="eSixAPI" type="Node" parent="."]
