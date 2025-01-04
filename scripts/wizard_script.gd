@@ -92,7 +92,7 @@ func _ready() -> void:
 	characters_tree.create_item()
 	body_texture_tree.create_item()
 	
-	body_texture_tree.set_column_title(0, "Body Type")
+	body_texture_tree.set_column_title(0, "Body Part")
 	body_texture_tree.set_column_title(1, "Colours")
 	
 	body_texture_tree.set_column_expand_ratio(0, 2)

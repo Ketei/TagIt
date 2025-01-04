@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://bg5jdmdkcv0mf"]
 
 [ext_resource type="Script" path="res://scenes/help_window.gd" id="1_iol7v"]
-[ext_resource type="Texture2D" uid="uid://dexng5s3jsdw6" path="res://a982a66d33ed166371cc52da11d8a946.png" id="2_85d5a"]
+[ext_resource type="Texture2D" uid="uid://bpeefcjw6yf2d" path="res://textures/init.png" id="2_1dtd6"]
 [ext_resource type="Texture2D" uid="uid://vypb46ut3fil" path="res://icons/x_icon.svg" id="3_0hsyj"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lsqgi"]
@@ -42,6 +42,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_iol7v")
+metadata/_edit_use_anchors_ = true
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 1
@@ -53,31 +54,31 @@ grow_vertical = 2
 color = Color(0, 0, 0, 0.392157)
 
 [node name="MainPanel" type="PanelContainer" parent="."]
-custom_minimum_size = Vector2(640, 270)
+custom_minimum_size = Vector2(670, 270)
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.25
-anchor_top = 0.3125
-anchor_right = 0.75
-anchor_bottom = 0.6875
-offset_left = 273.5
-offset_top = 96.5
-offset_right = -273.5
-offset_bottom = -96.5
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -320.0
+offset_top = -135.0
+offset_right = 320.0
+offset_bottom = 135.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_lsqgi")
-metadata/_edit_use_anchors_ = true
 
 [node name="DataContainer" type="HBoxContainer" parent="MainPanel"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="PortraitRect" type="TextureRect" parent="MainPanel/DataContainer"]
+custom_minimum_size = Vector2(400, 270)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 3.0
-texture = ExtResource("2_85d5a")
+texture = ExtResource("2_1dtd6")
 expand_mode = 1
 stretch_mode = 6
 
