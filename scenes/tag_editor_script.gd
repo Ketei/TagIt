@@ -36,6 +36,8 @@ func _ready() -> void:
 	add_alias_ln_edt.text_submitted.connect(on_alias_submitted)
 	add_parent_ln_edt.text_submitted.connect(on_parent_submitted)
 	add_sugg_ln_edt.text_submitted.connect(on_suggestion_submitted)
+	add_parent_ln_edt.timer_finished.connect(on_search_timer_timeout.bind(add_parent_ln_edt))
+	add_sugg_ln_edt.timer_finished.connect(on_search_timer_timeout.bind(add_sugg_ln_edt))
 	TagIt.category_created.connect(on_category_created)
 	TagIt.category_icon_updated.connect(on_icon_updated)
 	TagIt.category_deleted.connect(on_category_deleted)
@@ -273,6 +275,43 @@ func select_category(cat_id: int) -> void:
 		if category_opt_btn.get_item_id(cat) == cat_id:
 			category_opt_btn.select(cat)
 			break
+
+
+func on_search_timer_timeout(search_line: LineEdit) -> void:
+	if not search_line.has_focus():
+		return
+	
+	var clean_text: String = search_line.text.strip_edges()
+	var prefix: bool = clean_text.ends_with(TagIt.SEARCH_WILDCARD)
+	var suffix: bool = clean_text.begins_with(TagIt.SEARCH_WILDCARD)
+	
+	if prefix:
+		clean_text = clean_text.trim_prefix(TagIt.SEARCH_WILDCARD).strip_edges(true, false)
+	if suffix:
+		clean_text = clean_text.trim_suffix(TagIt.SEARCH_WILDCARD).strip_edges(false, true)
+	
+	while clean_text.begins_with(TagIt.SEARCH_WILDCARD):
+		clean_text = clean_text.trim_prefix(TagIt.SEARCH_WILDCARD).strip_edges(true, false)
+	
+	while clean_text.ends_with(TagIt.SEARCH_WILDCARD):
+		clean_text = clean_text.trim_suffix(TagIt.SEARCH_WILDCARD).strip_edges(false, true)
+	
+	if clean_text.is_empty():
+		return
+	
+	var results: PackedStringArray = []
+	
+	if prefix and suffix:
+		results = TagIt.search_for_tag_contains(clean_text, search_line.item_limit, true)
+	elif suffix:
+		results = TagIt.search_for_tag_suffix(clean_text, search_line.item_limit, true)
+	else:
+		results = TagIt.search_for_tag_prefix(clean_text, search_line.item_limit, true)
+	
+	if not results.is_empty():
+		search_line.add_items(results)
+		search_line.show_items()
+
 
 
 func clear_all() -> void:

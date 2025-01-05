@@ -103,11 +103,11 @@ var _suggestion_blacklist: PackedStringArray = []
 @onready var new_tag_btn: Button = $MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer/ButtonButtons/NewTagBtn
 @onready var all_tags_tree: Tree = $MainContainer/TagsPanel/TagsMargin/TagSearchContainer/AllTagsTree
 @onready var tag_editor: VBoxContainer = $MainContainer/TagsPanel/TagsMargin/TagEditContainer
-@onready var tag_searcher: VBoxContainer = $MainContainer/TagsPanel/TagsMargin/TagSearchContainer
+@onready var tag_searcher: Control = $MainContainer/TagsPanel/TagsMargin/TagSearchContainer
 @onready var save_tag_btn: Button = $MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/WikiContainer/TitleContainer/SaveTagBtn
 @onready var close_editor_btn: Button = $MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/WikiContainer/TitleContainer/CloseEditorBtn
 @onready var all_tags_search_ln_edt: LineEdit = $MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer/AllTagsSearchLnEdt
-@onready var tag_search_container: VBoxContainer = $MainContainer/TagsPanel/TagsMargin/TagSearchContainer
+@onready var tag_search_container: Control = $MainContainer/TagsPanel/TagsMargin/TagSearchContainer
 @onready var export_tag_btn: Button = $MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer/ButtonButtons/ExportTagBtn
 
 # ----------------
@@ -558,6 +558,8 @@ func on_search_esix_tags_toggled(is_toggled: bool) -> void:
 
 
 func on_search_timer_timeout() -> void:
+	if not add_tag_ln_edt.has_focus():
+		return
 	var clean_text: String = add_tag_ln_edt.text.strip_edges()
 	var prefix: bool = clean_text.ends_with(TagIt.SEARCH_WILDCARD)
 	var suffix: bool = clean_text.begins_with(TagIt.SEARCH_WILDCARD)
@@ -599,6 +601,8 @@ func on_search_timer_timeout() -> void:
 
 
 func on_wiki_timer_timeout() -> void:
+	if not wiki_search_ln_edt.has_focus():
+		return
 	var clean_text: String = wiki_search_ln_edt.text.strip_edges()
 	var prefix: bool = clean_text.ends_with(TagIt.SEARCH_WILDCARD)
 	var suffix: bool = clean_text.begins_with(TagIt.SEARCH_WILDCARD)

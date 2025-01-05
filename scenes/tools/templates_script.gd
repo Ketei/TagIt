@@ -73,6 +73,7 @@ func _ready() -> void:
 	search_template_ln_edt.text_changed.connect(_on_search_template_text_changed)
 	new_template_btn.pressed.connect(on_new_template_pressed)
 	template_tree.item_selected.connect(_on_template_item_selected)
+	add_tag_ln_edt.timer_finished.connect(on_search_timer_timeout)
 	TagIt.group_created.connect(_on_group_created)
 	TagIt.group_deleted.connect(_on_group_deleted)
 
@@ -353,7 +354,39 @@ func save_current_template(search_idx: int) -> void:
 			"groups": groups,
 			"thumbnail": thumbnail_container.texture.duplicate() if thumbnail_container.texture != null else null,
 			"template_index": template_index,})
-		
+
+
+func on_search_timer_timeout() -> void:
+	var clean_text: String = add_tag_ln_edt.text.strip_edges()
+	var prefix: bool = clean_text.ends_with(TagIt.SEARCH_WILDCARD)
+	var suffix: bool = clean_text.begins_with(TagIt.SEARCH_WILDCARD)
+	
+	if prefix:
+		clean_text = clean_text.trim_prefix(TagIt.SEARCH_WILDCARD).strip_edges(true, false)
+	if suffix:
+		clean_text = clean_text.trim_suffix(TagIt.SEARCH_WILDCARD).strip_edges(false, true)
+	
+	while clean_text.begins_with(TagIt.SEARCH_WILDCARD):
+		clean_text = clean_text.trim_prefix(TagIt.SEARCH_WILDCARD).strip_edges(true, false)
+	
+	while clean_text.ends_with(TagIt.SEARCH_WILDCARD):
+		clean_text = clean_text.trim_suffix(TagIt.SEARCH_WILDCARD).strip_edges(false, true)
+	
+	if clean_text.is_empty():
+		return
+	
+	var results: PackedStringArray = []
+	
+	if prefix and suffix:
+		results = TagIt.search_for_tag_contains(clean_text, add_tag_ln_edt.item_limit, true)
+	elif suffix:
+		results = TagIt.search_for_tag_suffix(clean_text, add_tag_ln_edt.item_limit, true)
+	else:
+		results = TagIt.search_for_tag_prefix(clean_text, add_tag_ln_edt.item_limit, true)
+	
+	if not results.is_empty():
+		add_tag_ln_edt.add_items(results)
+		add_tag_ln_edt.show_items()
 
 
 func on_save_pressed() -> void:

@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://doospxbh0so4i"]
+[gd_scene load_steps=7 format=3 uid="uid://doospxbh0so4i"]
 
 [ext_resource type="Script" path="res://scenes/tools/templates_script.gd" id="1_q14ue"]
 [ext_resource type="Texture2D" uid="uid://cs1peems7gyk2" path="res://icons/new_template_icon.svg" id="1_sivrn"]
 [ext_resource type="Texture2D" uid="uid://d83q0hy74uit" path="res://icons/search_icon.svg" id="3_xrx8o"]
 [ext_resource type="Texture2D" uid="uid://c03por8vrxsy7" path="res://icons/image_icon.svg" id="4_rcfse"]
 [ext_resource type="Texture2D" uid="uid://doflm0070386w" path="res://icons/image_icon_crossed.svg" id="5_i4e8j"]
+[ext_resource type="PackedScene" uid="uid://djrqboi0xp74" path="res://scenes/autofill_line_edit.tscn" id="5_t3cac"]
 
 [node name="Templates" type="HBoxContainer"]
 anchors_preset = 15
@@ -125,11 +126,11 @@ hide_folding = true
 hide_root = true
 select_mode = 2
 
-[node name="AddTagLnEdt" type="LineEdit" parent="SetupContainer/TagsContainer"]
-custom_minimum_size = Vector2(0, 32)
+[node name="AddTagLnEdt" parent="SetupContainer/TagsContainer" instance=ExtResource("5_t3cac")]
 layout_mode = 2
-placeholder_text = "Add Tag"
-editable = false
+list_direction = 1
+replace_on_item_select = true
+use_timer = true
 
 [node name="GroupsContainer" type="VBoxContainer" parent="SetupContainer"]
 layout_mode = 2

@@ -1,4 +1,4 @@
-[gd_scene load_steps=63 format=3 uid="uid://eaxngd263vbi"]
+[gd_scene load_steps=64 format=3 uid="uid://eaxngd263vbi"]
 
 [ext_resource type="Script" path="res://scenes/tagit_main_window.gd" id="1_3rneb"]
 [ext_resource type="Texture2D" uid="uid://kkvcqst6wv4k" path="res://icons/new_icon.svg" id="2_3s1fn"]
@@ -48,6 +48,7 @@
 [ext_resource type="Script" path="res://scenes/websites_opt_btn.gd" id="32_cix75"]
 [ext_resource type="Texture2D" uid="uid://otmkm27eyfy" path="res://icons/expand_down_icon.svg" id="33_crsq3"]
 [ext_resource type="Texture2D" uid="uid://bowshto8a3l5u" path="res://icons/check_cross_icon.svg" id="34_gixbi"]
+[ext_resource type="Script" path="res://scenes/tags_panel_script.gd" id="34_nfqa4"]
 [ext_resource type="Texture2D" uid="uid://clhle5w66lto8" path="res://icons/new_site_icon.svg" id="35_7aqje"]
 [ext_resource type="Script" path="res://scenes/settings_sites_tree.gd" id="35_mgbqt"]
 [ext_resource type="Texture2D" uid="uid://dd8iryk1xpuuf" path="res://icons/icon_checked.svg" id="35_n2tab"]
@@ -740,6 +741,7 @@ visible = false
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = ExtResource("2_u628d")
+script = ExtResource("34_nfqa4")
 
 [node name="TagsMargin" type="MarginContainer" parent="MainContainer/TagsPanel"]
 layout_mode = 2
@@ -748,21 +750,40 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
-[node name="TagSearchContainer" type="VBoxContainer" parent="MainContainer/TagsPanel/TagsMargin"]
+[node name="TagSearchContainer" type="Control" parent="MainContainer/TagsPanel/TagsMargin"]
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("25_l1y5q")
 
+[node name="AllTagsTree" type="Tree" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer"]
+layout_mode = 2
+anchor_top = 0.0532544
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_vertical = 3
+theme = ExtResource("26_8xsa4")
+columns = 7
+column_titles_visible = true
+allow_reselect = true
+hide_folding = true
+hide_root = true
+select_mode = 1
+script = ExtResource("6_fucip")
+metadata/_edit_use_anchors_ = true
+
 [node name="MenuContainer" type="HBoxContainer" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer"]
 layout_mode = 2
+anchor_right = 1.0
+anchor_bottom = 0.0473373
+metadata/_edit_use_anchors_ = true
 
-[node name="AllTagsSearchLnEdt" type="LineEdit" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer"]
+[node name="AllTagsSearchLnEdt" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer" instance=ExtResource("18_btkx1")]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Search Tag"
-clear_button_enabled = true
-right_icon = ExtResource("7_cq671")
+replace_on_item_select = true
+use_timer = true
 
 [node name="VSeparator" type="VSeparator" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer"]
 layout_mode = 2
@@ -834,18 +855,6 @@ icon = ExtResource("39_angsb")
 flat = true
 icon_alignment = 1
 expand_icon = true
-
-[node name="AllTagsTree" type="Tree" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-theme = ExtResource("26_8xsa4")
-columns = 7
-column_titles_visible = true
-allow_reselect = true
-hide_folding = true
-hide_root = true
-select_mode = 1
-script = ExtResource("6_fucip")
 
 [node name="TagEditContainer" type="VBoxContainer" parent="MainContainer/TagsPanel/TagsMargin"]
 visible = false
@@ -1015,10 +1024,13 @@ hide_root = true
 select_mode = 1
 script = ExtResource("10_c408k")
 
-[node name="AddParentLnEdt" type="LineEdit" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/RelatedContainer/ParentsContainer"]
+[node name="AddParentLnEdt" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/RelatedContainer/ParentsContainer" instance=ExtResource("18_btkx1")]
 layout_mode = 2
-size_flags_horizontal = 3
 placeholder_text = "Add Parent Tag"
+list_direction = 1
+item_limit = 8
+replace_on_item_select = true
+use_timer = true
 
 [node name="SuggestionsContainer" type="VBoxContainer" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/RelatedContainer"]
 layout_mode = 2
@@ -1039,11 +1051,13 @@ hide_root = true
 select_mode = 1
 script = ExtResource("10_c408k")
 
-[node name="AddSuggLnEdt" type="LineEdit" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/RelatedContainer/SuggestionsContainer"]
+[node name="AddSuggLnEdt" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/RelatedContainer/SuggestionsContainer" instance=ExtResource("18_btkx1")]
 layout_mode = 2
-size_flags_horizontal = 3
 placeholder_text = "Add Suggestion"
-clear_button_enabled = true
+list_direction = 1
+item_limit = 8
+replace_on_item_select = true
+use_timer = true
 
 [node name="WikiContainer" type="VBoxContainer" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer"]
 custom_minimum_size = Vector2(250, 0)

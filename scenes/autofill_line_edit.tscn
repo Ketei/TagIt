@@ -1,6 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://djrqboi0xp74"]
+[gd_scene load_steps=4 format=3 uid="uid://djrqboi0xp74"]
 
 [ext_resource type="Script" path="res://scenes/autofill_line_edit_script.gd" id="1_rnmwe"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d8iny"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3qawp"]
 content_margin_left = 6.0
@@ -31,6 +33,7 @@ focus_neighbor_right = NodePath(".")
 focus_neighbor_bottom = NodePath(".")
 focus_next = NodePath(".")
 focus_previous = NodePath(".")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_d8iny")
 theme_override_styles/panel = SubResource("StyleBoxFlat_3qawp")
 auto_height = true
 

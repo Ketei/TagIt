@@ -1,4 +1,4 @@
-extends VBoxContainer
+extends Control
 
 
 var results: Array[int] = []
