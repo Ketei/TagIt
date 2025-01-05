@@ -1759,9 +1759,5 @@ timeout = 10.0
 [node name="HydrusLargeImage" type="HTTPRequest" parent="."]
 timeout = 10.0
 
-[node name="APITimer" type="Timer" parent="."]
-wait_time = 1.25
-one_shot = true
-
 [node name="eSixAPI" type="Node" parent="."]
 script = ExtResource("55_iynx2")

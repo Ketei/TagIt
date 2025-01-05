@@ -173,7 +173,7 @@ var _suggestion_blacklist: PackedStringArray = []
 #@onready var hydrus_worker: HydrusWorker = $HydrusNode
 @onready var hydrus_images: HydrusWorker = $HydrusNode
 #@onready var search_timer: Timer = $SearchTimer
-@onready var api_timer: Timer = $APITimer
+#@onready var api_timer: Timer = $APITimer
 #@onready var wiki_timer: Timer = $WikiTimer
 #@onready var esix_api: Node = $eSixAPI
 
@@ -1042,6 +1042,9 @@ func on_selector_project_saved(title: String) -> void:
 
 
 func on_selector_project_selected(project_idx: int) -> void:
+	var request_suggestions: bool = TagIt.settings.request_suggestions
+	TagIt.settings.request_suggestions = false
+	
 	var projects := TagItProjectResource.get_projects()
 	clear_all_tagger()
 	
@@ -1083,6 +1086,7 @@ func on_selector_project_selected(project_idx: int) -> void:
 	selector = null
 	current_project = project_idx
 	_save_required = false
+	TagIt.settings.request_suggestions = request_suggestions
 
 
 func on_selector_project_deleted(project_idx: int) -> void:
@@ -1121,6 +1125,8 @@ func on_searcher_close_pressed(instance: Control) -> void:
 
 
 func on_selector_template_selected(template_idx: int) -> void:
+	var request_suggestions: bool = TagIt.settings.request_suggestions
+	TagIt.settings.request_suggestions = false
 	var templates := TemplateResource.get_templates()
 	var template_data: = templates.get_template(template_idx)
 	
@@ -1142,6 +1148,7 @@ func on_selector_template_selected(template_idx: int) -> void:
 	selector.visible = false
 	selector.queue_free()
 	selector = null
+	TagIt.settings.request_suggestions = request_suggestions
 
 
 func on_selector_template_erased(template_idx: int) -> void:
@@ -1670,9 +1677,8 @@ func add_tag(tag_name: String) -> void:
 	if tagger_suggestion_tree.has_suggestion(clean_tag):
 		tagger_suggestion_tree.delete_tag(clean_tag)
 	
-	if TagIt.settings.request_suggestions and api_timer.is_stopped():
+	if TagIt.settings.request_suggestions:
 		ESixAPI.search_suggestions(clean_tag)
-		api_timer.start()
 	
 	_list_changed()
 
