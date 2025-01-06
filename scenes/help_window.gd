@@ -12,6 +12,7 @@ var input_index = 0
 
 
 func _ready() -> void:
+	get_viewport().gui_release_focus()
 	version_label.text = TagIt.TAGIT_VERSION
 	close_button.pressed.connect(close_pressed.emit)
 
