@@ -1,13 +1,19 @@
-[gd_scene load_steps=5 format=3 uid="uid://68qtoj5l80pr"]
+[gd_scene load_steps=7 format=3 uid="uid://68qtoj5l80pr"]
 
 [ext_resource type="Script" path="res://scenes/tools/aliaser_tools.gd" id="1_0nn1x"]
 [ext_resource type="Theme" uid="uid://u13wuypqagrc" path="res://style/table_theme.tres" id="2_h4r6u"]
 [ext_resource type="Texture2D" uid="uid://dhtitxxmyoujx" path="res://icons/create_link_icon.svg" id="2_v18hs"]
 [ext_resource type="Script" path="res://scenes/settings_aliases_tree.gd" id="3_gsod2"]
+[ext_resource type="Texture2D" uid="uid://npwxg0xrpf8j" path="res://icons/pointer_left.svg" id="5_nhmrv"]
+[ext_resource type="Texture2D" uid="uid://cdtejl0p8c4cr" path="res://icons/pointer_right.svg" id="6_6snbo"]
 
 [node name="AliasContainer" type="VBoxContainer"]
+anchors_preset = -1
+anchor_right = 0.55
+anchor_bottom = 0.611111
 size_flags_horizontal = 3
 script = ExtResource("1_0nn1x")
+metadata/_edit_use_anchors_ = true
 
 [node name="ButtonsContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
@@ -55,6 +61,15 @@ theme_override_constants/margin_right = 10
 layout_mode = 2
 alignment = 2
 
+[node name="PrevPageBtn" type="Button" parent="PagesMargin/PageContainer"]
+custom_minimum_size = Vector2(38, 24)
+layout_mode = 2
+size_flags_vertical = 4
+icon = ExtResource("5_nhmrv")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
 [node name="PageSpinBox" type="SpinBox" parent="PagesMargin/PageContainer"]
 layout_mode = 2
 min_value = 1.0
@@ -65,3 +80,12 @@ alignment = 1
 [node name="PageLabel" type="Label" parent="PagesMargin/PageContainer"]
 layout_mode = 2
 text = "/ 1"
+
+[node name="NextPageBtn" type="Button" parent="PagesMargin/PageContainer"]
+custom_minimum_size = Vector2(38, 24)
+layout_mode = 2
+size_flags_vertical = 4
+icon = ExtResource("6_6snbo")
+flat = true
+icon_alignment = 1
+expand_icon = true

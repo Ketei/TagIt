@@ -560,6 +560,8 @@ func on_search_esix_tags_toggled(is_toggled: bool) -> void:
 func on_search_timer_timeout() -> void:
 	if not add_tag_ln_edt.has_focus():
 		return
+	
+	add_tag_ln_edt.clear_list()
 	var clean_text: String = add_tag_ln_edt.text.strip_edges().to_lower()
 	var prefix: bool = clean_text.ends_with(TagIt.SEARCH_WILDCARD)
 	var suffix: bool = clean_text.begins_with(TagIt.SEARCH_WILDCARD)
@@ -587,8 +589,19 @@ func on_search_timer_timeout() -> void:
 	else:
 		results = TagIt.search_for_tag_prefix(clean_text, add_tag_ln_edt.item_limit, true)
 	
+	var id_results: Array[int] = Array(TagIt.get_tags_ids(results).values(), TYPE_INT, &"", null)
+	
+	var tags_with_aliases: Dictionary = TagIt.get_aliases_consequent_names_from(id_results)
+	
 	if not results.is_empty():
-		add_tag_ln_edt.add_items(results)
+		for tag in results:
+			if tags_with_aliases.has(TagIt.get_tag_id(tag)):
+				add_tag_ln_edt.add_item(
+						tag,
+						tags_with_aliases[TagIt.get_tag_id(tag)])
+			else:
+				add_tag_ln_edt.add_item(tag)
+		
 		add_tag_ln_edt.show_items()
 
 
@@ -603,6 +616,9 @@ func on_search_timer_timeout() -> void:
 func on_wiki_timer_timeout() -> void:
 	if not wiki_search_ln_edt.has_focus():
 		return
+	
+	wiki_search_ln_edt.clear_list()
+	
 	var clean_text: String = wiki_search_ln_edt.text.strip_edges().to_lower()
 	var prefix: bool = clean_text.ends_with(TagIt.SEARCH_WILDCARD)
 	var suffix: bool = clean_text.begins_with(TagIt.SEARCH_WILDCARD)
@@ -630,8 +646,14 @@ func on_wiki_timer_timeout() -> void:
 	else:
 		results = TagIt.search_for_tag_prefix(clean_text, wiki_search_ln_edt.item_limit, true, true)
 	
+	#if not results.is_empty():
+		#wiki_search_ln_edt.add_items(results)
+		#wiki_search_ln_edt.show_items()
 	if not results.is_empty():
-		wiki_search_ln_edt.add_items(results)
+		for tag in results:
+			wiki_search_ln_edt.add_item(
+				tag,
+				TagIt.get_alias_name(tag) if TagIt.has_alias(TagIt.get_tag_id(tag)) else "")
 		wiki_search_ln_edt.show_items()
 
 

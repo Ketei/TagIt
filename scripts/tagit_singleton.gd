@@ -502,6 +502,22 @@ func get_aliases_to(tag_id: int) -> Array[int]:
 	return from_tag
 
 
+func get_aliases_consequent_names_from(tag_ids: Array[int]) -> Dictionary:
+	var exisiting_aliases: Dictionary = {}
+	var promt_search: String = "(" + ",".join(tag_ids) + ")"
+	
+	tag_database.query(
+			"SELECT aliases.antecedent AS antecedent_id, tags.name AS consequent_name 
+			FROM aliases 
+			JOIN tags ON aliases.consequent = tags.id 
+			WHERE aliases.antecedent IN " + promt_search + ";")
+	
+	for result in tag_database.query_result:
+		exisiting_aliases[result["antecedent_id"]] = result["consequent_name"]
+	
+	return exisiting_aliases
+
+
 func is_name_aliased(from: String, to: String) -> bool:
 	if not TagIt.has_tag(from) or not TagIt.has_tag(to):
 		return false
@@ -524,10 +540,10 @@ func get_all_alias_names() -> Dictionary:
 		JOIN tags c_tag ON c_tag.id = aliases.consequent")
 	
 	for alias in tag_database.query_result:
-		if not all_aliases.has(alias["from_tag"]):
+		if not all_aliases.has(alias["to_tag"]):
 			all_aliases[alias["to_tag"]] = Array([], TYPE_STRING, &"", null)
 		all_aliases[alias["to_tag"]].append(alias["from_tag"])
-
+	
 	return all_aliases
 
 

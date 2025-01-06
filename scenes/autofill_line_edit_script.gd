@@ -54,7 +54,7 @@ func _input(event: InputEvent) -> void:
 			autofill_list.visible = false
 			get_viewport().set_input_as_handled()
 		elif Input.is_action_just_pressed(&"ui_focus_next"):
-			text = autofill_list.get_item_text(autofill_list.get_selected_items()[0])
+			text = autofill_list.get_item_metadata(autofill_list.get_selected_items()[0])
 			autofill_list.deselect_all()
 			grab_focus()
 			autofill_list.visible = false
@@ -62,8 +62,8 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 		elif Input.is_action_just_pressed(&"ui_accept"):
 			if replace_on_item_select:
-				text = autofill_list.get_item_text(autofill_list.get_selected_items()[0])
-			text_submitted.emit(autofill_list.get_item_text(autofill_list.get_selected_items()[0]))
+				text = autofill_list.get_item_metadata(autofill_list.get_selected_items()[0])
+			text_submitted.emit(autofill_list.get_item_metadata(autofill_list.get_selected_items()[0]))
 			autofill_list.deselect_all()
 			grab_focus()
 			caret_column = text.length()
@@ -125,8 +125,8 @@ func on_list_focus_lost() -> void:
 func on_list_item_selected(index: int, _at_position: Vector2, mouse_button_index: int) -> void:
 	if mouse_button_index == MOUSE_BUTTON_LEFT:
 		if replace_on_item_select:
-			text = autofill_list.get_item_text(index)
-		text_submitted.emit(autofill_list.get_item_text(index))
+			text = autofill_list.get_item_metadata(index)
+		text_submitted.emit(autofill_list.get_item_metadata(index))
 
 
 func add_items(items: Array[String], clear_items: bool = true) -> void:
@@ -147,6 +147,27 @@ func add_items(items: Array[String], clear_items: bool = true) -> void:
 			autofill_list.add_item(items[item_idx])
 			if item_limit <= count:
 				break
+
+
+func add_item(item: String, alias: String = "") -> void:
+	var idx: int = 0
+	if list_direction == 0:
+		if alias.is_empty():
+			idx = autofill_list.add_item(item)
+		else:
+			idx = autofill_list.add_item(item + " → " + alias)
+	else:
+		if alias.is_empty():
+			idx = autofill_list.add_item(item)
+		else:
+			idx = autofill_list.add_item(item + " → " + alias)
+		autofill_list.move_item(idx, 0)
+		idx = 0
+	autofill_list.set_item_metadata(idx, item)
+
+
+func clear_list() -> void:
+	autofill_list.clear()
 
 
 func show_items() -> void:
