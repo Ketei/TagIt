@@ -370,7 +370,6 @@ custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
-texture = ExtResource("3_kmnjd")
 expand_mode = 1
 stretch_mode = 5
 
@@ -758,9 +757,9 @@ script = ExtResource("25_l1y5q")
 
 [node name="AllTagsTree" type="Tree" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer"]
 layout_mode = 2
-anchor_top = 0.0532544
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = 36.0
 size_flags_vertical = 3
 theme = ExtResource("26_8xsa4")
 columns = 7
@@ -775,7 +774,7 @@ metadata/_edit_use_anchors_ = true
 [node name="MenuContainer" type="HBoxContainer" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer"]
 layout_mode = 2
 anchor_right = 1.0
-anchor_bottom = 0.0473373
+offset_bottom = 32.0
 metadata/_edit_use_anchors_ = true
 
 [node name="AllTagsSearchLnEdt" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer" instance=ExtResource("18_btkx1")]

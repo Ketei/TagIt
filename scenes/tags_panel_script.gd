@@ -8,7 +8,7 @@ func _ready() -> void:
 
 
 func on_search_timer_timeout() -> void:
-	var clean_text: String = all_tags_search_ln_edt.text.strip_edges()
+	var clean_text: String = all_tags_search_ln_edt.text.strip_edges().to_lower()
 	var prefix: bool = clean_text.ends_with(TagIt.SEARCH_WILDCARD)
 	var suffix: bool = clean_text.begins_with(TagIt.SEARCH_WILDCARD)
 	

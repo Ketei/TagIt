@@ -122,10 +122,11 @@ func on_list_focus_lost() -> void:
 	hide_items()
 
 
-func on_list_item_selected(index: int) -> void:
-	if replace_on_item_select:
-		text = autofill_list.get_item_text(index)
-	text_submitted.emit(autofill_list.get_item_text(index))
+func on_list_item_selected(index: int, _at_position: Vector2, mouse_button_index: int) -> void:
+	if mouse_button_index == MOUSE_BUTTON_LEFT:
+		if replace_on_item_select:
+			text = autofill_list.get_item_text(index)
+		text_submitted.emit(autofill_list.get_item_text(index))
 
 
 func add_items(items: Array[String], clear_items: bool = true) -> void:

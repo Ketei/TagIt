@@ -560,7 +560,7 @@ func on_search_esix_tags_toggled(is_toggled: bool) -> void:
 func on_search_timer_timeout() -> void:
 	if not add_tag_ln_edt.has_focus():
 		return
-	var clean_text: String = add_tag_ln_edt.text.strip_edges()
+	var clean_text: String = add_tag_ln_edt.text.strip_edges().to_lower()
 	var prefix: bool = clean_text.ends_with(TagIt.SEARCH_WILDCARD)
 	var suffix: bool = clean_text.begins_with(TagIt.SEARCH_WILDCARD)
 	
@@ -603,7 +603,7 @@ func on_search_timer_timeout() -> void:
 func on_wiki_timer_timeout() -> void:
 	if not wiki_search_ln_edt.has_focus():
 		return
-	var clean_text: String = wiki_search_ln_edt.text.strip_edges()
+	var clean_text: String = wiki_search_ln_edt.text.strip_edges().to_lower()
 	var prefix: bool = clean_text.ends_with(TagIt.SEARCH_WILDCARD)
 	var suffix: bool = clean_text.begins_with(TagIt.SEARCH_WILDCARD)
 	
@@ -773,6 +773,7 @@ func instantiate_save_selector() -> void:
 	selector.card_saved.connect(on_selector_project_saved)
 	selector.close_pressed.connect(on_selector_close_pressed)
 	add_child(selector)
+	selector.set_emit_signals(false)
 	selector.play_intro()
 	await selector.intro_finished
 	selector.queue_card(
@@ -780,6 +781,8 @@ func instantiate_save_selector() -> void:
 		"",
 		project_image.texture)
 	selector.create_queued_cards()
+	await selector.cards_displayed
+	selector.set_emit_signals(true)
 
 
 func instance_project_loader_selector() -> void:
@@ -787,6 +790,7 @@ func instance_project_loader_selector() -> void:
 	selector.use_descriptions = false
 	selector.dim_background = true
 	add_child(selector)
+	selector.set_emit_signals(false)
 	selector.card_selected.connect(on_selector_project_selected)
 	selector.close_pressed.connect(on_selector_close_pressed)
 	selector.card_deleted.connect(on_selector_project_deleted)
@@ -804,6 +808,8 @@ func instance_project_loader_selector() -> void:
 			"",
 			texture)
 	selector.create_queued_cards()
+	await selector.cards_displayed
+	selector.set_emit_signals(true)
 
 
 func instantiate_text_loader() -> void:
@@ -831,6 +837,7 @@ func instance_preset_selector() -> void:
 	selector = IMAGE_FILE_SELECTOR.instantiate()
 	selector.dim_background = true
 	add_child(selector)
+	selector.set_emit_signals(false)
 	selector.card_selected.connect(on_selector_template_selected)
 	selector.close_pressed.connect(on_selector_close_pressed)
 	selector.card_deleted.connect(on_selector_template_erased)
@@ -849,6 +856,8 @@ func instance_preset_selector() -> void:
 				template["description"],
 				texture)
 	selector.create_queued_cards()
+	await selector.cards_displayed
+	selector.set_emit_signals(true)
 
 
 func instantiate_wizard() -> void:
@@ -1009,6 +1018,7 @@ func clear_all_tagger() -> void:
 
 
 func on_selector_project_saved(title: String) -> void:
+	selector.set_emit_signals(false)
 	var projects := TagItProjectResource.get_projects()
 	var alts: Array[Dictionary] = []
 	
@@ -1046,6 +1056,7 @@ func on_selector_project_saved(title: String) -> void:
 
 
 func on_selector_project_selected(project_idx: int) -> void:
+	selector.set_emit_signals(false)
 	var request_suggestions: bool = TagIt.settings.request_suggestions
 	TagIt.settings.request_suggestions = false
 	
@@ -1100,6 +1111,7 @@ func on_selector_project_deleted(project_idx: int) -> void:
 
 
 func on_selector_close_pressed() -> void:
+	selector.set_emit_signals(false)
 	selector.stop_queued_cards()
 	selector.play_outro()
 	await selector.outro_finished
@@ -1129,6 +1141,7 @@ func on_searcher_close_pressed(instance: Control) -> void:
 
 
 func on_selector_template_selected(template_idx: int) -> void:
+	selector.set_emit_signals(false)
 	var request_suggestions: bool = TagIt.settings.request_suggestions
 	TagIt.settings.request_suggestions = false
 	var templates := TemplateResource.get_templates()

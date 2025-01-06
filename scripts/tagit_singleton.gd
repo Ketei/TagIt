@@ -17,8 +17,9 @@ signal website_created(site_id: int, site_name: String)
 signal website_deleted(site_id: int)
 
 #const PROJECTS_PATH: String = "res://test_project_database.db"
-const DATABASE_PATH: String = "res://test_tag_database.db"
-const THUMBNAIL_FOLDER: String = "res://thumbnails/"
+#const DATABASE_PATH: String = "res://test_tag_database.db"
+#const THUMBNAIL_FOLDER: String = "res://thumbnails/"
+var DATABASE_PATH: String = ""
 const SEARCH_WILDCARD: String = "*"
 const DB_VERSION: int = 1
 const TAGIT_VERSION: String = "3.0.0"
@@ -49,6 +50,15 @@ var _default_icon_color: Color = Color.WHITE
 
 
 func _ready() -> void:
+	# ---- Beta testing -----
+	if OS.has_feature("standalone"):  # Check if running in exported executable
+		DATABASE_PATH = OS.get_executable_path()
+		if not DATABASE_PATH.ends_with("/"):
+			DATABASE_PATH += "/"
+		DATABASE_PATH += "test_tag_database.db"
+	else:
+		DATABASE_PATH = "res://test_tag_database.db"  # Use the project root if in the editor
+	
 	settings = AppSettingsRes.get_settings()
 	
 	if not DirAccess.dir_exists_absolute(TemplateResource.TEMPLATE_PATH.get_base_dir()):
@@ -414,42 +424,39 @@ func add_alias(from: String, to: String) -> void:
 
 
 func add_aliases(from: Array[String], to: String) -> void:
-	var from_ids: Array[int] = [] # Stores new
-	var existing_aliases: Array[int] = [] # Stores existing
+	var new_tags: Array[String] = []
+	var consequent_id: int = 0
+	var new_rows: Array[Dictionary] = []
+
+	for tag in from:
+		if not has_tag(tag):
+			new_tags.append(tag)
 	
-	var new_empty: Array[String] = []
+	if not has_tag(to) and not new_tags.has(to):
+		new_tags.append(to)
 	
-	for ant_string in from:
-		if has_tag(ant_string):
-			existing_aliases.append(get_tag_id(ant_string))
-		else:
-			new_empty.append(ant_string)
+	if not new_tags.is_empty():
+		create_empty_tags(new_tags, true)
 	
-	if not new_empty.is_empty():
-		create_empty_tags(new_empty)
+	consequent_id = get_tag_id(to)
 	
-	from_ids.append_array(get_tags_ids(new_empty).values())
+	var from_ids: Array[int] = Array(get_tags_ids(from).values(), TYPE_INT, &"", null)
+	var from_string = "(" + ",".join(from_ids) + ")"
 	
-	var from_string: String = "(" + ", ".join(existing_aliases) + ")"
-	
-	if not has_tag(to):
-		create_empty_tag(to)
-	
-	var consequent_id: int = get_tag_id(to)
-	
+	var existing_aliases: Array[int] = []
 	tag_database.query(
 			"SELECT antecedent FROM aliases WHERE consequent = " + str(consequent_id) +\
 			" AND antecedent in " + from_string + ";")
+	for result in tag_database.query_result:
+		existing_aliases.append(result["antecedent"])
+	existing_aliases.sort()
 	
-	for existing_antecedent in tag_database.query_result:
-		existing_aliases.erase(existing_antecedent["antecedent"])
-	
-	Arrays.append_uniques(from_ids, existing_aliases)
-	
-	var new_rows: Array[Dictionary] = []
-	
-	for new_alias in from_ids:
-		new_rows.append({"antecedent": new_alias, "consequent": consequent_id})
+	for from_id in from_ids:
+		if Arrays.binary_search(existing_aliases, from_id) == -1:
+			new_rows.append(
+					{
+						"antecedent": from_id,
+						"consequent": consequent_id})
 	
 	tag_database.insert_rows("aliases", new_rows)
 
@@ -831,18 +838,20 @@ func add_suggestions(to: int, add: Array[String]) -> void:
 	existing.sort()
 	
 	var new_empty: Array[String] = []
+	
 	for suggestion in add:
 		if not has_tag(suggestion):
 			#create_empty_tag(suggestion)
 			new_empty.append(suggestion)
+	
 	if not new_empty.is_empty():
 		create_empty_tags(new_empty)
 	
-	var ids: Dictionary = get_tags_ids(new_empty)
+	var ids: Array[int] = Array(get_tags_ids(add).values(), TYPE_INT, &"", null)
 	
-	for tag_str in ids:
-		if Arrays.binary_search(existing, ids[tag_str]) == -1:
-			new_rows.append({"tag_id": to, "suggestion_id": ids[tag_str]})
+	for add_id in ids:
+		if Arrays.binary_search(existing, add_id) == -1:
+			new_rows.append({"tag_id": to, "suggestion_id": add_id})
 	
 	tag_database.insert_rows("suggestions", new_rows)
 
@@ -1326,9 +1335,9 @@ func search_for_tag_prefix(text: String, limit: int = 10, use_distance: bool = f
 		loop += 1
 		
 		if use_distance:
-			distance = Strings.levenshtein_distance(text, target_array[search_index].substr(0, text.length()))
+			distance = Strings.levenshtein_distance(text.to_upper(), target_array[search_index].substr(0, text.length()).to_upper())
 		else:
-			distance = 1.0 if target_array[search_index].begins_with(text) else 0.0
+			distance = 1.0 if target_array[search_index].to_upper().begins_with(text.to_upper()) else 0.0
 		
 		if LEV_DISTANCE <= distance:
 			current += 1
@@ -1353,9 +1362,9 @@ func search_for_tag_suffix(text: String, limit: int = 10, use_distance: bool = f
 		loop += 1
 		
 		if use_distance:
-			distance = Strings.levenshtein_distance(text, tag.substr(maxi(0, tag.length() - text.length())))
+			distance = Strings.levenshtein_distance(text.to_upper(), tag.substr(maxi(0, tag.length() - text.length())).to_upper())
 		else:
-			distance = 1.0 if tag.ends_with(text) else 0.0
+			distance = 1.0 if tag.to_upper().ends_with(text.to_upper()) else 0.0
 		
 		if LEV_DISTANCE <= distance:
 			current += 1
@@ -1379,7 +1388,7 @@ func search_for_tag_contains(text: String, limit: int = 10, use_distance: bool =
 			#for piece in Strings.split_overlapping(tag, clampi(text.length(), 1, tag.length())):
 			for i in range(tag.length() - text.length() + 1):
 				var piece = tag.substr(i, text.length())
-				if LEV_DISTANCE <= Strings.levenshtein_distance(text, piece):
+				if LEV_DISTANCE <= Strings.levenshtein_distance(text.to_upper(), piece.to_upper()):
 					current += 1
 					results.append(tag)
 					break
