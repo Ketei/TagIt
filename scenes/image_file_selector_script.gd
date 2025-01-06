@@ -6,6 +6,7 @@ signal card_deleted(card_index: int)
 signal card_saved(card_title: String)
 signal intro_finished
 signal outro_finished
+signal cards_displayed
 
 const CARD_CONTAINER = preload("res://scenes/card_container.tscn")
 @export_range(0.05, 1.0, 0.01, "or_greater") var section_in_time: float = 1.0
@@ -37,20 +38,27 @@ func _ready() -> void:
 	search_panel.visible = false
 	dim_light.visible = false
 	black.size_flags_stretch_ratio = 0.0
+	container.cards_displayed.connect(on_cards_displayed)
 	close_button.pressed.connect(close_pressed.emit)
 	search_ln_edt.text_submitted.connect(on_search_text_submitted)
-	#play_intro()
-	#await intro_finished
-	#create_cards([create_card_dictionary("Title", "desc", null)])
-	#play_intro()
-	#await intro_finished
-	#create_cards(
-		#[create_card_dictionary("ass", "bass", null), create_card_dictionary("ass", "bass", null), create_card_dictionary("ass", "bass", null), create_card_dictionary("ass", "bass", null), create_card_dictionary("ass", "bass", null), create_card_dictionary("ass", "bass", null)]
-	#)
-	#await get_tree().create_timer(1).timeout
-	#create_cards(
-		#[create_card_dictionary("ass", "bass", null), create_card_dictionary("ass", "bass", null), create_card_dictionary("ass", "bass", null), create_card_dictionary("ass", "bass", null), create_card_dictionary("ass", "bass", null), create_card_dictionary("ass", "bass", null)]
-	#)
+
+
+func _input(_event: InputEvent) -> void:
+	if Input.is_action_just_pressed(&"ui_cancel") and _allow_signals:
+		close_pressed.emit()
+		get_viewport().set_input_as_handled()
+
+
+func on_cards_displayed() -> void:
+	cards_displayed.emit()
+
+
+func set_emit_signals(emit_signals: bool) -> void:
+	_allow_signals = emit_signals
+
+
+func emits_signals() -> bool:
+	return _allow_signals
 
 
 func on_search_text_submitted(new_text: String) -> void:
@@ -73,8 +81,8 @@ func create_cards(card_data: Array[Dictionary]) -> void:
 		new_card.card_selected.connect(on_card_selected.bind(new_card))
 		new_card.card_confirmed.connect(on_card_confirmed.bind(new_card))
 		new_card.card_deleted.connect(on_card_deleted.bind(new_card))
-		new_card.card_saved.connect(card_saved.emit)
-		new_card.card_cancelled.connect(close_pressed.emit)
+		new_card.card_saved.connect(on_card_saved)
+		new_card.card_cancelled.connect(on_card_cancelled)
 		container.queue_child_entry(new_card)
 	container.enter_children()
 
@@ -91,8 +99,14 @@ func queue_card(title: String, description: String, image: Texture2D) -> void:
 	new_card.card_confirmed.connect(on_card_confirmed.bind(new_card))
 	new_card.card_deleted.connect(on_card_deleted.bind(new_card))
 	new_card.card_saved.connect(on_card_saved)
-	new_card.card_cancelled.connect(close_pressed.emit)
+	new_card.card_cancelled.connect(on_card_cancelled)
 	container.queue_child_entry(new_card)
+
+
+func on_card_cancelled() -> void:
+	if not _allow_signals:
+		return
+	close_pressed.emit()
 
 
 func on_card_saved(title: String) -> void:
@@ -121,12 +135,9 @@ func play_intro() -> void:
 		close_button.visible = true
 	margin.visible = true
 	intro_finished.emit()
-	_allow_signals = true
 
 
 func play_outro() -> void:
-	_allow_signals = false
-	
 	if use_close:
 		close_button.visible = false
 	if use_search:

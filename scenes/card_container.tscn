@@ -114,7 +114,7 @@ layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 4.0
 expand_mode = 1
-stretch_mode = 5
+stretch_mode = 6
 
 [node name="DescLabel" type="Label" parent="MenuCard/MainMargin/MainContainer"]
 custom_minimum_size = Vector2(330, 80)

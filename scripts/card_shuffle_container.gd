@@ -1,6 +1,8 @@
 extends Container
 
 
+signal cards_displayed
+
 # Called when the node enters the scene tree for the first time.
 
 @export_enum("Left", "Right", "Up", "Down") var enter_direction: int = 0
@@ -181,6 +183,7 @@ func enter_children() -> void:
 		_break = false
 	
 	if queued_children.is_empty():
+		cards_displayed.emit()
 		return
 	
 	var _queued_children: Array[Control] = queued_children.duplicate()
@@ -273,6 +276,7 @@ func enter_children() -> void:
 			child.modulate = Color.WHITE
 		if _break:
 			break
+	cards_displayed.emit()
 
 
 func drop_card(card: Control) -> void:
