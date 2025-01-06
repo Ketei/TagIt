@@ -1,4 +1,4 @@
-[gd_scene load_steps=64 format=3 uid="uid://eaxngd263vbi"]
+[gd_scene load_steps=63 format=3 uid="uid://eaxngd263vbi"]
 
 [ext_resource type="Script" path="res://scenes/tagit_main_window.gd" id="1_3rneb"]
 [ext_resource type="Texture2D" uid="uid://kkvcqst6wv4k" path="res://icons/new_icon.svg" id="2_3s1fn"]
@@ -48,7 +48,6 @@
 [ext_resource type="Script" path="res://scenes/websites_opt_btn.gd" id="32_cix75"]
 [ext_resource type="Texture2D" uid="uid://otmkm27eyfy" path="res://icons/expand_down_icon.svg" id="33_crsq3"]
 [ext_resource type="Texture2D" uid="uid://bowshto8a3l5u" path="res://icons/check_cross_icon.svg" id="34_gixbi"]
-[ext_resource type="Script" path="res://scenes/tags_panel_script.gd" id="34_nfqa4"]
 [ext_resource type="Texture2D" uid="uid://clhle5w66lto8" path="res://icons/new_site_icon.svg" id="35_7aqje"]
 [ext_resource type="Script" path="res://scenes/settings_sites_tree.gd" id="35_mgbqt"]
 [ext_resource type="Texture2D" uid="uid://dd8iryk1xpuuf" path="res://icons/icon_checked.svg" id="35_n2tab"]
@@ -740,7 +739,6 @@ visible = false
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = ExtResource("2_u628d")
-script = ExtResource("34_nfqa4")
 
 [node name="TagsMargin" type="MarginContainer" parent="MainContainer/TagsPanel"]
 layout_mode = 2

@@ -10,6 +10,7 @@ var groups: Dictionary = {}
 @onready var pages_label: Label = $MenuContainer/ButtonButtons/PageContainer/PagesLabel
 @onready var prev_page: Button = $MenuContainer/ButtonButtons/PageContainer/PrevPage
 @onready var next_page: Button = $MenuContainer/ButtonButtons/PageContainer/NextPage
+@onready var all_tags_search_ln_edt: LineEdit = $MenuContainer/AllTagsSearchLnEdt
 
 
 func _ready() -> void:
@@ -22,12 +23,51 @@ func _ready() -> void:
 	
 	next_page.pressed.connect(on_arrow_button_pressed.bind(1))
 	prev_page.pressed.connect(on_arrow_button_pressed.bind(-1))
+	all_tags_search_ln_edt.timer_finished.connect(on_search_timer_timeout)
 	TagIt.category_created.connect(on_categories_changed)
 	TagIt.category_deleted.connect(on_categories_changed)
 	TagIt.group_created.connect(on_groups_changed)
 	TagIt.group_deleted.connect(on_groups_changed)
 	TagIt.category_color_updated.connect(on_category_color_changed)
 	TagIt.category_icon_updated.connect(on_category_icon_changed)
+
+
+func on_search_timer_timeout() -> void:
+	var clean_text: String = all_tags_search_ln_edt.text.strip_edges().to_lower()
+	var prefix: bool = clean_text.ends_with(TagIt.SEARCH_WILDCARD)
+	var suffix: bool = clean_text.begins_with(TagIt.SEARCH_WILDCARD)
+	
+	all_tags_search_ln_edt.clear_list()
+	
+	if prefix:
+		clean_text = clean_text.trim_prefix(TagIt.SEARCH_WILDCARD).strip_edges(true, false)
+	if suffix:
+		clean_text = clean_text.trim_suffix(TagIt.SEARCH_WILDCARD).strip_edges(false, true)
+	
+	while clean_text.begins_with(TagIt.SEARCH_WILDCARD):
+		clean_text = clean_text.trim_prefix(TagIt.SEARCH_WILDCARD).strip_edges(true, false)
+	
+	while clean_text.ends_with(TagIt.SEARCH_WILDCARD):
+		clean_text = clean_text.trim_suffix(TagIt.SEARCH_WILDCARD).strip_edges(false, true)
+	
+	if clean_text.is_empty():
+		return
+	
+	var results: PackedStringArray = []
+	
+	if prefix and suffix:
+		results = TagIt.search_for_tag_contains(clean_text, all_tags_search_ln_edt.item_limit, true, true)
+	elif suffix:
+		results = TagIt.search_for_tag_suffix(clean_text, all_tags_search_ln_edt.item_limit, true, true)
+	else:
+		results = TagIt.search_for_tag_prefix(clean_text, all_tags_search_ln_edt.item_limit, true, true)
+	
+	if not results.is_empty():
+		for tag in results:
+			all_tags_search_ln_edt.add_item(
+				tag,
+				TagIt.get_alias_name(tag) if TagIt.has_alias(TagIt.get_tag_id(tag)) else "")
+		all_tags_search_ln_edt.show_items()
 
 
 func set_prev_arrow_disabled(disabled: bool) -> void:

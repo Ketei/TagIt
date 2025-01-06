@@ -285,6 +285,8 @@ func on_search_timer_timeout(search_line: LineEdit) -> void:
 	var prefix: bool = clean_text.ends_with(TagIt.SEARCH_WILDCARD)
 	var suffix: bool = clean_text.begins_with(TagIt.SEARCH_WILDCARD)
 	
+	search_line.clear_list()
+	
 	if prefix:
 		clean_text = clean_text.trim_prefix(TagIt.SEARCH_WILDCARD).strip_edges(true, false)
 	if suffix:
@@ -309,9 +311,15 @@ func on_search_timer_timeout(search_line: LineEdit) -> void:
 		results = TagIt.search_for_tag_prefix(clean_text, search_line.item_limit, true)
 	
 	if not results.is_empty():
-		search_line.add_items(results)
+		for tag in results:
+			search_line.add_item(
+				tag,
+				TagIt.get_alias_name(tag) if TagIt.has_alias(TagIt.get_tag_id(tag)) else "")
 		search_line.show_items()
-
+	
+	#if not results.is_empty():
+		#search_line.add_items(results)
+		#search_line.show_items()
 
 
 func clear_all() -> void:
