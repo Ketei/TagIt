@@ -646,14 +646,9 @@ func on_wiki_timer_timeout() -> void:
 	else:
 		results = TagIt.search_for_tag_prefix(clean_text, wiki_search_ln_edt.item_limit, true, true)
 	
-	#if not results.is_empty():
-		#wiki_search_ln_edt.add_items(results)
-		#wiki_search_ln_edt.show_items()
 	if not results.is_empty():
 		for tag in results:
-			wiki_search_ln_edt.add_item(
-				tag,
-				TagIt.get_alias_name(tag) if TagIt.has_alias(TagIt.get_tag_id(tag)) else "")
+			wiki_search_ln_edt.add_item(tag)
 		wiki_search_ln_edt.show_items()
 
 

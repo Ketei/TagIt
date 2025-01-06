@@ -53,20 +53,18 @@ func on_search_timer_timeout() -> void:
 	if clean_text.is_empty():
 		return
 	
-	var results: PackedStringArray = []
+	var autofill_results: PackedStringArray = []
 	
 	if prefix and suffix:
-		results = TagIt.search_for_tag_contains(clean_text, all_tags_search_ln_edt.item_limit, true, true)
+		autofill_results = TagIt.search_for_tag_contains(clean_text, all_tags_search_ln_edt.item_limit, true, true)
 	elif suffix:
-		results = TagIt.search_for_tag_suffix(clean_text, all_tags_search_ln_edt.item_limit, true, true)
+		autofill_results = TagIt.search_for_tag_suffix(clean_text, all_tags_search_ln_edt.item_limit, true, true)
 	else:
-		results = TagIt.search_for_tag_prefix(clean_text, all_tags_search_ln_edt.item_limit, true, true)
+		autofill_results = TagIt.search_for_tag_prefix(clean_text, all_tags_search_ln_edt.item_limit, true, true)
 	
-	if not results.is_empty():
-		for tag in results:
-			all_tags_search_ln_edt.add_item(
-				tag,
-				TagIt.get_alias_name(tag) if TagIt.has_alias(TagIt.get_tag_id(tag)) else "")
+	if not autofill_results.is_empty():
+		for tag in autofill_results:
+			all_tags_search_ln_edt.add_item(tag)
 		all_tags_search_ln_edt.show_items()
 
 
