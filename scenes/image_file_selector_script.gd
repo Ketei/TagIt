@@ -27,6 +27,7 @@ var _allow_signals: bool = true
 @onready var search_ln_edt: LineEdit = $VBoxContainer/CenterContainer/SearchPanel/SearchLnEdt
 @onready var dim_light: ColorRect = $DimLight
 @onready var search_panel: PanelContainer = $VBoxContainer/CenterContainer/SearchPanel
+@onready var scroller: SmoothScrollContainer = $VBoxContainer/PanelContainer/MarginContainer/SmoothScrollContainer
 
 
 
@@ -162,6 +163,23 @@ func on_card_selected(card: Control) -> void:
 		container.unfocus_child(focused_child)
 	focused_child = card
 	container.focus_child(card)
+	var container_rect := card.get_global_rect()
+	var viewport := margin.get_global_rect()#get_viewport_rect()
+	var scroll_offset: Vector2 = Vector2.ZERO
+	#scroller.ensure_control_visible(card)
+	if not viewport.encloses(container_rect):
+		if container.alignment == 0: # Horizontal:
+			if container_rect.position.x < 0:
+				scroll_offset.x = container_rect.position.x - container.child_separation - margin.get_theme_constant("margin_left") - container.child_separation
+			elif container_rect.position.x + container_rect.size.x > viewport.size.x:
+				scroll_offset.x = container_rect.position.x + container_rect.size.x - viewport.size.x + margin.get_theme_constant("margin_right") + container.child_separation
+			scroller.scroll_x_to(-(scroller.scroll_horizontal + scroll_offset.x), 0.50)
+		else:
+			if container_rect.position.y < 0:
+				scroll_offset.y = container_rect.position.y  # Scroll up
+			elif container_rect.position.y + container_rect.size.y > viewport.size.y:
+				scroll_offset.y = container_rect.position.y + container_rect.size.y - viewport.size.y  # Scroll down
+			scroller.scroll_y_to(-(scroller.scroll_vertical + scroll_offset.y))
 
 
 func on_card_confirmed(card: Control) -> void:

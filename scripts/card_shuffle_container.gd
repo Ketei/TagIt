@@ -201,13 +201,13 @@ func enter_children() -> void:
 		last_target_vector = Vector2(
 			new_custom_minimum_size.x,
 			0)
-		
 		#new_custom_minimum_size.x += initial_margin
 		
 	else:
 		last_target_vector = Vector2(
 			0,
 			custom_minimum_size.y)
+	
 	
 	for child in _queued_children:
 		child.modulate = Color.TRANSPARENT
@@ -229,6 +229,7 @@ func enter_children() -> void:
 				new_custom_minimum_size.x = child.size.x
 	
 	new_custom_minimum_size.x += initial_margin
+	
 	change_custom_minimum_size(new_custom_minimum_size.x, new_custom_minimum_size.y)
 	
 	var current_card: int = 0
@@ -237,10 +238,8 @@ func enter_children() -> void:
 		current_card += 1
 		var target_position: Vector2 = last_target_vector
 		if alignment == 0: #Horizontal
-			if child.get_index() != 0:
-				target_position.x += child_separation 
-			else:
-				target_position.x += initial_margin
+			#if child.get_index() != 0:
+				#target_position.x += child_separation 
 			last_target_vector.x += child.size.x + child_separation
 		else:
 			if child.get_index() != 0:
