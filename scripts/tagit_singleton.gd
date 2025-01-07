@@ -82,6 +82,9 @@ func _ready() -> void:
 	tag_database.open_db()
 	#projects_database.open_db()
 	
+	# set pragmas on tag database to improve i/o speed
+	tag_database.query("PRAGMA synchronous = OFF; PRAGMA journal_mode = MEMORY; PRAGMA temp_store = MEMORY;")
+	
 	tag_database.query("SELECT name FROM sqlite_master WHERE type = 'table';")
 	#projects_database.query("SELECT name FROM sqlite_master WHERE type = 'table';")
 	if tag_database.query_result.is_empty():
