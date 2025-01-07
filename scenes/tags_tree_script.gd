@@ -39,9 +39,10 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 	
 	var tags_data: Dictionary = TagIt.get_tags_data(ids)
 	var categories: Dictionary = TagIt.get_categories()
+	var last_tag: TreeItem = null
 	
 	for data_id in tags_data:
-		add_tag(
+		last_tag = add_tag(
 			data_id,
 			tags_data[data_id]["tag"],
 			tags_data[data_id]["tooltip"],
@@ -50,7 +51,7 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 			Color.from_string(categories[tags_data[data_id]["category"]]["icon_color"], Color.WHITE))
 	
 	for generic_tag in names:
-		add_tag(
+		last_tag = add_tag(
 			-1,
 			generic_tag,
 			generic_tag,
@@ -58,17 +59,20 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 			1,
 			TagIt.get_category_icon_color(1))
 	
+	
 	if not data["is_group"]:
 		data["tree"].delete_tags(data["tag_names"])
+	
+	scroll_to_item(last_tag)
 
 
 func on_focus_lost() -> void:
 	deselect_all()
 
 
-func add_tag(tag_id: int, tag_name: String, tooltip: String, icon: Texture2D, category: int, color: Color) -> void:
+func add_tag(tag_id: int, tag_name: String, tooltip: String, icon: Texture2D, category: int, color: Color) -> TreeItem:
 	if has_item(get_root(), tag_name, 0):
-		return
+		return null
 	
 	var new_tag: TreeItem = get_root().create_child()
 	
@@ -85,7 +89,8 @@ func add_tag(tag_id: int, tag_name: String, tooltip: String, icon: Texture2D, ca
 	if not new_tag.get_metadata(0)["valid"]:
 		new_tag.set_custom_color(0, Color.CRIMSON)
 	
-	new_tag.collapsed = true
+	#new_tag.collapsed = true
+	return new_tag
 
 
 func has_tag(tag_text: String) -> bool:

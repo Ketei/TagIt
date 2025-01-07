@@ -1288,7 +1288,7 @@ func sort_tag_ids_by_priority(tag_ids: Array[int]) -> Dictionary:
 	if not editing.is_empty():
 		if not sorted_ids.has(0):
 			sorted_ids[0] = Array([], TYPE_INT, &"", null)
-		sorted_ids[0].append_array(sorted_ids)
+		sorted_ids[0].append_array(editing)
 	
 	return sorted_ids
 

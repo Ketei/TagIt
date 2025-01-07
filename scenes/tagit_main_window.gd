@@ -1022,9 +1022,10 @@ func clear_all_tagger() -> void:
 	project_image.texture = null
 	clear_img_btn.disabled = true
 	generate_version_opt_btn.clear()
-	for alt in range(alt_opt_btn.item_count):
-		if alt == 0:
-			continue
+	for alt in range(alt_opt_btn.item_count - 1, 0, -1):
+		print(alt_opt_btn.get_item_text(alt))
+		#if alt == 0:
+			#continue
 		alt_opt_btn.remove_item(alt)
 	delete_alt_list_btn.disabled = true
 	tags_label.clear()
@@ -1085,8 +1086,8 @@ func on_selector_project_selected(project_idx: int) -> void:
 	
 	for suggestion in projects.projects[project_idx]["suggestions"]:
 		if TagIt.has_tag(suggestion):
-			var id: int = TagIt.get_tag_id(suggestion)
-			if not tagger_suggestion_tree.has_suggestion_id(id):
+			#var id: int = TagIt.get_tag_id(suggestion)
+			if not tagger_suggestion_tree.has_suggestion(suggestion):
 				tagger_suggestion_tree.add_suggestion(suggestion)
 		else:
 			tagger_suggestion_tree.add_suggestion(suggestion)
@@ -1704,7 +1705,7 @@ func add_tag(tag_name: String) -> void:
 			icon_color = Color.from_string(cat_data["icon_color"], icon_color)
 			tooltip = tag_data["tooltip"]
 	
-	tags_tree.add_tag(
+	var target_tree: TreeItem = tags_tree.add_tag(
 			tag_id,
 			clean_tag,
 			tooltip,
@@ -1717,6 +1718,8 @@ func add_tag(tag_name: String) -> void:
 	
 	if TagIt.settings.request_suggestions:
 		ESixAPI.search_suggestions(clean_tag)
+	
+	tags_tree.scroll_to_item(target_tree, false)
 	
 	_list_changed()
 
