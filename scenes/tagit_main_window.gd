@@ -362,7 +362,8 @@ func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		if _save_required:
 			var save_confirmation := preload("res://scenes/dialogs/unsaved_confirmation_dialog.gd").new()
-			add_child(save_confirmation)
+			add_child.call_deferred(save_confirmation)
+			await save_confirmation.ready
 			save_confirmation.show()
 			var result: int = await save_confirmation.dialog_finished
 			if result == 0: # Save selected. Show Saving and wait for dialog
