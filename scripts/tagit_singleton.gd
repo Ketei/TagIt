@@ -83,7 +83,7 @@ func _ready() -> void:
 	#projects_database.open_db()
 	
 	# set pragmas on tag database to improve i/o speed
-	tag_database.query("PRAGMA synchronous = OFF; PRAGMA journal_mode = MEMORY; PRAGMA temp_store = MEMORY;")
+	tag_database.query("PRAGMA synchronous = NORMAL; PRAGMA journal_mode = WAL; PRAGMA temp_store = MEMORY;")
 	
 	tag_database.query("SELECT name FROM sqlite_master WHERE type = 'table';")
 	#projects_database.query("SELECT name FROM sqlite_master WHERE type = 'table';")
