@@ -121,10 +121,14 @@ func reorder_children() -> void:
 	var total_size: Vector2 = Vector2.ZERO
 	var visible_child: Array[Control] = []
 	
+	total_size.x += initial_margin
+	
+	var added_childs: int = 0
 	for child in get_children():
 		if child is Control:
 			if child.hiding:
 				continue
+			added_childs += 1
 			visible_child.append(child)
 			if alignment == 0: # Horizontal
 				if total_size.y < child.size.y:
@@ -135,8 +139,11 @@ func reorder_children() -> void:
 					total_size.x = child.size.x
 				total_size.y += child.size.y
 	
+	total_size.x += (child_separation * (maxi(0, added_childs - 1))) + initial_margin
+	
 	if alignment == 0: # Horizontal
 		var target_position: Vector2 = Vector2.ZERO
+		target_position.x += initial_margin
 		for child in visible_child:
 			var tween: Tween = create_tween()
 			tween.set_ease(Tween.EASE_OUT)
@@ -145,13 +152,12 @@ func reorder_children() -> void:
 			target_position.x += child.size.x + child_separation
 	else:
 		var target_position: Vector2 = Vector2.ZERO
+		target_position.y += initial_margin
 		for child: Control in get_children():
 			var tween: Tween = create_tween()
 			tween.set_ease(Tween.EASE_OUT)
 			tween.set_trans(Tween.TRANS_CIRC)
 			tween.tween_property(child, ^"position", target_position, position_delay)
-			#child.position.x = 0
-			#child.position.y = total_size.y
 			target_position.y += child.size.y + child_separation
 	
 	custom_minimum_size = total_size if Vector2(350, 500) <= total_size else Vector2(350, 500)
