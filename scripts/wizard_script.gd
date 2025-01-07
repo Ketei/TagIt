@@ -9,6 +9,175 @@ const TWO_COLOR_BODY: String = "two tone"
 const THREE_PLUS_COLOR_BODY: String = "multicolored"
 
 const BIN_ICON = preload("res://icons/bin_icon.svg")
+const CLOTHING: Array[Dictionary] = [
+	{
+		"section": "Topwear",
+		"tag": "topwear",
+		"only_tag": "topwear_only",
+		"options": [
+			"Coat",
+			"Jacket",
+			"Shirt",
+			"Sweater",
+			"Vest"],
+		"score": 150
+	},
+	{
+		"section": "Underwear",
+		"tag": "underwear",
+		"only_tag": "underwear only",
+		"options": [
+			"Boxer briefs",
+			"Boxers (clothing)",
+			"Boy shorts",
+			"Bra",
+			"Briefs",
+			"Jockstrap",
+			"Lingerie",
+			"Panties",
+			"Thong",],
+		"score": 50
+	},
+	{
+		"section": "Bottomwear",
+		"tag": "bottomwear",
+		"only_tag": "bottomwear only",
+		"options": [
+			"Loincloth",
+			"Pants",
+			"Shorts",
+			"Skirt",],
+		"score": 150
+	},
+	{
+		"section": "Legwear",
+		"tag": "Legwear",
+		"only_tag": "legwear only",
+		"options": [
+			"Fishnet legwear",
+			"Knee highs",
+			"Leggings",
+			"Leg warmers",
+			"Leg wraps",
+			"Pantyhose",
+			"Stockings",
+			"Tights",
+			"Thigh highs",],
+		"score": 10
+	},
+	{
+		"section": "Armwear",
+		"tag": "armwear",
+		"only_tag": "armwear only",
+		"options": [
+			"Arm warmers",
+			"Bridal gauntlets",
+			"Detached sleeves",
+			"Elbow gloves",
+			"Elbow gloves",
+			"Fishnet armwear",
+			"Wrist warmers"],
+		"score": 10
+	},
+	{
+		"section": "Handwear",
+		"tag": "handwear",
+		"only_tag": "handwear only",
+		"options":[
+			"Boxing gloves",
+			"Fishnet handwear",
+			"Gloves",
+			"Mittens",
+			"Oven mitts",],
+		"score": 10
+	},
+	{
+		"section": "Footwear",
+		"tag": "footwear",
+		"only_tag": "footwear only",
+		"options": [
+			"Boots",
+			"Crocs",
+			"Fishnet footwear",
+			"Foot wraps",
+			"High heels",
+			"Mary janes",
+			"Sandals",
+			"Slippers",
+			"Sneakers",
+			"Socks",],
+		"score": 10
+	},
+	{
+		"section": "Headwear",
+		"tag": "headwear",
+		"only_tag": "headwear only",
+		"options": [
+			"Hat",
+			"Hat feather",
+			"Headkerchief",
+			"Headscarf",
+			"Hood",],
+		"score": 10
+	},
+	{
+		"section": "Collar",
+		"tag": "collar",
+		"only_tag": "collar only",
+		"options": [
+			"Chain collar",
+			"Frilly collar",
+			"Leather collar",
+			"Metal collar",
+			"Shock collar",
+			"Spiked collar",
+			"Studded collar",
+		],
+		"score": 0
+	},
+	{
+		"section": "Eyewear",
+		"tag": "eyewear",
+		"only_tag": "eyewear only",
+		"options": [
+			"Blinders",
+			"Blindfold",
+			"Eye patch",
+			"Glasses",
+			"Goggles",
+			"Monocle",
+			"Shutter shades",
+			"Sunglasses",
+			"Visor",
+		],
+		"score": 0
+	},
+	{
+		"section": "Diaper",
+		"tag": "diaper",
+		"only_tag": "diaper only",
+		"options": [
+			"Abuniverse",
+			"Cloth diaper",
+			"Prilly diaper",
+			"Pull-ups (diaper)",
+		],
+		"score": 10
+	}]
+const BODY_TRAITS: Array[Dictionary] = [
+	{"title": "Hair", "tag": "hair"},
+	{"title": "Horns", "tag": "horn"},
+	{"title": "Different colored eyes", "tag": "heterochromia"},
+	{"title": "Breasts", "tag": "breasts"},
+	{"title": "Wings", "tag": "wings"},
+	{"title": "Finger Claws", "tag": "finger claws"},
+	{"title": "Tail", "tag": "tail"},
+	{"title": "Penis", "tag": "penis"},
+	{"title": "Vagina", "tag": "pussy"},
+	{"title": "Anus", "tag": "anus"},
+	{"title": "Paws", "tag": "paws"},
+	{"title": "Pawpads", "tag": "pawpads"},
+	{"title": "Toe Claws", "tag": "toe claws"}]
 
 var characters: Array[Dictionary] = []
 var sections: PackedStringArray = [
@@ -17,7 +186,11 @@ var sections: PackedStringArray = [
 	"Image Angles",
 	"Character Pairings",
 	"Characters"]
-var current_character: int = -1
+var current_character: int = -1:
+	set(new_current):
+		current_character = new_current
+		character_blocked.visible = current_character == -1
+		character_field.modulate = Color(1, 1, 1, 0.392) if current_character == -1 else Color.WHITE
 var current_page: int = 0:
 	set(new_current):
 		current_page = new_current
@@ -26,6 +199,14 @@ var current_page: int = 0:
 		main_panel.get_child(current_page).visible = true
 		current_page_lbl.text = str(current_page + 1)
 		title_label.text = sections[current_page]
+var texture_containers: Array[TextureRect] = []
+var project_texture: Texture2D = null:
+	set(new_texture):
+		project_texture = new_texture
+		if is_node_ready():
+			for tex_rec in texture_containers:
+				tex_rec.texture = new_texture
+				tex_rec.visible = new_texture != null
 
 @onready var title_label: Label = $MainContainer/TitleLabel
 @onready var previous_button: Button = $MainContainer/MarginContainer/NavigationContainer/PreviousButton
@@ -35,25 +216,29 @@ var current_page: int = 0:
 
 @onready var main_panel: PanelContainer = $MainContainer/MainPanel
 
-@onready var body_texture_tree: Tree = $MainContainer/MainPanel/Characters/MainContainer/CharacterField/BodyTextureTree
-@onready var age_opt_btn: OptionButton = $MainContainer/MainPanel/Characters/MainContainer/CharacterField/AgeGenderContainer/AgeMainContainer/AgeContainer/AgeOptBtn
-@onready var lore_age_opt_btn: OptionButton = $MainContainer/MainPanel/Characters/MainContainer/CharacterField/AgeGenderContainer/AgeMainContainer/LoreAgeContainer/LoreAgeOptBtn
-@onready var gender_opt_btn: OptionButton = $MainContainer/MainPanel/Characters/MainContainer/CharacterField/AgeGenderContainer/HBoxContainer/GenderContainer/GenderOptBtn
-@onready var gender_lore_opt_btn: OptionButton = $MainContainer/MainPanel/Characters/MainContainer/CharacterField/AgeGenderContainer/HBoxContainer/GenderLoreContainer/GenderLoreOptBtn
-@onready var body_opt_btn: OptionButton = $MainContainer/MainPanel/Characters/MainContainer/CharacterField/BodyContainer/BodyContainer/BodyOptBtn
+@onready var character_field: VBoxContainer = $MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField
+@onready var character_blocked: Control = $MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterBlocked
+
+
+@onready var body_texture_tree: Tree = $MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/BodyTextureTree
+@onready var age_opt_btn: OptionButton = $MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/AgeMainContainer/AgeContainer/AgeOptBtn
+@onready var lore_age_opt_btn: OptionButton = $MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/AgeMainContainer/LoreAgeContainer/LoreAgeOptBtn
+@onready var gender_opt_btn: OptionButton = $MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/HBoxContainer/GenderContainer/GenderOptBtn
+@onready var gender_lore_opt_btn: OptionButton = $MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/HBoxContainer/GenderLoreContainer/GenderLoreOptBtn
+@onready var body_opt_btn: OptionButton = $MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/BodyContainer/BodyContainer/BodyOptBtn
 @onready var characters_tree: Tree = $MainContainer/MainPanel/Characters/MainContainer/ChracterTree/CharactersTree
-@onready var character_tag_ln_edt: LineEdit = $MainContainer/MainPanel/Characters/MainContainer/CharacterField/NameContainer/CharacterTagLnEdt
-@onready var species_ln_edt: LineEdit = $MainContainer/MainPanel/Characters/MainContainer/CharacterField/BodyContainer/SpeciesBox/SpeciesLnEdt
-@onready var clothing_a: HBoxContainer = $MainContainer/MainPanel/Characters/MainContainer/CharacterField/ClothingContainer/ClothingA
-@onready var clothing_b: HBoxContainer = $MainContainer/MainPanel/Characters/MainContainer/CharacterField/ClothingContainer/ClothingB
+@onready var character_tag_ln_edt: LineEdit = $MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/NameContainer/CharacterTagLnEdt
+@onready var species_ln_edt: LineEdit = $MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/BodyContainer/SpeciesBox/SpeciesLnEdt
+#@onready var clothing_a: HBoxContainer = $MainContainer/MainPanel/Characters/MainContainer/ScrollPanel/CharacterField/ClothingContainer/ClothingA
+#@onready var clothing_b: HBoxContainer = $MainContainer/MainPanel/Characters/MainContainer/ScrollPanel/CharacterField/ClothingContainer/ClothingB
 @onready var new_char_btn: Button = $MainContainer/MainPanel/Characters/MainContainer/ChracterTree/Header/NewCharBtn
 
-@onready var pairing_checkbox_container: VBoxContainer = $MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer
+@onready var pairing_checkbox_container: VBoxContainer = $MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer
 
-@onready var gender_opt_btn_l: OptionButton = $MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer/HBoxContainer/GenderOptBtnL
-@onready var gender_opt_btn_r: OptionButton = $MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer/HBoxContainer/GenderOptBtnR
-@onready var add_pairing_btn: Button = $MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer/AddPairingBtn
-@onready var clear_pairings_btn: Button = $MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ClearPairingsBtn
+@onready var gender_opt_btn_l: OptionButton = $MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer/HBoxContainer/GenderOptBtnL
+@onready var gender_opt_btn_r: OptionButton = $MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer/HBoxContainer/GenderOptBtnR
+@onready var add_pairing_btn: Button = $MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer/AddPairingBtn
+@onready var clear_pairings_btn: Button = $MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ClearPairingsBtn
 
 @onready var bg_opt_btn: OptionButton = $MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/BGContainer/BgOptBtn
 @onready var bg_type_opt_btn: OptionButton = $MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/BGTypeContainer/BGTypeOptBtn
@@ -70,6 +255,8 @@ var current_page: int = 0:
 @onready var location_opt_btn: OptionButton = $MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/LocationContainer/LocationOptBtn
 @onready var sexing: HBoxContainer = $MainContainer/MainPanel/PairingsContainer/PairingsContainer/MinglingContainer/Sexing
 @onready var grouping: HBoxContainer = $MainContainer/MainPanel/PairingsContainer/PairingsContainer/MinglingContainer/Grouping
+@onready var clothing_tree: Tree = $MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/Others/ClothingTree
+@onready var body_traits: Tree = $MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/Others/BodyTraits
 
 # --- Images ---
 @onready var day: TextureRect = $MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Day
@@ -84,14 +271,24 @@ var current_page: int = 0:
 @onready var sky_rect: ColorRect = $MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Background/SkyRect
 @onready var background: TextureRect = $MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Background
 @onready var solid_rect: ColorRect = $MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Background/SolidRect
+#@onready var char_texture: TextureRect = $MainContainer/MainPanel/Characters/MainContainer/ChracterTree/CharTexture
 
 # ---------------
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	texture_containers.append($MainContainer/MainPanel/ImageContainer/HBoxContainer/ImageTexture)
+	texture_containers.append($MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesTexture)
+	texture_containers.append($MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/InteractionTexture)
+	texture_containers.append($MainContainer/MainPanel/Characters/MainContainer/ChracterTree/CharTexture)
+	
 	characters_tree.create_item()
 	body_texture_tree.create_item()
+	clothing_tree.create_item()
+	body_traits.create_item()
 	
+	clothing_tree.set_column_title(0, "Apparel Item")
+	body_traits.set_column_title(0, "Visible Body Trait")
 	body_texture_tree.set_column_title(0, "Body Part")
 	body_texture_tree.set_column_title(1, "Colours")
 	
@@ -116,6 +313,37 @@ func _ready() -> void:
 	
 	media_type_opt_btn.get_popup().max_size.y = 200
 	
+	character_blocked.visible = true
+	
+	for tex_rec in texture_containers:
+		tex_rec.texture = project_texture
+		tex_rec.visible = project_texture != null
+	
+	var idx: int = -1
+	for wear_item in CLOTHING:
+		idx += 1
+		var clothing_part: TreeItem = clothing_tree.get_root().create_child()
+		clothing_part.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
+		clothing_part.set_text(0, wear_item["section"])
+		clothing_part.set_editable(0, true)
+		clothing_part.set_metadata(0, idx)
+		var sub_idx: int = -1
+		for subitem in wear_item["options"]:
+			sub_idx += 1
+			var new_sub: TreeItem = clothing_part.create_child()
+			new_sub.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
+			new_sub.set_editable(0, true)
+			new_sub.set_text(0, subitem)
+			new_sub.set_metadata(0, sub_idx)
+		clothing_part.collapsed = true
+		clothing_part.disable_folding = true
+	
+	for body_trait in BODY_TRAITS:
+		var new_trait: TreeItem = body_traits.get_root().create_child()
+		new_trait.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
+		new_trait.set_text(0, body_trait["title"])
+		new_trait.set_editable(0, true)
+	
 	next_button.pressed.connect(on_next_pressed)
 	previous_button.pressed.connect(on_previous_pressed)
 	new_char_btn.pressed.connect(create_character)
@@ -131,6 +359,20 @@ func _ready() -> void:
 	colored_check_box.toggled.connect(on_colored_toggled)
 	shaded_sketch_box.toggled.connect(on_shaded_toggled)
 	bg_type_opt_btn.item_selected.connect(on_bg_type_selected)
+	clothing_tree.item_edited.connect(_on_cloth_item_edited)
+
+
+func _on_cloth_item_edited() -> void:
+	var edited: TreeItem = clothing_tree.get_edited()
+	
+	if edited.get_parent() != clothing_tree.get_root():
+		return
+	
+	edited.disable_folding = not edited.is_checked(0)
+	if edited.disable_folding and not edited.collapsed:
+		edited.collapsed = true
+	elif not edited.disable_folding and edited.collapsed:
+		edited.collapsed = false
 
 
 func on_shaded_toggled(is_toggled: bool) -> void:
@@ -246,6 +488,20 @@ func create_character(default_name: String = "Unknown Character") -> void:
 	var new_character: TreeItem = characters_tree.get_root().create_child()
 	new_character.set_text(0, default_name)
 	new_character.add_button(0, BIN_ICON, 0, false, "Delete Character")
+	var clothing_array: Array[Dictionary] = []
+	clothing_array.resize(clothing_tree.get_root().get_child_count())
+	
+	var trait_bools: Array[bool] = []
+	trait_bools.resize(body_traits.get_root().get_child_count())
+	
+	var cloth_idx: int = -1
+	for dict in clothing_array:
+		cloth_idx += 1
+		dict["active"] = false
+		var subtype: Array[bool] = []
+		subtype.resize(clothing_tree.get_root().get_child(cloth_idx).get_child_count())
+		dict["subtypes"] = subtype
+	
 	characters.append({
 		"name": default_name,
 		"body": 0,
@@ -255,8 +511,9 @@ func create_character(default_name: String = "Unknown Character") -> void:
 		"age": 4,
 		"lore_age": 0,
 		"bodies": Array([0, 0, 0, 0, 0, 0, 0], TYPE_INT, &"", null),
-		"clothing": 0
-	})
+		"clothing": clothing_array,
+		"traits": trait_bools})
+	
 	new_character.select(0)
 
 
@@ -282,18 +539,22 @@ func clear_character() -> void:
 	age_opt_btn.select(4)
 	lore_age_opt_btn.select(0)
 	
-	for item in body_texture_tree.get_root().get_children():
-		if item.is_checked(0):
-			item.set_checked(0, false)
-		item.set_range(1, 0)
+	#for item in body_texture_tree.get_root().get_children():
+		#if item.is_checked(0):
+			#item.set_checked(0, false)
+		#item.set_range(1, 0)
+	body_texture_tree.get_root().call_recursive(&"set_checked", 0, false)
+	body_texture_tree.get_root().call_recursive(&"set_range", 1, 0)
+	clothing_tree.get_root().call_recursive(&"set_checked", 0, false)
+	body_traits.get_root().call_recursive(&"set_checked", 0, false)
+	#var a:TreeItem = a.set_checked()
+	#for check in clothing_a.get_children():
+		#if check.button_pressed:
+			#check.button_pressed = false
 	
-	for check in clothing_a.get_children():
-		if check.button_pressed:
-			check.button_pressed = false
-	
-	for check in clothing_b.get_children():
-		if check.button_pressed:
-			check.button_pressed = false
+	#for check in clothing_b.get_children():
+		#if check.button_pressed:
+			#check.button_pressed = false
 
 
 func on_bg_type_selected(bg_type: int) -> void:
@@ -337,7 +598,7 @@ func on_bg_type_selected(bg_type: int) -> void:
 
 
 func save_character() -> void:
-	var checked_clothing: int = 0
+	#var checked_clothing: int = 0
 	var body_textures: Array[int] = []
 	
 	for item in body_texture_tree.get_root().get_children():
@@ -350,17 +611,22 @@ func save_character() -> void:
 		
 		body_textures.append(value)
 	
+	var new_clothing: Array[Dictionary] = []
 	
-	var clothing_array: Array[Control] = []
-	clothing_array.append_array(clothing_a.get_children())
-	clothing_array.append_array(clothing_b.get_children())
-	var bit: int = -1
-	for clothing in clothing_array:
-		bit += 1
-		if clothing.button_pressed:
-			checked_clothing |= 1 << bit
-		else:
-			checked_clothing &= ~(1 << bit)
+	for check in clothing_tree.get_root().get_children():
+		var cloth_status: Dictionary = {
+			"active": check.is_checked(0)
+		}
+		var subtypes: Array[bool] = []
+		for subtype in check.get_children():
+			subtypes.append(subtype.is_checked(0))
+		cloth_status["subtypes"] = subtypes
+		new_clothing.append(cloth_status)
+	
+	var selected_traits: Array[bool] = []
+	
+	for trait_tree in body_traits.get_root().get_children():
+		selected_traits.append(trait_tree.is_checked(0))
 	
 	characters[current_character] = {
 		"name": character_tag_ln_edt.text.strip_edges(),
@@ -371,7 +637,8 @@ func save_character() -> void:
 		"age": age_opt_btn.selected,
 		"lore_age": lore_age_opt_btn.selected,
 		"bodies": body_textures,
-		"clothing": checked_clothing}
+		"clothing": new_clothing,
+		"traits": selected_traits}
 
 
 func _on_character_selected() -> void:
@@ -387,11 +654,11 @@ func _on_character_selected() -> void:
 	gender_lore_opt_btn.select(dict["lore_gender"])
 	age_opt_btn.select(dict["age"])
 	lore_age_opt_btn.select(dict["lore_age"])
-	var clothing_array: Array[Control] = []
-	clothing_array.append_array(clothing_a.get_children())
-	clothing_array.append_array(clothing_b.get_children())
+	#var clothing_array: Array[Control] = []
+	#clothing_array.append_array(clothing_a.get_children())
+	#clothing_array.append_array(clothing_b.get_children())
 	
-	var bit_idx: int = -1
+	#var bit_idx: int = -1
 	
 	var body_idx: int = -1
 	var body_root: TreeItem = body_texture_tree.get_root()
@@ -404,10 +671,20 @@ func _on_character_selected() -> void:
 		target.set_checked(0, (body_texture & 4) == 4)
 		target.set_range(1, body_texture & 3)
 	
-	for clothing in clothing_array:
-		bit_idx += 1
-		clothing.button_pressed = dict["clothing"] & 1 << bit_idx
-
+	var check_idx: int = -1
+	for cloth_check in clothing_tree.get_root().get_children():
+		check_idx += 1
+		cloth_check.set_checked(0, dict["clothing"][check_idx]["active"])
+		var subtype_idx: int = -1
+		for subtype in cloth_check.get_children():
+			subtype_idx += 1
+			subtype.set_checked(0, dict["clothing"][check_idx]["subtypes"][subtype_idx])
+	
+	var trait_idx: int = -1
+	for bod_trait in body_traits.get_root().get_children():
+		trait_idx += 1
+		bod_trait.set_checked(0, dict["traits"][trait_idx])
+	
 
 func generate_tags() -> Array[String]:
 	if -1 < current_character:
@@ -462,7 +739,7 @@ func generate_tags() -> Array[String]:
 	if 0 < location_opt_btn.selected:
 		tags.append(location_opt_btn.get_item_text(location_opt_btn.selected))
 	
-	for angle in $MainContainer/MainPanel/AnglesContainer/AnglesHflow.get_children():
+	for angle in $MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow.get_children():
 		if angle.is_angle_selected:
 			tags.append_array(angle.angle_tags)
 	
@@ -492,10 +769,10 @@ func generate_tags() -> Array[String]:
 		_:
 			tags.append("group")
 	
-	var clothing_checks: Array[Control] = []
-	clothing_checks.append_array(clothing_a.get_children())
-	clothing_checks.append_array(clothing_b.get_children())
-	const clothing_scores: PackedInt32Array = [150, 50, 150, 10, 10, 10, 10, 0, 0, 10]
+	#var clothing_checks: Array[Control] = []
+	#clothing_checks.append_array(clothing_a.get_children())
+	#clothing_checks.append_array(clothing_b.get_children())
+	#const clothing_scores: PackedInt32Array = [150, 50, 150, 10, 10, 10, 10, 0, 0, 10]
 	
 	for character in characters:
 		var character_tags: Array[String] = []
@@ -526,20 +803,26 @@ func generate_tags() -> Array[String]:
 				gender_lore_opt_btn.get_item_text(character["lore_gender"]) + " (lore)")
 		
 		var only_wear: bool = true
-		var last_wear: String = ""
+		var last_wear: int = -1
 		
 		var clothing_idx: int = -1
-		for check:CheckBox in clothing_checks:
+		for clothing_dict:Dictionary in character["clothing"]:
 			clothing_idx += 1
-			if character["clothing"] & 1 << clothing_idx:
-				clothing_score += clothing_scores[clothing_idx]
-				character_tags.append(check.text)
-				if only_wear and not last_wear.is_empty():
+			if clothing_dict["active"]:
+				last_wear = clothing_idx
+				clothing_score += CLOTHING[clothing_idx]["score"]
+				character_tags.append(CLOTHING[clothing_idx]["tag"])
+				var subitem_idx: int = -1
+				for subitem:bool in clothing_dict["subtypes"]:
+					subitem_idx += 1
+					if subitem:
+						character_tags.append(CLOTHING[clothing_idx]["options"][subitem_idx])
+				
+				if only_wear and last_wear != -1:
 					only_wear = false
-				last_wear = check.text
 		
-		if only_wear and not last_wear.is_empty():
-			character_tags.append(last_wear + " only")
+		if only_wear and last_wear != -1:
+			character_tags.append(CLOTHING[last_wear]["only_tag"])
 		
 		var body_idx: int = -1
 		for body in character["bodies"]:
@@ -556,11 +839,17 @@ func generate_tags() -> Array[String]:
 					2:
 						character_tags.append(str(THREE_PLUS_COLOR_BODY, " ", body_tag))
 		
+		var trait_idx: int = -1
+		for bod_trait in character["traits"]:
+			trait_idx += 1
+			if bod_trait:
+				character_tags.append(BODY_TRAITS[trait_idx]["tag"])
+		
 		Arrays.append_uniques(tags, character_tags)
-	
-		if 300 <= clothing_score:
+		
+		if 30 <= clothing_score:
 			character_tags.append("fully clothed")
-		elif 200 <= clothing_score:
+		elif 20 <= clothing_score:
 			character_tags.append("mostly clothed")
 		elif 0 < clothing_score:
 			character_tags.append("mostly nude")

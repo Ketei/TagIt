@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://hpbimfahb425"]
+[gd_scene load_steps=41 format=3 uid="uid://hpbimfahb425"]
 
 [ext_resource type="Script" path="res://scripts/view_switcher_panel.gd" id="1_fvq4v"]
 [ext_resource type="Script" path="res://scripts/wizard_script.gd" id="1_whkki"]
@@ -9,7 +9,6 @@
 [ext_resource type="Texture2D" uid="uid://fbryu5kbunc7" path="res://icons/plus_icon.svg" id="4_yf32a"]
 [ext_resource type="Texture2D" uid="uid://btfiy5x0gce66" path="res://textures/wizard/location_outside_bw.png" id="5_825fn"]
 [ext_resource type="Texture2D" uid="uid://i40a1dtts0on" path="res://textures/angles/up-front.png" id="5_gwi0h"]
-[ext_resource type="Texture2D" uid="uid://bnev4omaxber3" path="res://icons/arrow_icon.svg" id="6_be6sd"]
 [ext_resource type="Texture2D" uid="uid://cbqomgk55es5f" path="res://textures/wizard/location_outside_detailed_bw.png" id="6_gw7dj"]
 [ext_resource type="Texture2D" uid="uid://bdpo3r3ty7ii2" path="res://textures/angles/up-34.png" id="6_uy6fe"]
 [ext_resource type="Texture2D" uid="uid://bepo6572wv6o6" path="res://textures/wizard/location_inside_bw.png" id="7_6kibr"]
@@ -34,12 +33,27 @@
 [ext_resource type="Texture2D" uid="uid://c3o62817pd8l6" path="res://textures/angles/low-back.png" id="19_o7o3y"]
 [ext_resource type="Texture2D" uid="uid://bt2dief1tdarw" path="res://textures/angles/bird.png" id="20_ll01c"]
 [ext_resource type="Texture2D" uid="uid://dyfgep68epk42" path="res://textures/angles/worm.png" id="21_cdcvx"]
+[ext_resource type="Texture2D" uid="uid://ds27nmsekdu0h" path="res://icons/arrow_icon_down.svg" id="32_1q4gh"]
+[ext_resource type="Script" path="res://addons/SmoothScroll/SmoothScrollContainer.gd" id="34_e8ccm"]
+[ext_resource type="Script" path="res://addons/SmoothScroll/scroll_damper/expo_scroll_damper.gd" id="35_5nkt3"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t4osn"]
 bg_color = Color(0.3, 0.3, 0.3, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w38ic"]
 bg_color = Color(0.180392, 0.180392, 0.180392, 1)
+
+[sub_resource type="Resource" id="Resource_yc1il"]
+script = ExtResource("35_5nkt3")
+friction = 4.0
+minimum_velocity = 0.4
+rebound_strength = 7.0
+
+[sub_resource type="Resource" id="Resource_3cl8e"]
+script = ExtResource("35_5nkt3")
+friction = 4.0
+minimum_velocity = 0.4
+rebound_strength = 7.0
 
 [node name="WizardPanel" type="PanelContainer"]
 anchors_preset = 15
@@ -149,9 +163,16 @@ visible = false
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MainContainer/MainPanel/ImageContainer"]
-custom_minimum_size = Vector2(400, 300)
 layout_mode = 2
 theme_override_constants/separation = 30
+
+[node name="ImageTexture" type="TextureRect" parent="MainContainer/MainPanel/ImageContainer/HBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(300, 300)
+layout_mode = 2
+size_flags_horizontal = 3
+expand_mode = 1
+stretch_mode = 5
 
 [node name="PanelContainer" type="PanelContainer" parent="MainContainer/MainPanel/ImageContainer/HBoxContainer"]
 custom_minimum_size = Vector2(300, 300)
@@ -393,101 +414,116 @@ popup/item_2/id = 2
 visible = false
 layout_mode = 2
 
-[node name="AnglesHflow" type="HFlowContainer" parent="MainContainer/MainPanel/AnglesContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MainContainer/MainPanel/AnglesContainer"]
+layout_mode = 2
+
+[node name="AnglesTexture" type="TextureRect" parent="MainContainer/MainPanel/AnglesContainer/HBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(450, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+expand_mode = 1
+stretch_mode = 5
+
+[node name="AnglesHflow" type="HFlowContainer" parent="MainContainer/MainPanel/AnglesContainer/HBoxContainer"]
 custom_minimum_size = Vector2(650, 0)
 layout_mode = 2
 theme_override_constants/h_separation = 15
 theme_override_constants/v_separation = 15
 alignment = 1
 
-[node name="AngleContainer" parent="MainContainer/MainPanel/AnglesContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer" parent="MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 angle_tags = Array[String](["high-angle view", "front view"])
 angle_texture = ExtResource("5_gwi0h")
 
-[node name="AngleContainer2" parent="MainContainer/MainPanel/AnglesContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer2" parent="MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 angle_tags = Array[String](["high-angle view", "three-quarter view", "front view"])
 angle_texture = ExtResource("6_uy6fe")
 
-[node name="AngleContainer3" parent="MainContainer/MainPanel/AnglesContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer3" parent="MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 angle_tags = Array[String](["high-angle view", "side view"])
 angle_texture = ExtResource("7_r0r6t")
 
-[node name="AngleContainer4" parent="MainContainer/MainPanel/AnglesContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer4" parent="MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 angle_tags = Array[String](["high-angle view", "three-quarter view", "rear view"])
 angle_texture = ExtResource("8_xwvoq")
 
-[node name="AngleContainer5" parent="MainContainer/MainPanel/AnglesContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer5" parent="MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 angle_tags = Array[String](["high-angle view", "rear view"])
 angle_texture = ExtResource("9_oqo5k")
 
-[node name="AngleContainer6" parent="MainContainer/MainPanel/AnglesContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer6" parent="MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 angle_tags = Array[String](["front view"])
 angle_texture = ExtResource("10_u2alw")
 
-[node name="AngleContainer7" parent="MainContainer/MainPanel/AnglesContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer7" parent="MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 angle_tags = Array[String](["three-quarter view"])
 angle_texture = ExtResource("11_ve3nk")
 
-[node name="AngleContainer8" parent="MainContainer/MainPanel/AnglesContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer8" parent="MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 angle_tags = Array[String](["side view"])
 angle_texture = ExtResource("12_ymbs7")
 
-[node name="AngleContainer9" parent="MainContainer/MainPanel/AnglesContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer9" parent="MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 angle_tags = Array[String](["rear view", "three-quarter view"])
 angle_texture = ExtResource("13_fsnou")
 
-[node name="AngleContainer10" parent="MainContainer/MainPanel/AnglesContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer10" parent="MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 angle_tags = Array[String](["rear view"])
 angle_texture = ExtResource("14_rxqjh")
 
-[node name="AngleContainer11" parent="MainContainer/MainPanel/AnglesContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer11" parent="MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 angle_tags = Array[String](["low-angle view", "front view"])
 angle_texture = ExtResource("15_qfmer")
 
-[node name="AngleContainer12" parent="MainContainer/MainPanel/AnglesContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer12" parent="MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 angle_tags = Array[String](["low-angle view", "front view", "three-quarter view"])
 angle_texture = ExtResource("16_myr52")
 
-[node name="AngleContainer13" parent="MainContainer/MainPanel/AnglesContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer13" parent="MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 angle_tags = Array[String](["low-angle view", "side view"])
 angle_texture = ExtResource("17_72lc1")
 
-[node name="AngleContainer14" parent="MainContainer/MainPanel/AnglesContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer14" parent="MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 angle_tags = Array[String](["low-angle view", "three-quarter view", "rear view"])
 angle_texture = ExtResource("18_y5x77")
 
-[node name="AngleContainer15" parent="MainContainer/MainPanel/AnglesContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer15" parent="MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 angle_tags = Array[String](["low-angle view", "rear view"])
 angle_texture = ExtResource("19_o7o3y")
 
-[node name="AngleContainer16" parent="MainContainer/MainPanel/AnglesContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer16" parent="MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 angle_tags = Array[String](["bird's-eye view"])
 angle_texture = ExtResource("20_ll01c")
 
-[node name="AngleContainer17" parent="MainContainer/MainPanel/AnglesContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer17" parent="MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 angle_tags = Array[String](["worm's-eye view"])
 angle_texture = ExtResource("21_cdcvx")
 
-[node name="PairingsContainer" type="CenterContainer" parent="MainContainer/MainPanel"]
+[node name="PairingsContainer" type="MarginContainer" parent="MainContainer/MainPanel"]
 visible = false
 layout_mode = 2
+theme_override_constants/margin_left = 350
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 350
+theme_override_constants/margin_bottom = 50
 
 [node name="PairingsContainer" type="VBoxContainer" parent="MainContainer/MainPanel/PairingsContainer"]
 layout_mode = 2
@@ -495,183 +531,198 @@ theme_override_constants/separation = 12
 
 [node name="GendersContainer" type="HBoxContainer" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer"]
 layout_mode = 2
+size_flags_vertical = 3
 theme_override_constants/separation = 30
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer"]
+[node name="InteractionTexture" type="TextureRect" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer"]
+visible = false
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3"]
 layout_mode = 2
 alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer"]
 layout_mode = 2
 
-[node name="GenderOptBtnL" type="OptionButton" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer/HBoxContainer"]
+[node name="GenderOptBtnL" type="OptionButton" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(200, 32)
 layout_mode = 2
+size_flags_horizontal = 3
 alignment = 1
 script = ExtResource("3_ycvrq")
 
-[node name="TextureRect" type="TextureRect" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer/HBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 texture = ExtResource("4_yf32a")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="GenderOptBtnR" type="OptionButton" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer/HBoxContainer"]
+[node name="GenderOptBtnR" type="OptionButton" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(200, 32)
 layout_mode = 2
+size_flags_horizontal = 3
 alignment = 1
 script = ExtResource("3_ycvrq")
 
-[node name="AddPairingBtn" type="Button" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer"]
+[node name="AddPairingBtn" type="Button" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 text = "Add"
 
-[node name="TextureRect" type="TextureRect" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer"]
+[node name="TextureRect" type="TextureRect" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3"]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
-texture = ExtResource("6_be6sd")
+texture = ExtResource("32_1q4gh")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3"]
 layout_mode = 2
+size_flags_vertical = 3
 
-[node name="ClearPairingsBtn" type="Button" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2"]
-custom_minimum_size = Vector2(0, 32)
-layout_mode = 2
-text = "Clear All"
-
-[node name="ScrollContainer" type="ScrollContainer" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2"]
+[node name="ScrollContainer" type="ScrollContainer" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2"]
 custom_minimum_size = Vector2(250, 300)
 layout_mode = 2
+size_flags_vertical = 3
 
-[node name="CheckboxContainer" type="VBoxContainer" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer"]
+[node name="CheckboxContainer" type="VBoxContainer" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer"]
 layout_mode = 2
 
-[node name="AndroContainer" type="VBoxContainer" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer"]
+[node name="AndroContainer" type="VBoxContainer" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer"]
 layout_mode = 2
 
-[node name="AndAmb" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/AndroContainer"]
+[node name="AndAmb" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer/AndroContainer"]
 layout_mode = 2
 text = "Andromorph / Ambiguous"
 
-[node name="AndAnd" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/AndroContainer"]
+[node name="AndAnd" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer/AndroContainer"]
 layout_mode = 2
 text = "Andromorph / Andromorph"
 
-[node name="AndF" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/AndroContainer"]
+[node name="AndF" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer/AndroContainer"]
 layout_mode = 2
 text = "Andromorph / Female"
 
-[node name="AndM" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/AndroContainer"]
+[node name="AndM" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer/AndroContainer"]
 layout_mode = 2
 text = "Andromorph / Male"
 
-[node name="FemaleContainer" type="VBoxContainer" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer"]
+[node name="FemaleContainer" type="VBoxContainer" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer"]
 layout_mode = 2
 
-[node name="FAmb" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/FemaleContainer"]
+[node name="FAmb" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer/FemaleContainer"]
 layout_mode = 2
 text = "Female / Ambiguous
 "
 
-[node name="FF" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/FemaleContainer"]
+[node name="FF" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer/FemaleContainer"]
 layout_mode = 2
 text = "Female / Female"
 
-[node name="GynoContainer" type="VBoxContainer" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer"]
+[node name="GynoContainer" type="VBoxContainer" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer"]
 layout_mode = 2
 
-[node name="GAmb" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/GynoContainer"]
+[node name="GAmb" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer/GynoContainer"]
 layout_mode = 2
 text = "Gynomorph / Ambiguous"
 
-[node name="GAnd" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/GynoContainer"]
+[node name="GAnd" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer/GynoContainer"]
 layout_mode = 2
 text = "Gynomorph / Andromorph"
 
-[node name="GF" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/GynoContainer"]
+[node name="GF" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer/GynoContainer"]
 layout_mode = 2
 text = "Gynomorph / Female"
 
-[node name="GG" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/GynoContainer"]
+[node name="GG" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer/GynoContainer"]
 layout_mode = 2
 text = "Gynomorph / Gynomorph"
 
-[node name="GH" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/GynoContainer"]
+[node name="GH" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer/GynoContainer"]
 layout_mode = 2
 text = "Gynomorph / Herm"
 
-[node name="GM" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/GynoContainer"]
+[node name="GM" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer/GynoContainer"]
 layout_mode = 2
 text = "Gynomorph / Male"
 
-[node name="HermContainer" type="VBoxContainer" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer"]
+[node name="HermContainer" type="VBoxContainer" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer"]
 layout_mode = 2
 
-[node name="HAmb" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/HermContainer"]
+[node name="HAmb" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer/HermContainer"]
 layout_mode = 2
 text = "Herm / Ambiguous"
 
-[node name="HF" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/HermContainer"]
+[node name="HF" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer/HermContainer"]
 layout_mode = 2
 text = "Herm / Female"
 
-[node name="HH" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/HermContainer"]
+[node name="HH" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer/HermContainer"]
 layout_mode = 2
 text = "Herm / Herm"
 
-[node name="HM" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/HermContainer"]
+[node name="HM" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer/HermContainer"]
 layout_mode = 2
 text = "Herm / Male"
 
-[node name="MaleContainer" type="VBoxContainer" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer"]
+[node name="MaleContainer" type="VBoxContainer" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer"]
 layout_mode = 2
 
-[node name="MAmb" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleContainer"]
+[node name="MAmb" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleContainer"]
 layout_mode = 2
 text = "Male / Ambiguous"
 
-[node name="MF" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleContainer"]
+[node name="MF" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleContainer"]
 layout_mode = 2
 text = "Male / Female"
 
-[node name="MM" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleContainer"]
+[node name="MM" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleContainer"]
 layout_mode = 2
 text = "Male / Male"
 
-[node name="MaleHermContainer" type="VBoxContainer" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer"]
+[node name="MaleHermContainer" type="VBoxContainer" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer"]
 layout_mode = 2
 
-[node name="MHAmb" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer"]
+[node name="MHAmb" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer"]
 layout_mode = 2
 text = "Male Herm / Ambiguous"
 
-[node name="MHAnd" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer"]
+[node name="MHAnd" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer"]
 layout_mode = 2
 text = "Male Herm / Andromorph"
 
-[node name="MHF" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer"]
+[node name="MHF" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer"]
 layout_mode = 2
 text = "Male Herm / Female"
 
-[node name="MHG" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer"]
+[node name="MHG" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer"]
 layout_mode = 2
 text = "Male Herm / Gynomorph"
 
-[node name="MHH" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer"]
+[node name="MHH" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer"]
 layout_mode = 2
 text = "Male Herm / Herm"
 
-[node name="MHM" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer"]
+[node name="MHM" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer"]
 layout_mode = 2
 text = "Male Herm / Male"
 
-[node name="MHMH" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer"]
+[node name="MHMH" type="CheckBox" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer"]
 layout_mode = 2
 text = "Male Herm / Male Herm"
+
+[node name="ClearPairingsBtn" type="Button" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text = "Clear All"
 
 [node name="HSeparator" type="HSeparator" parent="MainContainer/MainPanel/PairingsContainer/PairingsContainer"]
 layout_mode = 2
@@ -721,13 +772,18 @@ layout_mode = 2
 tooltip_text = "Five or more characters having sex freely among each other."
 text = "Orgy"
 
-[node name="Characters" type="CenterContainer" parent="MainContainer/MainPanel"]
+[node name="Characters" type="MarginContainer" parent="MainContainer/MainPanel"]
 visible = false
 layout_mode = 2
+theme_override_constants/margin_left = 80
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 80
+theme_override_constants/margin_bottom = 30
 
 [node name="MainContainer" type="HBoxContainer" parent="MainContainer/MainPanel/Characters"]
-custom_minimum_size = Vector2(900, 550)
+custom_minimum_size = Vector2(1100, 550)
 layout_mode = 2
+theme_override_constants/separation = 10
 
 [node name="ChracterTree" type="VBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer"]
 layout_mode = 2
@@ -753,251 +809,341 @@ expand_icon = true
 [node name="CharactersTree" type="Tree" parent="MainContainer/MainPanel/Characters/MainContainer/ChracterTree"]
 layout_mode = 2
 size_flags_vertical = 3
+size_flags_stretch_ratio = 4.0
 hide_folding = true
 hide_root = true
 
-[node name="CharacterField" type="VBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer"]
+[node name="CharTexture" type="TextureRect" parent="MainContainer/MainPanel/Characters/MainContainer/ChracterTree"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 5.0
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CharDataSmoothScroll" type="ScrollContainer" parent="MainContainer/MainPanel/Characters/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+script = ExtResource("34_e8ccm")
+speed = 700.0
+wheel_scroll_damper = SubResource("Resource_yc1il")
+dragging_scroll_damper = SubResource("Resource_3cl8e")
+drag_with_mouse = false
+drag_with_touch = false
+allow_overdragging = false
+
+[node name="ScrollPanel" type="PanelContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 3.0
+mouse_filter = 1
+
+[node name="CharacterField" type="VBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel"]
+modulate = Color(1, 1, 1, 0.392157)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 3.0
 
-[node name="NameContainer" type="HBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField"]
+[node name="NameContainer" type="HBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/NameContainer"]
+[node name="Label" type="Label" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/NameContainer"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
+mouse_filter = 1
 text = "Character Tag"
 
-[node name="CharacterTagLnEdt" type="LineEdit" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/NameContainer"]
+[node name="CharacterTagLnEdt" type="LineEdit" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/NameContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 1
 
-[node name="HSeparator4" type="HSeparator" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField"]
+[node name="HSeparator4" type="HSeparator" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField"]
 layout_mode = 2
+mouse_filter = 1
 theme_override_constants/separation = 8
 
-[node name="BodyContainer" type="HBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField"]
+[node name="BodyContainer" type="HBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField"]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="BodyContainer" type="HBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/BodyContainer"]
+[node name="BodyContainer" type="HBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/BodyContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/BodyContainer/BodyContainer"]
+[node name="Label" type="Label" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/BodyContainer/BodyContainer"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
+mouse_filter = 1
 text = "Body Type"
 
-[node name="BodyOptBtn" type="OptionButton" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/BodyContainer/BodyContainer"]
+[node name="BodyOptBtn" type="OptionButton" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/BodyContainer/BodyContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 1
 text_overrun_behavior = 3
 
-[node name="SpeciesBox" type="HBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/BodyContainer"]
+[node name="SpeciesBox" type="HBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/BodyContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/BodyContainer/SpeciesBox"]
+[node name="Label" type="Label" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/BodyContainer/SpeciesBox"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
+mouse_filter = 1
 text = "Species"
 
-[node name="SpeciesLnEdt" type="LineEdit" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/BodyContainer/SpeciesBox"]
+[node name="SpeciesLnEdt" type="LineEdit" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/BodyContainer/SpeciesBox"]
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 1
 
-[node name="HSeparator" type="HSeparator" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField"]
+[node name="HSeparator" type="HSeparator" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField"]
 layout_mode = 2
+mouse_filter = 1
 theme_override_constants/separation = 8
 
-[node name="AgeGenderContainer" type="VBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField"]
+[node name="AgeGenderContainer" type="VBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/AgeGenderContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer"]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="GenderContainer" type="HBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/AgeGenderContainer/HBoxContainer"]
+[node name="GenderContainer" type="HBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/AgeGenderContainer/HBoxContainer/GenderContainer"]
+[node name="Label" type="Label" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/HBoxContainer/GenderContainer"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
+mouse_filter = 1
 text = "Apparent Gender"
 
-[node name="GenderOptBtn" type="OptionButton" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/AgeGenderContainer/HBoxContainer/GenderContainer"]
+[node name="GenderOptBtn" type="OptionButton" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/HBoxContainer/GenderContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 1
 text_overrun_behavior = 3
 
-[node name="GenderLoreContainer" type="HBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/AgeGenderContainer/HBoxContainer"]
+[node name="GenderLoreContainer" type="HBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/AgeGenderContainer/HBoxContainer/GenderLoreContainer"]
+[node name="Label" type="Label" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/HBoxContainer/GenderLoreContainer"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
+mouse_filter = 1
 text = "Lore Gender"
 
-[node name="GenderLoreOptBtn" type="OptionButton" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/AgeGenderContainer/HBoxContainer/GenderLoreContainer"]
+[node name="GenderLoreOptBtn" type="OptionButton" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/HBoxContainer/GenderLoreContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 1
 text_overrun_behavior = 3
 
-[node name="AgeMainContainer" type="HBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/AgeGenderContainer"]
+[node name="AgeMainContainer" type="HBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer"]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="AgeContainer" type="HBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/AgeGenderContainer/AgeMainContainer"]
+[node name="AgeContainer" type="HBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/AgeMainContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/AgeGenderContainer/AgeMainContainer/AgeContainer"]
+[node name="Label" type="Label" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/AgeMainContainer/AgeContainer"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
+mouse_filter = 1
 text = "Apparent Age"
 
-[node name="AgeOptBtn" type="OptionButton" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/AgeGenderContainer/AgeMainContainer/AgeContainer"]
+[node name="AgeOptBtn" type="OptionButton" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/AgeMainContainer/AgeContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 1
 text_overrun_behavior = 3
 
-[node name="LoreAgeContainer" type="HBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/AgeGenderContainer/AgeMainContainer"]
+[node name="LoreAgeContainer" type="HBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/AgeMainContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/AgeGenderContainer/AgeMainContainer/LoreAgeContainer"]
+[node name="Label" type="Label" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/AgeMainContainer/LoreAgeContainer"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
+mouse_filter = 1
 text = "Lore Age"
 
-[node name="LoreAgeOptBtn" type="OptionButton" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/AgeGenderContainer/AgeMainContainer/LoreAgeContainer"]
+[node name="LoreAgeOptBtn" type="OptionButton" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/AgeMainContainer/LoreAgeContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 1
 text_overrun_behavior = 3
 
-[node name="HSeparator2" type="HSeparator" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField"]
+[node name="HSeparator2" type="HSeparator" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField"]
 layout_mode = 2
+mouse_filter = 1
 theme_override_constants/separation = 8
 
-[node name="BodyTextureTree" type="Tree" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField"]
+[node name="BodyTextureTree" type="Tree" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField"]
+custom_minimum_size = Vector2(0, 260)
 layout_mode = 2
 size_flags_vertical = 3
+mouse_filter = 1
 theme = ExtResource("7_slw3q")
 columns = 2
 column_titles_visible = true
 hide_folding = true
 hide_root = true
 
-[node name="HSeparator3" type="HSeparator" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField"]
+[node name="HSeparator3" type="HSeparator" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField"]
 layout_mode = 2
+mouse_filter = 1
 theme_override_constants/separation = 8
 
-[node name="ClothingContainer" type="VBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField"]
+[node name="Others" type="HBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ClothingTree" type="Tree" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/Others"]
+custom_minimum_size = Vector2(0, 260)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 1
+theme = ExtResource("7_slw3q")
+column_titles_visible = true
+hide_root = true
+
+[node name="BodyTraits" type="Tree" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/Others"]
+custom_minimum_size = Vector2(0, 260)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 1
+theme = ExtResource("7_slw3q")
+column_titles_visible = true
+hide_root = true
+
+[node name="ClothingContainer" type="VBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField"]
+visible = false
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/ClothingContainer"]
+[node name="Label" type="Label" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/ClothingContainer"]
 custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
+mouse_filter = 1
 text = "Wearing"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ClothingA" type="HBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/ClothingContainer"]
+[node name="ClothingA" type="HBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/ClothingContainer"]
 layout_mode = 2
 
-[node name="TopWear" type="CheckBox" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/ClothingContainer/ClothingA"]
+[node name="TopWear" type="CheckBox" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/ClothingContainer/ClothingA"]
 custom_minimum_size = Vector2(0.035, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 1
 text = "Topwear"
 alignment = 1
 text_overrun_behavior = 3
 
-[node name="UnderWear" type="CheckBox" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/ClothingContainer/ClothingA"]
+[node name="UnderWear" type="CheckBox" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/ClothingContainer/ClothingA"]
 custom_minimum_size = Vector2(0.035, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 1
 text = "Underwear"
 alignment = 1
 text_overrun_behavior = 3
 
-[node name="BottomWear" type="CheckBox" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/ClothingContainer/ClothingA"]
+[node name="BottomWear" type="CheckBox" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/ClothingContainer/ClothingA"]
 custom_minimum_size = Vector2(0.035, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 1
 text = "Bottomwear"
 alignment = 1
 text_overrun_behavior = 3
 
-[node name="LegWear" type="CheckBox" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/ClothingContainer/ClothingA"]
+[node name="LegWear" type="CheckBox" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/ClothingContainer/ClothingA"]
 custom_minimum_size = Vector2(0.035, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 1
 text = "Legwear"
 alignment = 1
 text_overrun_behavior = 3
 
-[node name="ArmWear" type="CheckBox" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/ClothingContainer/ClothingA"]
+[node name="ArmWear" type="CheckBox" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/ClothingContainer/ClothingA"]
 custom_minimum_size = Vector2(0.035, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 1
 text = "Armwear"
 alignment = 1
 text_overrun_behavior = 3
 
-[node name="ClothingB" type="HBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/ClothingContainer"]
+[node name="ClothingB" type="HBoxContainer" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/ClothingContainer"]
 layout_mode = 2
 
-[node name="FootWear" type="CheckBox" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/ClothingContainer/ClothingB"]
+[node name="FootWear" type="CheckBox" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/ClothingContainer/ClothingB"]
 custom_minimum_size = Vector2(0.035, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 1
 text = "Footwear"
 alignment = 1
 text_overrun_behavior = 3
 
-[node name="HeadWear" type="CheckBox" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/ClothingContainer/ClothingB"]
+[node name="HeadWear" type="CheckBox" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/ClothingContainer/ClothingB"]
 custom_minimum_size = Vector2(0.035, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 1
 text = "Headwear"
 alignment = 1
 text_overrun_behavior = 3
 
-[node name="Collar" type="CheckBox" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/ClothingContainer/ClothingB"]
+[node name="Collar" type="CheckBox" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/ClothingContainer/ClothingB"]
 custom_minimum_size = Vector2(0.035, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 1
 text = "Collar"
 alignment = 1
 text_overrun_behavior = 3
 
-[node name="LegWear" type="CheckBox" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/ClothingContainer/ClothingB"]
+[node name="LegWear" type="CheckBox" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/ClothingContainer/ClothingB"]
 custom_minimum_size = Vector2(0.035, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 1
 text = "Eyewear"
 alignment = 1
 text_overrun_behavior = 3
 icon_alignment = 2
 
-[node name="ArmWear" type="CheckBox" parent="MainContainer/MainPanel/Characters/MainContainer/CharacterField/ClothingContainer/ClothingB"]
+[node name="ArmWear" type="CheckBox" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/ClothingContainer/ClothingB"]
 custom_minimum_size = Vector2(0.035, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 1
 text = "Diaper"
 alignment = 1
 text_overrun_behavior = 3
+
+[node name="CharacterBlocked" type="Control" parent="MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel"]
+visible = false
+layout_mode = 2
+mouse_filter = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="MainContainer"]
 layout_mode = 2
