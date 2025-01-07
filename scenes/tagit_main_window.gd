@@ -881,6 +881,7 @@ func instantiate_wizard() -> void:
 	selector = preload("res://scenes/wizard.tscn").instantiate()
 	selector.wizard_finished.connect(on_wizard_finished)
 	selector.wizard_cancelled.connect(on_wizard_cancelled)
+	selector.project_texture = project_image.texture
 	add_child(selector)
 
 
@@ -1719,7 +1720,8 @@ func add_tag(tag_name: String) -> void:
 	if TagIt.settings.request_suggestions:
 		ESixAPI.search_suggestions(clean_tag)
 	
-	tags_tree.scroll_to_item(target_tree, false)
+	if target_tree != null:
+		tags_tree.scroll_to_item(target_tree, false)
 	
 	_list_changed()
 
