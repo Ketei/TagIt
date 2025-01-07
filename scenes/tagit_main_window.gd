@@ -1326,6 +1326,7 @@ func on_wiki_thumbnail_pressed(thumbnail_id: int, img_idx: int) -> void:
 	if loading_image:
 		return
 	
+	loading_image = true
 	wiki_panel.show_spinner()
 	var url: String = LOCAL_ADDRESS.format([TagIt.settings.hydrus_port]) + HYDRUS_FILE_ENDPOINT + str(thumbnail_id)
 	
@@ -1334,8 +1335,9 @@ func on_wiki_thumbnail_pressed(thumbnail_id: int, img_idx: int) -> void:
 	
 	if response[0] != OK or response[1] != 200:
 		wiki_panel.hide_throbber()
+		loading_image = false
 		return
-	loading_image = true
+	
 	var _heads: Dictionary = parse_hydrus_image_headers(response[2])
 	hydrus_images.load_full_image.emit(response[3], _heads["content-type"].split("/")[1])
 	wiki_panel.image_index = img_idx
@@ -1521,8 +1523,9 @@ func on_thumbnail_size_changed(size_idx: int) -> void:
 
 func on_wiki_searched(search_text: String) -> void:
 	var wiki_search: String = search_text.strip_edges().to_lower()
-	#wiki_search_ln_edt.clear()
 	wiki_gallery.clear_gallery()
+	wiki_search_ln_edt.editable = false
+	wiki_search_btn.disabled = true
 	
 	if TagIt.has_tag(wiki_search) and TagIt.has_data(TagIt.get_tag_id(wiki_search)):
 		var tag_data := TagIt.get_tag_data(TagIt.get_tag_id(wiki_search))
@@ -1551,9 +1554,10 @@ func on_wiki_searched(search_text: String) -> void:
 			var files = await search_hydrus_files(
 					Array([wiki_search], TYPE_STRING, &"", null),
 					TagIt.settings.wiki_images)
-			wiki_search_ln_edt.editable = false
-			wiki_search_btn.disabled = true
 			get_thumbnails(files)
+		else:
+			wiki_search_ln_edt.editable = true
+			wiki_search_btn.disabled = false
 		
 	else:
 		wiki_rtl.clear()

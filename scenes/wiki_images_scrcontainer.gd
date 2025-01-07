@@ -5,6 +5,7 @@ signal thumbnail_pressed(image_id: int, image_idx: int)
 
 
 var thumbnail_dimensions: Vector2i = Vector2i(100, 100)
+
 @onready var images_container: HFlowContainer = $ImagesContainer
 
 
