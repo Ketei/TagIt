@@ -94,6 +94,7 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 17
 placeholder_text = "Set Title"
 alignment = 1
+max_length = 64
 
 [node name="ImagePanel" type="PanelContainer" parent="MenuCard/MainMargin/MainContainer"]
 layout_mode = 2
@@ -121,7 +122,7 @@ custom_minimum_size = Vector2(330, 80)
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 0
-text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut in consequat magna. Vivamus accumsan sed ipsum vitae pretium. AAAAAAAAA"
+text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut in consequat magna. Vivamus accumsan sed ipsum vitae pretium."
 autowrap_mode = 3
 text_overrun_behavior = 3
 
