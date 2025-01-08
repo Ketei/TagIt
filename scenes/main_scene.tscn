@@ -248,6 +248,7 @@ tab_3/title = "Tools"
 tab_4/title = "Settings"
 
 [node name="TaggerContainer" type="PanelContainer" parent="MainContainer"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = ExtResource("2_u628d")
@@ -735,7 +736,6 @@ texture_progress = ExtResource("29_valht")
 script = ExtResource("6_kbhuc")
 
 [node name="TagsPanel" type="PanelContainer" parent="MainContainer"]
-visible = false
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = ExtResource("2_u628d")
@@ -807,13 +807,15 @@ popup/item_0/text = "Import"
 popup/item_1/text = "Import & Overwrite"
 popup/item_1/id = 1
 
-[node name="ExportTagBtn" type="Button" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer/ButtonButtons"]
+[node name="ExportTagBtn" type="MenuButton" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer/ButtonButtons"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 icon = ExtResource("11_ld45a")
-flat = true
 icon_alignment = 1
-expand_icon = true
+item_count = 2
+popup/item_0/text = "Export Tags"
+popup/item_1/text = "Export All"
+popup/item_1/id = 1
 
 [node name="VSeparator" type="VSeparator" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer/ButtonButtons"]
 layout_mode = 2

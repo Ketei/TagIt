@@ -108,7 +108,7 @@ var _suggestion_blacklist: PackedStringArray = []
 @onready var close_editor_btn: Button = $MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/WikiContainer/TitleContainer/CloseEditorBtn
 @onready var all_tags_search_ln_edt: LineEdit = $MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer/AllTagsSearchLnEdt
 @onready var tag_search_container: Control = $MainContainer/TagsPanel/TagsMargin/TagSearchContainer
-@onready var export_tag_btn: Button = $MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer/ButtonButtons/ExportTagBtn
+@onready var export_tag_btn: MenuButton = $MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer/ButtonButtons/ExportTagBtn
 
 # ----------------
 # ----- Settings -----
@@ -301,7 +301,7 @@ func _ready() -> void:
 	all_tags_tree.edit_tag_pressed.connect(on_edit_tag_pressed)
 	all_tags_tree.export_tag_pressed.connect(on_export_tag_pressed)
 	all_tags_tree.delete_tag_pressed.connect(on_delete_tag_pressed)
-	export_tag_btn.pressed.connect(on_export_tags_pressed)
+	export_tag_btn.get_popup().id_pressed.connect(on_export_button_id_pressed)
 	$MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer/ButtonButtons/ImportMenuBtn.get_popup().id_pressed.connect(on_import_button_id_pressed)
 	# --- Wiki ---
 	thumbnail_size_changer.item_selected.connect(on_thumbnail_size_changed)
@@ -445,6 +445,14 @@ func on_import_button_id_pressed(id: int) -> void:
 	new_file_dialog.show()
 
 
+func on_export_button_id_pressed(id: int) -> void:
+	match id:
+		0: # Export tags
+			on_export_tags_pressed()
+		1: # Export All
+			on_tags_exported(TagIt.get_all_tag_ids(true))
+
+
 func on_file_selected(file_path: String, overwrite: bool, file_dialog: FileDialog) -> void:
 	var json := JSON.new()
 	var file_string: String = FileAccess.get_file_as_string(file_path)
@@ -522,9 +530,10 @@ func on_tags_exported(tag_ids: Array[int]) -> void:
 	new_file_dialog.canceled.connect(on_export_dialog_cancelled.bind(new_file_dialog))
 	add_child(new_file_dialog)
 	
-	selector.visible = false
-	selector.queue_free()
-	selector = null
+	if selector != null:
+		selector.visible = false
+		selector.queue_free()
+		selector = null
 	
 	new_file_dialog.show()
 

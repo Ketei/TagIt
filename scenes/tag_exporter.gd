@@ -40,7 +40,7 @@ func _ready() -> void:
 	
 	current_lbl.text = "1"
 	pages_lbl.text = "/ " + str(maxi(1, ceili(all_valid_tags.size() / float(STEP))))
-	set_next_arrow_disabled(search_results.size() < ((value + 1) * STEP))
+	set_next_arrow_disabled(all_valid_tags.size() < ((value + 1) * STEP))
 	set_prev_arrow_disabled(value <= 0)
 	
 	tags_tree.item_edited.connect(on_tree_item_edited)
