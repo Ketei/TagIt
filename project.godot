@@ -25,6 +25,7 @@ ESixAPI="*res://scripts/e_six_requester.gd"
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
+window/energy_saving/keep_screen_on=false
 
 [editor_plugins]
 
