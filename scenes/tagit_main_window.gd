@@ -779,7 +779,7 @@ func save_current_project_indexed() -> void:
 	
 	projects.overwrite_project(
 			current_project,
-			current_title,
+			projects.projects[current_project]["name"],
 			alt_lists[0],
 			tagger_suggestion_tree.get_all_suggestions_text(),
 			groups_suggestions_tree.get_all_groups(),
@@ -1129,6 +1129,7 @@ func on_selector_project_selected(project_idx: int) -> void:
 	selector.queue_free()
 	selector = null
 	current_project = project_idx
+	current_title = projects.projects[project_idx]["name"]
 	_save_required = false
 	TagIt.settings.request_suggestions = request_suggestions
 
