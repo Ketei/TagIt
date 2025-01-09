@@ -14,7 +14,8 @@ config/name="TagIt3"
 run/main_scene="res://scenes/main_scene.tscn"
 config/auto_accept_quit=false
 config/features=PackedStringArray("4.3", "GL Compatibility")
-config/icon="res://icon.svg"
+config/icon="res://icons/application_icon.svg"
+config/windows_native_icon="res://application_icon.ico"
 
 [autoload]
 
