@@ -128,18 +128,18 @@ layout_mode = 2
 text = "Menu"
 switch_on_hover = true
 item_count = 14
-popup/item_0/text = "New List"
+popup/item_0/text = "New Project"
 popup/item_0/icon = ExtResource("2_3s1fn")
 popup/item_1/text = "New Alt List"
 popup/item_1/icon = ExtResource("5_5kn0o")
 popup/item_1/id = 14
-popup/item_2/text = "Save List"
+popup/item_2/text = "Save Project"
 popup/item_2/icon = ExtResource("4_n5y6n")
 popup/item_2/id = 1
 popup/item_3/text = "Save As"
 popup/item_3/icon = ExtResource("5_2nyt6")
 popup/item_3/id = 16
-popup/item_4/text = "Load List"
+popup/item_4/text = "Load Project"
 popup/item_4/icon = ExtResource("4_wynjg")
 popup/item_4/id = 2
 popup/item_5/id = 100
@@ -186,6 +186,7 @@ layout_mode = 2
 [node name="NewBtn" type="Button" parent="MainContainer/MenuMargin/MenuContainer/QuickAccessCtnr"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+tooltip_text = "New Project"
 icon = ExtResource("2_3s1fn")
 flat = true
 icon_alignment = 1
@@ -194,6 +195,7 @@ expand_icon = true
 [node name="SaveBtn" type="Button" parent="MainContainer/MenuMargin/MenuContainer/QuickAccessCtnr"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+tooltip_text = "Save Project"
 icon = ExtResource("4_n5y6n")
 flat = true
 icon_alignment = 1
@@ -202,6 +204,7 @@ expand_icon = true
 [node name="OpenBtn" type="Button" parent="MainContainer/MenuMargin/MenuContainer/QuickAccessCtnr"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+tooltip_text = "Open Project"
 icon = ExtResource("4_wynjg")
 flat = true
 icon_alignment = 1
@@ -222,6 +225,7 @@ expand_icon = true
 [node name="WizardBtn" type="Button" parent="MainContainer/MenuMargin/MenuContainer/QuickAccessCtnr"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+tooltip_text = "Launch Wizard"
 icon = ExtResource("9_2kq2q")
 flat = true
 icon_alignment = 1
@@ -230,6 +234,7 @@ expand_icon = true
 [node name="TemplateBtn" type="Button" parent="MainContainer/MenuMargin/MenuContainer/QuickAccessCtnr"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+tooltip_text = "Load Preset"
 icon = ExtResource("10_xx8s6")
 flat = true
 icon_alignment = 1
@@ -641,6 +646,7 @@ replace_on_item_select = true
 [node name="SearchBtn" type="Button" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/SearchContainer"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+tooltip_text = "Search Wiki"
 icon = ExtResource("7_cq671")
 
 [node name="eSixSearchBtn" type="Button" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/SearchContainer"]
@@ -793,6 +799,7 @@ size_flags_stretch_ratio = 3.5
 [node name="NewTagBtn" type="Button" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer/ButtonButtons"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+tooltip_text = "Create Tag"
 icon = ExtResource("6_wbwch")
 flat = true
 icon_alignment = 1
@@ -801,6 +808,7 @@ expand_icon = true
 [node name="ImportMenuBtn" type="MenuButton" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer/ButtonButtons"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+tooltip_text = "Import Tags"
 icon = ExtResource("10_oeg0m")
 item_count = 2
 popup/item_0/text = "Import"
@@ -810,6 +818,7 @@ popup/item_1/id = 1
 [node name="ExportTagBtn" type="MenuButton" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer/ButtonButtons"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+tooltip_text = "Export Tags"
 icon = ExtResource("11_ld45a")
 icon_alignment = 1
 item_count = 2
@@ -1076,6 +1085,7 @@ text = "Wiki"
 [node name="SaveTagBtn" type="Button" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/WikiContainer/TitleContainer"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+tooltip_text = "Save Tag"
 icon = ExtResource("4_n5y6n")
 flat = true
 icon_alignment = 1
@@ -1115,6 +1125,7 @@ vertical_alignment = 1
 [node name="CloseEditorBtn" type="Button" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/WikiContainer/TitleContainer"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+tooltip_text = "Close Editor"
 icon = ExtResource("29_gsfm7")
 flat = true
 icon_alignment = 1
@@ -1162,6 +1173,7 @@ size_flags_horizontal = 3
 [node name="SaveButton" type="Button" parent="MainContainer/ToolsPanel/ToolsMargin/ToolsContainer/HeaderContainer"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+tooltip_text = "Save Tool Settings"
 icon = ExtResource("4_n5y6n")
 flat = true
 icon_alignment = 1

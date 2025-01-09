@@ -314,6 +314,7 @@ func _ready() -> void:
 	wiki_panel.load_previous_image.connect(on_wiki_previous_image)
 	wiki_esix_search_btn.pressed.connect(on_esix_wiki_search)
 	wiki_search_ln_edt.timer_finished.connect(on_wiki_timer_timeout)
+	wiki_search_btn.pressed.connect(on_wiki_search_button_pressed)
 	# --- Settings ---
 	settings_load_img_chk_btn.toggled.connect(on_api_toggle_changed)
 	settings_expand_api_btn.pressed.connect(on_expand_api_pressed)
@@ -1532,6 +1533,10 @@ func on_thumbnail_size_changed(size_idx: int) -> void:
 			wiki_gallery.set_thumbnail_size(Vector2i(300, 300))
 		3:
 			wiki_gallery.set_thumbnail_size(Vector2i(600, 600))
+
+
+func on_wiki_search_button_pressed() -> void:
+	on_wiki_searched(wiki_search_ln_edt.text)
 
 
 func on_wiki_searched(search_text: String) -> void:
