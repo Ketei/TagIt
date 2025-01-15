@@ -128,10 +128,58 @@ static func containsn(array: Array, what: String) -> bool:
 	return false
 
 
-static func append_uniques(array_to_append: Array, items: Array) -> void:
-	for item in items:
-		if not array_to_append.has(item):
-			array_to_append.append(item)
+static func append_uniques(array_to_append: Variant, items: Variant) -> void:
+	match typeof(array_to_append):
+		TYPE_ARRAY:
+			if array_to_append.is_typed():
+				var type: int = array_to_append.get_typed_builtin()
+				for item in items:
+					if typeof(item) == type and not array_to_append.has(item):
+						array_to_append.append(item)
+					else:
+						push_error("Array item doesn't match typed array type.")
+			else:
+				for item in items:
+					if not array_to_append.has(item):
+						array_to_append.append(item)
+		TYPE_PACKED_STRING_ARRAY:
+			if items.is_typed():
+				if items.get_typed_builtin() != TYPE_STRING:
+					return
+				for item in items:
+					if not array_to_append.has(item):
+						array_to_append.append(item)
+			else:
+				for item in items:
+					if typeof(item) == TYPE_STRING and not array_to_append.has(item):
+						array_to_append.append(item)
+
+
+static func append_uniques_asc(array_to_append: Variant, items: Variant) -> void:
+	match typeof(array_to_append):
+		TYPE_ARRAY:
+			if array_to_append.is_typed():
+				var type: int = array_to_append.get_typed_builtin()
+				for item in items:
+					if typeof(item) == type and not array_to_append.has(item):
+						insert_sorted_asc(array_to_append, item)
+					else:
+						push_error("Array item doesn't match typed array type.")
+			else:
+				for item in items:
+					if not array_to_append.has(item):
+						insert_sorted_asc(array_to_append, item)
+		TYPE_PACKED_STRING_ARRAY:
+			if items.is_typed():
+				if items.get_typed_builtin() != TYPE_STRING:
+					return
+				for item in items:
+					if not array_to_append.has(item):
+						insert_sorted_asc(array_to_append, item)
+			else:
+				for item in items:
+					if typeof(item) == TYPE_STRING and not array_to_append.has(item):
+						insert_sorted_asc(array_to_append, item)
 
 
 static func substract_array(target_array: Array, substract_items: Array) -> void:

@@ -22,7 +22,7 @@ func _input(event: InputEvent) -> void:
 
 
 func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:
-	return typeof(data) == TYPE_DICTIONARY and data.has_all(["type", "tag_names", "tree", "is_group"]) and data["type"] == "tag_array"
+	return typeof(data) == TYPE_DICTIONARY and data.has_all(["type", "tag_names", "tree", "tree_type"]) and data["type"] == "tag_array"
 
 
 func _drop_data(_at_position: Vector2, data: Variant) -> void:
@@ -60,8 +60,10 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 			TagIt.get_category_icon_color(1))
 	
 	
-	if not data["is_group"]:
+	if data["tree_type"] == 0:
 		data["tree"].delete_tags(data["tag_names"])
+	elif data["tree_type"] == 2:
+		data["tree"].mark_tags(data["tag_names"])
 	
 	scroll_to_item(last_tag)
 

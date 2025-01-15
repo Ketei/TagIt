@@ -22,7 +22,7 @@ func _get_drag_data(_at_position: Vector2) -> Variant:
 		"type": "tag_array",
 		#"tag_ids": get_selected_ids(),
 		"tag_names": tag_array,
-		"is_group": true,
+		"tree_type": 1,
 		"tree": self}
 
 

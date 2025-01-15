@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://n3q3ndxi2p0s"]
+[gd_scene load_steps=13 format=3 uid="uid://n3q3ndxi2p0s"]
 
 [ext_resource type="Texture2D" uid="uid://vypb46ut3fil" path="res://icons/x_icon.svg" id="1_iy0q1"]
 [ext_resource type="Script" path="res://addons/tnowe_extra_controls/elements/draggable.gd" id="1_y88hg"]
@@ -46,7 +46,11 @@ func _ready() -> void:
 	search_cooldown.timeout.connect(on_cooldown_finished)
 	ESixAPI.tag_search_results_found.connect(on_api_tag_responded)
 	close_button.pressed.connect(panel_close_pressed.emit)
-	
+	tags_tree.tags_marked.connect(on_tags_marked)
+
+
+func on_tags_marked(tags: Array[String]) -> void:
+	Arrays.append_uniques_asc(active_tags, tags)
 
 
 func on_search_text_submitted(text: String) -> void:
@@ -199,6 +203,49 @@ bg_color = Color(0.25, 0.25, 0.25, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_apoyc"]
 bg_color = Color(0.14, 0.14, 0.14, 1)
 
+[sub_resource type="GDScript" id="GDScript_t5q6l"]
+resource_name = "drag_data"
+script/source = "extends Tree
+
+
+signal tags_marked(tags: Array[String])
+
+
+func _get_drag_data(_at_position: Vector2) -> Variant:
+	var tag_array := get_selected_names()
+	var tags_label := Label.new()
+	var tag_count: int = tag_array.size()
+	tags_label.text = str(\"    \", tag_count, \" tag\")
+	if 1 != tag_count:
+		tags_label.text += \"s\"
+	set_drag_preview(tags_label)
+	return {
+		\"type\": \"tag_array\",
+		\"tag_names\": tag_array,
+		\"tree_type\": 2,
+		\"tree\": self}
+
+
+func mark_tags(tags: Array[String]) -> void:
+	if tags.is_empty():
+		return
+	
+	for child in get_root().get_children():
+		if tags.has(child.get_text(0)):
+			child.set_custom_color(0, Color.LIME_GREEN)
+	
+	tags_marked.emit(tags)
+
+
+func get_selected_names() -> Array[String]:
+	var selected: Array[String] = []
+	var next_item: TreeItem = get_next_selected(null)
+	while next_item != null:
+		selected.append(next_item.get_text(0))
+		next_item = get_next_selected(next_item)
+	return selected
+"
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jm62d"]
 
 [node name="AllTags" type="Control"]
@@ -268,6 +315,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_apoyc")
 hide_folding = true
 hide_root = true
 select_mode = 2
+script = SubResource("GDScript_t5q6l")
 
 [node name="SearchMargin" type="MarginContainer" parent="DraggableContainer/MainControl/MarginContainer/MainContainer"]
 layout_mode = 2

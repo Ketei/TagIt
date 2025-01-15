@@ -22,7 +22,7 @@ func _get_drag_data(_at_position: Vector2) -> Variant:
 	return {
 		"type": "tag_array",
 		"tag_names": tag_array,
-		"is_group": false,
+		"tree_type": 0,
 		"tree": self}
 
 
