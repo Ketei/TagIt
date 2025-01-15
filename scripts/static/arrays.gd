@@ -24,22 +24,46 @@ static func switch_indexes(from: int, to: int, at: Array) -> void:
 
 
 ## Searches array for target using the Binary Search Algorithm
-static func binary_search(array: Array, target: Variant) -> int:
-	var low: int = 0
-	var high: int = array.size() - 1
-	
-	while low <= high:
-		var mid_val: float = low + (high - low) / 2.0
-		var mid: int = roundi(mid_val)
-		
-		if array[mid] == target:
-			return mid
-		elif array[mid] < target: # Right Half
-			low = mid + 1
-		else: # Left Half
-			high = mid - 1
-	
-	return -1
+static func binary_search(array: Variant, target: Variant) -> int:
+	match typeof(array):
+		TYPE_ARRAY:
+			var max_size: int = array.size()
+			if 0 < max_size:
+				var clamped_idx: int = clampi(array.bsearch(target), 0, max_size - 1)
+				return clamped_idx if array[clamped_idx] == target else -1
+			else:
+				return -1
+		TYPE_PACKED_STRING_ARRAY:
+			if typeof(target) == TYPE_STRING:
+				var max_size: int = array.size()
+				if 0 < max_size:
+					var clamped_idx: int = clampi(array.bsearch(target), 0, max_size - 1)
+					return clamped_idx if array[clamped_idx] == target else -1
+				else:
+					return -1
+			else:
+				return -1
+		_:
+			return -1
+
+
+
+#static func _bsearch_array(array: Variant, target: Variant) -> int:
+	#var low: int = 0
+	#var high: int = array.size() - 1
+	#
+	#while low <= high:
+		#var mid_val: float = low + (high - low) / 2.0
+		#var mid: int = roundi(mid_val)
+		#
+		#if array[mid] == target:
+			#return mid
+		#elif array[mid] < target: # Right Half
+			#low = mid + 1
+		#else: # Left Half
+			#high = mid - 1
+	#
+	#return -1
 
 
 static func move_item(array: Array, from_idx: int, to_idx: int) -> void:
@@ -49,8 +73,21 @@ static func move_item(array: Array, from_idx: int, to_idx: int) -> void:
 	array.insert(to_idx, insert_item)
 
 
-static func insert_sorted_asc(array: Array, item: Variant) -> void:
-	array.insert(array.bsearch(item, false), item)
+static func insert_sorted_asc(array: Variant, item: Variant) -> void:
+	match typeof(array):
+		TYPE_ARRAY:
+			if array.is_typed():
+				if typeof(item) == array.get_typed_builtin():
+					array.insert(array.bsearch(item, false), item)
+				else:
+					push_error("Can't insert element into typed array.")
+			else:
+				array.insert(array.bsearch(item, false), item)
+		TYPE_PACKED_STRING_ARRAY:
+			if typeof(item) == TYPE_STRING:
+				array.insert(array.bsearch(item), item)
+			else:
+				array.insert(array.bsearch(item), var_to_str(item))
 
 
 static func insert_sorted_desc(array: Array, item: Variant) -> void:
