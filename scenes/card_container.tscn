@@ -95,6 +95,7 @@ theme_override_font_sizes/font_size = 17
 placeholder_text = "Set Title"
 alignment = 1
 max_length = 64
+caret_blink = true
 
 [node name="ImagePanel" type="PanelContainer" parent="MenuCard/MainMargin/MainContainer"]
 layout_mode = 2

@@ -7,6 +7,7 @@ signal card_saved(card_title: String)
 signal intro_finished
 signal outro_finished
 signal cards_displayed
+signal save_finished(success: bool, title: String)
 
 const CARD_CONTAINER = preload("res://scenes/card_container.tscn")
 @export_range(0.05, 1.0, 0.01, "or_greater") var section_in_time: float = 1.0
@@ -17,6 +18,7 @@ const CARD_CONTAINER = preload("res://scenes/card_container.tscn")
 @export var editable_cards: bool = false
 @export var use_save: bool = false
 @export var dim_background: bool = false
+var group_save_enabled: bool = false
 var focused_child: Control = null
 var use_descriptions: bool = true
 var _allow_signals: bool = true
@@ -47,6 +49,9 @@ func _ready() -> void:
 func _input(_event: InputEvent) -> void:
 	if Input.is_action_just_pressed(&"ui_cancel") and _allow_signals:
 		close_pressed.emit()
+		if group_save_enabled:
+			print(":3")
+			save_finished.emit(false, "")
 		get_viewport().set_input_as_handled()
 
 
@@ -79,16 +84,24 @@ func create_cards(card_data: Array[Dictionary]) -> void:
 		new_card.show_description = use_descriptions
 		new_card.editable = editable_cards
 		new_card.use_save = use_save
+		new_card.grab_focus_field = card_dict["grab_focus_field"]
 		new_card.card_selected.connect(on_card_selected.bind(new_card))
 		new_card.card_confirmed.connect(on_card_confirmed.bind(new_card))
 		new_card.card_deleted.connect(on_card_deleted.bind(new_card))
 		new_card.card_saved.connect(on_card_saved)
 		new_card.card_cancelled.connect(on_card_cancelled)
+		if group_save_enabled:
+			new_card.card_saved.connect(operation_grouping.bind(true))
+			new_card.card_cancelled.connect(operation_grouping.bind("", false))
 		container.queue_child_entry(new_card)
 	container.enter_children()
 
 
-func queue_card(title: String, description: String, image: Texture2D) -> void:
+func operation_grouping(title: String, success: bool):
+	save_finished.emit(success, title)
+
+
+func queue_card(title: String, description: String, image: Texture2D, grab_focus_field: int = -1) -> void:
 	var new_card := CARD_CONTAINER.instantiate()
 	new_card.title = title
 	new_card.description = description
@@ -96,12 +109,20 @@ func queue_card(title: String, description: String, image: Texture2D) -> void:
 	new_card.show_description = use_descriptions
 	new_card.editable = editable_cards
 	new_card.use_save = use_save
+	new_card.grab_focus_field = grab_focus_field
 	new_card.card_selected.connect(on_card_selected.bind(new_card))
 	new_card.card_confirmed.connect(on_card_confirmed.bind(new_card))
 	new_card.card_deleted.connect(on_card_deleted.bind(new_card))
 	new_card.card_saved.connect(on_card_saved)
 	new_card.card_cancelled.connect(on_card_cancelled)
+	if group_save_enabled:
+			new_card.card_saved.connect(operation_grouping.bind(true))
+			new_card.card_cancelled.connect(operation_grouping.bind("", false))
 	container.queue_child_entry(new_card)
+
+
+func has_queued_cards() -> bool:
+	return not container.queued_children.is_empty()
 
 
 func on_card_cancelled() -> void:
@@ -196,5 +217,5 @@ func on_card_deleted(card: Control) -> void:
 		card_deleted.emit(acrd_idx)
 
 
-func create_card_dictionary(title: String, description: String, image: Texture2D) -> Dictionary:
-	return {"title": title, "description": description, "image": image}
+func create_card_dictionary(title: String, description: String, image: Texture2D, grab_focus_field: int = -1) -> Dictionary:
+	return {"title": title, "description": description, "image": image, "grab_focus_field": grab_focus_field}

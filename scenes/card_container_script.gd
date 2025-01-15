@@ -13,11 +13,13 @@ var title: String = "" :
 		title = new_title
 		if is_node_ready():
 			title_label.text = new_title
+			edit_title_line_edit.text = new_title
 var description: String = "" :
 	set(new_desc):
 		description = new_desc
 		if is_node_ready():
 			desc_label.text = new_desc
+			desc_edit_text_edit.text = new_desc
 var image: Texture2D = null:
 	set(new_texture):
 		image = new_texture
@@ -31,8 +33,7 @@ var show_description: bool = true:
 			desc_label.visible = show_desc
 var editable: bool = false
 var use_save: bool = false
-#var _animating_buttons: bool = false
-#var _animating_card: bool = false
+var grab_focus_field: int = -1
 
 
 @onready var edit_title_line_edit: LineEdit = $MenuCard/MainMargin/MainContainer/TitlePanel/TitleMargin/EditTitleLineEdit
@@ -64,15 +65,41 @@ func _ready() -> void:
 	card_select_button.visible = not use_save
 	
 	title_label.text = title
+	edit_title_line_edit.text = title
+	
 	desc_label.text = description
+	desc_edit_text_edit.text = description
 	image_texrec.texture = image
-
-	#desc_label.visible = show_description
+	
+	match grab_focus_field:
+		0:
+			select_title_text()
+		1:
+			select_desc_text()
+	
+	if use_save:
+		edit_title_line_edit.text_submitted.connect(on_save_text_submitted)
 	card_select_button.pressed.connect(card_selected.emit)
 	$MenuCard/PanelContainer/MarginContainer/ButtonsContaintainer/SelectButton.pressed.connect(card_confirmed.emit)
 	$MenuCard/PanelContainer/MarginContainer/ButtonsContaintainer/DeleteButton.pressed.connect(card_deleted.emit)
 	save_button.pressed.connect(on_card_saved)
 	cancel_button.pressed.connect(card_cancelled.emit)
+
+
+func select_title_text() -> void:
+	edit_title_line_edit.grab_focus()
+	edit_title_line_edit.caret_column = edit_title_line_edit.text.length()
+	edit_title_line_edit.select_all()
+
+
+func select_desc_text() -> void:
+	desc_edit_text_edit.grab_focus()
+	desc_edit_text_edit.set_caret_column(desc_edit_text_edit.text.length())
+	desc_edit_text_edit.select_all()
+
+
+func on_save_text_submitted(submitted_text: String) -> void:
+	card_saved.emit(submitted_text.strip_edges())
 
 
 func on_card_saved() -> void:
