@@ -1,4 +1,4 @@
-extends PanelContainer
+extends Control
 
 
 signal wizard_finished(tags: Array[String])
@@ -199,89 +199,84 @@ var current_page: int = 0:
 		main_panel.get_child(current_page).visible = true
 		current_page_lbl.text = str(current_page + 1)
 		title_label.text = sections[current_page]
-var texture_containers: Array[TextureRect] = []
-var project_texture: Texture2D = null:
-	set(new_texture):
-		project_texture = new_texture
-		if is_node_ready():
-			for tex_rec in texture_containers:
-				tex_rec.texture = new_texture
-				tex_rec.visible = new_texture != null
 
-@onready var title_label: Label = $MainContainer/TitleLabel
-@onready var previous_button: Button = $MainContainer/MarginContainer/NavigationContainer/PreviousButton
-@onready var current_page_lbl: Label = $MainContainer/MarginContainer/NavigationContainer/Pages/CurrentPage
-@onready var all_pages: Label = $MainContainer/MarginContainer/NavigationContainer/Pages/AllPages
-@onready var next_button: Button = $MainContainer/MarginContainer/NavigationContainer/NextButton
+var current_project_size: Vector2 = Vector2(310, 34)
 
-@onready var main_panel: PanelContainer = $MainContainer/MainPanel
+@onready var title_label: Label = $MainPanel/MainContainer/TitleLabel
+@onready var previous_button: Button = $MainPanel/MainContainer/MarginContainer/NavigationContainer/PreviousButton
+@onready var current_page_lbl: Label = $MainPanel/MainContainer/MarginContainer/NavigationContainer/Pages/CurrentPage
+@onready var all_pages: Label = $MainPanel/MainContainer/MarginContainer/NavigationContainer/Pages/AllPages
+@onready var next_button: Button = $MainPanel/MainContainer/MarginContainer/NavigationContainer/NextButton
 
-@onready var character_field: VBoxContainer = $MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField
-@onready var character_blocked: Control = $MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterBlocked
+@onready var main_panel: PanelContainer = $MainPanel/MainContainer/MainPanel
+
+@onready var character_field: VBoxContainer = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField
+@onready var character_blocked: Control = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterBlocked
 
 
-@onready var body_texture_tree: Tree = $MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/BodyTextureTree
-@onready var age_opt_btn: OptionButton = $MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/AgeMainContainer/AgeContainer/AgeOptBtn
-@onready var lore_age_opt_btn: OptionButton = $MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/AgeMainContainer/LoreAgeContainer/LoreAgeOptBtn
-@onready var gender_opt_btn: OptionButton = $MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/HBoxContainer/GenderContainer/GenderOptBtn
-@onready var gender_lore_opt_btn: OptionButton = $MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/HBoxContainer/GenderLoreContainer/GenderLoreOptBtn
-@onready var body_opt_btn: OptionButton = $MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/BodyContainer/BodyContainer/BodyOptBtn
-@onready var characters_tree: Tree = $MainContainer/MainPanel/Characters/MainContainer/ChracterTree/CharactersTree
-@onready var character_tag_ln_edt: LineEdit = $MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/NameContainer/CharacterTagLnEdt
-@onready var species_ln_edt: LineEdit = $MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/BodyContainer/SpeciesBox/SpeciesLnEdt
-#@onready var clothing_a: HBoxContainer = $MainContainer/MainPanel/Characters/MainContainer/ScrollPanel/CharacterField/ClothingContainer/ClothingA
-#@onready var clothing_b: HBoxContainer = $MainContainer/MainPanel/Characters/MainContainer/ScrollPanel/CharacterField/ClothingContainer/ClothingB
-@onready var new_char_btn: Button = $MainContainer/MainPanel/Characters/MainContainer/ChracterTree/Header/NewCharBtn
+@onready var body_texture_tree: Tree = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/BodyTextureTree
+@onready var age_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/AgeMainContainer/AgeContainer/AgeOptBtn
+@onready var lore_age_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/AgeMainContainer/LoreAgeContainer/LoreAgeOptBtn
+@onready var gender_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/HBoxContainer/GenderContainer/GenderOptBtn
+@onready var gender_lore_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/HBoxContainer/GenderLoreContainer/GenderLoreOptBtn
+@onready var body_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/BodyContainer/BodyContainer/BodyOptBtn
+@onready var characters_tree: Tree = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/ChracterTree/CharactersTree
+@onready var character_tag_ln_edt: LineEdit = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/NameContainer/CharacterTagLnEdt
+@onready var species_ln_edt: LineEdit = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/BodyContainer/SpeciesBox/SpeciesLnEdt
+#@onready var clothing_a: HBoxContainer = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/ScrollPanel/CharacterField/ClothingContainer/ClothingA
+#@onready var clothing_b: HBoxContainer = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/ScrollPanel/CharacterField/ClothingContainer/ClothingB
+@onready var new_char_btn: Button = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/ChracterTree/Header/NewCharBtn
 
-@onready var pairing_checkbox_container: VBoxContainer = $MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ScrollContainer/CheckboxContainer
+@onready var pairing_checkbox_container: VBoxContainer = $MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer
 
-@onready var gender_opt_btn_l: OptionButton = $MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer/HBoxContainer/GenderOptBtnL
-@onready var gender_opt_btn_r: OptionButton = $MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer/HBoxContainer/GenderOptBtnR
-@onready var add_pairing_btn: Button = $MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer/AddPairingBtn
-@onready var clear_pairings_btn: Button = $MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/VBoxContainer3/VBoxContainer2/ClearPairingsBtn
+@onready var gender_opt_btn_l: OptionButton = $MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/SexesContainer/HBoxContainer/GenderOptBtnL
+@onready var gender_opt_btn_r: OptionButton = $MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/SexesContainer/HBoxContainer/GenderOptBtnR
+@onready var add_pairing_btn: Button = $MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/SexesContainer/AddPairingBtn
+@onready var clear_pairings_btn: Button = $MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ClearPairingsBtn
 
-@onready var bg_opt_btn: OptionButton = $MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/BGContainer/BgOptBtn
-@onready var bg_type_opt_btn: OptionButton = $MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/BGTypeContainer/BGTypeOptBtn
+@onready var bg_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/BGContainer/BgOptBtn
+@onready var bg_type_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/BGTypeContainer/BGTypeOptBtn
 
-@onready var medium_opt_btn: OptionButton = $MainContainer/MainPanel/MetaContainer/MainContainer/MediumContainer/MediumOptBtn
-@onready var media_type_opt_btn: OptionButton = $MainContainer/MainPanel/MetaContainer/MainContainer/TypeContainer/MediaTypeOptBtn
-@onready var artist_line_edit: LineEdit = $MainContainer/MainPanel/MetaContainer/MainContainer/ArtistContainer/ArtistLineEdit
-@onready var year_opt_btn: SpinBox = $MainContainer/MainPanel/MetaContainer/MainContainer/HBoxContainer2/YearOptBtn
-@onready var unkown_year_btn: CheckButton = $MainContainer/MainPanel/MetaContainer/MainContainer/HBoxContainer2/UnkownYearBtn
-@onready var colored_check_box: CheckBox = $MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/ColorContainer/ColoredCheckBox
-@onready var shaded_sketch_box: CheckBox = $MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/ColorContainer/ShadedSketchBox
-@onready var line_style_opt_btn: OptionButton = $MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/LineContainer/LineStyleOptBtn
-@onready var daytime_opt_btn: OptionButton = $MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/TimeContainer/DaytimeOptBtn
-@onready var location_opt_btn: OptionButton = $MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/LocationContainer/LocationOptBtn
-@onready var sexing: HBoxContainer = $MainContainer/MainPanel/PairingsContainer/PairingsContainer/MinglingContainer/Sexing
-@onready var grouping: HBoxContainer = $MainContainer/MainPanel/PairingsContainer/PairingsContainer/MinglingContainer/Grouping
-@onready var clothing_tree: Tree = $MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/Others/ClothingTree
-@onready var body_traits: Tree = $MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/Others/BodyTraits
+@onready var medium_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/MediumContainer/MediumOptBtn
+@onready var media_type_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/TypeContainer/MediaTypeOptBtn
+@onready var artist_line_edit: LineEdit = $MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/ArtistContainer/ArtistLineEdit
+@onready var year_opt_btn: SpinBox = $MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/HBoxContainer2/YearOptBtn
+@onready var unkown_year_btn: CheckButton = $MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/HBoxContainer2/UnkownYearBtn
+@onready var colored_check_box: CheckBox = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/ColorContainer/ColoredCheckBox
+@onready var shaded_sketch_box: CheckBox = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/ColorContainer/ShadedSketchBox
+@onready var line_style_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/LineContainer/LineStyleOptBtn
+@onready var daytime_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/TimeContainer/DaytimeOptBtn
+@onready var location_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/LocationContainer/LocationOptBtn
+@onready var sexing: HBoxContainer = $MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer/Sexing
+@onready var grouping: HBoxContainer = $MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer/Grouping
+@onready var clothing_tree: Tree = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/Others/ClothingTree
+@onready var body_traits: Tree = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/Others/BodyTraits
+
+@onready var image_panel: PanelContainer = $ProjectTextureContainer/MainPanel/MainContainer/ImagePanel
+
+@onready var reset_zoom_btn: Button = $ProjectTextureContainer/MainPanel/MainContainer/HeaderContainer/ResetZoomBtn
+@onready var minimize_image_btn: Button = $ProjectTextureContainer/MainPanel/MainContainer/HeaderContainer/MinimizeImageBtn
 
 # --- Images ---
-@onready var day: TextureRect = $MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Day
-@onready var night: TextureRect = $MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Night
-@onready var outside: TextureRect = $MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Outside
-@onready var outside_detailed: TextureRect = $MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Outside/OutsideDetailed
-@onready var inside: TextureRect = $MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Inside
-@onready var inside_detailed: TextureRect = $MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Inside/InsideDetailed
-@onready var ball: TextureRect = $MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Ball
-@onready var ball_shadow: TextureRect = $MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Ball/BallShadow
-@onready var ball_shaded: TextureRect = $MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Ball/BallShaded
-@onready var sky_rect: ColorRect = $MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Background/SkyRect
-@onready var background: TextureRect = $MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Background
-@onready var solid_rect: ColorRect = $MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Background/SolidRect
-#@onready var char_texture: TextureRect = $MainContainer/MainPanel/Characters/MainContainer/ChracterTree/CharTexture
-
+@onready var day: TextureRect = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Day
+@onready var night: TextureRect = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Night
+@onready var outside: TextureRect = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Outside
+@onready var outside_detailed: TextureRect = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Outside/OutsideDetailed
+@onready var inside: TextureRect = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Inside
+@onready var inside_detailed: TextureRect = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Inside/InsideDetailed
+@onready var ball: TextureRect = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Ball
+@onready var ball_shadow: TextureRect = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Ball/BallShadow
+@onready var ball_shaded: TextureRect = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Ball/BallShaded
+@onready var sky_rect: ColorRect = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Background/SkyRect
+@onready var background: TextureRect = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Background
+@onready var solid_rect: ColorRect = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Background/SolidRect
+@onready var zoom_project: ScrollZoomView = $ProjectTextureContainer/MainPanel/MainContainer/ImagePanel/ScrollZoomView
+@onready var project_texture: TextureRect = $ProjectTextureContainer/MainPanel/MainContainer/ImagePanel/ScrollZoomView/ProjectTexture
+@onready var project_texture_container: Draggable = $ProjectTextureContainer
 # ---------------
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	texture_containers.append($MainContainer/MainPanel/ImageContainer/HBoxContainer/ImageTexture)
-	texture_containers.append($MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesTexture)
-	texture_containers.append($MainContainer/MainPanel/PairingsContainer/PairingsContainer/GendersContainer/InteractionTexture)
-	texture_containers.append($MainContainer/MainPanel/Characters/MainContainer/ChracterTree/CharTexture)
-	
 	characters_tree.create_item()
 	body_texture_tree.create_item()
 	clothing_tree.create_item()
@@ -314,10 +309,6 @@ func _ready() -> void:
 	media_type_opt_btn.get_popup().max_size.y = 200
 	
 	character_blocked.visible = true
-	
-	for tex_rec in texture_containers:
-		tex_rec.texture = project_texture
-		tex_rec.visible = project_texture != null
 	
 	var idx: int = -1
 	for wear_item in CLOTHING:
@@ -360,6 +351,8 @@ func _ready() -> void:
 	shaded_sketch_box.toggled.connect(on_shaded_toggled)
 	bg_type_opt_btn.item_selected.connect(on_bg_type_selected)
 	clothing_tree.item_edited.connect(_on_cloth_item_edited)
+	reset_zoom_btn.pressed.connect(on_reset_zoom_button_pressed)
+	minimize_image_btn.pressed.connect(on_minimize_button_pressed)
 
 
 func _on_cloth_item_edited() -> void:
@@ -373,6 +366,24 @@ func _on_cloth_item_edited() -> void:
 		edited.collapsed = true
 	elif not edited.disable_folding and edited.collapsed:
 		edited.collapsed = false
+
+
+func set_project_texture(new_texture: Texture2D) -> void:
+	project_texture.texture = new_texture
+	project_texture_container.visible = new_texture != null
+
+
+func on_minimize_button_pressed() -> void:
+	if image_panel.visible:
+		current_project_size = project_texture_container.size
+		project_texture_container.set_deferred(&"size", Vector2(310, 34))
+	else:
+		project_texture_container.size = current_project_size
+	image_panel.visible = not image_panel.visible
+
+
+func on_reset_zoom_button_pressed() -> void:
+	zoom_project.reset_zoom()
 
 
 func on_shaded_toggled(is_toggled: bool) -> void:
@@ -703,11 +714,6 @@ func generate_tags() -> Array[String]:
 		tags.append(
 			media_type_opt_btn.get_item_text(media_type_opt_btn.selected))
 	
-	#if colored_check_box.button_pressed:
-		#if line_style_opt_btn.selected == 0:
-			#tags.append("sketch")
-			#tags.append("colored sketch")
-	
 	if line_style_opt_btn.selected == 0: # Sketch
 		tags.append("sketch")
 		if colored_check_box.button_pressed:
@@ -739,7 +745,7 @@ func generate_tags() -> Array[String]:
 	if 0 < location_opt_btn.selected:
 		tags.append(location_opt_btn.get_item_text(location_opt_btn.selected))
 	
-	for angle in $MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow.get_children():
+	for angle in $MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow.get_children():
 		if angle.is_angle_selected:
 			tags.append_array(angle.angle_tags)
 	

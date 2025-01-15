@@ -49,6 +49,7 @@ var hydrus_connected: bool = false:
 			settings_connection_status_txt_rect.texture = load("res://icons/disconnected_icon.svg")
 			settings_connection_status_txt_rect.modulate = Color(0.78, 0.139, 0.117)
 var loading_image: bool = false
+var _saving: bool = false # Used if a save instance is on screen.
 var _save_required: bool = false
 var _image_changed: bool = false
 var _block_events: bool = false
@@ -362,6 +363,8 @@ func _ready() -> void:
 func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		if _save_required:
+			if _saving:
+				return
 			var save_confirmation := preload("res://scenes/dialogs/unsaved_confirmation_dialog.gd").new()
 			add_child.call_deferred(save_confirmation)
 			await save_confirmation.ready
@@ -394,34 +397,64 @@ func _notification(what):
 							image_path,
 							alts)
 					projects.save()
-					_save_required = false
 				else:
-					if selector != null:
-						TagIt.log_message(
-							"[ERROR] Loading tried to save but selector is in memory.",
-							TagIt.LogLevel.ERROR)
-						save_confirmation.queue_free()
-						return
+					_saving = true
+					var process_in: bool = selector.is_processing_input() if selector != null else false
+					if process_in:
+						selector.set_process_input(false)
 					
-					selector = VERTICAL_CARD_CONTAINER.instantiate()
-					selector.use_descriptions = false
-					selector.editable_cards = true
-					selector.use_search = false
-					selector.use_save = true
-					selector.dim_background = true
-					selector.card_saved.connect(on_selector_project_saved)
-					selector.close_pressed.connect(on_selector_close_pressed)
-					add_child(selector)
-					selector.play_intro()
-					await selector.intro_finished
-					selector.queue_card(
+					var extra_saver := VERTICAL_CARD_CONTAINER.instantiate()
+					extra_saver.group_save_enabled = true
+					extra_saver.use_descriptions = false
+					extra_saver.editable_cards = true
+					extra_saver.use_search = false
+					extra_saver.use_save = true
+					extra_saver.dim_background = true
+					add_child(extra_saver)
+					extra_saver.play_intro()
+					await extra_saver.intro_finished
+					extra_saver.queue_card(
 						current_title,
 						"",
-						project_image.texture)
-					selector.create_queued_cards()
-					await selector.outro_finished
-					if _save_required: # Save was cancelled
-						save_confirmation.queue_free()
+						project_image.texture,
+						0)
+					extra_saver.create_queued_cards()
+					await extra_saver.cards_displayed
+					extra_saver.set_emit_signals(true)
+					var save_result: Array = await extra_saver.save_finished
+					extra_saver.set_emit_signals(false)
+					if save_result[0]: 
+						var projects := TagItProjectResource.get_projects()
+						var alts: Array[Dictionary] = []
+						
+						save_alt_list(current_alt)
+						for idx in range(generate_version_opt_btn.item_count):
+							alts.append({
+								"name": generate_version_opt_btn.get_item_text(idx),
+								"list": alt_lists[idx + 1].duplicate()})
+						
+						var image_path: String = ""
+						if project_image.texture != null:
+							image_path = Strings.random_string64() + ".webp"
+							project_image.texture.get_image().save_webp(TagItProjectResource.get_thumbnails_path() + image_path)
+							
+						projects.create_project(
+								save_result[1],
+								alt_lists[0],
+								tagger_suggestion_tree.get_all_suggestions_text(),
+								groups_suggestions_tree.get_all_groups(),
+								image_path,
+								alts)
+						
+						projects.save()
+					else:# Save was cancelled
+						extra_saver.play_outro()
+						await extra_saver.outro_finished
+						extra_saver.visible = false
+						extra_saver.queue_free()
+						if selector != null:
+							selector.set_process_input(process_in)
+						_saving = false
 						return
 			elif result == 2: # Cancel
 				save_confirmation.queue_free()
@@ -776,7 +809,7 @@ func save_current_project_indexed() -> void:
 		OS.move_to_trash(TagItProjectResource.get_thumbnails_path() + image_path)
 		image_path = ""
 	elif project_image != null and _image_changed:
-		project_image.texture.get_image().save_jpg(TagItProjectResource.get_thumbnails_path() + image_path)
+		project_image.texture.get_image().save_webp(TagItProjectResource.get_thumbnails_path() + image_path)
 	
 	projects.overwrite_project(
 			current_project,
@@ -791,6 +824,7 @@ func save_current_project_indexed() -> void:
 
 
 func instantiate_save_selector() -> void:
+	_saving = true
 	selector = VERTICAL_CARD_CONTAINER.instantiate()
 	selector.use_descriptions = false
 	selector.editable_cards = true
@@ -799,7 +833,7 @@ func instantiate_save_selector() -> void:
 	selector.dim_background = true
 	selector.use_close = false
 	selector.card_saved.connect(on_selector_project_saved)
-	selector.close_pressed.connect(on_selector_close_pressed)
+	selector.close_pressed.connect(on_selector_close_pressed.bind(true))
 	add_child(selector)
 	selector.set_emit_signals(false)
 	selector.play_intro()
@@ -807,7 +841,8 @@ func instantiate_save_selector() -> void:
 	selector.queue_card(
 		current_title,
 		"",
-		project_image.texture)
+		project_image.texture,
+		0)
 	selector.create_queued_cards()
 	await selector.cards_displayed
 	selector.set_emit_signals(true)
@@ -835,8 +870,9 @@ func instance_project_loader_selector() -> void:
 			project["name"],
 			"",
 			texture)
-	selector.create_queued_cards()
-	await selector.cards_displayed
+	if selector.has_queued_cards():
+		selector.create_queued_cards()
+		await selector.cards_displayed
 	selector.set_emit_signals(true)
 
 
@@ -883,8 +919,9 @@ func instance_preset_selector() -> void:
 				template["title"],
 				template["description"],
 				texture)
-	selector.create_queued_cards()
-	await selector.cards_displayed
+	if selector.has_queued_cards():
+		selector.create_queued_cards()
+		await selector.cards_displayed
 	selector.set_emit_signals(true)
 
 
@@ -892,8 +929,8 @@ func instantiate_wizard() -> void:
 	selector = preload("res://scenes/wizard.tscn").instantiate()
 	selector.wizard_finished.connect(on_wizard_finished)
 	selector.wizard_cancelled.connect(on_wizard_cancelled)
-	selector.project_texture = project_image.texture
 	add_child(selector)
+	selector.set_project_texture(project_image.texture)
 
 
 func on_menu_button_id_selected(id: int) -> void:
@@ -1062,9 +1099,9 @@ func on_selector_project_saved(title: String) -> void:
 	var image_path: String = ""
 	
 	if project_image.texture != null:
-		image_path = Strings.random_string64() + ".jpg"
-		project_image.texture.get_image().save_jpg(TagItProjectResource.get_thumbnails_path() + image_path)
-	
+		image_path = Strings.random_string64() + ".webp"
+		project_image.texture.get_image().save_webp(TagItProjectResource.get_thumbnails_path() + image_path)
+		
 	current_project = projects.create_project(
 			title,
 			alt_lists[0],
@@ -1076,6 +1113,7 @@ func on_selector_project_saved(title: String) -> void:
 	projects.save()
 	
 	current_title = title
+	print(title)
 	_save_required = false
 	selector.stop_queued_cards()
 	selector.play_outro()
@@ -1139,9 +1177,12 @@ func on_selector_project_deleted(project_idx: int) -> void:
 	var projects := TagItProjectResource.get_projects()
 	projects.delete_project(project_idx)
 	projects.save()
+	if current_project == project_idx:
+		current_project = -1
+		_save_required = true
 
 
-func on_selector_close_pressed() -> void:
+func on_selector_close_pressed(is_save: bool = false) -> void:
 	selector.set_emit_signals(false)
 	selector.stop_queued_cards()
 	selector.play_outro()
@@ -1149,6 +1190,8 @@ func on_selector_close_pressed() -> void:
 	selector.visible = false
 	selector.queue_free()
 	selector = null
+	if is_save:
+		_saving = false
 
 
 func on_search_all_tags_pressed() -> void:
@@ -1672,7 +1715,7 @@ func on_set_category_color(id: int, initial: String) -> void:
 
 func add_tag(tag_name: String) -> void:
 	var clean_tag: String = tag_name.strip_edges().to_lower()
-	add_tag_ln_edt.clear()
+	add_tag_ln_edt.clear_no_signal()
 	
 	if clean_tag.is_empty():
 		return
