@@ -43,7 +43,7 @@
 [ext_resource type="Texture2D" uid="uid://dexng5s3jsdw6" path="res://a982a66d33ed166371cc52da11d8a946.png" id="41_mchup"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t4osn"]
-bg_color = Color(0.3, 0.3, 0.3, 1)
+bg_color = Color(0.2541, 0.249, 0.3, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w38ic"]
 bg_color = Color(0.180392, 0.180392, 0.180392, 1)
@@ -61,7 +61,15 @@ minimum_velocity = 0.4
 rebound_strength = 7.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_flt4j"]
-bg_color = Color(0.2, 0.2, 0.2, 1)
+bg_color = Color(0.2852, 0.297187, 0.31, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 10.0
+expand_margin_top = 10.0
+expand_margin_right = 10.0
+expand_margin_bottom = 10.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8v57s"]
 bg_color = Color(0.1, 0.1, 0.1, 1)
@@ -1180,7 +1188,9 @@ layout_mode = 0
 offset_right = 310.0
 offset_bottom = 34.0
 script = ExtResource("37_7l5mr")
-resize_margin = Vector2(5, 5)
+resize_margin = Vector2(10, 10)
+drop_color = Color(0.5, 0.5, 0.5, 0)
+allow_resizing = null
 
 [node name="MainPanel" type="PanelContainer" parent="ProjectTextureContainer"]
 custom_minimum_size = Vector2(300, 0)

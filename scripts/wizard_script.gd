@@ -377,8 +377,10 @@ func on_minimize_button_pressed() -> void:
 	if image_panel.visible:
 		current_project_size = project_texture_container.size
 		project_texture_container.set_deferred(&"size", Vector2(310, 34))
+		project_texture_container.allow_resizing = false
 	else:
 		project_texture_container.size = current_project_size
+		project_texture_container.allow_resizing = true
 	image_panel.visible = not image_panel.visible
 
 
