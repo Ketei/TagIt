@@ -43,7 +43,7 @@
 [ext_resource type="Texture2D" uid="uid://dexng5s3jsdw6" path="res://a982a66d33ed166371cc52da11d8a946.png" id="41_mchup"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t4osn"]
-bg_color = Color(0.2541, 0.249, 0.3, 1)
+bg_color = Color(0.2676, 0.264, 0.3, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w38ic"]
 bg_color = Color(0.180392, 0.180392, 0.180392, 1)
@@ -108,7 +108,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_w38ic")
 script = ExtResource("1_fvq4v")
 
 [node name="MetaContainer" type="CenterContainer" parent="MainPanel/MainContainer/MainPanel"]
-visible = false
 layout_mode = 2
 
 [node name="MainContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/MetaContainer"]
@@ -528,6 +527,7 @@ angle_tags = Array[String](["worm's-eye view"])
 angle_texture = ExtResource("21_cdcvx")
 
 [node name="PairingsContainer" type="MarginContainer" parent="MainPanel/MainContainer/MainPanel"]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 100
 theme_override_constants/margin_top = 50
@@ -1185,12 +1185,11 @@ text = "Next"
 visible = false
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 0
-offset_right = 310.0
-offset_bottom = 34.0
+offset_right = 320.0
+offset_bottom = 44.0
 script = ExtResource("37_7l5mr")
 resize_margin = Vector2(10, 10)
 drop_color = Color(0.5, 0.5, 0.5, 0)
-allow_resizing = null
 
 [node name="MainPanel" type="PanelContainer" parent="ProjectTextureContainer"]
 custom_minimum_size = Vector2(300, 0)
