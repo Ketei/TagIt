@@ -102,6 +102,10 @@ func _on_timer_timeout() -> void:
 	timer_finished.emit()
 
 
+func clear_no_signal() -> void:
+	text = ""
+
+
 func on_text_submitted(_text: String) -> void:
 	if autofill_list.visible:
 		autofill_list.visible = false
