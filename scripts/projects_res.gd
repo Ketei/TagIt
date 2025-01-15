@@ -51,6 +51,10 @@ func overwrite_project(project_idx: int,p_name: String, tags: Array[String], sug
 
 
 func delete_project(project_idx: int) -> void:
+	if not projects[project_idx]["image_path"].is_empty():
+		var thumbnail_path: String = get_thumbnails_path() + projects[project_idx]["image_path"]
+		if FileAccess.file_exists(thumbnail_path):
+			OS.move_to_trash(thumbnail_path)
 	projects.remove_at(project_idx)
 
 
