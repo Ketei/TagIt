@@ -6,7 +6,7 @@ Version 3 is the final major version of TagIt (and last rewrite). It comes bundl
 ### Quick (Reccomended)
 Simply download the launcher script that is appropiate for your system and run it. It'll download and rename the required files where you've placed the script. Each time you run the script it'll check if there is an update required and automatically download it for you.
 > [!NOTE]
-> Running the executable alone will also check for updates and let you decide if you want to update or not, but unlike the launcher it can't keep the executable or the plugins updated and can only patch for bugs.
+> Running the executable instead of the launcher will also check for updates and let you decide if you want to update or not, but unlike the launcher it can't keep the executable or the plugins updated and can only patch for bugs.
 ### Manual
 The launcher gets the files from the next repo: [TagIt Launcher](https://github.com/Ketei/tagit-launcher/releases).
 
