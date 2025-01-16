@@ -197,8 +197,7 @@ var current_title: String = ""
 
 
 func _ready() -> void:
-	DisplayServer.window_set_min_size(Vector2i(1280, 720))
-	DisplayServer.window_set_title("TagIt!")
+	get_window().min_size = Vector2i(1280, 720)
 	hide_all_sections()
 	tab_bar.current_tab = 0
 	on_tab_changed(0)
@@ -350,6 +349,8 @@ func _ready() -> void:
 	TagIt.website_deleted.connect(on_website_changed)
 	TagIt.tag_updated.connect(on_tag_updated)
 	TagIt.message_logged.connect(on_log_created)
+	
+	TagIt.hide_splash()
 	
 	if TagIt.settings.has_valid_hydrus_login():
 		hydrus_connected = await connect_to_hydrus(
