@@ -1,4 +1,4 @@
-[gd_scene load_steps=64 format=3 uid="uid://eaxngd263vbi"]
+[gd_scene load_steps=63 format=3 uid="uid://eaxngd263vbi"]
 
 [ext_resource type="Script" path="res://scenes/tagit_main_window.gd" id="1_3rneb"]
 [ext_resource type="Texture2D" uid="uid://kkvcqst6wv4k" path="res://icons/new_icon.svg" id="2_3s1fn"]
@@ -57,7 +57,6 @@
 [ext_resource type="Texture2D" uid="uid://d24o3rwmiwpcp" path="res://icons/disconnected_icon.svg" id="45_kqm3t"]
 [ext_resource type="Script" path="res://scripts/hydrus.gd" id="46_jhrpg"]
 [ext_resource type="Script" path="res://scripts/e_six_requester.gd" id="55_iynx2"]
-[ext_resource type="Texture2D" uid="uid://dlp7kwaq0jp2k" path="res://textures/splash.png" id="58_lj1si"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0wwcl"]
 bg_color = Color(0.121569, 0.133333, 0.156863, 1)
@@ -1787,14 +1786,3 @@ timeout = 10.0
 
 [node name="eSixAPI" type="Node" parent="."]
 script = ExtResource("55_iynx2")
-
-[node name="Splash" type="TextureRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("58_lj1si")
-expand_mode = 1
-stretch_mode = 5
