@@ -16,10 +16,7 @@ signal tags_validity_updated(tag_ids: Array[int], valid: bool)
 signal website_created(site_id: int, site_name: String)
 signal website_deleted(site_id: int)
 
-#const PROJECTS_PATH: String = "res://test_project_database.db"
-#const DATABASE_PATH: String = "res://test_tag_database.db"
-#const THUMBNAIL_FOLDER: String = "res://thumbnails/"
-var DATABASE_PATH: String = ""
+const DATABASE_PATH: String = "user://tag_database.db"
 const SEARCH_WILDCARD: String = "*"
 const DB_VERSION: int = 1
 const TAGIT_VERSION: String = "3.0.0"
@@ -49,17 +46,25 @@ var _default_icon_color: Color = Color.WHITE
 var splash_node: CanvasLayer = null
 
 
+# --- Icons ---
 
-func _ready() -> void:
-	# ---- Beta testing -----
-	if OS.has_feature("standalone"):  # Check if running in exported executable
-		DATABASE_PATH = OS.get_executable_path()
-		if not DATABASE_PATH.ends_with("/"):
-			DATABASE_PATH += "/"
-		DATABASE_PATH += "test_tag_database.db"
-	else:
-		DATABASE_PATH = "res://test_tag_database.db"  # Use the project root if in the editor
+func _load_icon_data(id: int) -> void:
+	var icon_data := _get_icon_data(id)
+	icons[id]["texture"] = icon_data["texture"]
+
+
+func _get_icon_data(id: int) -> Dictionary: # Maybe integrate up
+	var db_data := tag_database.select_rows("icons", "id = " + str(id), ["*"])
+	var icon_image: Image = Image.new()
 	
+	icon_image.load_webp_from_buffer(db_data[0]["image"])
+	
+	return {
+		"name": db_data[0]["name"],
+		"texture": ImageTexture.create_from_image(icon_image)}
+
+# Needs to be run on main tagger load.
+func tagit_setup() -> void:
 	settings = AppSettingsRes.get_settings()
 	
 	if not DirAccess.dir_exists_absolute(TemplateResource.TEMPLATE_PATH.get_base_dir()):
@@ -77,23 +82,17 @@ func _ready() -> void:
 	tag_database.path = DATABASE_PATH
 	tag_database.foreign_keys = true
 	
-	#projects_database = SQLite.new()
-	#projects_database.path = PROJECTS_PATH
-	
 	tag_database.open_db()
-	#projects_database.open_db()
 	
-	# set pragmas on tag database to improve i/o speed
+	# Set pragmas on tag database to improve i/o speed
 	tag_database.query("PRAGMA synchronous = NORMAL; PRAGMA journal_mode = WAL; PRAGMA temp_store = MEMORY;")
 	
 	tag_database.query("SELECT name FROM sqlite_master WHERE type = 'table';")
-	#projects_database.query("SELECT name FROM sqlite_master WHERE type = 'table';")
+	
 	if tag_database.query_result.is_empty():
 		var version_table: Dictionary = {
 			"version": {"data_type": "int", "not_null": true},#, "primary_key": true},
-			"author": {"data_type": "text"},
-			"update_notified": {"data_type": "int"}}
-		
+			"author": {"data_type": "text"}}
 		
 		var tags_table: Dictionary = {
 			"id": {"data_type": "int", "auto_increment": true, "not_null": true, "primary_key": true, "unique": true},
@@ -170,7 +169,7 @@ func _ready() -> void:
 					FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE SET DEFAULT ON UPDATE NO ACTION,
 					FOREIGN KEY (group_id) REFERENCES groups (id) ON DELETE SET NULL ON UPDATE NO ACTION);")
 		tag_database.create_table("_version", version_table)
-		tag_database.insert_row("_version", {"version": DB_VERSION, "author": "Ketei", "update_notified": 0})
+		tag_database.insert_row("_version", {"version": DB_VERSION, "author": "Ketei"})
 		tag_database.query( # relationships
 				"CREATE TABLE relationships ( 
 				parent INTEGER NOT NULL, 
@@ -217,42 +216,16 @@ func _ready() -> void:
 				SELECT suggestion_id FROM suggestions
 			);"
 		)
-		
-	# ------------------- To be deleted -----------------------------
-	#if projects_database.query_result.is_empty():
-		#var project_table: Dictionary = {
-		#"id": {
-			#"data_type": "int",
-			#"auto_increment": true,
-			#"not_null": true,
-			#"primary_key": true,
-			#"unique": true},
-		#"name": {"data_type": "text"},
-		#"tags": {"data_type": "text"},
-		#"suggestions": {"data_type": "text"},
-		#"groups": {"data_type": "blob"}, # Int array as PackedByteArray
-		#"image": {"data_type": "text"}}
-		#projects_database.create_table("projects", project_table)
-	# ---------------------------------------------------------------
-	
 	
 	var data_tags: Array[String] = []
 	tag_database.query("SELECT tags.id, tags.name, tags.is_valid, IIF(data.tag_id IS NULL, 0, 1) AS has_data FROM tags LEFT JOIN data ON data.tag_id = tags.id;")
-	#tag_database.query("SELECT tags.id, tags.name, tags.is_valid FROM tags LEFT JOIN data ON data.tag_id = tags.id;")
 	for dict in tag_database.query_result:
 		loaded_tags[dict["name"]] = dict["id"]
 		if dict["has_data"] == 1:
 			data_tags.append(dict["name"])
 		if not dict["is_valid"]:
 			invalid_tags.append(dict["id"])
-		
-		#if bool(dict["has_data"]):
-			#data_tags.append(dict["id"])
 	
-	#var _categories := get_categories()
-	#
-	#for categ_dict in _categories:
-		#categories[categ_dict["id"]] = {"icon": categ_dict["icon_id"], "color": categ_dict["icon_color"]}
 	var default_color: String = tag_database.select_rows("categories", "id = 1", ["icon_color"])[0]["icon_color"]
 	_default_icon_color = Color.from_string(default_color, Color.WHITE)
 	
@@ -266,25 +239,6 @@ func _ready() -> void:
 	all_tags.sort_custom(Arrays.sort_custom_alphabetically_asc)
 	tag_search_array = PackedStringArray(all_tags)
 	tag_search_data = PackedStringArray(data_tags)
-	check_version()
-
-
-# --- Icons ---
-
-func _load_icon_data(id: int) -> void:
-	var icon_data := _get_icon_data(id)
-	icons[id]["texture"] = icon_data["texture"]
-
-
-func _get_icon_data(id: int) -> Dictionary: # Maybe integrate up
-	var db_data := tag_database.select_rows("icons", "id = " + str(id), ["*"])
-	var icon_image: Image = Image.new()
-	
-	icon_image.load_webp_from_buffer(db_data[0]["image"])
-	
-	return {
-		"name": db_data[0]["name"],
-		"texture": ImageTexture.create_from_image(icon_image)}
 
 
 func get_icon_name(icon_id: int) -> String:
@@ -612,12 +566,6 @@ func get_category_data(category_id: int) -> Dictionary:
 func get_category_column(category_id: int, column: String) -> Variant:
 	return tag_database.select_rows("categories", "id = " + str(category_id), [column])[0][column]
 
-
-#func get_category_desc(category_id: int) -> String:
-	#var data = tag_database.select_rows("categories", "id = " + str(category_id), ["desc"])
-	#if data.is_empty() or data[0]["desc"] == null:
-		#return ""
-	#return data[0]["desc"]
 
 # --- Tags ---
 
@@ -1115,26 +1063,6 @@ func set_tags_valid(tag_ids: Array[int], is_valid: bool) -> void:
 	tags_validity_updated.emit(tag_ids.duplicate(), is_valid)
 
 
-#func save_project(title: String, tags: Array[int], suggestions: Array[int], groups: Array[int], image: Texture2D) -> void:
-	#var existing_thumbs := DirAccess.get_files_at(THUMBNAIL_FOLDER)
-	#var new_thumb := Strings.random_string(64)
-	#var tag_strings: Array[String] = get_tags_name(tags)
-	#var suggestion_strings: Array[String] = get_tags_name(suggestions)
-	#
-	#while Arrays.binary_search(existing_thumbs, new_thumb + ".jpg") != -1:
-		#new_thumb = Strings.random_string64()
-	#
-	#image.save_jpg(THUMBNAIL_FOLDER + new_thumb + ".jpg")
-	#
-	#projects_database.insert_row("projects", {
-		#"name": title,
-		#"tags": "_".join(tag_strings),
-		#"suggestions": "_".join(suggestion_strings),
-		#"groups": PackedByteArray(groups),
-		#"image": new_thumb + ".jpg",
-	#})
-
-
 func resize_image(image: Image) -> void:
 	var image_res: Vector2i = image.get_size()
 	
@@ -1145,23 +1073,6 @@ func resize_image(image: Image) -> void:
 		else:
 			var new_height: float = (IMAGE_LIMITS.x * 1.0 / float(image_res.x)) * image_res.y
 			image.resize(IMAGE_LIMITS.x, roundi(new_height), Image.INTERPOLATE_LANCZOS)
-
-
-#func get_project_data(id: int) -> Dictionary:
-	#var project_data := projects_database.select_rows("projects", "id = " + str(id), ["tags", "suggestions", "groups", "image"])
-	#var tags: Array[String] = []
-	#var suggestions: Array[String] = []
-	#var groups: Array[int] = []
-	#tags.assign(project_data[0]["tags"].split("_", false))
-	#suggestions.assign(project_data[0]["suggestions"].split("_", false))
-	#groups.assign(Array(project_data[0]["groups"]))
-	#
-	#return {
-		#"tags": tags,
-		#"suggestions": suggestions,
-		#"groups": groups,
-		#"image": project_data[0]["image"]
-	#}
 
 
 # --- Prefixes ---
@@ -1239,10 +1150,7 @@ func format_prefix(clean_text: String, _prefixes: Array[String] = [], _formats: 
 # --------------
 
 
-
-
-
-func get_final_tag_ids(current_list: Array[int]) -> Array[int]: # TODO Rework this with new tables
+func get_final_tag_ids(current_list: Array[int]) -> Array[int]:
 	var all_tags: Array[int] = []
 	var final_tags: Array[int] = []
 	
@@ -1264,7 +1172,7 @@ func get_final_tag_ids(current_list: Array[int]) -> Array[int]: # TODO Rework th
 			id_query + ";")
 	
 	for query in tag_database.query_result:
-		if not query["is_valid"]: #TODO add extra check to respect setting on Settings.
+		if not query["is_valid"] and not TagIt.settings.include_invalid:
 			continue
 		
 		final_tags.append(query["id"])
@@ -1306,9 +1214,6 @@ func register_tag_to_memory(tag_id: int, tag_name: String, is_valid: bool) -> vo
 # Lazyness for the win.
 # ---------- Updaters ----------
 
-
-
-
 func set_tag_desc(tag_id: int, desc: String) -> void:
 	update_tag_data(tag_id, {"description": desc})
 
@@ -1332,10 +1237,8 @@ func set_tag_group(tag_id: int, group_id: int) -> void:
 # Do what needs before quitting. Then quit
 func quit_request() -> void:
 	tag_database.close_db()
-	#projects_database.close_db()
 	settings.save()
 	get_tree().quit()
-
 
 
 func search_for_tag_prefix(text: String, limit: int = 10, use_distance: bool = false, with_data: bool = false) -> PackedStringArray:
@@ -1405,7 +1308,6 @@ func search_for_tag_contains(text: String, limit: int = 10, use_distance: bool =
 	for tag in target_array:
 		loop += 1
 		if use_distance:
-			#for piece in Strings.split_overlapping(tag, clampi(text.length(), 1, tag.length())):
 			for i in range(tag.length() - text.length() + 1):
 				var piece = tag.substr(i, text.length())
 				if LEV_DISTANCE <= Strings.levenshtein_distance(text.to_upper(), piece.to_upper()):
@@ -1484,10 +1386,6 @@ func set_group_desc(group_id: int, desc: String) -> void:
 		"id = " + str(group_id),
 		{"description": desc})
 
-
-
-
-
 # ------------------------------
 #endregion
 
@@ -1523,48 +1421,6 @@ func is_online_version_higher(local: Array[int], online: Array[int]) -> bool:
 			return false # Local is higher
 	
 	return false # Versions are equal
-
-
-func check_version() -> void:
-	if tag_database.select_rows("_version", "", ["update_notified"])[0]["update_notified"] == 1:
-		return
-	
-	var version_request := HTTPRequest.new()
-	add_child(version_request)
-	version_request.timeout = 10.0
-	var error = version_request.request(
-		"https://api.github.com/Ketei/repos/tagit-v3/releases/latest")
-	
-	var response = await version_request.request_completed
-	
-	if error == OK and response[0] == OK and response[1] == 200:
-		var json_decoder = JSON.new()
-		json_decoder.parse(response[3].get_string_from_utf8())
-		
-		if typeof(json_decoder.data) == TYPE_DICTIONARY:
-			if json_decoder.data.has("tag_name"):
-				var version_text: String = json_decoder.data["tag_name"].trim_prefix("v")
-				var online_version: Array[int] = []
-				var local_version: Array[int] = []
-				for version_number in version_text.split(".", false):
-					if version_number.is_valid_int():
-						online_version.append(int(version_number))
-				for version_number in TAGIT_VERSION.split(".", false):
-					local_version.append(int(version_number))
-				
-				if is_online_version_higher(local_version, online_version):
-					var update_notif := preload("res://scenes/dialogs/update_notification.tscn").instantiate()
-					update_notif.canceled.connect(on_update_notified.bind(update_notif))
-					update_notif.confirmed.connect(on_update_notified.bind(update_notif))
-					add_child(update_notif)
-					update_notif.set_update_version(version_text)
-					update_notif.show()
-	version_request.queue_free()
-
-
-func on_update_notified(notif: AcceptDialog) -> void:
-	notif.queue_free()
-	tag_database.update_rows("_version", "*", {"update_notified": 1})
 
 
 func log_message(message: String, log_level: LogLevel) -> void:
