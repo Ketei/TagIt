@@ -1,9 +1,8 @@
-[gd_scene load_steps=63 format=3 uid="uid://eaxngd263vbi"]
+[gd_scene load_steps=62 format=3 uid="uid://eaxngd263vbi"]
 
 [ext_resource type="Script" path="res://scenes/tagit_main_window.gd" id="1_3rneb"]
 [ext_resource type="Texture2D" uid="uid://kkvcqst6wv4k" path="res://icons/new_icon.svg" id="2_3s1fn"]
 [ext_resource type="StyleBox" uid="uid://bhixcdmu2tfx" path="res://style/tab_panel_style.tres" id="2_u628d"]
-[ext_resource type="Texture2D" uid="uid://dexng5s3jsdw6" path="res://a982a66d33ed166371cc52da11d8a946.png" id="3_kmnjd"]
 [ext_resource type="Script" path="res://scenes/tags_tree_script.gd" id="4_e0v1j"]
 [ext_resource type="Texture2D" uid="uid://c5jnim6mqdp43" path="res://icons/save_icon.svg" id="4_n5y6n"]
 [ext_resource type="Texture2D" uid="uid://b20kul7evr05i" path="res://icons/open_folder_icon.svg" id="4_wynjg"]
@@ -703,7 +702,6 @@ size_flags_horizontal = 3
 alignment = 1
 
 [node name="ViewerContainer" type="PanelContainer" parent="MainContainer/WikiPanel"]
-visible = false
 layout_mode = 2
 
 [node name="ScrollZoomView" type="MarginContainer" parent="MainContainer/WikiPanel/ViewerContainer"]
@@ -716,7 +714,6 @@ zoom_interp_speed = 0.1
 
 [node name="TextureRect" type="TextureRect" parent="MainContainer/WikiPanel/ViewerContainer/ScrollZoomView"]
 layout_mode = 2
-texture = ExtResource("3_kmnjd")
 expand_mode = 1
 stretch_mode = 5
 

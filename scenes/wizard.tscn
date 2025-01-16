@@ -1,4 +1,4 @@
-[gd_scene load_steps=48 format=3 uid="uid://hpbimfahb425"]
+[gd_scene load_steps=47 format=3 uid="uid://hpbimfahb425"]
 
 [ext_resource type="Script" path="res://scripts/view_switcher_panel.gd" id="1_fvq4v"]
 [ext_resource type="Script" path="res://scripts/wizard_script.gd" id="1_whkki"]
@@ -40,7 +40,6 @@
 [ext_resource type="Texture2D" uid="uid://dmjor0d4lqveu" path="res://icons/reset_icon.svg" id="38_smrib"]
 [ext_resource type="Texture2D" uid="uid://b4jcjpflhaxo1" path="res://icons/minimize_icon.svg" id="39_7v64x"]
 [ext_resource type="Script" path="res://addons/tnowe_extra_controls/elements/scroll_zoom_view.gd" id="40_t16j0"]
-[ext_resource type="Texture2D" uid="uid://dexng5s3jsdw6" path="res://a982a66d33ed166371cc52da11d8a946.png" id="41_mchup"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t4osn"]
 bg_color = Color(0.2676, 0.264, 0.3, 1)
@@ -1245,6 +1244,5 @@ script = ExtResource("40_t16j0")
 
 [node name="ProjectTexture" type="TextureRect" parent="ProjectTextureContainer/MainPanel/MainContainer/ImagePanel/ScrollZoomView"]
 layout_mode = 2
-texture = ExtResource("41_mchup")
 expand_mode = 1
 stretch_mode = 5
