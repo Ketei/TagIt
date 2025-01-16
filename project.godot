@@ -11,11 +11,13 @@ config_version=5
 [application]
 
 config/name="TagIt"
+config/version="3.0.0"
 run/main_scene="res://scenes/main_scene.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="tagit3"
 config/auto_accept_quit=false
 config/features=PackedStringArray("4.3", "GL Compatibility")
+run/flush_stdout_on_print=true
 config/icon="res://icons/application_icon.svg"
 config/windows_native_icon="res://application_icon.ico"
 
