@@ -10,14 +10,14 @@ config_version=5
 
 [application]
 
-config/name="TagIt3"
+config/name="TagIt"
 run/main_scene="res://scenes/main_scene.tscn"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="tagit3"
 config/auto_accept_quit=false
 config/features=PackedStringArray("4.3", "GL Compatibility")
-boot_splash/image="res://textures/splash.png"
 config/icon="res://icons/application_icon.svg"
 config/windows_native_icon="res://application_icon.ico"
-boot_splash/minimum_display_time=500
 
 [autoload]
 
