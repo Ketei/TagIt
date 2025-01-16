@@ -1,5 +1,5 @@
 class_name DataManager
-extends Control
+extends Node
 
 
 signal message_logged(msg: String)
@@ -46,6 +46,7 @@ var tag_search_data: PackedStringArray = []
 #var data_tags: Array[int] = []
 var settings: AppSettingsRes = null
 var _default_icon_color: Color = Color.WHITE
+var splash_node: CanvasLayer = null
 
 
 
@@ -296,9 +297,9 @@ func get_category_icon_color(category_id: int) -> Color:
 	
 	var result := tag_database.select_rows("categories", "id = " + str(category_id), ["icon_color"])
 	if result.is_empty():
-		TagIt.log_message(
+		log_message(
 				str("Category ", category_id, " could not be fould."),
-				TagIt.LogLevel.ERROR)
+				LogLevel.ERROR)
 		return "ffffff"
 	return Color.from_string(result[0]["icon_color"], Color.WHITE)
 
@@ -306,9 +307,9 @@ func get_category_icon_color(category_id: int) -> Color:
 func get_category_icon_id(category_id: int) ->int:
 	var result := tag_database.select_rows("categories", "id = " + str(category_id), ["icon_id"])
 	if result.is_empty():
-		TagIt.log_message(
+		log_message(
 				str("Category ", category_id, " could not be fould."),
-				TagIt.LogLevel.ERROR)
+				LogLevel.ERROR)
 		return 1
 	return result[0]["icon_id"]
 
@@ -409,7 +410,7 @@ func add_alias(from: String, to: String) -> void:
 	if from_id != 0 and to_id != 0:
 		tag_database.query("SELECT * FROM aliases WHERE antecedent = " + str(to_id) + " AND consequent = " + str(from_id) + ";")
 		if not tag_database.query_result.is_empty():
-			TagIt.log_message(
+			log_message(
 					str("Circular aliasing detected: ", from, " -> ", to, " -> ", from,".\n Can't register new alias."),
 					LogLevel.ERROR)
 			return
@@ -522,11 +523,11 @@ func get_aliases_consequent_names_from(tag_ids: Array[int]) -> Dictionary:
 
 
 func is_name_aliased(from: String, to: String) -> bool:
-	if not TagIt.has_tag(from) or not TagIt.has_tag(to):
+	if not has_tag(from) or not has_tag(to):
 		return false
 	
-	var from_id: int = TagIt.get_tag_id(from)
-	var to_id: int = TagIt.get_tag_id(to)
+	var from_id: int = get_tag_id(from)
+	var to_id: int = get_tag_id(to)
 	
 	tag_database.query("SELECT antecedent FROM aliases WHERE antecedent = " + str(from_id) + " AND consequent = " + str(to_id) + ";")
 	
@@ -1491,6 +1492,25 @@ func set_group_desc(group_id: int, desc: String) -> void:
 #endregion
 
 
+func show_splash() -> void:
+	if splash_node != null:
+		return
+	
+	splash_node = CanvasLayer.new()
+	splash_node.layer = 2
+	add_child(splash_node)
+	var new_splash := TextureRect.new()
+	new_splash.texture = preload("res://textures/splash.png")
+	splash_node.add_child(new_splash)
+
+
+func hide_splash() -> void:
+	if splash_node == null:
+		return
+	splash_node.queue_free()
+	splash_node = null
+
+
 func is_online_version_higher(local: Array[int], online: Array[int]) -> bool:
 	var max_length = max(local.size(), online.size())
 	local.resize(max_length)
@@ -1529,7 +1549,7 @@ func check_version() -> void:
 				for version_number in version_text.split(".", false):
 					if version_number.is_valid_int():
 						online_version.append(int(version_number))
-				for version_number in TagIt.TAGIT_VERSION.split(".", false):
+				for version_number in TAGIT_VERSION.split(".", false):
 					local_version.append(int(version_number))
 				
 				if is_online_version_higher(local_version, online_version):
