@@ -26,5 +26,19 @@ If you're on **Linux**, download:
 
 Rename `tagit.linux.x86_64` to `tagit.x86_64` and run it.
 
+Lastly create an empty text file WITHOUT the extension. And write the version of the files you've downloaded and save it. Now you can launch the tagger through the executable.
+> If you downloaded 3.0.0 then write on the file `3.0.0` and nothing else.
+
 > [!CAUTION]
 > Not using the intended names could render the software unusable.
+
+## Main differences with v2
+This version of TagIt:
+- Uses an actual database, instead of a bunch of loose files. Making loading times a LOT shorter.
+- Has an updater that can update your application to the latest version
+- Has a simpler user interface.
+- Allows you to include images with your tagging projects.
+- Allows for more customization
+- You can create as many alt lists for a project as you need.
+- You can finally add your own formatting through the application.
+- And a few more...
