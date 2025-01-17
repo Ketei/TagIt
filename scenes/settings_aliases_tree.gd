@@ -41,8 +41,8 @@ func add_alias(from: String, to: String) -> void:
 func on_button_clicked(item: TreeItem, _column: int, id: int, _mouse_button_index: int):
 	match id:
 		0:
-			var from_id: int = TagIt.get_tag_id(item.get_text(0))
-			TagIt.remove_alias(from_id)
+			var from_id: int = SingletonManager.TagIt.get_tag_id(item.get_text(0))
+			SingletonManager.TagIt.remove_alias(from_id)
 			item.free()
 
 

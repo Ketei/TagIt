@@ -136,12 +136,6 @@ var _suggestion_blacklist: PackedStringArray = []
 @onready var settings_include_invalid_chk_btn: CheckButton = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/InvalidPanel/MainContainer/IncludeInvalidChkBtn
 @onready var settings_blacklist_remove_chk_btn: CheckButton = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/BlacklistPanel/MainContainer/BlacklistRemoveChkBtn
 @onready var settings_link_e_six_chk_btn: CheckButton = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/LinksPanel/MainContainer/LinkESixChkBtn
-#@onready var settings_load_img_chk_btn: CheckButton = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/EnableContainer/ToggleContainer/LoadImgChkBtn
-#@onready var settings_image_load_spn_bx: SpinBox = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/EnableContainer/ToggleContainer/ImageLoadSpnBx
-#@onready var settings_port_spn_bx: SpinBox = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/ApiContainer/PortContainer/PortSpnBx
-#@onready var settings_key_ln_edt: LineEdit = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/ApiContainer/KeyContainer/KeyLnEdt
-#@onready var settings_request_api_btn: Button = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/ApiContainer/ButtonsContainer/RequestAPIBtn
-#@onready var settings_connect_api_btn: Button = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/ApiContainer/ButtonsContainer/ConnectAPIBtn
 @onready var settings_request_sugg_chk_btn: CheckButton = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ESixApiPanel/MainContainer/SuggestionsContainer/RequestSuggChkBtn
 @onready var settings_relevancy_spn_bx: SpinBox = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ESixApiPanel/MainContainer/RelevancyContainer/MainContainer/RelevancySpnBx
 @onready var settings_search_esix_tags_btn: CheckButton = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ESixApiPanel/MainContainer/SearchContainer/SearchESixTagsBtn
@@ -172,12 +166,7 @@ var _suggestion_blacklist: PackedStringArray = []
 
 # ----------------
 # ----- Backworkers -----
-#@onready var hydrus_worker: HydrusWorker = $HydrusNode
 @onready var hydrus_images: HydrusWorker = $HydrusNode
-#@onready var search_timer: Timer = $SearchTimer
-#@onready var api_timer: Timer = $APITimer
-#@onready var wiki_timer: Timer = $WikiTimer
-#@onready var esix_api: Node = $eSixAPI
 
 # -----------------------
 
@@ -220,9 +209,9 @@ func _ready() -> void:
 	settings_category_tree.icon_range = icon_range.size() - 1
 	settings_category_tree.icon_string = generate_icon_string()
 	
-	var categories: Dictionary = TagIt.get_categories()
-	var sites: Dictionary = TagIt.get_sites()
-	var groups: Dictionary = TagIt.get_tag_groups()
+	var categories: Dictionary = SingletonManager.TagIt.get_categories()
+	var sites: Dictionary = SingletonManager.TagIt.get_sites()
+	var groups: Dictionary = SingletonManager.TagIt.get_tag_groups()
 	
 	for category in categories:
 		settings_category_tree.create_category(
@@ -230,11 +219,11 @@ func _ready() -> void:
 				categories[category]["description"],
 				category,
 				Arrays.binary_search(icon_range, categories[category]["icon_id"]),
-				TagIt.get_icon_texture(categories[category]["icon_id"]),
+				SingletonManager.TagIt.get_icon_texture(categories[category]["icon_id"]),
 				Color.from_string(categories[category]["icon_color"], Color.WHITE))
 	
-	for icon in TagIt.icons:
-		settings_icons_tree.add_icon(icon, TagIt.get_icon_name(icon), TagIt.get_icon_texture(icon))
+	for icon in SingletonManager.TagIt.icons:
+		settings_icons_tree.add_icon(icon, SingletonManager.TagIt.get_icon_name(icon), SingletonManager.TagIt.get_icon_texture(icon))
 	
 	for site in sites:
 		settings_sites_tree.add_site(
@@ -246,31 +235,31 @@ func _ready() -> void:
 	#search_timer.wait_time = search_time
 	#wiki_timer.wait_time = search_time
 	
-	generate_list_btn.disabled = TagIt.get_site_count() == 0
+	generate_list_btn.disabled = SingletonManager.TagIt.get_site_count() == 0
 	
 	# --- Loading and applying TagIt saved settings ---
-	wiki_search_ln_edt.use_timer = TagIt.settings.use_autofill
-	add_tag_ln_edt.use_timer = TagIt.settings.use_autofill
-	settings_results_per_srch_spn_bx.value = TagIt.settings.results_per_search
-	settings_autofill_chk_btn.button_pressed = TagIt.settings.use_autofill
-	settings_include_invalid_chk_btn.button_pressed = TagIt.settings.include_invalid
-	settings_blacklist_remove_chk_btn.button_pressed = TagIt.settings.blacklist_removed
-	settings_link_e_six_chk_btn.button_pressed = TagIt.settings.link_to_esix
-	settings_load_img_chk_btn.button_pressed = TagIt.settings.load_wiki_images
-	settings_search_esix_tags_btn.button_pressed = TagIt.settings.search_tags_on_esix
+	wiki_search_ln_edt.use_timer = SingletonManager.TagIt.settings.use_autofill
+	add_tag_ln_edt.use_timer = SingletonManager.TagIt.settings.use_autofill
+	settings_results_per_srch_spn_bx.value = SingletonManager.TagIt.settings.results_per_search
+	settings_autofill_chk_btn.button_pressed = SingletonManager.TagIt.settings.use_autofill
+	settings_include_invalid_chk_btn.button_pressed = SingletonManager.TagIt.settings.include_invalid
+	settings_blacklist_remove_chk_btn.button_pressed = SingletonManager.TagIt.settings.blacklist_removed
+	settings_link_e_six_chk_btn.button_pressed = SingletonManager.TagIt.settings.link_to_esix
+	settings_load_img_chk_btn.button_pressed = SingletonManager.TagIt.settings.load_wiki_images
+	settings_search_esix_tags_btn.button_pressed = SingletonManager.TagIt.settings.search_tags_on_esix
 	if settings_load_img_chk_btn.button_pressed:
 		settings_image_load_spn_bx.editable = true
 		settings_key_ln_edt.editable = true
 		settings_port_spn_bx.editable = true
-	settings_image_load_spn_bx.value = TagIt.settings.wiki_images
-	settings_request_sugg_chk_btn.button_pressed = TagIt.settings.request_suggestions
-	settings_relevancy_spn_bx.value = TagIt.settings.suggestion_relevancy
+	settings_image_load_spn_bx.value = SingletonManager.TagIt.settings.wiki_images
+	settings_request_sugg_chk_btn.button_pressed = SingletonManager.TagIt.settings.request_suggestions
+	settings_relevancy_spn_bx.value = SingletonManager.TagIt.settings.suggestion_relevancy
 	settings_relevancy_spn_bx.editable = settings_request_sugg_chk_btn.button_pressed
 	wiki_image_side.visible = settings_load_img_chk_btn.button_pressed
-	thumbnail_size_changer.select(TagIt.settings.wiki_thumbnail_size)
+	thumbnail_size_changer.select(SingletonManager.TagIt.settings.wiki_thumbnail_size)
 	on_thumbnail_size_changed(thumbnail_size_changer.selected)
-	$MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer.size.x = TagIt.settings.tag_container_width
-	tagger_suggestion_tree.size.y = TagIt.settings.suggestions_height
+	$MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer.size.x = SingletonManager.TagIt.settings.tag_container_width
+	tagger_suggestion_tree.size.y = SingletonManager.TagIt.settings.suggestions_height
 	
 	# --- Tagger ---
 	open_img_btn.pressed.connect(on_select_image_pressed)
@@ -345,22 +334,22 @@ func _ready() -> void:
 	settings_image_load_spn_bx.value_changed.connect(on_wiki_image_amount_changed)
 	settings_clear_logs_btn.pressed.connect(_on_clear_logs_pressed)
 	
-	ESixAPI.suggestions_found.connect(on_esix_api_suggestions_found)
+	SingletonManager.eSixAPI.suggestions_found.connect(on_esix_api_suggestions_found)
 	
-	TagIt.website_created.connect(on_website_changed)
-	TagIt.website_deleted.connect(on_website_changed)
-	TagIt.tag_updated.connect(on_tag_updated)
-	TagIt.message_logged.connect(on_log_created)
+	SingletonManager.TagIt.website_created.connect(on_website_changed)
+	SingletonManager.TagIt.website_deleted.connect(on_website_changed)
+	SingletonManager.TagIt.tag_updated.connect(on_tag_updated)
+	SingletonManager.TagIt.message_logged.connect(on_log_created)
 	
-	TagIt.hide_splash()
+	SingletonManager.TagIt.hide_splash()
 	
-	if TagIt.settings.has_valid_hydrus_login():
+	if SingletonManager.TagIt.settings.has_valid_hydrus_login():
 		hydrus_connected = await connect_to_hydrus(
-			TagIt.settings.hydrus_port,
-			TagIt.settings.hydrus_key)
+			SingletonManager.TagIt.settings.hydrus_port,
+			SingletonManager.TagIt.settings.hydrus_key)
 		if hydrus_connected:
-			settings_port_spn_bx.value = TagIt.settings.hydrus_port
-			settings_key_ln_edt.text = TagIt.settings.hydrus_key
+			settings_port_spn_bx.value = SingletonManager.TagIt.settings.hydrus_port
+			settings_key_ln_edt.text = SingletonManager.TagIt.settings.hydrus_key
 
 
 func _notification(what):
@@ -462,7 +451,7 @@ func _notification(what):
 			elif result == 2: # Cancel
 				save_confirmation.queue_free()
 				return
-		TagIt.quit_request()
+		SingletonManager.TagIt.quit_request()
 
 
 func _list_changed() -> void:
@@ -487,7 +476,7 @@ func on_export_button_id_pressed(id: int) -> void:
 		0: # Export tags
 			on_export_tags_pressed()
 		1: # Export All
-			on_tags_exported(TagIt.get_all_tag_ids(true))
+			on_tags_exported(SingletonManager.TagIt.get_all_tag_ids(true))
 
 
 func on_file_selected(file_path: String, overwrite: bool, file_dialog: FileDialog) -> void:
@@ -497,13 +486,13 @@ func on_file_selected(file_path: String, overwrite: bool, file_dialog: FileDialo
 	file_dialog.queue_free()
 	
 	if file_string.is_empty():
-		TagIt.log_message(
+		SingletonManager.TagIt.log_message(
 				"The file couldn't be loaded.",
 				DataManager.LogLevel.ERROR)
 		return
 	
 	if json.parse(file_string) != OK:
-		TagIt.log_message(
+		SingletonManager.TagIt.log_message(
 				str(
 						"There was an error while trying to parse tag data on line ",
 						json.get_error_line(),
@@ -513,7 +502,7 @@ func on_file_selected(file_path: String, overwrite: bool, file_dialog: FileDialo
 		return
 	
 	if typeof(json.data) != TYPE_DICTIONARY:
-		TagIt.log_message(
+		SingletonManager.TagIt.log_message(
 				"The data structure in the provided JSON couldn't be loaded.",
 				DataManager.LogLevel.ERROR)
 		return
@@ -521,25 +510,25 @@ func on_file_selected(file_path: String, overwrite: bool, file_dialog: FileDialo
 	var data: Dictionary = json.data.duplicate()
 
 	if not json.data.has("type"):
-		TagIt.log_message(
+		SingletonManager.TagIt.log_message(
 				"[JSON PARSER] JSON missing type.",
 				DataManager.LogLevel.ERROR)
 		return
 	
 	if data["type"] == 0:
 		if not data.has_all(["aliases", "category", "group", "group_desc", "group_suggestions", "is_valid", "name", "parents", "priority", "suggestions", "tooltip", "type", "wiki"]):
-			TagIt.log_message("[JSON PARSER] JSON data is a dictionary but is missing some keys.", TagIt.LogLevel.ERROR)
+			SingletonManager.TagIt.log_message("[JSON PARSER] JSON data is a dictionary but is missing some keys.", SingletonManager.TagIt.LogLevel.ERROR)
 			return
 	
 		if not typeof(data["category"]) == TYPE_DICTIONARY or not data["category"].has_all(["category_color", "category_icon", "description", "icon_name", "name"]):
-			TagIt.log_message("[JSON PARSER] JSON data category is missing some data.", TagIt.LogLevel.ERROR)
+			SingletonManager.TagIt.log_message("[JSON PARSER] JSON data category is missing some data.", SingletonManager.TagIt.LogLevel.ERROR)
 			return
 		
 		json_tag_to_db(data, overwrite)
 		
 	elif data["type"] == 1:
 		if not data.has_all(["categories", "groups", "icons", "tags", "type"]):
-			TagIt.log_message("[JSON PARSER] JSON data is a dictionary but is missing some keys.", TagIt.LogLevel.ERROR)
+			SingletonManager.TagIt.log_message("[JSON PARSER] JSON data is a dictionary but is missing some keys.", SingletonManager.TagIt.LogLevel.ERROR)
 			return
 		json_group_to_db(data, overwrite)
 
@@ -585,21 +574,21 @@ func on_export_dialog_cancelled(file_dialog: FileDialog) -> void:
 
 
 func on_wiki_image_amount_changed(new_amount: int) -> void:
-	TagIt.settings.wiki_images = new_amount
+	SingletonManager.TagIt.settings.wiki_images = new_amount
 
 
 func on_results_per_search_changed(new_amount: int) -> void:
-	TagIt.settings.results_per_search = new_amount
+	SingletonManager.TagIt.settings.results_per_search = new_amount
 
 
 func on_search_esix_tags_toggled(is_toggled: bool) -> void:
-	TagIt.settings.search_tags_on_esix = is_toggled
+	SingletonManager.TagIt.settings.search_tags_on_esix = is_toggled
 
 
 #func on_tag_line_changed(_new_text: String) -> void:
 	#if add_tag_ln_edt.items_visible():
 		#add_tag_ln_edt.hide_items()
-	#if not TagIt.settings.use_autofill:
+	#if not SingletonManager.TagIt.settings.use_autofill:
 		#return
 	#search_timer.start()
 
@@ -610,19 +599,19 @@ func on_search_timer_timeout() -> void:
 	
 	add_tag_ln_edt.clear_list()
 	var clean_text: String = add_tag_ln_edt.text.strip_edges().to_lower()
-	var prefix: bool = clean_text.ends_with(TagIt.SEARCH_WILDCARD)
-	var suffix: bool = clean_text.begins_with(TagIt.SEARCH_WILDCARD)
+	var prefix: bool = clean_text.ends_with(DataManager.SEARCH_WILDCARD)
+	var suffix: bool = clean_text.begins_with(DataManager.SEARCH_WILDCARD)
 	
 	if prefix:
-		clean_text = clean_text.trim_prefix(TagIt.SEARCH_WILDCARD).strip_edges(true, false)
+		clean_text = clean_text.trim_prefix(DataManager.SEARCH_WILDCARD).strip_edges(true, false)
 	if suffix:
-		clean_text = clean_text.trim_suffix(TagIt.SEARCH_WILDCARD).strip_edges(false, true)
+		clean_text = clean_text.trim_suffix(DataManager.SEARCH_WILDCARD).strip_edges(false, true)
 	
-	while clean_text.begins_with(TagIt.SEARCH_WILDCARD):
-		clean_text = clean_text.trim_prefix(TagIt.SEARCH_WILDCARD).strip_edges(true, false)
+	while clean_text.begins_with(DataManager.SEARCH_WILDCARD):
+		clean_text = clean_text.trim_prefix(DataManager.SEARCH_WILDCARD).strip_edges(true, false)
 	
-	while clean_text.ends_with(TagIt.SEARCH_WILDCARD):
-		clean_text = clean_text.trim_suffix(TagIt.SEARCH_WILDCARD).strip_edges(false, true)
+	while clean_text.ends_with(DataManager.SEARCH_WILDCARD):
+		clean_text = clean_text.trim_suffix(DataManager.SEARCH_WILDCARD).strip_edges(false, true)
 	
 	if clean_text.is_empty():
 		return
@@ -630,22 +619,22 @@ func on_search_timer_timeout() -> void:
 	var results: PackedStringArray = []
 	
 	if prefix and suffix:
-		results = TagIt.search_for_tag_contains(clean_text, add_tag_ln_edt.item_limit, true)
+		results = SingletonManager.TagIt.search_for_tag_contains(clean_text, add_tag_ln_edt.item_limit, true)
 	elif suffix:
-		results = TagIt.search_for_tag_suffix(clean_text, add_tag_ln_edt.item_limit, true)
+		results = SingletonManager.TagIt.search_for_tag_suffix(clean_text, add_tag_ln_edt.item_limit, true)
 	else:
-		results = TagIt.search_for_tag_prefix(clean_text, add_tag_ln_edt.item_limit, true)
+		results = SingletonManager.TagIt.search_for_tag_prefix(clean_text, add_tag_ln_edt.item_limit, true)
 	
-	var id_results: Array[int] = Array(TagIt.get_tags_ids(results).values(), TYPE_INT, &"", null)
+	var id_results: Array[int] = Array(SingletonManager.TagIt.get_tags_ids(results).values(), TYPE_INT, &"", null)
 	
-	var tags_with_aliases: Dictionary = TagIt.get_aliases_consequent_names_from(id_results)
+	var tags_with_aliases: Dictionary = SingletonManager.TagIt.get_aliases_consequent_names_from(id_results)
 	
 	if not results.is_empty():
 		for tag in results:
-			if tags_with_aliases.has(TagIt.get_tag_id(tag)):
+			if tags_with_aliases.has(SingletonManager.TagIt.get_tag_id(tag)):
 				add_tag_ln_edt.add_item(
 						tag,
-						tags_with_aliases[TagIt.get_tag_id(tag)])
+						tags_with_aliases[SingletonManager.TagIt.get_tag_id(tag)])
 			else:
 				add_tag_ln_edt.add_item(tag)
 		
@@ -655,7 +644,7 @@ func on_search_timer_timeout() -> void:
 #func on_wiki_line_changed(_new_text: String) -> void:
 	#if wiki_search_ln_edt.items_visible():
 		#wiki_search_ln_edt.hide_items()
-	#if not TagIt.settings.use_autofill:
+	#if not SingletonManager.TagIt.settings.use_autofill:
 		#return
 	#wiki_timer.start()
 
@@ -667,19 +656,19 @@ func on_wiki_timer_timeout() -> void:
 	wiki_search_ln_edt.clear_list()
 	
 	var clean_text: String = wiki_search_ln_edt.text.strip_edges().to_lower()
-	var prefix: bool = clean_text.ends_with(TagIt.SEARCH_WILDCARD)
-	var suffix: bool = clean_text.begins_with(TagIt.SEARCH_WILDCARD)
+	var prefix: bool = clean_text.ends_with(DataManager.SEARCH_WILDCARD)
+	var suffix: bool = clean_text.begins_with(DataManager.SEARCH_WILDCARD)
 	
 	if prefix:
-		clean_text = clean_text.trim_prefix(TagIt.SEARCH_WILDCARD).strip_edges(true, false)
+		clean_text = clean_text.trim_prefix(DataManager.SEARCH_WILDCARD).strip_edges(true, false)
 	if suffix:
-		clean_text = clean_text.trim_suffix(TagIt.SEARCH_WILDCARD).strip_edges(false, true)
+		clean_text = clean_text.trim_suffix(DataManager.SEARCH_WILDCARD).strip_edges(false, true)
 	
-	while clean_text.begins_with(TagIt.SEARCH_WILDCARD):
-		clean_text = clean_text.trim_prefix(TagIt.SEARCH_WILDCARD).strip_edges(true, false)
+	while clean_text.begins_with(DataManager.SEARCH_WILDCARD):
+		clean_text = clean_text.trim_prefix(DataManager.SEARCH_WILDCARD).strip_edges(true, false)
 	
-	while clean_text.ends_with(TagIt.SEARCH_WILDCARD):
-		clean_text = clean_text.trim_suffix(TagIt.SEARCH_WILDCARD).strip_edges(false, true)
+	while clean_text.ends_with(DataManager.SEARCH_WILDCARD):
+		clean_text = clean_text.trim_suffix(DataManager.SEARCH_WILDCARD).strip_edges(false, true)
 	
 	if clean_text.is_empty():
 		return
@@ -687,11 +676,11 @@ func on_wiki_timer_timeout() -> void:
 	var results: PackedStringArray = []
 	
 	if prefix and suffix:
-		results = TagIt.search_for_tag_contains(clean_text, wiki_search_ln_edt.item_limit, true, true)
+		results = SingletonManager.TagIt.search_for_tag_contains(clean_text, wiki_search_ln_edt.item_limit, true, true)
 	elif suffix:
-		results = TagIt.search_for_tag_suffix(clean_text, wiki_search_ln_edt.item_limit, true, true)
+		results = SingletonManager.TagIt.search_for_tag_suffix(clean_text, wiki_search_ln_edt.item_limit, true, true)
 	else:
-		results = TagIt.search_for_tag_prefix(clean_text, wiki_search_ln_edt.item_limit, true, true)
+		results = SingletonManager.TagIt.search_for_tag_prefix(clean_text, wiki_search_ln_edt.item_limit, true, true)
 	
 	if not results.is_empty():
 		for tag in results:
@@ -951,9 +940,9 @@ func on_menu_button_id_selected(id: int) -> void:
 						save_current_project_indexed()
 					else:
 						if selector != null:
-							TagIt.log_message(
+							SingletonManager.TagIt.log_message(
 								"[ERROR] Loading tried to save but selector is in memory.",
-								TagIt.LogLevel.ERROR)
+								SingletonManager.TagIt.LogLevel.ERROR)
 							save_confirmation.queue_free()
 							return
 						
@@ -977,9 +966,9 @@ func on_menu_button_id_selected(id: int) -> void:
 				save_current_project_indexed()
 			else:
 				if selector != null:
-					TagIt.log_message(
+					SingletonManager.TagIt.log_message(
 						"[ERROR] Loading tried to save but selector is in memory.",
-						TagIt.LogLevel.ERROR)
+						SingletonManager.TagIt.LogLevel.ERROR)
 					return
 				
 				instantiate_save_selector()
@@ -987,9 +976,9 @@ func on_menu_button_id_selected(id: int) -> void:
 			if _block_events:
 				return
 			if selector != null:
-				TagIt.log_message(
+				SingletonManager.TagIt.log_message(
 					"[ERROR] Loading tried to open but selector is in memory.",
-					TagIt.LogLevel.ERROR)
+					SingletonManager.TagIt.LogLevel.ERROR)
 				return
 			instance_project_loader_selector()
 		4: # Sort Alphabetical
@@ -1021,9 +1010,9 @@ func on_menu_button_id_selected(id: int) -> void:
 			if _block_events:
 				return
 			if selector != null:
-				TagIt.log_message(
+				SingletonManager.TagIt.log_message(
 					"[ERROR] Loading tried to save but selector is in memory.",
-					TagIt.LogLevel.ERROR)
+					SingletonManager.TagIt.LogLevel.ERROR)
 				return
 			
 			instantiate_save_selector()
@@ -1128,8 +1117,8 @@ func on_selector_project_saved(title: String) -> void:
 
 func on_selector_project_selected(project_idx: int) -> void:
 	selector.set_emit_signals(false)
-	var request_suggestions: bool = TagIt.settings.request_suggestions
-	TagIt.settings.request_suggestions = false
+	var request_suggestions: bool = SingletonManager.TagIt.settings.request_suggestions
+	SingletonManager.TagIt.settings.request_suggestions = false
 	
 	var projects := TagItProjectResource.get_projects()
 	clear_all_tagger()
@@ -1138,14 +1127,14 @@ func on_selector_project_selected(project_idx: int) -> void:
 		add_tag(tag)
 	
 	for suggestion in projects.projects[project_idx]["suggestions"]:
-		if TagIt.has_tag(suggestion):
-			#var id: int = TagIt.get_tag_id(suggestion)
+		if SingletonManager.TagIt.has_tag(suggestion):
+			#var id: int = SingletonManager.TagIt.get_tag_id(suggestion)
 			if not tagger_suggestion_tree.has_suggestion(suggestion):
 				tagger_suggestion_tree.add_suggestion(suggestion)
 		else:
 			tagger_suggestion_tree.add_suggestion(suggestion)
 	
-	var groups := TagIt.get_groups_and_tags(projects.projects[project_idx]["groups"])
+	var groups := SingletonManager.TagIt.get_groups_and_tags(projects.projects[project_idx]["groups"])
 	
 	for group_id in groups:
 		if not groups_suggestions_tree.has_tag_group(group_id):
@@ -1173,7 +1162,7 @@ func on_selector_project_selected(project_idx: int) -> void:
 	current_project = project_idx
 	current_title = projects.projects[project_idx]["name"]
 	_save_required = false
-	TagIt.settings.request_suggestions = request_suggestions
+	SingletonManager.TagIt.settings.request_suggestions = request_suggestions
 
 
 func on_selector_project_deleted(project_idx: int) -> void:
@@ -1219,15 +1208,15 @@ func on_searcher_close_pressed(instance: Control) -> void:
 
 func on_selector_template_selected(template_idx: int) -> void:
 	selector.set_emit_signals(false)
-	var request_suggestions: bool = TagIt.settings.request_suggestions
-	TagIt.settings.request_suggestions = false
+	var request_suggestions: bool = SingletonManager.TagIt.settings.request_suggestions
+	SingletonManager.TagIt.settings.request_suggestions = false
 	var templates := TemplateResource.get_templates()
 	var template_data: = templates.get_template(template_idx)
 	
 	for tag in template_data["tags"]:
 		add_tag(tag)
 	
-	var groups_per_tag: Dictionary = TagIt.get_groups_and_tags(template_data["groups"])
+	var groups_per_tag: Dictionary = SingletonManager.TagIt.get_groups_and_tags(template_data["groups"])
 	
 	for group_id in groups_per_tag:
 		if not groups_suggestions_tree.has_tag_group(group_id):
@@ -1242,7 +1231,7 @@ func on_selector_template_selected(template_idx: int) -> void:
 	selector.visible = false
 	selector.queue_free()
 	selector = null
-	TagIt.settings.request_suggestions = request_suggestions
+	SingletonManager.TagIt.settings.request_suggestions = request_suggestions
 
 
 func on_selector_template_erased(template_idx: int) -> void:
@@ -1254,33 +1243,33 @@ func on_selector_template_erased(template_idx: int) -> void:
 
 
 func on_default_site_changed(default_site: int) -> void:
-	TagIt.settings.default_site = default_site
+	SingletonManager.TagIt.settings.default_site = default_site
 
 
 func on_suggest_relevancy_value_changed(new_value: int) -> void:
-	TagIt.settings.suggestion_relevancy = new_value
+	SingletonManager.TagIt.settings.suggestion_relevancy = new_value
 
 
 func on_request_suggestions_toggled(is_toggled: bool) -> void:
-	TagIt.settings.request_suggestions = is_toggled
+	SingletonManager.TagIt.settings.request_suggestions = is_toggled
 
 
 func on_autofill_toggled(is_toggled: bool) -> void:
-	TagIt.settings.use_autofill = is_toggled
+	SingletonManager.TagIt.settings.use_autofill = is_toggled
 	wiki_search_ln_edt.use_timer = is_toggled
 	add_tag_ln_edt.use_timer = is_toggled
 
 
 func on_include_invalid_toggled(is_toggled: bool) -> void:
-	TagIt.settings.include_invalid = is_toggled
+	SingletonManager.TagIt.settings.include_invalid = is_toggled
 
 
 func on_blacklist_suggestions_toggled(is_toggled: bool) -> void:
-	TagIt.settings.blacklist_removed = is_toggled
+	SingletonManager.TagIt.settings.blacklist_removed = is_toggled
 
 
 func on_link_esix_toggled(is_toggled: bool) -> void:
-	TagIt.settings.link_to_esix = is_toggled
+	SingletonManager.TagIt.settings.link_to_esix = is_toggled
 
 
 func on_generate_tag_list_btn_pressed() -> void:
@@ -1293,8 +1282,8 @@ func on_generate_tag_list_btn_pressed() -> void:
 		var id: Array[int] = []
 		var tag: Array[String] = []
 		for _tag in alt_lists[0]:
-			if TagIt.has_tag(_tag):
-				id.append(TagIt.get_tag_id(_tag))
+			if SingletonManager.TagIt.has_tag(_tag):
+				id.append(SingletonManager.TagIt.get_tag_id(_tag))
 			else:
 				tag.append(_tag)
 		tags["id"] = id
@@ -1309,16 +1298,16 @@ func on_generate_tag_list_btn_pressed() -> void:
 			Arrays.append_uniques(tags["tag"], tag_data["tag"])
 		else:
 			for tag in alt_lists[generate_version_opt_btn.selected + 1]:
-				if TagIt.has_tag(tag):
-					var id: int = TagIt.get_tag_id(tag)
+				if SingletonManager.TagIt.has_tag(tag):
+					var id: int = SingletonManager.TagIt.get_tag_id(tag)
 					if not tags["id"].has(id):
 						tags["id"].append(id)
 				else:
 					if not tags["tag"].has(tag):
 						tags["tag"].append(tag)
 	
-	var final_tag_ids := TagIt.get_final_tag_ids(tags["id"])
-	var sorted_tags: Dictionary = TagIt.sort_tag_ids_by_priority(final_tag_ids)
+	var final_tag_ids := SingletonManager.TagIt.get_final_tag_ids(tags["id"])
+	var sorted_tags: Dictionary = SingletonManager.TagIt.sort_tag_ids_by_priority(final_tag_ids)
 	if not sorted_tags.has(0):
 		sorted_tags[0] = Array([], TYPE_INT, &"", null)
 	var priorities: Array = sorted_tags.keys()
@@ -1330,8 +1319,8 @@ func on_generate_tag_list_btn_pressed() -> void:
 			tags_array.append_array(tags["tag"])
 			if sorted_tags[0].is_empty():
 				continue
-		tags_array.append_array(TagIt.get_tags_name(sorted_tags[priority]).values())
-	var website_data: Dictionary = TagIt.get_site_formatting(tagger_site_opt_btn.get_selected_website_id())
+		tags_array.append_array(SingletonManager.TagIt.get_tags_name(sorted_tags[priority]).values())
+	var website_data: Dictionary = SingletonManager.TagIt.get_site_formatting(tagger_site_opt_btn.get_selected_website_id())
 	
 	for tag_idx in range(tags_array.size()):
 		tags_array[tag_idx] = tags_array[tag_idx].replace(" ", website_data["whitespace"])
@@ -1348,7 +1337,7 @@ func parse_hydrus_image_headers(headers_array: PackedStringArray) -> Dictionary:
 
 
 func get_thumbnails(ids_array: Array) -> void:
-	var url_building: String = LOCAL_ADDRESS.format([TagIt.settings.hydrus_port]) + THUMBNAILS
+	var url_building: String = LOCAL_ADDRESS.format([SingletonManager.TagIt.settings.hydrus_port]) + THUMBNAILS
 	
 	var frames_to_create: Dictionary = {}
 	var headers := get_hydrus_headers()
@@ -1388,7 +1377,7 @@ func on_wiki_thumbnail_pressed(thumbnail_id: int, img_idx: int) -> void:
 	
 	loading_image = true
 	wiki_panel.show_spinner()
-	var url: String = LOCAL_ADDRESS.format([TagIt.settings.hydrus_port]) + HYDRUS_FILE_ENDPOINT + str(thumbnail_id)
+	var url: String = LOCAL_ADDRESS.format([SingletonManager.TagIt.settings.hydrus_port]) + HYDRUS_FILE_ENDPOINT + str(thumbnail_id)
 	
 	hydrus_large_image.request(url, get_hydrus_headers())
 	var response: Array = await hydrus_large_image.request_completed
@@ -1424,20 +1413,20 @@ func on_wiki_previous_image(from: int) -> void:
 		on_wiki_thumbnail_pressed(image_id, new_index)
 
 
-func get_hydrus_headers(key: String = TagIt.settings.hydrus_key) -> PackedStringArray:
+func get_hydrus_headers(key: String = SingletonManager.TagIt.settings.hydrus_key) -> PackedStringArray:
 	return PackedStringArray([HEADER + key])
 
 
 func search_hydrus_files(tags_array: Array[String], tag_count: int) -> Array:
 	if not hydrus_connected:
 		return []
-	var request_url: String = LOCAL_ADDRESS.format([TagIt.settings.hydrus_port]) + SEARCH
+	var request_url: String = LOCAL_ADDRESS.format([SingletonManager.TagIt.settings.hydrus_port]) + SEARCH
 	
 	if not tags_array.is_empty():
 		var tags_to_format: String = "["
-		#var tag_category := TagIt.category
+		#var tag_category := SingletonManager.TagIt.category
 		for tag in tags_array:
-			var prefix_text: String = TagIt.get_hydrus_category_prefix(TagIt.get_tag_data_column(TagIt.get_tag_id(tag), "category_id")) if TagIt.has_tag(tag) and TagIt.has_data(TagIt.get_tag_id(tag)) else ""
+			var prefix_text: String = SingletonManager.TagIt.get_hydrus_category_prefix(SingletonManager.TagIt.get_tag_data_column(SingletonManager.TagIt.get_tag_id(tag), "category_id")) if SingletonManager.TagIt.has_tag(tag) and SingletonManager.TagIt.has_data(SingletonManager.TagIt.get_tag_id(tag)) else ""
 			if not prefix_text.is_empty():
 				prefix_text += ":"
 			tags_to_format += "\"" + prefix_text + tag  + "\","
@@ -1452,9 +1441,9 @@ func search_hydrus_files(tags_array: Array[String], tag_count: int) -> Array:
 	var response = await hydrus_requester.request_completed
 	
 	if response[0] != OK or response[1] != 200:
-		TagIt.log_message(
+		SingletonManager.TagIt.log_message(
 			"API response was not 0, 200\nResponse: " + str(response[0]) + ", " + str(response[1]),
-			TagIt.LogLevel.WARNING
+			SingletonManager.TagIt.LogLevel.WARNING
 		)
 		return[]
 	
@@ -1492,9 +1481,9 @@ func connect_to_hydrus(port: int, key: String) -> bool:
 	var headers = parse_hydrus_headers(response[2])
 
 	if response[0] != OK:
-		TagIt.log_message(
+		SingletonManager.TagIt.log_message(
 				"Hydrus Response: " + str(response[0]),
-				TagIt.LogLevel.INFO)
+				SingletonManager.TagIt.LogLevel.INFO)
 	else:
 		if headers.server.begins_with("client api"):
 			var json = JSON.new()
@@ -1503,38 +1492,38 @@ func connect_to_hydrus(port: int, key: String) -> bool:
 			
 			if response[1] == 200:
 				if parsed["basic_permissions"].has(3.0):
-					if TagIt.settings.hydrus_port != port:
-						TagIt.settings.hydrus_port = port
-					if TagIt.settings.hydrus_key != key:
-						TagIt.settings.hydrus_key = key
-					TagIt.log_message(
+					if SingletonManager.TagIt.settings.hydrus_port != port:
+						SingletonManager.TagIt.settings.hydrus_port = port
+					if SingletonManager.TagIt.settings.hydrus_key != key:
+						SingletonManager.TagIt.settings.hydrus_key = key
+					SingletonManager.TagIt.log_message(
 							"Successfully connected to Hydrus",
-							TagIt.LogLevel.INFO)
+							SingletonManager.TagIt.LogLevel.INFO)
 					return true
 				else:
-					TagIt.log_message(
+					SingletonManager.TagIt.log_message(
 						"Key doesn't have Search/Fetch permissions (3)",
-						TagIt.LogLevel.ERROR
+						SingletonManager.TagIt.LogLevel.ERROR
 					)
 			else:
-				TagIt.log_message(
+				SingletonManager.TagIt.log_message(
 					"Hydrus Exception: " + str(parsed["error"]) + "\n, " + str(parsed["exception_type"]),
-					TagIt.LogLevel.ERROR)
+					SingletonManager.TagIt.LogLevel.ERROR)
 	return false
 
 
 func request_hydrus_permissions(port: int) -> String:
 	var request_url: String = LOCAL_ADDRESS.format([str(port)]) + "request_new_permissions?name=TagIt%20-%20Tag%20List%20Assistant%26basic_permissions%3D%5B3%5D"
 	hydrus_requester.request(request_url)
-	TagIt.log_message(
+	SingletonManager.TagIt.log_message(
 		"Requesting Hydrus access key.",
-		TagIt.LogLevel.INFO
+		SingletonManager.TagIt.LogLevel.INFO
 	)
 	var client_response: Array = await hydrus_requester.request_completed
 	
-	TagIt.log_message(
+	SingletonManager.TagIt.log_message(
 		"HTTP response (Hydrus): " + str(client_response[0]) + "\nHydrus response: " + str(client_response[1]),
-		TagIt.LogLevel.INFO)
+		SingletonManager.TagIt.LogLevel.INFO)
 	
 	if client_response[0] != OK or client_response[1] != 200:
 		return ""
@@ -1565,11 +1554,11 @@ func on_request_pressed() -> void:
 
 
 func on_category_deleted(id: int) -> void:
-	TagIt.delete_category(id)
+	SingletonManager.TagIt.delete_category(id)
 
 
 func on_thumbnail_size_changed(size_idx: int) -> void:
-	TagIt.settings.wiki_thumbnail_size = size_idx
+	SingletonManager.TagIt.settings.wiki_thumbnail_size = size_idx
 	match size_idx:
 		0:
 			wiki_gallery.set_thumbnail_size(Vector2i(100, 100))
@@ -1591,33 +1580,33 @@ func on_wiki_searched(search_text: String) -> void:
 	wiki_search_ln_edt.editable = false
 	wiki_search_btn.disabled = true
 	
-	if TagIt.has_tag(wiki_search) and TagIt.has_data(TagIt.get_tag_id(wiki_search)):
-		var tag_data := TagIt.get_tag_data(TagIt.get_tag_id(wiki_search))
+	if SingletonManager.TagIt.has_tag(wiki_search) and SingletonManager.TagIt.has_data(SingletonManager.TagIt.get_tag_id(wiki_search)):
+		var tag_data := SingletonManager.TagIt.get_tag_data(SingletonManager.TagIt.get_tag_id(wiki_search))
 		wiki_title_lbl.text = Strings.title_case(tag_data["tag"])
 		wiki_rtl.text = tag_data["description"]
-		wiki_cat_lbl.text = TagIt.get_category_column(tag_data["category"], "name")
+		wiki_cat_lbl.text = SingletonManager.TagIt.get_category_column(tag_data["category"], "name")
 		wiki_prio_lbl.text = str(tag_data["priority"])
 		
 		if tag_data["parents"].is_empty():
 			wiki_parents_container.visible = false
 		else:
-			var parents: Dictionary = TagIt.get_tags_name(tag_data["parents"])
+			var parents: Dictionary = SingletonManager.TagIt.get_tags_name(tag_data["parents"])
 			wiki_parents_label.text = ", ".join(parents.values())
 			wiki_parents_container.visible = true
 		
 		if tag_data["aliases"].is_empty():
 			wiki_aliases_container.visible = false
 		else:
-			var aliases: Dictionary = TagIt.get_tags_name(tag_data["aliases"])
+			var aliases: Dictionary = SingletonManager.TagIt.get_tags_name(tag_data["aliases"])
 			wiki_aliases_label.text = ", ".join(aliases.values())
 			wiki_aliases_container.visible = true
 		
 		wiki_section_separator.visible = wiki_parents_container.visible or wiki_aliases_container.visible
 		
-		if TagIt.settings.load_wiki_images and hydrus_connected:
+		if SingletonManager.TagIt.settings.load_wiki_images and hydrus_connected:
 			var files = await search_hydrus_files(
 					Array([wiki_search], TYPE_STRING, &"", null),
-					TagIt.settings.wiki_images)
+					SingletonManager.TagIt.settings.wiki_images)
 			get_thumbnails(files)
 		else:
 			wiki_search_ln_edt.editable = true
@@ -1640,9 +1629,9 @@ func on_frames_loading_finished() -> void:
 
 
 func on_tag_updated(tag_id: int) -> void:
-	var tag_data := TagIt.get_tag_data(tag_id)
-	var categories := TagIt.get_category_data(tag_data["category"])
-	var group_name: String = TagIt.get_tag_group_data(tag_data["group"])["name"] if 0 < tag_data["group"] else ""
+	var tag_data := SingletonManager.TagIt.get_tag_data(tag_id)
+	var categories := SingletonManager.TagIt.get_category_data(tag_data["category"])
+	var group_name: String = SingletonManager.TagIt.get_tag_group_data(tag_data["group"])["name"] if 0 < tag_data["group"] else ""
 	
 	tag_search_container.update_table_tag(
 		tag_id,
@@ -1653,15 +1642,15 @@ func on_tag_updated(tag_id: int) -> void:
 		group_name,
 		tag_data["group"],
 		tag_data["is_valid"])
-	tags_tree.update_tag(tag_id, Array(TagIt.get_tags_name(tag_data["parents"]).values(), TYPE_STRING, &"", null), tag_data["is_valid"])
+	tags_tree.update_tag(tag_id, Array(SingletonManager.TagIt.get_tags_name(tag_data["parents"]).values(), TYPE_STRING, &"", null), tag_data["is_valid"])
 
 
 func on_website_changed(_ig_a: Variant = null, _ig_b: Variant = null) -> void:
-	generate_list_btn.disabled = TagIt.get_site_count() == 0
+	generate_list_btn.disabled = SingletonManager.TagIt.get_site_count() == 0
 
 
 func on_group_deleted(group_id: int) -> void:
-	TagIt.remove_tag_group(group_id)
+	SingletonManager.TagIt.remove_tag_group(group_id)
 
 
 func on_set_group_desc(id: int, prev_desc: String) -> void:
@@ -1673,7 +1662,7 @@ func on_set_group_desc(id: int, prev_desc: String) -> void:
 	
 	var response: Array = await new_desc_window.dialog_finished
 	if response[0]:
-		TagIt.set_category_desc(id, response[1])
+		SingletonManager.TagIt.set_category_desc(id, response[1])
 	
 	new_desc_window.queue_free()
 
@@ -1681,18 +1670,18 @@ func on_set_group_desc(id: int, prev_desc: String) -> void:
 func on_set_category_desc(id: int) -> void:
 	var new_desc_window = SET_DESC_CATEGORY_DIALOG.instantiate()
 	add_child(new_desc_window)
-	new_desc_window.set_desc(TagIt.get_category_column(id, "description"))
-	new_desc_window.set_prefix(TagIt.get_hydrus_category_prefix(id))
+	new_desc_window.set_desc(SingletonManager.TagIt.get_category_column(id, "description"))
+	new_desc_window.set_prefix(SingletonManager.TagIt.get_hydrus_category_prefix(id))
 	new_desc_window.show()
 	new_desc_window.focus_first()
 	
 	var response: Array = await new_desc_window.dialog_finished
 	if response[0]:
-		TagIt.update_category(id, {"description": response[1]})
+		SingletonManager.TagIt.update_category(id, {"description": response[1]})
 		if response[2].is_empty():
-			TagIt.remove_hydrus_category_prefix(id)
+			SingletonManager.TagIt.remove_hydrus_category_prefix(id)
 		else:
-			TagIt.set_hydrus_category_prefix(
+			SingletonManager.TagIt.set_hydrus_category_prefix(
 				id,
 				response[2])
 	
@@ -1709,7 +1698,7 @@ func on_set_category_color(id: int, initial: String) -> void:
 	var response: Array = await color_dialog.dialog_finished
 	
 	if response[0]:
-		TagIt.set_category_icon_color(id, response[1])
+		SingletonManager.TagIt.set_category_icon_color(id, response[1])
 		tags_tree.update_category_color(id, response[1])
 	
 	color_dialog.queue_free()
@@ -1727,28 +1716,28 @@ func add_tag(tag_name: String) -> void:
 		for letter_index in range(1, clean_tag.length()):
 			length += 1
 			if not Strings.is_invalid_prefix_character(clean_tag.unicode_at(letter_index)):
-				if TagIt.has_prefix(clean_tag.substr(0, length)):
-					var parts: Array[String] = TagIt.format_prefix(clean_tag)
+				if SingletonManager.TagIt.has_prefix(clean_tag.substr(0, length)):
+					var parts: Array[String] = SingletonManager.TagIt.format_prefix(clean_tag)
 					for part in parts:
 						add_tag(part)
 					return
 	
 	var tag_id: int = -1
 	var icon_id: int = 1
-	var icon_color: Color = TagIt.get_category_icon_color(1)
+	var icon_color: Color = SingletonManager.TagIt.get_category_icon_color(1)
 	var category: int = 1
 	var tooltip: String = clean_tag
 	
-	if TagIt.has_tag(clean_tag):
-		clean_tag = TagIt.get_alias_name(clean_tag)
-		tag_id = TagIt.get_tag_id(clean_tag)
+	if SingletonManager.TagIt.has_tag(clean_tag):
+		clean_tag = SingletonManager.TagIt.get_alias_name(clean_tag)
+		tag_id = SingletonManager.TagIt.get_tag_id(clean_tag)
 		
-		if TagIt.has_data(tag_id):
-			var tag_data := TagIt.get_tag_data(tag_id)
-			var cat_data := TagIt.get_category_data(tag_data["category"])
+		if SingletonManager.TagIt.has_data(tag_id):
+			var tag_data := SingletonManager.TagIt.get_tag_data(tag_id)
+			var cat_data := SingletonManager.TagIt.get_category_data(tag_data["category"])
 			
-			var suggestion_dict := TagIt.get_tags_name(TagIt.get_suggestions(tag_id))
-			var groups_per_tag := TagIt.get_groups_and_tags(TagIt.get_suggested_groups(tag_id))
+			var suggestion_dict := SingletonManager.TagIt.get_tags_name(SingletonManager.TagIt.get_suggestions(tag_id))
+			var groups_per_tag := SingletonManager.TagIt.get_groups_and_tags(SingletonManager.TagIt.get_suggested_groups(tag_id))
 			
 			for group_id in groups_per_tag:
 				if not groups_suggestions_tree.has_tag_group(group_id):
@@ -1771,15 +1760,15 @@ func add_tag(tag_name: String) -> void:
 			tag_id,
 			clean_tag,
 			tooltip,
-			TagIt.get_icon_texture(icon_id),
+			SingletonManager.TagIt.get_icon_texture(icon_id),
 			category,
 			icon_color)
 	
 	if tagger_suggestion_tree.has_suggestion(clean_tag):
 		tagger_suggestion_tree.delete_tag(clean_tag)
 	
-	if TagIt.settings.request_suggestions:
-		ESixAPI.search_suggestions(clean_tag)
+	if SingletonManager.TagIt.settings.request_suggestions:
+		SingletonManager.eSixAPI.search_suggestions(clean_tag)
 	
 	if target_tree != null:
 		tags_tree.scroll_to_item(target_tree, false)
@@ -1800,24 +1789,24 @@ func on_create_icon_pressed() -> void:
 	new_icon_select.focus_first()
 	var response: Array = await new_icon_select.icon_finished
 	if response[0]:
-		var icon_id: int = TagIt.save_icon(response[1], response[2])
+		var icon_id: int = SingletonManager.TagIt.save_icon(response[1], response[2])
 		generate_icon_range()
 		settings_category_tree.icon_range = icon_range.size() - 1
 		settings_category_tree.icon_string = generate_icon_string()
-		settings_icons_tree.add_icon(icon_id, response[1], TagIt.get_icon_texture(icon_id))
+		settings_icons_tree.add_icon(icon_id, response[1], SingletonManager.TagIt.get_icon_texture(icon_id))
 
 
 func generate_icon_string() -> String:
 	var icon_string: String = ""
 	for icon_id in icon_range:
-		icon_string += TagIt.get_icon_name(icon_id) #TagIt.icons[icon_id]["name"]
+		icon_string += SingletonManager.TagIt.get_icon_name(icon_id) #SingletonManager.TagIt.icons[icon_id]["name"]
 		if icon_id != icon_range.back():
 			icon_string += ","
 	return icon_string
 
 
 func on_delete_icon(id: int) -> void:
-	TagIt.delete_icon(id)
+	SingletonManager.TagIt.delete_icon(id)
 	
 	generate_icon_range()
 	settings_category_tree.icon_string = generate_icon_string()
@@ -1831,7 +1820,7 @@ func on_new_site_pressed() -> void:
 	new_site_dialog.focus_first()
 	var response = await new_site_dialog.site_concluded
 	if response[0]:
-		var site_id: int = TagIt.create_site(response[1], response[2], response[3])
+		var site_id: int = SingletonManager.TagIt.create_site(response[1], response[2], response[3])
 		settings_sites_tree.add_site(response[1], site_id)
 	new_site_dialog.queue_free()
 
@@ -1845,8 +1834,8 @@ func on_new_tag_pressed() -> void:
 	var dialog_response: Array = await new_tag_dialog.creation_finished
 	
 	if dialog_response[0]:
-		if TagIt.has_tag(dialog_response[1]):
-			load_and_select_tag(TagIt.get_tag_id(dialog_response[1]))
+		if SingletonManager.TagIt.has_tag(dialog_response[1]):
+			load_and_select_tag(SingletonManager.TagIt.get_tag_id(dialog_response[1]))
 		else:
 			create_tag(dialog_response[1])
 	
@@ -1854,8 +1843,8 @@ func on_new_tag_pressed() -> void:
 
 
 func create_tag(tag_name: String) -> void:
-	TagIt.create_tag(tag_name, 1, "", 0)
-	var tag_id: int = TagIt.get_tag_id(tag_name)
+	SingletonManager.TagIt.create_tag(tag_name, 1, "", 0)
+	var tag_id: int = SingletonManager.TagIt.get_tag_id(tag_name)
 	load_and_select_tag(tag_id)
 	open_tag_editor(tag_id)
 
@@ -1869,48 +1858,48 @@ func on_search_text_submitted(search: String) -> void:
 	
 	var search_mode: int = 0
 	
-	if clean_search == TagIt.SEARCH_WILDCARD:
+	if clean_search == DataManager.SEARCH_WILDCARD:
 		search_mode = -1
 	else:
-		if clean_search.begins_with(TagIt.SEARCH_WILDCARD):
+		if clean_search.begins_with(DataManager.SEARCH_WILDCARD):
 			search_mode += 1
-			clean_search = clean_search.trim_prefix(TagIt.SEARCH_WILDCARD)
+			clean_search = clean_search.trim_prefix(DataManager.SEARCH_WILDCARD)
 		
-		if clean_search.ends_with(TagIt.SEARCH_WILDCARD):
+		if clean_search.ends_with(DataManager.SEARCH_WILDCARD):
 			search_mode += 2
-			clean_search = clean_search.trim_suffix(TagIt.SEARCH_WILDCARD)
+			clean_search = clean_search.trim_suffix(DataManager.SEARCH_WILDCARD)
 	
 	match search_mode:
 		-1:# Show all
-			tag_search_container.set_search_results(TagIt.get_all_tag_ids(true))
+			tag_search_container.set_search_results(SingletonManager.TagIt.get_all_tag_ids(true))
 		0: # Exact
-			if TagIt.has_tag(clean_search) and TagIt.has_data(TagIt.get_tag_id(clean_search)):
+			if SingletonManager.TagIt.has_tag(clean_search) and SingletonManager.TagIt.has_data(SingletonManager.TagIt.get_tag_id(clean_search)):
 				tag_search_container.set_search_results(
 						Array(
-								[TagIt.get_tag_id(clean_search)],
+								[SingletonManager.TagIt.get_tag_id(clean_search)],
 								TYPE_INT,
 								&"",
 								null))
 		1: # Ends with
 			var id_array: Array[int] = []
-			var tags := TagIt.get_tags(
-					TagIt.get_all_tag_ids(true))
+			var tags := SingletonManager.TagIt.get_tags(
+					SingletonManager.TagIt.get_all_tag_ids(true))
 			for tag in tags:
-				if TagIt.get_tag_name(tag).ends_with(clean_search):
+				if SingletonManager.TagIt.get_tag_name(tag).ends_with(clean_search):
 					id_array.append(tag)
 			tag_search_container.set_search_results(id_array)
 		2: # Begins with
 			var id_array: Array[int] = []
-			var tags := TagIt.get_tags(
-					TagIt.get_all_tag_ids(true))
+			var tags := SingletonManager.TagIt.get_tags(
+					SingletonManager.TagIt.get_all_tag_ids(true))
 			for tag in tags:
 				if tags[tag]["name"].begins_with(clean_search):
 					id_array.append(tag)
 			tag_search_container.set_search_results(id_array)
 		3: # Contains
 			var id_array: Array[int] = []
-			var tags := TagIt.get_tags(
-					TagIt.get_all_tag_ids(true))
+			var tags := SingletonManager.TagIt.get_tags(
+					SingletonManager.TagIt.get_all_tag_ids(true))
 			for tag in tags:
 				if tags[tag]["name"].contains(clean_search):
 					id_array.append(tag)
@@ -1918,9 +1907,9 @@ func on_search_text_submitted(search: String) -> void:
 
 
 func append_search(tag_name: String, tag_id: int = 0) -> void:
-	var id: int = tag_id if 0 < tag_id else TagIt.get_tag_id(tag_name)
+	var id: int = tag_id if 0 < tag_id else SingletonManager.TagIt.get_tag_id(tag_name)
 	
-	var tag_data := TagIt.get_tag_data(id)
+	var tag_data := SingletonManager.TagIt.get_tag_data(id)
 	
 	tag_search_container.add_tag_to_table(
 			id,
@@ -1932,7 +1921,7 @@ func append_search(tag_name: String, tag_id: int = 0) -> void:
 
 
 func load_and_select_tag(tag_id: int) -> void:
-	all_tags_search_ln_edt.text = TagIt.get_tag_name(tag_id) 
+	all_tags_search_ln_edt.text = SingletonManager.TagIt.get_tag_name(tag_id) 
 	all_tags_tree.clear_tags()
 	append_search("", tag_id)
 	all_tags_tree.select_tag(0)
@@ -1989,15 +1978,15 @@ func blacklist_tags(tags: Array[String]) -> void:
 
 func generate_icon_range() -> void:
 	icon_range.clear()
-	for id in TagIt.icons.keys():
+	for id in SingletonManager.TagIt.icons.keys():
 		icon_range.append(int(id))
 	
 	icon_range.sort()
 
 
 func on_category_icon_changed(cat_id: int, range_selected: int) -> void:
-	TagIt.set_category_icon(cat_id, icon_range[range_selected])
-	tags_tree.update_category_icon(cat_id, TagIt.get_icon_texture(icon_range[range_selected]))
+	SingletonManager.TagIt.set_category_icon(cat_id, icon_range[range_selected])
+	tags_tree.update_category_icon(cat_id, SingletonManager.TagIt.get_icon_texture(icon_range[range_selected]))
 
 
 func on_expand_api_pressed() -> void:
@@ -2006,7 +1995,7 @@ func on_expand_api_pressed() -> void:
 
 
 func on_api_toggle_changed(is_enabled: bool) -> void:
-	TagIt.settings.load_wiki_images = is_enabled
+	SingletonManager.TagIt.settings.load_wiki_images = is_enabled
 	wiki_image_side.visible = is_enabled
 	settings_port_spn_bx.editable = is_enabled
 	settings_key_ln_edt.editable = is_enabled
@@ -2016,7 +2005,7 @@ func on_api_toggle_changed(is_enabled: bool) -> void:
 
 
 func _on_request_tags_toggled(is_toggled: bool) -> void:
-	TagIt.settings.request_suggestions = is_toggled
+	SingletonManager.TagIt.settings.request_suggestions = is_toggled
 	settings_relevancy_spn_bx.editable = is_toggled
 
 
@@ -2030,7 +2019,7 @@ func on_create_category_pressed() -> void:
 	var result = await dialog_window.dialog_finished
 	
 	if result[0]:
-		TagIt.create_category(result[1], result[2])
+		SingletonManager.TagIt.create_category(result[1], result[2])
 	
 	dialog_window.queue_free()
 
@@ -2047,7 +2036,7 @@ func on_create_group_pressed() -> void:
 		settings_groups_tree.create_group(
 			result[1],
 			result[2],
-			TagIt.create_tag_group(result[1], result[2]))
+			SingletonManager.TagIt.create_tag_group(result[1], result[2]))
 	
 	dialog_window.queue_free()
 
@@ -2100,7 +2089,7 @@ func on_select_image_pressed() -> void:
 
 func on_image_selected(path: String, dialog: FileDialog) -> void:
 	var image := Image.load_from_file(path)
-	TagIt.resize_image(image)
+	SingletonManager.TagIt.resize_image(image)
 	var texture := ImageTexture.create_from_image(image)
 	project_image.texture = texture
 	clear_img_btn.disabled = false
@@ -2135,7 +2124,7 @@ func on_export_tag_pressed(tag_id: int) -> void:
 
 
 func on_delete_tag_pressed(tag_id: int) -> void:
-	TagIt.delete_tag_data(tag_id)
+	SingletonManager.TagIt.delete_tag_data(tag_id)
 
 
 # These need testing. A lot.
@@ -2149,7 +2138,7 @@ func json_tag_to_db(data: Dictionary, overwrite: bool = false) -> void:
 	var clean_name: String = data["name"].strip_edges().to_lower()
 	
 	if clean_name.is_empty():
-		TagIt.log_message(
+		SingletonManager.TagIt.log_message(
 				"[JSON PARSER] JSON data doesn't have a tag name.",
 				DataManager.LogLevel.ERROR)
 		return
@@ -2157,11 +2146,11 @@ func json_tag_to_db(data: Dictionary, overwrite: bool = false) -> void:
 	var icon_id: int = 0
 	var cat_id: int = 0
 	var group_id: int = 0
-	var group_sugg_data: Dictionary = TagIt.get_tag_groups()
-	var category_data: Dictionary = TagIt.get_categories()
+	var group_sugg_data: Dictionary = SingletonManager.TagIt.get_tag_groups()
+	var category_data: Dictionary = SingletonManager.TagIt.get_categories()
 	
-	for icon in TagIt.icons.keys():
-		if Strings.nocasecmp_equal(TagIt.icons[icon]["name"], data["category"]["icon_name"]):
+	for icon in SingletonManager.TagIt.icons.keys():
+		if Strings.nocasecmp_equal(SingletonManager.TagIt.icons[icon]["name"], data["category"]["icon_name"]):
 			icon_id = icon
 			break
 	
@@ -2178,23 +2167,23 @@ func json_tag_to_db(data: Dictionary, overwrite: bool = false) -> void:
 	if 0 == icon_id:
 		var new_img := Image.new()
 		new_img.load_webp_from_buffer(PackedByteArray(data["category"]["category_icon"]))
-		icon_id = TagIt.save_icon(data["category"]["icon_name"], new_img)
+		icon_id = SingletonManager.TagIt.save_icon(data["category"]["icon_name"], new_img)
 	
 	if cat_id == 0:
-		cat_id = TagIt.create_category(data["category"]["name"], data["category"]["description"])
-		TagIt.set_category_icon_color(
+		cat_id = SingletonManager.TagIt.create_category(data["category"]["name"], data["category"]["description"])
+		SingletonManager.TagIt.set_category_icon_color(
 				cat_id,
 				data["category"]["category_color"] if Color.html_is_valid(data["category"]["category_color"]) else "ffffff")
-		TagIt.set_category_icon(cat_id, icon_id)
+		SingletonManager.TagIt.set_category_icon(cat_id, icon_id)
 	
 	if group_id == 0 and not data["group"].is_empty():
-		group_id = TagIt.create_tag_group(data["group"], data["group_desc"])
+		group_id = SingletonManager.TagIt.create_tag_group(data["group"], data["group_desc"])
 		group_sugg_data[group_id] = {"name": data["group"], "description": data["group_desc"]}
 	
-	if TagIt.has_tag(clean_name) and TagIt.has_data(TagIt.get_tag_id(clean_name)):
+	if SingletonManager.TagIt.has_tag(clean_name) and SingletonManager.TagIt.has_data(SingletonManager.TagIt.get_tag_id(clean_name)):
 		if overwrite:
-			var tag_id: int = TagIt.get_tag_id(clean_name)
-			TagIt.update_tag_data(
+			var tag_id: int = SingletonManager.TagIt.get_tag_id(clean_name)
+			SingletonManager.TagIt.update_tag_data(
 					tag_id,
 					{
 						"category_id": cat_id,
@@ -2203,13 +2192,13 @@ func json_tag_to_db(data: Dictionary, overwrite: bool = false) -> void:
 						"tooltip": data["tooltip"],
 						"priority": data["priority"]
 					})
-			TagIt.remove_aliases_to(tag_id)
+			SingletonManager.TagIt.remove_aliases_to(tag_id)
 			if not data["aliases"].is_empty():
-				TagIt.add_aliases(data["aliases"], clean_name)
-			TagIt.remove_all_parents_from(tag_id)
+				SingletonManager.TagIt.add_aliases(data["aliases"], clean_name)
+			SingletonManager.TagIt.remove_all_parents_from(tag_id)
 			if not data["parents"].is_empty():
-				TagIt.add_parents(tag_id, Array(data["parents"], TYPE_STRING, &"", null))
-			TagIt.remove_all_group_suggestions(tag_id)
+				SingletonManager.TagIt.add_parents(tag_id, Array(data["parents"], TYPE_STRING, &"", null))
+			SingletonManager.TagIt.remove_all_group_suggestions(tag_id)
 			var _new_suggestions: Array[int] = []
 			
 			for group_sugg_text in data["group_suggestions"]:
@@ -2217,31 +2206,31 @@ func json_tag_to_db(data: Dictionary, overwrite: bool = false) -> void:
 					if Strings.nocasecmp_equal(group_sugg_text, group_sugg_data[grp_id]["name"]):
 						_new_suggestions.append(grp_id)
 			if not _new_suggestions.is_empty():
-				TagIt.add_group_suggestions(tag_id, _new_suggestions)
+				SingletonManager.TagIt.add_group_suggestions(tag_id, _new_suggestions)
 		else:
-			TagIt.log_message(
+			SingletonManager.TagIt.log_message(
 					"[TagIt] Tag \"" + clean_name + "\" already in DB. Skipping.",
-					TagIt.LogLevel.INFO)
+					SingletonManager.TagIt.LogLevel.INFO)
 		return
 
-	TagIt.create_tag(
+	SingletonManager.TagIt.create_tag(
 			clean_name,
 			cat_id,
 			data["wiki"],
 			group_id,
 			data["tooltip"])
 	
-	var new_tag_id: int = TagIt.get_tag_id(clean_name)
+	var new_tag_id: int = SingletonManager.TagIt.get_tag_id(clean_name)
 	
 	if not data["aliases"].is_empty():
-		TagIt.add_aliases(data["aliases"], clean_name)
+		SingletonManager.TagIt.add_aliases(data["aliases"], clean_name)
 	
 	if not data["parents"].is_empty():
-		TagIt.add_parents(new_tag_id, data["parents"])
+		SingletonManager.TagIt.add_parents(new_tag_id, data["parents"])
 	if not data["suggestions"].is_empty():
-		TagIt.add_suggestions(new_tag_id, data["suggestions"])
-	TagIt.set_tag_priority(new_tag_id, data["priority"])
-	TagIt.set_tag_valid(new_tag_id, data["is_valid"])
+		SingletonManager.TagIt.add_suggestions(new_tag_id, data["suggestions"])
+	SingletonManager.TagIt.set_tag_priority(new_tag_id, data["priority"])
+	SingletonManager.TagIt.set_tag_valid(new_tag_id, data["is_valid"])
 	
 	var _new_tag_suggestions: Array[int] = []
 	for group_sugg_text in data["group_suggestions"]:
@@ -2249,12 +2238,12 @@ func json_tag_to_db(data: Dictionary, overwrite: bool = false) -> void:
 			if Strings.nocasecmp_equal(group_sugg_text, group_sugg_data[grp_id]["name"]):
 				_new_tag_suggestions.append(grp_id)
 	if not _new_tag_suggestions.is_empty():
-		TagIt.add_group_suggestions(new_tag_id, _new_tag_suggestions)
+		SingletonManager.TagIt.add_group_suggestions(new_tag_id, _new_tag_suggestions)
 
 
 func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
-	var cats_data := TagIt.get_categories()
-	var groups_data := TagIt.get_tag_groups()
+	var cats_data := SingletonManager.TagIt.get_categories()
+	var groups_data := SingletonManager.TagIt.get_tag_groups()
 	
 	var all_icons: Dictionary = {} # name: -> ID
 	var all_cats: Dictionary = {}
@@ -2264,8 +2253,8 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 	var json_cats: Dictionary = {}
 	var json_groups: Dictionary = {}
 	
-	for icon_id in TagIt.icons:
-		all_icons[TagIt.icons[icon_id]["name"].to_lower()] = icon_id
+	for icon_id in SingletonManager.TagIt.icons:
+		all_icons[SingletonManager.TagIt.icons[icon_id]["name"].to_lower()] = icon_id
 	for cat in cats_data:
 		all_cats[cats_data[cat]["name"].to_lower()] = cat
 	for group_id in groups_data:
@@ -2290,13 +2279,13 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 		
 		var image_data: Image = Image.new()
 		if image_data.load_webp_from_buffer(icon_dict["bits"]) == OK:
-			json_icons[icon_idx] = TagIt.save_icon(icon_dict["name"], image_data)
+			json_icons[icon_idx] = SingletonManager.TagIt.save_icon(icon_dict["name"], image_data)
 	
 	var cat_idx: int = -1
 	for category_dict: Dictionary in json_result["categories"]:
 		cat_idx += 1
 		if not typeof(category_dict) == TYPE_DICTIONARY or not category_dict.has_all(["name", "color", "icon", "description"]):
-			TagIt.log_message("[JSON PARSER] Category with index " + str(cat_idx) + " is missing data.", TagIt.LogLevel.ERROR)
+			SingletonManager.TagIt.log_message("[JSON PARSER] Category with index " + str(cat_idx) + " is missing data.", SingletonManager.TagIt.LogLevel.ERROR)
 			continue
 		
 		var id_found: bool = false
@@ -2309,21 +2298,21 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 		if id_found:
 			continue
 		
-		var category_id: int = TagIt.create_category(category_dict["name"], category_dict["description"])
+		var category_id: int = SingletonManager.TagIt.create_category(category_dict["name"], category_dict["description"])
 		var valid_color: String = category_dict["color"] if Color.html_is_valid(category_dict["color"]) else "ffffff"
 		json_cats[cat_idx] = category_id
 		
-		TagIt.set_category_icon_color(category_id, valid_color)
+		SingletonManager.TagIt.set_category_icon_color(category_id, valid_color)
 		
 		if json_icons.has(int(category_dict["icon"])):
-			TagIt.set_category_icon(category_id, json_icons[int(category_dict["icon"])])
+			SingletonManager.TagIt.set_category_icon(category_id, json_icons[int(category_dict["icon"])])
 	
 	var group_idx: int = -1
 	for group_dict in json_result["groups"]:
 		group_idx += 1
 		
 		if typeof(group_dict) != TYPE_DICTIONARY or not group_dict.has_all(["name", "description"]):
-			TagIt.log_message("[JSON PARSER] Group with index " + str(group_idx) + " is missing some data.", TagIt.LogLevel.ERROR)
+			SingletonManager.TagIt.log_message("[JSON PARSER] Group with index " + str(group_idx) + " is missing some data.", SingletonManager.TagIt.LogLevel.ERROR)
 			continue # Skipping incomplete dictionaries.
 		
 		var group_id: int = 0
@@ -2337,14 +2326,14 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 		if has_group:
 			continue
 		
-		group_id = TagIt.create_tag_group(group_dict["name"], group_dict["description"])
+		group_id = SingletonManager.TagIt.create_tag_group(group_dict["name"], group_dict["description"])
 		all_groups[group_id] = {"name": group_dict["name"], "description": group_dict["description"]}
 		json_groups[group_idx] = group_id
 	
 	var empty_tags: Dictionary = {}
 	for empty_entry in json_result["tags"]:
 		for empty_parent:String in empty_entry["parents"]:
-			if empty_parent.is_empty() or TagIt.has_tag(empty_parent):
+			if empty_parent.is_empty() or SingletonManager.TagIt.has_tag(empty_parent):
 				continue
 			var key: String = empty_parent.left(1)
 			if not empty_tags.has(key):
@@ -2353,7 +2342,7 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 				Arrays.insert_sorted_asc(empty_tags[key], empty_parent)
 		
 		for empty_suggestion:String in empty_entry["suggestions"]:
-			if empty_suggestion.is_empty() or TagIt.has_tag(empty_suggestion):
+			if empty_suggestion.is_empty() or SingletonManager.TagIt.has_tag(empty_suggestion):
 				continue
 			var key: String = empty_suggestion.left(1)
 			if not empty_tags.has(key):
@@ -2362,7 +2351,7 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 				Arrays.insert_sorted_asc(empty_tags[key], empty_suggestion)
 		
 		for empty_alias:String in empty_entry["aliases"]:
-			if empty_alias.is_empty() or TagIt.has_tag(empty_alias):
+			if empty_alias.is_empty() or SingletonManager.TagIt.has_tag(empty_alias):
 				continue
 			var key: String = empty_alias.left(1)
 			if not empty_tags.has(key):
@@ -2375,23 +2364,23 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 		new_tags.append_array(empty_tags[entry_key])
 	
 	if not new_tags.is_empty():
-		TagIt.create_empty_tags(new_tags)
+		SingletonManager.TagIt.create_empty_tags(new_tags)
 	
 	var tag_idx: int = -1
 	for tag:Dictionary in json_result["tags"]:
 		if typeof(tag) != TYPE_DICTIONARY or not tag.has_all(["name", "priority", "is_valid", "category", "wiki", "tooltip", "group", "aliases", "parents", "suggestions", "group_suggestions"]):
-			TagIt.log_message("[JSON PARSER] Tag with index " + str(tag_idx) + " is missing some data.", TagIt.LogLevel.ERROR)
+			SingletonManager.TagIt.log_message("[JSON PARSER] Tag with index " + str(tag_idx) + " is missing some data.", SingletonManager.TagIt.LogLevel.ERROR)
 			continue # Skipping incomplete dictionaries.
 		
 		var clean_tag: String = tag["name"].strip_edges().to_lower()
 		var group_id: int = 0 if not json_groups.has(int(tag["group"])) else json_groups[int(tag["group"])]
 		var cat_id: int = 1 if not json_cats.has(int(tag["category"])) else json_cats[int(tag["category"])]
 		
-		if TagIt.has_tag(clean_tag) and TagIt.has_data(TagIt.get_tag_id(clean_tag)):
+		if SingletonManager.TagIt.has_tag(clean_tag) and SingletonManager.TagIt.has_data(SingletonManager.TagIt.get_tag_id(clean_tag)):
 			if overwrite:
-				var _tag_id: int = TagIt.get_tag_id(clean_tag)
-				TagIt.update_tag(_tag_id, {"is_valid": tag["is_valid"]})
-				TagIt.update_tag_data(
+				var _tag_id: int = SingletonManager.TagIt.get_tag_id(clean_tag)
+				SingletonManager.TagIt.update_tag(_tag_id, {"is_valid": tag["is_valid"]})
+				SingletonManager.TagIt.update_tag_data(
 					_tag_id,
 					{
 						"group_id": group_id,
@@ -2401,24 +2390,24 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 						"category_id": cat_id
 					})
 				
-				TagIt.remove_aliases_to(_tag_id)
-				TagIt.remove_all_parents_from(_tag_id)
-				TagIt.remove_all_group_suggestions(_tag_id)
-				TagIt.remove_all_suggestions(_tag_id)
+				SingletonManager.TagIt.remove_aliases_to(_tag_id)
+				SingletonManager.TagIt.remove_all_parents_from(_tag_id)
+				SingletonManager.TagIt.remove_all_group_suggestions(_tag_id)
+				SingletonManager.TagIt.remove_all_suggestions(_tag_id)
 			else:
-				TagIt.log_message(
+				SingletonManager.TagIt.log_message(
 					"[TagIt] Tag \"" + clean_tag + "\" already in DB. Skipping.",
-					TagIt.LogLevel.INFO)
+					SingletonManager.TagIt.LogLevel.INFO)
 				continue
 		else:
-			TagIt.create_tag(
+			SingletonManager.TagIt.create_tag(
 				clean_tag,
 				cat_id,
 				tag["wiki"],
 				group_id,
 				tag["tooltip"].strip_edges())
 	
-		var tag_id: int = TagIt.get_tag_id(clean_tag)
+		var tag_id: int = SingletonManager.TagIt.get_tag_id(clean_tag)
 		var group_suggestions: Array[int] = []
 	
 		for group_text in tag["group_suggestions"]:
@@ -2428,10 +2417,10 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 					break
 		
 		if not tag["parents"].is_empty():
-			TagIt.add_parents(tag_id, Array(tag["parents"], TYPE_STRING, &"", null))
+			SingletonManager.TagIt.add_parents(tag_id, Array(tag["parents"], TYPE_STRING, &"", null))
 		
 		if not tag["suggestions"].is_empty():
-			TagIt.add_suggestions(
+			SingletonManager.TagIt.add_suggestions(
 					tag_id,
 					Array(
 								tag["suggestions"],
@@ -2439,10 +2428,10 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 								&"",
 								null))
 		if not group_suggestions.is_empty():
-			TagIt.add_group_suggestions(tag_id, group_suggestions)
+			SingletonManager.TagIt.add_group_suggestions(tag_id, group_suggestions)
 		 
 		if not tag["aliases"].is_empty():
-			TagIt.add_aliases(
+			SingletonManager.TagIt.add_aliases(
 					Array(tag["aliases"],
 							TYPE_STRING,
 							&"",
@@ -2451,9 +2440,9 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 
 
 func db_tag_to_json(tag_id: int, path: String) -> void:
-	var data := TagIt.get_tag_data(tag_id)
-	var groups := TagIt.get_tag_groups()
-	var cat_data := TagIt.get_category_data(data["category"])
+	var data := SingletonManager.TagIt.get_tag_data(tag_id)
+	var groups := SingletonManager.TagIt.get_tag_groups()
+	var cat_data := SingletonManager.TagIt.get_category_data(data["category"])
 	var group_suggestions: PackedStringArray = []
 	var json_file := FileAccess.open(path, FileAccess.WRITE)
 	
@@ -2461,7 +2450,7 @@ func db_tag_to_json(tag_id: int, path: String) -> void:
 		group_suggestions.append(groups[grp_sugg]["name"])
 	
 	var int_array: Array[int] = []
-	int_array.assign(TagIt.get_icon_texture(TagIt.get_category_icon_id(data["category"])).get_image().save_webp_to_buffer())
+	int_array.assign(SingletonManager.TagIt.get_icon_texture(SingletonManager.TagIt.get_category_icon_id(data["category"])).get_image().save_webp_to_buffer())
 	
 	var tag = {
 		"type": 0,
@@ -2471,16 +2460,16 @@ func db_tag_to_json(tag_id: int, path: String) -> void:
 		"category": {
 			"name": cat_data["name"],
 			"category_icon": int_array,
-			"icon_name": TagIt.get_icon_name(cat_data["icon_id"]),
+			"icon_name": SingletonManager.TagIt.get_icon_name(cat_data["icon_id"]),
 			"category_color": cat_data["icon_color"],
 			"description": cat_data["description"]},
 		"wiki": data["description"],
 		"tooltip": data["tooltip"],
 		"group": groups[data["group"]]["name"] if 0 < data["group"] else "",
 		"group_desc": groups[data["group"]]["description"] if 0 < data["group"] else "",
-		"parents": TagIt.get_tags_name(data["parents"]).values(),
-		"suggestions": TagIt.get_tags_name(data["suggestions"]).values(),
-		"aliases": TagIt.get_tags_name(data["aliases"]).values(),
+		"parents": SingletonManager.TagIt.get_tags_name(data["parents"]).values(),
+		"suggestions": SingletonManager.TagIt.get_tags_name(data["suggestions"]).values(),
+		"aliases": SingletonManager.TagIt.get_tags_name(data["aliases"]).values(),
 		"group_suggestions": group_suggestions}
 	
 	json_file.store_string(JSON.stringify(tag, "\t"))
@@ -2493,14 +2482,14 @@ func db_group_to_json(tag_ids: Array[int], path: String) -> void:
 	var tags: Array[Dictionary] = [] 
 	var groups: Array[Dictionary] = []
 	
-	var all_groups: Dictionary = TagIt.get_tag_groups()
-	var all_categories: Dictionary = TagIt.get_categories()
+	var all_groups: Dictionary = SingletonManager.TagIt.get_tag_groups()
+	var all_categories: Dictionary = SingletonManager.TagIt.get_categories()
 	
 	for tag in tag_ids:
-		var data: Dictionary = TagIt.get_tag_data(tag)
+		var data: Dictionary = SingletonManager.TagIt.get_tag_data(tag)
 
 		var category: int = data["category"]
-		var icon: String = TagIt.get_icon_name(TagIt.get_category_icon_id(category)).to_lower()
+		var icon: String = SingletonManager.TagIt.get_icon_name(SingletonManager.TagIt.get_category_icon_id(category)).to_lower()
 		var group_name: String = all_groups[data["group"]]["name"] if 0 < data["group"] else ""
 		var cat_name: String = all_categories[category]["name"]
 		var group_suggestions: PackedStringArray = []
@@ -2523,7 +2512,7 @@ func db_group_to_json(tag_ids: Array[int], path: String) -> void:
 		if not has_icon:
 			_icon_idx = icons.size()
 			var bits: Array[int] = []
-			bits.assign(TagIt.get_icon_texture(all_categories[category]["icon_id"]).get_image().save_webp_to_buffer())
+			bits.assign(SingletonManager.TagIt.get_icon_texture(all_categories[category]["icon_id"]).get_image().save_webp_to_buffer())
 			icons.append({"name": icon, "bits": bits})
 		
 		var has_category: bool = false
@@ -2565,9 +2554,9 @@ func db_group_to_json(tag_ids: Array[int], path: String) -> void:
 			"wiki": data["description"],
 			"tooltip": data["tooltip"],
 			"group": _group_idx,
-			"aliases": TagIt.get_tags_name(data["aliases"]).values(),
-			"parents": TagIt.get_tags_name(data["parents"]).values(),
-			"suggestions": TagIt.get_tags_name(data["suggestions"]).values(),
+			"aliases": SingletonManager.TagIt.get_tags_name(data["aliases"]).values(),
+			"parents": SingletonManager.TagIt.get_tags_name(data["parents"]).values(),
+			"suggestions": SingletonManager.TagIt.get_tags_name(data["suggestions"]).values(),
 			"group_suggestions": group_suggestions})
 	
 	var json_data: Dictionary = {
@@ -2592,7 +2581,7 @@ func heal_json_dict(dict: Dictionary) -> void:
 		"category": {
 			"name": "generic",
 			"description": "",
-			"category_icon": TagIt.get_icon_texture(1).get_image().save_webp_to_buffer(),
+			"category_icon": SingletonManager.TagIt.get_icon_texture(1).get_image().save_webp_to_buffer(),
 			"icon_name": "Generic",
 			"category_color": "ffffff"},
 		"wiki": "",

@@ -27,7 +27,7 @@ var _using_search: bool = false
 func _ready() -> void:
 	tags_tree.create_item()
 	
-	all_valid_tags = TagIt.get_all_tag_names(true)
+	all_valid_tags = SingletonManager.TagIt.get_all_tag_names(true)
 	
 	var amount: int = 0
 	var idx: int = -1
@@ -55,22 +55,22 @@ func _ready() -> void:
 func on_search_tag_text_submitted(text: String) -> void:
 	var clean_text: String = text.strip_edges().to_lower()
 	
-	var as_prefix: bool = text.ends_with(TagIt.SEARCH_WILDCARD)
-	var as_suffix: bool = text.begins_with(TagIt.SEARCH_WILDCARD)
+	var as_prefix: bool = text.ends_with(DataManager.SEARCH_WILDCARD)
+	var as_suffix: bool = text.begins_with(DataManager.SEARCH_WILDCARD)
 	
 	if as_prefix:
-		clean_text = clean_text.trim_suffix(TagIt.SEARCH_WILDCARD)
+		clean_text = clean_text.trim_suffix(DataManager.SEARCH_WILDCARD)
 		clean_text = clean_text.strip_edges(false, true)
 	if as_suffix:
-		clean_text = clean_text.trim_prefix(TagIt.SEARCH_WILDCARD)
+		clean_text = clean_text.trim_prefix(DataManager.SEARCH_WILDCARD)
 		clean_text = clean_text.strip_edges(true, false)
 	
-	while clean_text.ends_with(TagIt.SEARCH_WILDCARD):
-		clean_text = clean_text.trim_suffix(TagIt.SEARCH_WILDCARD)
+	while clean_text.ends_with(DataManager.SEARCH_WILDCARD):
+		clean_text = clean_text.trim_suffix(DataManager.SEARCH_WILDCARD)
 		clean_text = clean_text.strip_edges(false, true)
 	
-	while clean_text.begins_with(TagIt.SEARCH_WILDCARD):
-		clean_text = clean_text.trim_prefix(TagIt.SEARCH_WILDCARD)
+	while clean_text.begins_with(DataManager.SEARCH_WILDCARD):
+		clean_text = clean_text.trim_prefix(DataManager.SEARCH_WILDCARD)
 		clean_text = clean_text.strip_edges(true, false)
 	
 	clear_tags()
@@ -187,7 +187,7 @@ func set_next_arrow_disabled(set_disabled: bool) -> void:
 func on_export_button_pressed() -> void:
 	var exported_tags: Array[int] = []
 	for tag_idx in selected_ids:
-		exported_tags.append(TagIt.get_tag_id(all_valid_tags[tag_idx]))
+		exported_tags.append(SingletonManager.TagIt.get_tag_id(all_valid_tags[tag_idx]))
 	export_tags_pressed.emit(exported_tags)
 
 

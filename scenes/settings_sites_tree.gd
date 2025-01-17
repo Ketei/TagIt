@@ -23,5 +23,5 @@ func add_site(site_name: String, site_id: int) -> void:
 func on_button_clicked(item: TreeItem, _column: int, id: int, _mouse_button_index: int):
 	match id:
 		0:
-			TagIt.delete_site(item.get_metadata(0))
+			SingletonManager.TagIt.delete_site(item.get_metadata(0))
 			item.free()

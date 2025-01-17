@@ -44,7 +44,7 @@ func _ready() -> void:
 	prev_button.pressed.connect(on_arrow_page_pressed.bind(-1))
 	add_button.pressed.connect(on_add_selected_pressed)
 	search_cooldown.timeout.connect(on_cooldown_finished)
-	ESixAPI.tag_search_results_found.connect(on_api_tag_responded)
+	SingletonManager.ESixAPI.tag_search_results_found.connect(on_api_tag_responded)
 	close_button.pressed.connect(panel_close_pressed.emit)
 	tags_tree.tags_marked.connect(on_tags_marked)
 
@@ -56,22 +56,22 @@ func on_tags_marked(tags: Array[String]) -> void:
 func on_search_text_submitted(text: String) -> void:
 	var clean_text: String = text.strip_edges()
 	
-	var as_prefix: bool = text.ends_with(TagIt.SEARCH_WILDCARD)
-	var as_suffix: bool = text.begins_with(TagIt.SEARCH_WILDCARD)
+	var as_prefix: bool = text.ends_with(DataManager.SEARCH_WILDCARD)
+	var as_suffix: bool = text.begins_with(DataManager.SEARCH_WILDCARD)
 	
 	if as_prefix:
-		clean_text = clean_text.trim_suffix(TagIt.SEARCH_WILDCARD)
+		clean_text = clean_text.trim_suffix(DataManager.SEARCH_WILDCARD)
 		clean_text = clean_text.strip_edges(false, true)
 	if as_suffix:
-		clean_text = clean_text.trim_prefix(TagIt.SEARCH_WILDCARD)
+		clean_text = clean_text.trim_prefix(DataManager.SEARCH_WILDCARD)
 		clean_text = clean_text.strip_edges(true, false)
 	
-	while clean_text.ends_with(TagIt.SEARCH_WILDCARD):
-		clean_text = clean_text.trim_suffix(TagIt.SEARCH_WILDCARD)
+	while clean_text.ends_with(DataManager.SEARCH_WILDCARD):
+		clean_text = clean_text.trim_suffix(DataManager.SEARCH_WILDCARD)
 		clean_text = clean_text.strip_edges(false, true)
 	
-	while clean_text.begins_with(TagIt.SEARCH_WILDCARD):
-		clean_text = clean_text.trim_prefix(TagIt.SEARCH_WILDCARD)
+	while clean_text.begins_with(DataManager.SEARCH_WILDCARD):
+		clean_text = clean_text.trim_prefix(DataManager.SEARCH_WILDCARD)
 		clean_text = clean_text.strip_edges(true, false)
 	
 	current_tags.clear()
@@ -86,22 +86,22 @@ func on_search_text_submitted(text: String) -> void:
 		return
 	else:
 		if as_prefix and as_suffix:
-			current_tags = TagIt.search_for_tag_contains(clean_text, 100)
+			current_tags = SingletonManager.TagIt.search_for_tag_contains(clean_text, 100)
 		elif as_suffix:
-			current_tags = TagIt.search_for_tag_suffix(clean_text, 100)
+			current_tags = SingletonManager.TagIt.search_for_tag_suffix(clean_text, 100)
 		else:
-			current_tags = TagIt.search_for_tag_prefix(clean_text, 100)
+			current_tags = SingletonManager.TagIt.search_for_tag_prefix(clean_text, 100)
 	
 	pages_lbl.text = \"/ \" + str(maxi(1, ceili(current_tags.size() / float(step))))
 	
-	if TagIt.settings.search_tags_on_esix and not _api_working:
+	if SingletonManager.TagIt.settings.search_tags_on_esix and not _api_working:
 		esix_cooldown_bar.radial_fill_degrees = 360.0
 		esix_cooldown_bar.tooltip_text = \"Cooldown on the e621 API.\"
 		var e_tag: String = \"\"
 		if as_suffix:
 			e_tag += \"*\"
 		e_tag += clean_text + \"*\"
-		ESixAPI.search_for_tags(e_tag)
+		SingletonManager.ESixAPI.search_for_tags(e_tag)
 		_api_working = true
 	
 	on_arrow_page_pressed(0)

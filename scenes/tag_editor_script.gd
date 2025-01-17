@@ -38,11 +38,11 @@ func _ready() -> void:
 	add_sugg_ln_edt.text_submitted.connect(on_suggestion_submitted)
 	add_parent_ln_edt.timer_finished.connect(on_search_timer_timeout.bind(add_parent_ln_edt))
 	add_sugg_ln_edt.timer_finished.connect(on_search_timer_timeout.bind(add_sugg_ln_edt))
-	TagIt.category_created.connect(on_category_created)
-	TagIt.category_icon_updated.connect(on_icon_updated)
-	TagIt.category_deleted.connect(on_category_deleted)
-	TagIt.group_created.connect(on_group_created)
-	TagIt.group_deleted.connect(on_group_deleted)
+	SingletonManager.TagIt.category_created.connect(on_category_created)
+	SingletonManager.TagIt.category_icon_updated.connect(on_icon_updated)
+	SingletonManager.TagIt.category_deleted.connect(on_category_deleted)
+	SingletonManager.TagIt.group_created.connect(on_group_created)
+	SingletonManager.TagIt.group_deleted.connect(on_group_deleted)
 
 
 func on_save_tag_pressed() -> void:
@@ -50,12 +50,12 @@ func on_save_tag_pressed() -> void:
 	var text_tooltip: String = tooltip_ln_edt.text.strip_edges()
 	@warning_ignore("incompatible_ternary")
 	
-	TagIt.update_tag(
+	SingletonManager.TagIt.update_tag(
 			current_id,
 			{"is_valid": int(is_valid_chk_bx.button_pressed)})
 	
 	@warning_ignore("incompatible_ternary")
-	TagIt.update_tag_data(
+	SingletonManager.TagIt.update_tag_data(
 		current_id,
 		{
 			"category_id": category_opt_btn.get_item_id(category_opt_btn.selected),
@@ -83,28 +83,28 @@ func on_save_tag_pressed() -> void:
 	Arrays.substract_array(remove_suggestions, suggestions_tree.get_existing_ids())
 	
 	if not remove_parents.is_empty():
-		TagIt.remove_parents(current_id, remove_parents)
+		SingletonManager.TagIt.remove_parents(current_id, remove_parents)
 	
 	if not add_parents.is_empty():
-		TagIt.add_parents(current_id, add_parents)
+		SingletonManager.TagIt.add_parents(current_id, add_parents)
 	
 	if not remove_aliases.is_empty():
-		TagIt.remove_aliases(remove_aliases)
+		SingletonManager.TagIt.remove_aliases(remove_aliases)
 	
 	if not add_aliases.is_empty():
-		TagIt.add_aliases(add_aliases, tag_title_lbl.text.to_lower())
+		SingletonManager.TagIt.add_aliases(add_aliases, tag_title_lbl.text.to_lower())
 	
 	if not remove_suggestions.is_empty():
-		TagIt.remove_suggestions(current_id, remove_suggestions)
+		SingletonManager.TagIt.remove_suggestions(current_id, remove_suggestions)
 	
 	if not add_suggestions.is_empty():
-		TagIt.add_suggestions(current_id, add_suggestions)
+		SingletonManager.TagIt.add_suggestions(current_id, add_suggestions)
 	
 	if not remove_groups.is_empty():
-		TagIt.remove_group_suggestions(current_id, remove_groups)
+		SingletonManager.TagIt.remove_group_suggestions(current_id, remove_groups)
 	
 	if not add_groups.is_empty():
-		TagIt.add_group_suggestions(current_id, add_groups)
+		SingletonManager.TagIt.add_group_suggestions(current_id, add_groups)
 	
 	saved_notification.visible = true
 	save_tag_btn.disabled = true
@@ -151,9 +151,9 @@ func on_suggestion_submitted(suggestion_text: String) -> void:
 
 
 func on_category_created(cat_id: int) -> void:
-	var cat_data := TagIt.get_category_data(cat_id)
+	var cat_data := SingletonManager.TagIt.get_category_data(cat_id)
 	category_opt_btn.add_icon_item(
-			TagIt.get_icon_texture(cat_data["icon_id"]),
+			SingletonManager.TagIt.get_icon_texture(cat_data["icon_id"]),
 			cat_data["name"],
 			cat_id)
 
@@ -168,16 +168,16 @@ func on_category_deleted(category: int) -> void:
 func on_icon_updated(cat_id: int, icon_id: int) -> void:
 	for item in range(category_opt_btn.item_count):
 		if category_opt_btn.get_item_id(item) == cat_id:
-			category_opt_btn.set_item_icon(item, TagIt.get_icon_texture(icon_id))
+			category_opt_btn.set_item_icon(item, SingletonManager.TagIt.get_icon_texture(icon_id))
 			break
 
 
 func load_categories() -> void:
 	category_opt_btn.clear()
-	var categories := TagIt.get_categories()
+	var categories := SingletonManager.TagIt.get_categories()
 	for category in categories:
 		category_opt_btn.add_icon_item(
-				TagIt.get_icon_texture(categories[category]["icon_id"]),
+				SingletonManager.TagIt.get_icon_texture(categories[category]["icon_id"]),
 				categories[category]["name"],
 				category)
 
@@ -187,7 +187,7 @@ func load_tag_groups() -> void:
 	gr_sugg_tree.clear_groups()
 	group_opt_btn.add_item(" - N/A -", 0)
 	
-	var tag_groups := TagIt.get_tag_groups()
+	var tag_groups := SingletonManager.TagIt.get_tag_groups()
 	
 	for group in tag_groups:
 		group_opt_btn.add_item(tag_groups[group]["name"], group)
@@ -215,7 +215,7 @@ func clear_trees() -> void:
 
 
 func load_tag(tag_id: int) -> void:
-	var tag_data := TagIt.get_tag_data(tag_id)
+	var tag_data := SingletonManager.TagIt.get_tag_data(tag_id)
 	current_id = tag_id
 	clear_all()
 	
@@ -235,9 +235,9 @@ func load_tag(tag_id: int) -> void:
 	else:
 		group_opt_btn.select(0)
 	
-	var aliases_dict: Dictionary = TagIt.get_tags_name(tag_data["aliases"])
-	var suggestions_dict: Dictionary = TagIt.get_tags_name(tag_data["suggestions"])
-	var parents_dict: Dictionary = TagIt.get_tags_name(tag_data["parents"])
+	var aliases_dict: Dictionary = SingletonManager.TagIt.get_tags_name(tag_data["aliases"])
+	var suggestions_dict: Dictionary = SingletonManager.TagIt.get_tags_name(tag_data["suggestions"])
+	var parents_dict: Dictionary = SingletonManager.TagIt.get_tags_name(tag_data["parents"])
 	
 	for alias_id in aliases_dict:
 		aliases_tree.add_tag(
@@ -282,21 +282,21 @@ func on_search_timer_timeout(search_line: LineEdit) -> void:
 		return
 	
 	var clean_text: String = search_line.text.strip_edges().to_lower()
-	var prefix: bool = clean_text.ends_with(TagIt.SEARCH_WILDCARD)
-	var suffix: bool = clean_text.begins_with(TagIt.SEARCH_WILDCARD)
+	var prefix: bool = clean_text.ends_with(DataManager.SEARCH_WILDCARD)
+	var suffix: bool = clean_text.begins_with(DataManager.SEARCH_WILDCARD)
 	
 	search_line.clear_list()
 	
 	if prefix:
-		clean_text = clean_text.trim_prefix(TagIt.SEARCH_WILDCARD).strip_edges(true, false)
+		clean_text = clean_text.trim_prefix(DataManager.SEARCH_WILDCARD).strip_edges(true, false)
 	if suffix:
-		clean_text = clean_text.trim_suffix(TagIt.SEARCH_WILDCARD).strip_edges(false, true)
+		clean_text = clean_text.trim_suffix(DataManager.SEARCH_WILDCARD).strip_edges(false, true)
 	
-	while clean_text.begins_with(TagIt.SEARCH_WILDCARD):
-		clean_text = clean_text.trim_prefix(TagIt.SEARCH_WILDCARD).strip_edges(true, false)
+	while clean_text.begins_with(DataManager.SEARCH_WILDCARD):
+		clean_text = clean_text.trim_prefix(DataManager.SEARCH_WILDCARD).strip_edges(true, false)
 	
-	while clean_text.ends_with(TagIt.SEARCH_WILDCARD):
-		clean_text = clean_text.trim_suffix(TagIt.SEARCH_WILDCARD).strip_edges(false, true)
+	while clean_text.ends_with(DataManager.SEARCH_WILDCARD):
+		clean_text = clean_text.trim_suffix(DataManager.SEARCH_WILDCARD).strip_edges(false, true)
 	
 	if clean_text.is_empty():
 		return
@@ -304,17 +304,17 @@ func on_search_timer_timeout(search_line: LineEdit) -> void:
 	var results: PackedStringArray = []
 	
 	if prefix and suffix:
-		results = TagIt.search_for_tag_contains(clean_text, search_line.item_limit, true)
+		results = SingletonManager.TagIt.search_for_tag_contains(clean_text, search_line.item_limit, true)
 	elif suffix:
-		results = TagIt.search_for_tag_suffix(clean_text, search_line.item_limit, true)
+		results = SingletonManager.TagIt.search_for_tag_suffix(clean_text, search_line.item_limit, true)
 	else:
-		results = TagIt.search_for_tag_prefix(clean_text, search_line.item_limit, true)
+		results = SingletonManager.TagIt.search_for_tag_prefix(clean_text, search_line.item_limit, true)
 	
 	if not results.is_empty():
 		for tag in results:
 			search_line.add_item(
 				tag,
-				TagIt.get_alias_name(tag) if TagIt.has_alias(TagIt.get_tag_id(tag)) else "")
+				SingletonManager.TagIt.get_alias_name(tag) if SingletonManager.TagIt.has_alias(SingletonManager.TagIt.get_tag_id(tag)) else "")
 		search_line.show_items()
 	
 	#if not results.is_empty():

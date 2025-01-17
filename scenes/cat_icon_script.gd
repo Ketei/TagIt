@@ -40,24 +40,24 @@ func _ready() -> void:
 	
 	button_clicked.connect(on_button_clicked)
 	item_edited.connect(on_item_edited)
-	TagIt.category_created.connect(_on_category_created)
-	TagIt.category_icon_updated.connect(_on_category_icon_updated)
-	TagIt.category_color_updated.connect(_on_category_color_updated)
+	SingletonManager.TagIt.category_created.connect(_on_category_created)
+	SingletonManager.TagIt.category_icon_updated.connect(_on_category_icon_updated)
+	SingletonManager.TagIt.category_color_updated.connect(_on_category_color_updated)
 
 
 func _on_category_created(category_id: int) -> void:
-	var category_info: Dictionary = TagIt.get_category_data(category_id)
+	var category_info: Dictionary = SingletonManager.TagIt.get_category_data(category_id)
 	create_category(
 			category_info["name"],
 			category_info["description"],
 			category_id,
 			0,
-			TagIt.get_icon_texture(1),
-			TagIt.get_category_icon_color(1))
+			SingletonManager.TagIt.get_icon_texture(1),
+			SingletonManager.TagIt.get_category_icon_color(1))
 
 
 func _on_category_icon_updated(cat_id: int, icon_id: int) -> void:
-	set_category_icon(cat_id, TagIt.get_icon_texture(icon_id))
+	set_category_icon(cat_id, SingletonManager.TagIt.get_icon_texture(icon_id))
 
 
 func _on_category_color_updated(cat_id: int, color: String) -> void:

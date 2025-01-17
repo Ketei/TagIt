@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="TagIt"
-config/version="3.0.0"
+config/version="3.0.4"
 run/main_scene="res://scenes/main_scene.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="tagit3"
@@ -23,8 +23,7 @@ config/windows_native_icon="res://application_icon.ico"
 
 [autoload]
 
-TagIt="*res://scripts/tagit_singleton.gd"
-ESixAPI="*res://scripts/e_six_requester.gd"
+SingletonManager="*res://scripts/singleton_manager.gd"
 
 [display]
 

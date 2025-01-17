@@ -16,7 +16,7 @@ func _ready() -> void:
 
 
 func set_tags(tag_ids: Array[int]) -> void:
-	var tags_data: Dictionary = TagIt.get_tags(tag_ids)
+	var tags_data: Dictionary = SingletonManager.TagIt.get_tags(tag_ids)
 	for tag in tags_data:
 		add_tag(
 				tag,

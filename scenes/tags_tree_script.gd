@@ -7,8 +7,8 @@ func _ready() -> void:
 	
 	focus_exited.connect(on_focus_lost)
 	
-	TagIt.tag_created.connect(on_tag_created)
-	TagIt.tags_validity_updated.connect(on_tag_validity_updated)
+	SingletonManager.TagIt.tag_created.connect(on_tag_created)
+	SingletonManager.TagIt.tags_validity_updated.connect(on_tag_validity_updated)
 
 
 func _input(event: InputEvent) -> void:
@@ -32,13 +32,13 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 	var names: Array[String] = []
 	
 	for tag in data["tag_names"]:
-		if TagIt.has_tag(tag) and TagIt.has_data(TagIt.get_tag_id(tag)):
-			ids.append(TagIt.get_tag_id(tag))
+		if SingletonManager.TagIt.has_tag(tag) and SingletonManager.TagIt.has_data(SingletonManager.TagIt.get_tag_id(tag)):
+			ids.append(SingletonManager.TagIt.get_tag_id(tag))
 		else:
 			names.append(tag)
 	
-	var tags_data: Dictionary = TagIt.get_tags_data(ids)
-	var categories: Dictionary = TagIt.get_categories()
+	var tags_data: Dictionary = SingletonManager.TagIt.get_tags_data(ids)
+	var categories: Dictionary = SingletonManager.TagIt.get_categories()
 	var last_tag: TreeItem = null
 	
 	for data_id in tags_data:
@@ -46,7 +46,7 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 			data_id,
 			tags_data[data_id]["tag"],
 			tags_data[data_id]["tooltip"],
-			TagIt.get_icon_texture(categories[tags_data[data_id]["category"]]["icon_id"]),
+			SingletonManager.TagIt.get_icon_texture(categories[tags_data[data_id]["category"]]["icon_id"]),
 			tags_data[data_id]["category"],
 			Color.from_string(categories[tags_data[data_id]["category"]]["icon_color"], Color.WHITE))
 	
@@ -55,9 +55,9 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 			-1,
 			generic_tag,
 			generic_tag,
-			TagIt.get_icon_texture(1),
+			SingletonManager.TagIt.get_icon_texture(1),
 			1,
-			TagIt.get_category_icon_color(1))
+			SingletonManager.TagIt.get_category_icon_color(1))
 	
 	
 	if data["tree_type"] == 0:
@@ -84,7 +84,7 @@ func add_tag(tag_id: int, tag_name: String, tooltip: String, icon: Texture2D, ca
 	new_tag.set_icon_modulate(0, color)
 	
 	new_tag.set_text(0, tag_name)
-	new_tag.set_metadata(0, {"id": tag_id, "category": category, "valid": TagIt.is_tag_valid(tag_id)})
+	new_tag.set_metadata(0, {"id": tag_id, "category": category, "valid": SingletonManager.TagIt.is_tag_valid(tag_id)})
 	
 	new_tag.set_tooltip_text(0, tooltip)
 	
@@ -117,15 +117,15 @@ func on_tag_validity_updated(tag_ids: Array[int], valid: bool) -> void:
 func on_tag_created(tag_name: String, tag_id: int) -> void:
 	for tag in get_root().get_children():
 		if tag.get_text(0) == tag_name:
-			if TagIt.has_data(tag_id):
-				var cat_id: Dictionary = TagIt.get_tag_data_columns(tag_id, ["category_id", "tooltip"])
-				var category := TagIt.get_category_data(cat_id["category_id"])
-				tag.set_icon(0, TagIt.get_icon_texture(category["icon_id"]))
+			if SingletonManager.TagIt.has_data(tag_id):
+				var cat_id: Dictionary = SingletonManager.TagIt.get_tag_data_columns(tag_id, ["category_id", "tooltip"])
+				var category := SingletonManager.TagIt.get_category_data(cat_id["category_id"])
+				tag.set_icon(0, SingletonManager.TagIt.get_icon_texture(category["icon_id"]))
 				tag.set_icon_modulate(0, Color.from_string(category["icon_color"], Color.WHITE))
 				tag.get_metadata(0)["category"] = category
 				if cat_id["tooltip"] != null:
 					tag.set_tooltip_text(0, cat_id["tooltip"])
-			var is_valid: bool = TagIt.is_tag_valid(tag_id)
+			var is_valid: bool = SingletonManager.TagIt.is_tag_valid(tag_id)
 			tag.get_metadata(0)["id"] = tag_id
 			tag.get_metadata(0)["valid"] = is_valid
 			if not is_valid:

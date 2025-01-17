@@ -6,9 +6,9 @@ func search_for_item(in_tree: TreeItem, what: String, in_cell: int) -> void:
 	what = what.to_upper()
 	var search_mode: int = 0
 	var what_empty: bool = what.is_empty()
-	if what.begins_with(TagIt.SEARCH_WILDCARD):
+	if what.begins_with(DataManager.SEARCH_WILDCARD):
 		search_mode += 1
-	if what.ends_with(TagIt.SEARCH_WILDCARD):
+	if what.ends_with(DataManager.SEARCH_WILDCARD):
 		search_mode += 2
 	
 	match search_mode:

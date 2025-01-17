@@ -21,7 +21,7 @@ func _ready() -> void:
 	alias_tree.set_column_expand_ratio(0, 1)
 	alias_tree.set_column_expand_ratio(1, 2)
 	
-	for prefix_dict in TagIt.get_prefixes_data():
+	for prefix_dict in SingletonManager.TagIt.get_prefixes_data():
 		create_prefix(prefix_dict["prefix"], prefix_dict["format"])
 	
 	create_alias_btn.pressed.connect(on_create_prefix_pressed)
@@ -42,7 +42,7 @@ func on_create_prefix_pressed() -> void:
 	var result = await new_window.prefix_submitted
 	if result[0]:
 		create_prefix(result[1])
-		TagIt.add_prefix(result[1], "")
+		SingletonManager.TagIt.add_prefix(result[1], "")
 	new_window.queue_free()
 
 
@@ -57,7 +57,7 @@ func create_prefix(prefix_symbol: String, prefix_formatting: String = "") -> voi
 
 func on_test_text_submit(text: String) -> void:
 	var clean_text: String = text.strip_edges()
-	var parts: Array[String] = TagIt.format_prefix(clean_text)
+	var parts: Array[String] = SingletonManager.TagIt.format_prefix(clean_text)
 	test_prefix_lbl.text = ", ".join(parts)
 
 
@@ -68,7 +68,7 @@ func on_test_prefix_btn_pressed() -> void:
 func _on_alias_button_clicked(item: TreeItem, _column: int, id: int, _mouse_button_index: int) -> void:
 	match id:
 		0:
-			TagIt.erase_prefix(item.get_text(0))
+			SingletonManager.TagIt.erase_prefix(item.get_text(0))
 			item.free()
 
 
@@ -76,7 +76,7 @@ func _on_prefix_edited() -> void:
 	if alias_tree.get_edited_column() != 1:
 		return
 	var edited: TreeItem = alias_tree.get_edited()
-	TagIt.update_prefix(edited.get_text(0), edited.get_text(1))
+	SingletonManager.TagIt.update_prefix(edited.get_text(0), edited.get_text(1))
 
 
 func on_save_pressed() -> void:

@@ -1,3 +1,4 @@
+class_name ESixManager
 extends Node
 
 
@@ -34,7 +35,7 @@ var regex: RegEx
 var working: bool = false
 
 
-func setup_esix_requester() -> void:
+func _ready() -> void:
 	requester = HTTPRequest.new()
 	requester.timeout = 10
 	requester.request_completed.connect(on_request_completed)
@@ -51,12 +52,12 @@ func setup_esix_requester() -> void:
 	job_timer.timeout.connect(on_timer_timeout)
 	add_child(job_timer)
 
-	
+
 func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
-		jobs.clear()
-		job_timer.stop()
 		if working:
+			jobs.clear()
+			job_timer.stop()
 			requester.cancel_request()
 
 
@@ -151,10 +152,10 @@ func on_timer_timeout() -> void:
 	if not jobs.is_empty():
 		var req_url: Dictionary = jobs.pop_front()
 		# a request to:\n" + req_url["url"]
-		TagIt.log_message("[eSIx API] Making a request to e621", TagIt.LogLevel.INFO)
+		SingletonManager.TagIt.log_message("[eSIx API] Making a request to e621", DataManager.LogLevel.INFO)
 		requester.request(req_url["url"], HEADERS)
 		var response: Array = await request_get
-		TagIt.log_message("[eSix API] Response received", TagIt.LogLevel.INFO)
+		SingletonManager.TagIt.log_message("[eSix API] Response received", DataManager.LogLevel.INFO)
 		process_response(response, req_url["type"])
 		job_timer.start()
 	else:
@@ -173,7 +174,7 @@ func process_response(response: Array, response_type: JobTypes) -> void:
 		var suggestions: Array[String] = []
 		
 		for strength in suggestion_array:
-			if int(strength) < TagIt.settings.suggestion_relevancy:
+			if int(strength) < SingletonManager.TagIt.settings.suggestion_relevancy:
 				continue
 			for item: String in suggestion_array[strength]:
 				suggestions.append(item.replace("_", " "))
@@ -183,9 +184,9 @@ func process_response(response: Array, response_type: JobTypes) -> void:
 func on_request_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
 	var response: Array = []
 	if result != HTTPRequest.RESULT_SUCCESS or response_code != 200:
-		TagIt.log_message(
+		SingletonManager.TagIt.log_message(
 			"[eSixAPI] An error was encountered with the request.\nEngine result code: " + str(result) + "\ne621 response code: " + str(response_code),
-			TagIt.LogLevel.WARNING)
+			DataManager.LogLevel.WARNING)
 		request_get.emit(response)
 		return
 	
@@ -197,9 +198,9 @@ func on_request_completed(result: int, response_code: int, _headers: PackedStrin
 		if pre_json is Array:
 			response = pre_json # Should be Array[Dictionary]
 	else:
-		TagIt.log_message(
+		SingletonManager.TagIt.log_message(
 			"[eSix API] Error parsing response data: " + json.get_error_message(),
-			TagIt.LogLevel.INFO
+			DataManager.LogLevel.INFO
 		)
 	
 	request_get.emit(response)
@@ -225,9 +226,9 @@ func request_prio(url: String) -> void:
 func on_prio_request_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
 	var response: Array = []
 	if result != HTTPRequest.RESULT_SUCCESS or response_code != 200:
-		TagIt.log_message(
+		SingletonManager.TagIt.log_message(
 			"[sSix API] An error was encountered with the request.\nEngine result code: " + str(result) + "\ne621 response code: " + str(response_code),
-			TagIt.LogLevel.WARNING)
+			DataManager.LogLevel.WARNING)
 		prio_get.emit(response)
 		return
 	
@@ -239,9 +240,9 @@ func on_prio_request_completed(result: int, response_code: int, _headers: Packed
 		if pre_json is Array:
 			response = pre_json # Should be Array[Dictionary]
 	else:
-		TagIt.log_message(
+		SingletonManager.TagIt.log_message(
 			"[eSix API] Error parsing response data: " + json.get_error_message(),
-			TagIt.LogLevel.ERROR
+			DataManager.LogLevel.ERROR
 		)
 	
 	prio_get.emit(response)

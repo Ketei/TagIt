@@ -55,7 +55,7 @@ func _ready() -> void:
 		var new_template: TreeItem = template_tree.get_root().create_child()
 		new_template.set_text(0, template["title"])
 	
-	var groups: Dictionary = TagIt.get_tag_groups()
+	var groups: Dictionary = SingletonManager.TagIt.get_tag_groups()
 	
 	for group_id in groups:
 		var new_group: TreeItem = group_tree.get_root().create_child()
@@ -74,8 +74,8 @@ func _ready() -> void:
 	new_template_btn.pressed.connect(on_new_template_pressed)
 	template_tree.item_selected.connect(_on_template_item_selected)
 	add_tag_ln_edt.timer_finished.connect(on_search_timer_timeout)
-	TagIt.group_created.connect(_on_group_created)
-	TagIt.group_deleted.connect(_on_group_deleted)
+	SingletonManager.TagIt.group_created.connect(_on_group_created)
+	SingletonManager.TagIt.group_deleted.connect(_on_group_deleted)
 
 
 func _input(_event: InputEvent) -> void:
@@ -218,7 +218,7 @@ func set_groups_editable(set_editable: bool) -> void:
 
 func on_image_selected(file_path: String, dialog: FileDialog) -> void:
 	var image := Image.load_from_file(file_path)
-	TagIt.resize_image(image)
+	SingletonManager.TagIt.resize_image(image)
 	var texture := ImageTexture.create_from_image(image)
 	#thumbnails[current_template] = texture
 	thumbnail_container.texture = texture
@@ -358,21 +358,21 @@ func save_current_template(search_idx: int) -> void:
 
 func on_search_timer_timeout() -> void:
 	var clean_text: String = add_tag_ln_edt.text.strip_edges().to_lower()
-	var prefix: bool = clean_text.ends_with(TagIt.SEARCH_WILDCARD)
-	var suffix: bool = clean_text.begins_with(TagIt.SEARCH_WILDCARD)
+	var prefix: bool = clean_text.ends_with(DataManager.SEARCH_WILDCARD)
+	var suffix: bool = clean_text.begins_with(DataManager.SEARCH_WILDCARD)
 	
 	add_tag_ln_edt.clear_list()
 	
 	if prefix:
-		clean_text = clean_text.trim_prefix(TagIt.SEARCH_WILDCARD).strip_edges(true, false)
+		clean_text = clean_text.trim_prefix(DataManager.SEARCH_WILDCARD).strip_edges(true, false)
 	if suffix:
-		clean_text = clean_text.trim_suffix(TagIt.SEARCH_WILDCARD).strip_edges(false, true)
+		clean_text = clean_text.trim_suffix(DataManager.SEARCH_WILDCARD).strip_edges(false, true)
 	
-	while clean_text.begins_with(TagIt.SEARCH_WILDCARD):
-		clean_text = clean_text.trim_prefix(TagIt.SEARCH_WILDCARD).strip_edges(true, false)
+	while clean_text.begins_with(DataManager.SEARCH_WILDCARD):
+		clean_text = clean_text.trim_prefix(DataManager.SEARCH_WILDCARD).strip_edges(true, false)
 	
-	while clean_text.ends_with(TagIt.SEARCH_WILDCARD):
-		clean_text = clean_text.trim_suffix(TagIt.SEARCH_WILDCARD).strip_edges(false, true)
+	while clean_text.ends_with(DataManager.SEARCH_WILDCARD):
+		clean_text = clean_text.trim_suffix(DataManager.SEARCH_WILDCARD).strip_edges(false, true)
 	
 	if clean_text.is_empty():
 		return
@@ -380,17 +380,17 @@ func on_search_timer_timeout() -> void:
 	var results: PackedStringArray = []
 	
 	if prefix and suffix:
-		results = TagIt.search_for_tag_contains(clean_text, add_tag_ln_edt.item_limit, true)
+		results = SingletonManager.TagIt.search_for_tag_contains(clean_text, add_tag_ln_edt.item_limit, true)
 	elif suffix:
-		results = TagIt.search_for_tag_suffix(clean_text, add_tag_ln_edt.item_limit, true)
+		results = SingletonManager.TagIt.search_for_tag_suffix(clean_text, add_tag_ln_edt.item_limit, true)
 	else:
-		results = TagIt.search_for_tag_prefix(clean_text, add_tag_ln_edt.item_limit, true)
+		results = SingletonManager.TagIt.search_for_tag_prefix(clean_text, add_tag_ln_edt.item_limit, true)
 	
 	if not results.is_empty():
 		for tag in results:
 			add_tag_ln_edt.add_item(
 				tag,
-				TagIt.get_alias_name(tag) if TagIt.has_alias(TagIt.get_tag_id(tag)) else "")
+				SingletonManager.TagIt.get_alias_name(tag) if SingletonManager.TagIt.has_alias(SingletonManager.TagIt.get_tag_id(tag)) else "")
 		add_tag_ln_edt.show_items()
 
 

@@ -35,9 +35,9 @@ func _ready() -> void:
 	
 	root_tree = create_item()
 	
-	TagIt.category_color_updated.connect(on_category_color_updated)
-	TagIt.category_icon_updated.connect(on_category_icon_updated)
-	TagIt.category_deleted.connect(on_category_deleted)
+	SingletonManager.TagIt.category_color_updated.connect(on_category_color_updated)
+	SingletonManager.TagIt.category_icon_updated.connect(on_category_icon_updated)
+	SingletonManager.TagIt.category_deleted.connect(on_category_deleted)
 	button_clicked.connect(on_button_clicked)
 
 
@@ -58,11 +58,11 @@ func update_tag(tag_id: int, tag_name: String, tag_category: String, category_id
 
 
 func on_category_deleted(cat_id: int) -> void:
-	var new_color: Color = TagIt.get_category_icon_color(1)
+	var new_color: Color = SingletonManager.TagIt.get_category_icon_color(1)
 	for cat in root_tree.get_children():
 		if cat.get_metadata(2) == cat_id:
 			cat.set_icon_modulate(0, new_color)
-			cat.set_icon(0, TagIt.get_icon_texture(1))
+			cat.set_icon(0, SingletonManager.TagIt.get_icon_texture(1))
 			cat.set_text(2, "Generic")
 
 
@@ -75,7 +75,7 @@ func on_category_color_updated(cat_id: int, color: String) -> void:
 func on_category_icon_updated(cat_id: int, icon_id: int) -> void:
 	for cat in root_tree.get_children():
 		if cat.get_metadata(2) == cat_id:
-			cat.set_icon(0, TagIt.get_icon_texture(icon_id))
+			cat.set_icon(0, SingletonManager.TagIt.get_icon_texture(icon_id))
 
 
 func add_tag(id: int, tag_name: String, category: int, category_name: String, priority: int, group: int, group_name: String, icon: int, color: Color, valid: bool) -> void:
@@ -88,7 +88,7 @@ func add_tag(id: int, tag_name: String, category: int, category_name: String, pr
 	new_tag.set_cell_mode(4, TreeItem.CELL_MODE_STRING)
 	new_tag.set_cell_mode(5, TreeItem.CELL_MODE_ICON)
 	
-	new_tag.set_icon(0, TagIt.get_icon_texture(icon))
+	new_tag.set_icon(0, SingletonManager.TagIt.get_icon_texture(icon))
 	new_tag.set_metadata(0, icon)
 	new_tag.set_icon_modulate(0, color)
 	

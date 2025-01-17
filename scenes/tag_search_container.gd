@@ -18,37 +18,37 @@ func _ready() -> void:
 	set_next_arrow_disabled(true)
 	current_page_spn_bx.value_changed.connect(on_value_changed)
 	
-	categories = TagIt.get_categories()
-	groups = TagIt.get_tag_groups()
+	categories = SingletonManager.TagIt.get_categories()
+	groups = SingletonManager.TagIt.get_tag_groups()
 	
 	next_page.pressed.connect(on_arrow_button_pressed.bind(1))
 	prev_page.pressed.connect(on_arrow_button_pressed.bind(-1))
 	all_tags_search_ln_edt.timer_finished.connect(on_search_timer_timeout)
-	TagIt.category_created.connect(on_categories_changed)
-	TagIt.category_deleted.connect(on_categories_changed)
-	TagIt.group_created.connect(on_groups_changed)
-	TagIt.group_deleted.connect(on_groups_changed)
-	TagIt.category_color_updated.connect(on_category_color_changed)
-	TagIt.category_icon_updated.connect(on_category_icon_changed)
+	SingletonManager.TagIt.category_created.connect(on_categories_changed)
+	SingletonManager.TagIt.category_deleted.connect(on_categories_changed)
+	SingletonManager.TagIt.group_created.connect(on_groups_changed)
+	SingletonManager.TagIt.group_deleted.connect(on_groups_changed)
+	SingletonManager.TagIt.category_color_updated.connect(on_category_color_changed)
+	SingletonManager.TagIt.category_icon_updated.connect(on_category_icon_changed)
 
 
 func on_search_timer_timeout() -> void:
 	var clean_text: String = all_tags_search_ln_edt.text.strip_edges().to_lower()
-	var prefix: bool = clean_text.ends_with(TagIt.SEARCH_WILDCARD)
-	var suffix: bool = clean_text.begins_with(TagIt.SEARCH_WILDCARD)
+	var prefix: bool = clean_text.ends_with(DataManager.SEARCH_WILDCARD)
+	var suffix: bool = clean_text.begins_with(DataManager.SEARCH_WILDCARD)
 	
 	all_tags_search_ln_edt.clear_list()
 	
 	if prefix:
-		clean_text = clean_text.trim_prefix(TagIt.SEARCH_WILDCARD).strip_edges(true, false)
+		clean_text = clean_text.trim_prefix(DataManager.SEARCH_WILDCARD).strip_edges(true, false)
 	if suffix:
-		clean_text = clean_text.trim_suffix(TagIt.SEARCH_WILDCARD).strip_edges(false, true)
+		clean_text = clean_text.trim_suffix(DataManager.SEARCH_WILDCARD).strip_edges(false, true)
 	
-	while clean_text.begins_with(TagIt.SEARCH_WILDCARD):
-		clean_text = clean_text.trim_prefix(TagIt.SEARCH_WILDCARD).strip_edges(true, false)
+	while clean_text.begins_with(DataManager.SEARCH_WILDCARD):
+		clean_text = clean_text.trim_prefix(DataManager.SEARCH_WILDCARD).strip_edges(true, false)
 	
-	while clean_text.ends_with(TagIt.SEARCH_WILDCARD):
-		clean_text = clean_text.trim_suffix(TagIt.SEARCH_WILDCARD).strip_edges(false, true)
+	while clean_text.ends_with(DataManager.SEARCH_WILDCARD):
+		clean_text = clean_text.trim_suffix(DataManager.SEARCH_WILDCARD).strip_edges(false, true)
 	
 	if clean_text.is_empty():
 		return
@@ -56,11 +56,11 @@ func on_search_timer_timeout() -> void:
 	var autofill_results: PackedStringArray = []
 	
 	if prefix and suffix:
-		autofill_results = TagIt.search_for_tag_contains(clean_text, all_tags_search_ln_edt.item_limit, true, true)
+		autofill_results = SingletonManager.TagIt.search_for_tag_contains(clean_text, all_tags_search_ln_edt.item_limit, true, true)
 	elif suffix:
-		autofill_results = TagIt.search_for_tag_suffix(clean_text, all_tags_search_ln_edt.item_limit, true, true)
+		autofill_results = SingletonManager.TagIt.search_for_tag_suffix(clean_text, all_tags_search_ln_edt.item_limit, true, true)
 	else:
-		autofill_results = TagIt.search_for_tag_prefix(clean_text, all_tags_search_ln_edt.item_limit, true, true)
+		autofill_results = SingletonManager.TagIt.search_for_tag_prefix(clean_text, all_tags_search_ln_edt.item_limit, true, true)
 	
 	if not autofill_results.is_empty():
 		for tag in autofill_results:
@@ -94,7 +94,7 @@ func update_table_tag(tag_id: int, tag_name: String, tag_category: String, categ
 			tag_name,
 			tag_category,
 			category_id,
-			TagIt.get_icon_texture(categories[category_id]["icon_id"]),
+			SingletonManager.TagIt.get_icon_texture(categories[category_id]["icon_id"]),
 			Color.from_string(categories[category_id]["icon_color"], Color.WHITE),
 			tag_priority,
 			tag_group,
@@ -103,11 +103,11 @@ func update_table_tag(tag_id: int, tag_name: String, tag_category: String, categ
 
 
 func on_categories_changed(_id: Variant = null) -> void:
-	categories = TagIt.get_categories()
+	categories = SingletonManager.TagIt.get_categories()
 
 
 func on_groups_changed(_id: Variant = null, _name: Variant = null) -> void:
-	groups = TagIt.get_tag_groups()
+	groups = SingletonManager.TagIt.get_tag_groups()
 
 
 func on_category_color_changed(id: int, color: String) -> void:
@@ -133,7 +133,7 @@ func set_search_results(result_array: Array[int]) -> void:
 	
 	results = result_array
 	
-	current_page_spn_bx.max_value = ceilf(result_array.size() / float(TagIt.settings.results_per_search)) if not result_array.is_empty() else 1.0
+	current_page_spn_bx.max_value = ceilf(result_array.size() / float(SingletonManager.TagIt.settings.results_per_search)) if not result_array.is_empty() else 1.0
 	pages_label.text = "/ " + str(current_page_spn_bx.max_value)
 	current_page_spn_bx.set_value_no_signal(1)
 	on_value_changed(1)
@@ -148,10 +148,10 @@ func on_value_changed(new_value: float) -> void:
 	set_next_arrow_disabled(current_page_spn_bx.max_value <= new_value)
 	
 	var display_results: Array[int] = results.slice(
-			(page - 1) * TagIt.settings.results_per_search,
-			TagIt.settings.results_per_search * page)
+			(page - 1) * SingletonManager.TagIt.settings.results_per_search,
+			SingletonManager.TagIt.settings.results_per_search * page)
 	
-	var tags_data: Dictionary = TagIt.get_tags_data(display_results)
+	var tags_data: Dictionary = SingletonManager.TagIt.get_tags_data(display_results)
 	
 	for id_tag in tags_data:
 		all_tags_tree.add_tag(

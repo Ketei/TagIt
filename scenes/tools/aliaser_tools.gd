@@ -39,49 +39,49 @@ func on_alias_searched(search_text: String) -> void:
 	
 	var search_mode: int = 0
 	
-	if clean_text == TagIt.SEARCH_WILDCARD:
+	if clean_text == DataManager.SEARCH_WILDCARD:
 		search_mode = -1
 	else:
-		if clean_text.begins_with(TagIt.SEARCH_WILDCARD):
+		if clean_text.begins_with(DataManager.SEARCH_WILDCARD):
 			search_mode += 1
-			clean_text = clean_text.trim_prefix(TagIt.SEARCH_WILDCARD)
+			clean_text = clean_text.trim_prefix(DataManager.SEARCH_WILDCARD)
 		
-		if clean_text.ends_with(TagIt.SEARCH_WILDCARD):
+		if clean_text.ends_with(DataManager.SEARCH_WILDCARD):
 			search_mode += 2
-			clean_text = clean_text.trim_suffix(TagIt.SEARCH_WILDCARD)
+			clean_text = clean_text.trim_suffix(DataManager.SEARCH_WILDCARD)
 	
-	while clean_text.ends_with(TagIt.SEARCH_WILDCARD):
-		clean_text = clean_text.trim_suffix(TagIt.SEARCH_WILDCARD).strip_edges(false, true)
-	while clean_text.begins_with(TagIt.SEARCH_WILDCARD):
-		clean_text = clean_text.trim_prefix(TagIt.SEARCH_WILDCARD).strip_edges(true, false)
+	while clean_text.ends_with(DataManager.SEARCH_WILDCARD):
+		clean_text = clean_text.trim_suffix(DataManager.SEARCH_WILDCARD).strip_edges(false, true)
+	while clean_text.begins_with(DataManager.SEARCH_WILDCARD):
+		clean_text = clean_text.trim_prefix(DataManager.SEARCH_WILDCARD).strip_edges(true, false)
 	
 	var results: Dictionary = {}
 	
 	match search_mode:
 		-1:# Show all
-			results = TagIt.get_all_alias_names()
+			results = SingletonManager.TagIt.get_all_alias_names()
 		0: # Exact
-			if TagIt.has_tag(search_text):
-				results = TagIt.search_alias(TagIt.get_tag_id(clean_text))
+			if SingletonManager.TagIt.has_tag(search_text):
+				results = SingletonManager.TagIt.search_alias(SingletonManager.TagIt.get_tag_id(clean_text))
 		1: # Ends with
 			var id_array: Array[int] = []
-			for tag in TagIt.loaded_tags:
+			for tag in SingletonManager.TagIt.loaded_tags:
 				if tag.ends_with(clean_text):
-					id_array.append(TagIt.loaded_tags[tag])
-			results = TagIt.search_aliases(id_array)	
+					id_array.append(SingletonManager.TagIt.loaded_tags[tag])
+			results = SingletonManager.TagIt.search_aliases(id_array)	
 			#results_keys = results.keys()
 		2: # Begins with
 			var id_array: Array[int] = []
-			for tag in TagIt.loaded_tags:
+			for tag in SingletonManager.TagIt.loaded_tags:
 				if tag.begins_with(clean_text):
-					id_array.append(TagIt.loaded_tags[tag])
-			results = TagIt.search_aliases(id_array)
+					id_array.append(SingletonManager.TagIt.loaded_tags[tag])
+			results = SingletonManager.TagIt.search_aliases(id_array)
 		3: # Contains
 			var id_array: Array[int] = []
-			for tag in TagIt.loaded_tags:
+			for tag in SingletonManager.TagIt.loaded_tags:
 				if tag.containsn(clean_text):
-					id_array.append(TagIt.loaded_tags[tag])
-			results = TagIt.search_aliases(id_array)
+					id_array.append(SingletonManager.TagIt.loaded_tags[tag])
+			results = SingletonManager.TagIt.search_aliases(id_array)
 	
 	for consequent in results:
 		for antecedent in results[consequent]:
@@ -89,9 +89,9 @@ func on_alias_searched(search_text: String) -> void:
 			
 	
 	#results_keys = Array(results.keys(), TYPE_STRING, &"", null)
-	var slice := alias_results.slice(0, TagIt.settings.results_per_search)
+	var slice := alias_results.slice(0, SingletonManager.TagIt.settings.results_per_search)
 	
-	page_spin_box.max_value = maxf(1, ceilf(alias_results.size() / float(TagIt.settings.results_per_search)))
+	page_spin_box.max_value = maxf(1, ceilf(alias_results.size() / float(SingletonManager.TagIt.settings.results_per_search)))
 	page_label.text = "/ " + str(int(page_spin_box.max_value))
 	
 	for alias_dict in slice:
@@ -118,8 +118,8 @@ func set_prev_button_disabled(set_disabled: bool) -> void:
 func on_page_changed(new_page: float) -> void:
 	@warning_ignore("narrowing_conversion")
 	var slice := alias_results.slice(
-			TagIt.settings.results_per_search * (new_page - 1),
-			TagIt.settings.results_per_search * new_page)
+			SingletonManager.TagIt.settings.results_per_search * (new_page - 1),
+			SingletonManager.TagIt.settings.results_per_search * new_page)
 	
 	aliases_tree.clear_aliases()
 	
@@ -135,6 +135,6 @@ func on_create_alias_pressed() -> void:
 	add_child(new_alias_dialog)
 	new_alias_dialog.show()
 	var result: Array = await new_alias_dialog.dialog_finished
-	if result[0] and not TagIt.is_name_aliased(result[1], result[2]):
-		TagIt.add_alias(result[1], result[2])
+	if result[0] and not SingletonManager.TagIt.is_name_aliased(result[1], result[2]):
+		SingletonManager.TagIt.add_alias(result[1], result[2])
 	new_alias_dialog.queue_free()

@@ -19,7 +19,7 @@ signal website_deleted(site_id: int)
 const DATABASE_PATH: String = "user://tag_database.db"
 const SEARCH_WILDCARD: String = "*"
 const DB_VERSION: int = 1
-const TAGIT_VERSION: String = "3.0.0"
+const TAGIT_VERSION: String = "3.1.0"
 const MAX_PARENT_RECURSION: int = 100
 const IMAGE_LIMITS: Vector2i = Vector2i(700, 700)
 const LEV_DISTANCE: float = 0.75
@@ -46,25 +46,8 @@ var _default_icon_color: Color = Color.WHITE
 var splash_node: CanvasLayer = null
 
 
-# --- Icons ---
-
-func _load_icon_data(id: int) -> void:
-	var icon_data := _get_icon_data(id)
-	icons[id]["texture"] = icon_data["texture"]
-
-
-func _get_icon_data(id: int) -> Dictionary: # Maybe integrate up
-	var db_data := tag_database.select_rows("icons", "id = " + str(id), ["*"])
-	var icon_image: Image = Image.new()
-	
-	icon_image.load_webp_from_buffer(db_data[0]["image"])
-	
-	return {
-		"name": db_data[0]["name"],
-		"texture": ImageTexture.create_from_image(icon_image)}
-
 # Needs to be run on main tagger load.
-func tagit_setup() -> void:
+func _ready() -> void:
 	settings = AppSettingsRes.get_settings()
 	
 	if not DirAccess.dir_exists_absolute(TemplateResource.TEMPLATE_PATH.get_base_dir()):
@@ -239,6 +222,24 @@ func tagit_setup() -> void:
 	all_tags.sort_custom(Arrays.sort_custom_alphabetically_asc)
 	tag_search_array = PackedStringArray(all_tags)
 	tag_search_data = PackedStringArray(data_tags)
+
+
+# --- Icons ---
+
+func _load_icon_data(id: int) -> void:
+	var icon_data := _get_icon_data(id)
+	icons[id]["texture"] = icon_data["texture"]
+
+
+func _get_icon_data(id: int) -> Dictionary: # Maybe integrate up
+	var db_data := tag_database.select_rows("icons", "id = " + str(id), ["*"])
+	var icon_image: Image = Image.new()
+	
+	icon_image.load_webp_from_buffer(db_data[0]["image"])
+	
+	return {
+		"name": db_data[0]["name"],
+		"texture": ImageTexture.create_from_image(icon_image)}
 
 
 func get_icon_name(icon_id: int) -> String:
@@ -1172,7 +1173,7 @@ func get_final_tag_ids(current_list: Array[int]) -> Array[int]:
 			id_query + ";")
 	
 	for query in tag_database.query_result:
-		if not query["is_valid"] and not TagIt.settings.include_invalid:
+		if not query["is_valid"] and not settings.include_invalid:
 			continue
 		
 		final_tags.append(query["id"])

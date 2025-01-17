@@ -2,15 +2,15 @@ extends OptionButton
 
 
 func _ready() -> void:
-	var websites := TagIt.get_sites()
+	var websites := SingletonManager.TagIt.get_sites()
 	for site in websites:
 		add_item(websites[site]["name"], site)
 	select(clampi(
-			TagIt.settings.default_site,
+			SingletonManager.TagIt.settings.default_site,
 			-1 if websites.is_empty() else 0,
 			websites.size() - 1))
-	TagIt.website_created.connect(on_website_created)
-	TagIt.website_deleted.connect(on_website_deleted)
+	SingletonManager.TagIt.website_created.connect(on_website_created)
+	SingletonManager.TagIt.website_deleted.connect(on_website_deleted)
 
 
 func on_website_created(site_id: int, site_name: String) -> void:

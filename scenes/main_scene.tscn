@@ -1,4 +1,4 @@
-[gd_scene load_steps=62 format=3 uid="uid://eaxngd263vbi"]
+[gd_scene load_steps=61 format=3 uid="uid://eaxngd263vbi"]
 
 [ext_resource type="Script" path="res://scenes/tagit_main_window.gd" id="1_3rneb"]
 [ext_resource type="Texture2D" uid="uid://kkvcqst6wv4k" path="res://icons/new_icon.svg" id="2_3s1fn"]
@@ -55,7 +55,6 @@
 [ext_resource type="Texture2D" uid="uid://cdtejl0p8c4cr" path="res://icons/pointer_right.svg" id="39_angsb"]
 [ext_resource type="Texture2D" uid="uid://d24o3rwmiwpcp" path="res://icons/disconnected_icon.svg" id="45_kqm3t"]
 [ext_resource type="Script" path="res://scripts/hydrus.gd" id="46_jhrpg"]
-[ext_resource type="Script" path="res://scripts/e_six_requester.gd" id="55_iynx2"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0wwcl"]
 bg_color = Color(0.121569, 0.133333, 0.156863, 1)
@@ -1789,6 +1788,3 @@ timeout = 10.0
 
 [node name="HydrusLargeImage" type="HTTPRequest" parent="."]
 timeout = 10.0
-
-[node name="eSixAPI" type="Node" parent="."]
-script = ExtResource("55_iynx2")
