@@ -1749,9 +1749,18 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/LogsContainer"]
+[node name="LogsHeader" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/LogsContainer"]
+custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
+
+[node name="Label" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/LogsContainer/LogsHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Logs:"
+
+[node name="ClearLogsBtn" type="Button" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/LogsContainer/LogsHeader"]
+layout_mode = 2
+text = "Clear Logs"
 
 [node name="PanelContainer" type="PanelContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/LogsContainer"]
 layout_mode = 2

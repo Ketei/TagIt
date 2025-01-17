@@ -146,6 +146,7 @@ var _suggestion_blacklist: PackedStringArray = []
 @onready var settings_relevancy_spn_bx: SpinBox = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ESixApiPanel/MainContainer/RelevancyContainer/MainContainer/RelevancySpnBx
 @onready var settings_search_esix_tags_btn: CheckButton = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ESixApiPanel/MainContainer/SearchContainer/SearchESixTagsBtn
 @onready var settings_results_per_srch_spn_bx: SpinBox = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ResultsPerSearchPanel/MainContainer/HBoxContainer/ResPerSrchSpnBx
+@onready var settings_clear_logs_btn: Button = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/LogsContainer/LogsHeader/ClearLogsBtn
 
 # --------------------
 # ----- Wiki -----
@@ -342,6 +343,7 @@ func _ready() -> void:
 	settings_search_esix_tags_btn.toggled.connect(on_search_esix_tags_toggled)
 	settings_results_per_srch_spn_bx.value_changed.connect(on_results_per_search_changed)
 	settings_image_load_spn_bx.value_changed.connect(on_wiki_image_amount_changed)
+	settings_clear_logs_btn.pressed.connect(_on_clear_logs_pressed)
 	
 	ESixAPI.suggestions_found.connect(on_esix_api_suggestions_found)
 	
@@ -1708,8 +1710,7 @@ func on_set_category_color(id: int, initial: String) -> void:
 	
 	if response[0]:
 		TagIt.set_category_icon_color(id, response[1])
-		settings_category_tree.set_category_color(id, response[1])
-		tags_tree.update_category_color(id, response[1])
+		tags_tree.update_cateegory_color(id, response[1])
 	
 	color_dialog.queue_free()
 
@@ -1996,7 +1997,6 @@ func generate_icon_range() -> void:
 
 func on_category_icon_changed(cat_id: int, range_selected: int) -> void:
 	TagIt.set_category_icon(cat_id, icon_range[range_selected])
-	settings_category_tree.set_category_icon(cat_id, TagIt.get_icon_texture(icon_range[range_selected]))
 	tags_tree.update_category_icon(cat_id, TagIt.get_icon_texture(icon_range[range_selected]))
 
 
@@ -2030,15 +2030,7 @@ func on_create_category_pressed() -> void:
 	var result = await dialog_window.dialog_finished
 	
 	if result[0]:
-		var id: int = TagIt.create_category(result[1], result[2])
-		
-		settings_category_tree.create_category(
-			result[1],
-			result[2],
-			id,
-			0,
-			TagIt.get_icon_texture(1),
-			"ffffff")
+		TagIt.create_category(result[1], result[2])
 	
 	dialog_window.queue_free()
 
@@ -2088,7 +2080,10 @@ func on_dialog_cancel_free(dialog: AcceptDialog) -> void:
 
 
 func on_log_created(msg: String) -> void:
-	settings_logs_label.append_text(msg + "\n")
+	if 1000 < msg.length():
+		settings_logs_label.append_text(msg.substr(0, 1000) + "...")
+	else:
+		settings_logs_label.append_text(msg + "\n")
 
 
 func on_select_image_pressed() -> void:
@@ -2678,3 +2673,7 @@ func heal_json_dict(dict: Dictionary) -> void:
 			if typeof(group) == TYPE_STRING:
 				typed_array.append(group)
 		dict["group_suggestions"] = typed_array
+
+
+func _on_clear_logs_pressed() -> void:
+	settings_logs_label.clear()

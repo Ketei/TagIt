@@ -40,7 +40,29 @@ func _ready() -> void:
 	
 	button_clicked.connect(on_button_clicked)
 	item_edited.connect(on_item_edited)
+	TagIt.category_created.connect(_on_category_created)
+	TagIt.category_icon_updated.connect(_on_category_icon_updated)
+	TagIt.category_color_updated.connect(_on_category_color_updated)
 
+
+func _on_category_created(category_id: int) -> void:
+	var category_info: Dictionary = TagIt.get_category_data(category_id)
+	create_category(
+			category_info["name"],
+			category_info["description"],
+			category_id,
+			0,
+			TagIt.get_icon_texture(1),
+			TagIt.get_category_icon_color(1))
+
+
+func _on_category_icon_updated(cat_id: int, icon_id: int) -> void:
+	set_category_icon(cat_id, TagIt.get_icon_texture(icon_id))
+
+
+func _on_category_color_updated(cat_id: int, color: String) -> void:
+	set_category_color(cat_id, color)
+	
 
 func create_category(cat_name: String, cat_desc: String, id: int, initial_range: int, icon_texture: Texture2D, icon_color: Color) -> void:
 	var new_category: TreeItem = create_item(root_tree)
