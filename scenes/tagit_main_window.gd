@@ -1710,7 +1710,7 @@ func on_set_category_color(id: int, initial: String) -> void:
 	
 	if response[0]:
 		TagIt.set_category_icon_color(id, response[1])
-		tags_tree.update_cateegory_color(id, response[1])
+		tags_tree.update_category_color(id, response[1])
 	
 	color_dialog.queue_free()
 
