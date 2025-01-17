@@ -34,7 +34,7 @@ var regex: RegEx
 var working: bool = false
 
 
-func _ready():
+func setup_esix_requester() -> void:
 	requester = HTTPRequest.new()
 	requester.timeout = 10
 	requester.request_completed.connect(on_request_completed)
@@ -50,7 +50,7 @@ func _ready():
 	job_timer.wait_time = 1.2
 	job_timer.timeout.connect(on_timer_timeout)
 	add_child(job_timer)
-	
+
 	
 func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
