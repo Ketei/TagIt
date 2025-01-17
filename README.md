@@ -8,7 +8,7 @@ Simply download the launcher script that is appropiate for your system and run i
 > [!NOTE]
 > Running the executable instead of the launcher will also check for updates and let you decide if you want to update or not, but unlike the launcher it can't keep the executable or the plugins updated and can only patch for bugs.
 ### Manual
-The launcher gets the files from the next repo: [TagIt Launcher](https://github.com/Ketei/tagit-launcher/releases).
+The launcher gets the files from the next repo: [TagIt Launcher](https://github.com/Ketei/tagit-launcher/releases/latest).
 
 If you're on **Windows**, download: 
 - tagit.pck
