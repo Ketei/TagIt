@@ -50,7 +50,6 @@ func _input(_event: InputEvent) -> void:
 	if Input.is_action_just_pressed(&"ui_cancel") and _allow_signals:
 		close_pressed.emit()
 		if group_save_enabled:
-			print(":3")
 			save_finished.emit(false, "")
 		get_viewport().set_input_as_handled()
 

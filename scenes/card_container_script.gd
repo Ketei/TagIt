@@ -79,6 +79,7 @@ func _ready() -> void:
 	
 	if use_save:
 		edit_title_line_edit.text_submitted.connect(on_save_text_submitted)
+	
 	card_select_button.pressed.connect(card_selected.emit)
 	$MenuCard/PanelContainer/MarginContainer/ButtonsContaintainer/SelectButton.pressed.connect(card_confirmed.emit)
 	$MenuCard/PanelContainer/MarginContainer/ButtonsContaintainer/DeleteButton.pressed.connect(card_deleted.emit)

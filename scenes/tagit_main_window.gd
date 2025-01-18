@@ -39,6 +39,18 @@ const HYDRUS_FILE_ENDPOINT: String = "get_files/file?file_id="
 
 @export var search_time: float = 0.3
 
+
+var selector: Control = null:
+	set(new_selector):
+		selector = new_selector
+		_block_events = selector != null
+		menu_button.set_disable_shortcuts(selector != null)
+var alt_lists: Array[Array] = []
+var current_alt: int = 0
+
+var current_project: int = -1
+var current_title: String = ""
+
 var hydrus_connected: bool = false:
 	set(connection):
 		hydrus_connected = connection
@@ -54,8 +66,6 @@ var _save_required: bool = false
 var _image_changed: bool = false
 var _block_events: bool = false
 var _suggestion_blacklist: PackedStringArray = []
-
-
 
 # ----- Windows -----
 @onready var tagger_container: PanelContainer = $MainContainer/TaggerContainer
@@ -170,20 +180,8 @@ var _suggestion_blacklist: PackedStringArray = []
 
 # -----------------------
 
-
 @onready var tab_bar: TabBar = $MainContainer/MenuMargin/MenuContainer/TabBar
 @onready var add_tag_ln_edt: LineEdit = $MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer/CurrentTagsContainer/BarItems/AddTagLnEdt
-
-var selector: Control = null:
-	set(new_selector):
-		selector = new_selector
-		_block_events = selector != null
-var alt_lists: Array[Array] = []
-var current_alt: int = 0
-
-var current_project: int = -1
-var current_title: String = ""
-#var save_as_new: bool = false
 
 
 func _ready() -> void:
@@ -232,8 +230,16 @@ func _ready() -> void:
 	for group in groups:
 		settings_groups_tree.create_group(groups[group]["name"], groups[group]["description"], group)
 	
-	#search_timer.wait_time = search_time
-	#wiki_timer.wait_time = search_time
+	var menu_popup: PopupMenu = menu_button.get_popup()
+	
+	menu_popup.set_item_shortcut(0, load("res://shortcuts/new_list_shortcut.tres"))
+	menu_popup.set_item_shortcut(1, load("res://shortcuts/new_alt_list_shortcut.tres"))
+	menu_popup.set_item_shortcut(2, load("res://shortcuts/save_list_shortcut.tres"))
+	menu_popup.set_item_shortcut(3, load("res://shortcuts/save_list_as_shortcut.tres"))
+	menu_popup.set_item_shortcut(4, load("res://shortcuts/open_list_shortcut.tres"))
+	menu_popup.set_item_shortcut(10, load("res://shortcuts/add_template.tres"))
+	menu_popup.set_item_shortcut(11, load("res://shortcuts/import_from_text_shortcut.tres"))
+	menu_popup.set_item_shortcut(13, load("res://shortcuts/quit_shortcut.tres"))
 	
 	generate_list_btn.disabled = SingletonManager.TagIt.get_site_count() == 0
 	
@@ -997,7 +1003,6 @@ func on_menu_button_id_selected(id: int) -> void:
 			instance_preset_selector()
 		10: # From Text
 			if _block_events:
-				print("Blocked")
 				return
 			instantiate_text_loader()
 		11: # Quit
@@ -1064,9 +1069,6 @@ func clear_all_tagger() -> void:
 	clear_img_btn.disabled = true
 	generate_version_opt_btn.clear()
 	for alt in range(alt_opt_btn.item_count - 1, 0, -1):
-		print(alt_opt_btn.get_item_text(alt))
-		#if alt == 0:
-			#continue
 		alt_opt_btn.remove_item(alt)
 	delete_alt_list_btn.disabled = true
 	tags_label.clear()
@@ -1105,7 +1107,6 @@ func on_selector_project_saved(title: String) -> void:
 	projects.save()
 	
 	current_title = title
-	print(title)
 	_save_required = false
 	selector.stop_queued_cards()
 	selector.play_outro()
