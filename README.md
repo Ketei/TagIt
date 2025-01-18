@@ -26,7 +26,7 @@ If you're on **Linux**, download:
 
 Rename `tagit.linux.x86_64` to `tagit.x86_64` and run it.
 
-Lastly create an empty text file WITHOUT the extension. And write the version of the files you've downloaded and save it. Now you can launch the tagger through the executable.
+Lastly create an empty text file WITHOUT the extension and write the version of the files you've downloaded and save it. Now you can launch the tagger through the executable.
 > If you downloaded 3.0.0 then write on the file `3.0.0` and nothing else.
 
 > [!CAUTION]
