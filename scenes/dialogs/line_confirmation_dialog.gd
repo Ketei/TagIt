@@ -40,3 +40,7 @@ func on_text_changed(new_text: String) -> void:
 	if allow_empty:
 		return
 	get_ok_button().disabled = new_text.strip_edges().is_empty()
+
+
+func focus_line_edit() -> void:
+	_submit_ln_edt.grab_focus()
