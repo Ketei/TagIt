@@ -257,6 +257,8 @@ var current_project_size: Vector2 = Vector2(310, 34)
 @onready var reset_zoom_btn: Button = $ProjectTextureContainer/MainPanel/MainContainer/HeaderContainer/ResetZoomBtn
 @onready var minimize_image_btn: Button = $ProjectTextureContainer/MainPanel/MainContainer/HeaderContainer/MinimizeImageBtn
 
+@onready var close_wizard_btn: Button = $MainPanel/MainContainer/TitleLabel/CloseWizardBtn
+
 # --- Images ---
 @onready var day: TextureRect = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Day
 @onready var night: TextureRect = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Night
@@ -353,6 +355,11 @@ func _ready() -> void:
 	clothing_tree.item_edited.connect(_on_cloth_item_edited)
 	reset_zoom_btn.pressed.connect(on_reset_zoom_button_pressed)
 	minimize_image_btn.pressed.connect(on_minimize_button_pressed)
+	close_wizard_btn.pressed.connect(_on_close_wizard_pressed)
+
+
+func _on_close_wizard_pressed() -> void:
+	wizard_cancelled.emit()
 
 
 func _on_cloth_item_edited() -> void:
