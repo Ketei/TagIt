@@ -732,6 +732,7 @@ func create_alt_list() -> void:
 	name_list.allow_empty = false
 	name_list.title = "Name Alt List..."
 	name_list.show()
+	name_list.focus_line_edit()
 	var result: Array = await name_list.dialog_finished
 	if result[0]:
 		alt_lists.append([])
@@ -741,6 +742,8 @@ func create_alt_list() -> void:
 			alt_select_container.visible = true
 			list_version_container.visible = true
 		_list_changed()
+		alt_opt_btn.select(alt_opt_btn.item_count - 1)
+		on_alt_list_selected(alt_opt_btn.item_count - 1)
 	name_list.queue_free()
 
 
@@ -758,16 +761,19 @@ func on_delete_list_pressed() -> void:
 
 
 func on_alt_list_selected(idx: int) -> void:
+	var search_suggestions: bool = SingletonManager.TagIt.settings.request_suggestions
+	SingletonManager.TagIt.settings.request_suggestions = false
 	save_alt_list(current_alt)
 	current_alt = idx
 	load_alt_list(idx)
 	delete_alt_list_btn.disabled = idx == 0
+	SingletonManager.TagIt.settings.request_suggestions = search_suggestions
 
 
 func load_alt_list(idx: int) -> void:
 	clear_main_tag_list()
 	for tag in alt_lists[idx]:
-		add_tag(tag)
+		add_tag(tag, false)
 
 
 func save_alt_list(index: int) -> void:
@@ -1705,7 +1711,7 @@ func on_set_category_color(id: int, initial: String) -> void:
 	color_dialog.queue_free()
 
 
-func add_tag(tag_name: String) -> void:
+func add_tag(tag_name: String, clean_suggestions: bool = true) -> void:
 	var clean_tag: String = tag_name.strip_edges().to_lower()
 	add_tag_ln_edt.clear_no_signal()
 	
@@ -1765,7 +1771,7 @@ func add_tag(tag_name: String) -> void:
 			category,
 			icon_color)
 	
-	if tagger_suggestion_tree.has_suggestion(clean_tag):
+	if tagger_suggestion_tree.has_suggestion(clean_tag) and clean_suggestions:
 		tagger_suggestion_tree.delete_tag(clean_tag)
 	
 	if SingletonManager.TagIt.settings.request_suggestions:
