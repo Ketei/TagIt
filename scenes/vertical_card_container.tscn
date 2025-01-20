@@ -55,6 +55,8 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_c7ryp")
 script = ExtResource("1_ut31b")
+section_out_time = 0.5
+card_fade_time = 0.4
 use_search = false
 editable_cards = true
 
