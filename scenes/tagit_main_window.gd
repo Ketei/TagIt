@@ -45,6 +45,7 @@ var selector: Control = null:
 		selector = new_selector
 		_block_events = selector != null
 		menu_button.set_disable_shortcuts(selector != null)
+		help_button.set_disable_shortcuts(selector != null)
 var alt_lists: Array[Array] = []
 var current_alt: int = 0
 
@@ -65,6 +66,7 @@ var _saving: bool = false # Used if a save instance is on screen.
 var _save_required: bool = false
 var _image_changed: bool = false
 var _block_events: bool = false
+var _help_pressed: bool = false
 var _suggestion_blacklist: PackedStringArray = []
 
 # ----- Windows -----
@@ -240,6 +242,8 @@ func _ready() -> void:
 	menu_popup.set_item_shortcut(10, load("res://shortcuts/add_template.tres"))
 	menu_popup.set_item_shortcut(11, load("res://shortcuts/import_from_text_shortcut.tres"))
 	menu_popup.set_item_shortcut(13, load("res://shortcuts/quit_shortcut.tres"))
+	
+	help_button.get_popup().set_item_shortcut(0, load("res://shortcuts/about_shortcut.tres"))
 	
 	generate_list_btn.disabled = SingletonManager.TagIt.get_site_count() == 0
 	
@@ -1032,11 +1036,15 @@ func on_menu_button_id_selected(id: int) -> void:
 func on_help_id_pressed(id: int) -> void:
 	match id:
 		0:
+			if _help_pressed or _block_events:
+				return
+			_help_pressed = true
 			var new_help := ABOUT_WINDOW.instantiate()
 			add_child(new_help)
 			await new_help.close_pressed
 			new_help.visible = false
 			new_help.queue_free()
+			_help_pressed = false
 
 
 func instantiate_blacklist() -> void:
