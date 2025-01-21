@@ -2395,10 +2395,11 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 			if overwrite:
 				var _tag_id: int = SingletonManager.TagIt.get_tag_id(clean_tag)
 				SingletonManager.TagIt.update_tag(_tag_id, {"is_valid": tag["is_valid"]})
+				@warning_ignore("incompatible_ternary")
 				SingletonManager.TagIt.update_tag_data(
 					_tag_id,
 					{
-						"group_id": group_id,
+						"group_id": group_id if 0 < group_id else null,
 						"description": tag["wiki"],
 						"tooltip": tag["tooltip"],
 						"priority": tag["priority"],
