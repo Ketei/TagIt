@@ -2420,7 +2420,8 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 				cat_id,
 				tag["wiki"],
 				group_id,
-				tag["tooltip"].strip_edges())
+				tag["tooltip"].strip_edges(),
+				tag["priority"])
 	
 		var tag_id: int = SingletonManager.TagIt.get_tag_id(clean_tag)
 		var group_suggestions: Array[int] = []

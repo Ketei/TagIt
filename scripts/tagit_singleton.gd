@@ -19,7 +19,7 @@ signal website_deleted(site_id: int)
 const DATABASE_PATH: String = "user://tag_database.db"
 const SEARCH_WILDCARD: String = "*"
 const DB_VERSION: int = 1
-const TAGIT_VERSION: String = "3.2.1"
+const TAGIT_VERSION: String = "3.2.2"
 const MAX_PARENT_RECURSION: int = 100
 const IMAGE_LIMITS: Vector2i = Vector2i(700, 700)
 const LEV_DISTANCE: float = 0.75
@@ -570,7 +570,7 @@ func get_category_column(category_id: int, column: String) -> Variant:
 
 # --- Tags ---
 
-func create_tag(tag_name: String, tag_category: int, tag_desc: String, tag_group: int, tooltip: String = "") -> void:
+func create_tag(tag_name: String, tag_category: int, tag_desc: String, tag_group: int, tooltip: String = "", priority: int = 0) -> void:
 	if not has_tag(tag_name):
 		var new_tag: Dictionary = {
 			"name": tag_name,
@@ -589,7 +589,7 @@ func create_tag(tag_name: String, tag_category: int, tag_desc: String, tag_group
 		"tag_id": tag_id,
 		"category_id": tag_category,
 		"description": tag_desc if not tag_desc.is_empty() else null,
-		"priority": 0,
+		"priority": priority,
 		"group_id": tag_group if 0 < tag_group else null,
 		"tooltip": tooltip if not tooltip.is_empty() else null}
 	tag_search_data.insert(tag_search_data.bsearch(tag_name, false), tag_name)
