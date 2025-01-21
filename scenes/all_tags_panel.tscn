@@ -44,7 +44,7 @@ func _ready() -> void:
 	prev_button.pressed.connect(on_arrow_page_pressed.bind(-1))
 	add_button.pressed.connect(on_add_selected_pressed)
 	search_cooldown.timeout.connect(on_cooldown_finished)
-	SingletonManager.ESixAPI.tag_search_results_found.connect(on_api_tag_responded)
+	SingletonManager.eSixAPI.tag_search_results_found.connect(on_api_tag_responded)
 	close_button.pressed.connect(panel_close_pressed.emit)
 	tags_tree.tags_marked.connect(on_tags_marked)
 
@@ -101,7 +101,7 @@ func on_search_text_submitted(text: String) -> void:
 		if as_suffix:
 			e_tag += \"*\"
 		e_tag += clean_text + \"*\"
-		SingletonManager.ESixAPI.search_for_tags(e_tag)
+		SingletonManager.eSixAPI.search_for_tags(e_tag)
 		_api_working = true
 	
 	on_arrow_page_pressed(0)
