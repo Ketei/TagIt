@@ -452,7 +452,7 @@ func _notification(what):
 								groups_suggestions_tree.get_all_groups(),
 								image_path,
 								alts,
-								custom_order_list)
+								custom_order_list.duplicate())
 						
 						projects.save()
 					else:# Save was cancelled
@@ -833,7 +833,7 @@ func save_current_project_indexed() -> void:
 			groups_suggestions_tree.get_all_groups(),
 			image_path,
 			alts,
-			custom_order_list)
+			custom_order_list.duplicate())
 	projects.save()
 	_save_required = false
 
