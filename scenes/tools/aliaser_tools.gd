@@ -1,6 +1,9 @@
 extends VBoxContainer
 
 
+@warning_ignore("unused_signal")
+signal something_changed # Unused, but required to exist
+
 const NEW_ALIAS_CONFIRM_DIALOG = preload("res://scenes/dialogs/new_alias_confirm_dialog.tscn")
 const TOOL_ID: String = "aliaser"
 

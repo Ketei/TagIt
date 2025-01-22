@@ -19,7 +19,11 @@ const TOOLS: Array[Dictionary] = [
 	},
 ]
 
+const MessageConfirmationDialog = preload("res://scenes/dialogs/message_confirmation_dialog.gd")
+
 var tool_scene: Control = null
+var warn_unsaved: bool = false
+var current_tool_idx: int = -1
 
 @onready var option_button: OptionButton = $ToolsMargin/ToolsContainer/HeaderContainer/OptionButton
 @onready var save_button: Button = $ToolsMargin/ToolsContainer/HeaderContainer/SaveButton
@@ -45,21 +49,49 @@ func _ready() -> void:
 func on_template_deleted(template_idx: int) -> void:
 	if tool_scene != null and tool_scene.TOOL_ID == "templates":
 		tool_scene.on_template_deleted(template_idx)
-		
 
 
 func on_tool_selected(idx: int) -> void:
+	if warn_unsaved:
+		var unsaved_window := MessageConfirmationDialog.new()
+		unsaved_window.message = "You have unsaved changes.\nSwitching tools will discard them."
+		unsaved_window.title = "Unsaved Changes"
+		unsaved_window.ok_button_text = "Switch"
+		unsaved_window.cancel_button_text = "Cancel"
+		add_child(unsaved_window)
+		unsaved_window.show()
+		
+		var continue_unsaved: bool = await unsaved_window.dialog_finished
+		
+		unsaved_window.queue_free()
+		if not continue_unsaved:
+			option_button.select(current_tool_idx)
+			return
+	
 	if tool_scene != null:
+		tool_scene.something_changed.disconnect(_on_tool_something_changed)
 		tool_scene.queue_free()
+	
 	var new_id: int = option_button.get_item_id(idx)
+	
 	tool_scene = TOOLS[new_id]["scene"].instantiate()
 	tool_margin.add_child(tool_scene)
 	tool_desc_lbl.text = tool_scene.tool_description
 	save_button.disabled = not tool_scene.requires_save
+	tool_scene.something_changed.connect(_on_tool_something_changed)
+	
 	if save_button.disabled:
 		save_button.tooltip_text = "Tool doesn't require saving"
 	else:
 		save_button.tooltip_text = "Save tool configuration"
+	
+	current_tool_idx = idx
+	warn_unsaved = false
+
+
+func _on_tool_something_changed() -> void:
+	if not warn_unsaved:
+		warn_unsaved = true
 
 
 func on_save_pressed() -> void:

@@ -1,10 +1,15 @@
 extends VBoxContainer
 
+
+@warning_ignore("unused_signal")
+signal something_changed # Unused, but required to exist
+
 const PREFIX_CREATION_DIALOG = preload("res://scenes/dialogs/prefix_creation_dialog.tscn")
 const BIN_ICON = preload("res://icons/bin_icon.svg")
+const TOOL_ID: String = "prefixes"
+
 var tool_description: String = "Create tag shortcuts with prefixes."
 var requires_save: bool = false
-const TOOL_ID: String = "prefixes"
 
 @onready var alias_tree: Tree = $AliasTree
 @onready var test_line_edit: LineEdit = $TestContainer/TestLineEdit

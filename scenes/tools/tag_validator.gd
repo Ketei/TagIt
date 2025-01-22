@@ -1,10 +1,14 @@
 extends HBoxContainer
 
 
+signal something_changed
+
 const TOOL_ID: String = "validator"
 var tool_description: String = "Create or change if a tag is invalid."
 var tag_results: Array[int] = []
 var requires_save: bool = true
+
+var unsaved_changes: bool = false
 
 @onready var validator_tree: Tree = $TreeContainer/ValidatorTree
 @onready var search_ln_edt: LineEdit = $TreeContainer/SearchContainer/InvalidSearchLnEdt
@@ -28,6 +32,12 @@ func on_tag_creation_submitted(add_text: String) -> void:
 		return
 	
 	create_valid_tree.add_tag(clean_text)
+
+
+func field_edited() -> void:
+	if not unsaved_changes:
+		unsaved_changes = true
+		something_changed.emit()
 
 
 func on_tag_searched(search_text: String) -> void:
@@ -106,3 +116,6 @@ func on_save_pressed() -> void:
 	validator_tree.clear_edited_tags()
 	validator_tree.clear_tags()
 	create_valid_tree.clear_tags()
+	
+	if unsaved_changes:
+		unsaved_changes = false

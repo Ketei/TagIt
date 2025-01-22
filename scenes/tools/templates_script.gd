@@ -1,5 +1,8 @@
 extends HBoxContainer
 
+
+signal something_changed
+
 const MessageConfirmationDialog = preload("res://scenes/dialogs/message_confirmation_dialog.gd")
 
 const TOOL_ID: String = "templates"
@@ -163,7 +166,7 @@ func _on_template_item_selected() -> void:
 func _on_field_edited(_arg: Variant = null) -> void:
 	if not template_edited:
 		template_edited = true
-		print("k")
+		something_changed.emit()
 
 
 func _on_tree_focus_lost(tree: Tree) -> void:
@@ -396,8 +399,10 @@ func on_search_timer_timeout() -> void:
 
 func on_save_pressed() -> void:
 	var target_resource := TemplateResource.get_templates()
-	if current_template != -1 and template_edited:
+	if current_template != -1:
 		save_current_template(current_template)
+	
+	if template_edited:
 		template_edited = false
 	
 	for mem_template in template_memory:
