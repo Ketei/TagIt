@@ -78,6 +78,20 @@ static func split_overlapping(text: String, chunk_size: int) -> Array[String]:
 	return result
 
 
+static func beautify_int(value: int) -> String:
+	var formatted_number: String = str(value) # Convert the number to a string
+	var count: int = 0
+	var result: String = ""
+
+	for char_idx in range(len(formatted_number) - 1, -1, -1): # Iterate backwards through the string
+		result = formatted_number[char_idx] + result
+		count += 1
+		if count % 3 == 0 and char_idx != 0:
+			result = "," + result # Add a comma every three digits
+
+	return result
+
+
 static func levenshtein_distance(string_1: String, string_2: String) -> float:
 	# Written by ChatGPT
 	var len_1: int = string_1.length()

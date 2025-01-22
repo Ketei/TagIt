@@ -128,10 +128,59 @@ text = "Created by Ketei
 "
 horizontal_alignment = 1
 
-[node name="DescLabel" type="Label" parent="MainPanel/DataContainer/LabelsContainer"]
-custom_minimum_size = Vector2(235, 100)
+[node name="Label" type="Label" parent="MainPanel/DataContainer/LabelsContainer"]
 layout_mode = 2
-size_flags_vertical = 6
-text = "TagIt was created by Ketei to help creators generate tag lists for their content in an easier and more consistent way."
-vertical_alignment = 2
+theme_override_colors/font_color = Color(0.521291, 0.562063, 0.611103, 1)
+text = "A tool to help creators generate tag lists for their content."
 autowrap_mode = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainPanel/DataContainer/LabelsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 2
+
+[node name="HSeparator" type="HSeparator" parent="MainPanel/DataContainer/LabelsContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="StatsLabel" type="Label" parent="MainPanel/DataContainer/LabelsContainer/VBoxContainer"]
+layout_mode = 2
+text = "Stats"
+horizontal_alignment = 1
+
+[node name="DataContainer" type="HBoxContainer" parent="MainPanel/DataContainer/LabelsContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="MainPanel/DataContainer/LabelsContainer/VBoxContainer/DataContainer"]
+custom_minimum_size = Vector2(128, 32)
+layout_mode = 2
+text = "Tags Registered:"
+vertical_alignment = 1
+
+[node name="RegisteredLbl" type="Label" parent="MainPanel/DataContainer/LabelsContainer/VBoxContainer/DataContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0"
+horizontal_alignment = 2
+vertical_alignment = 1
+text_overrun_behavior = 3
+
+[node name="TotalContainer" type="HBoxContainer" parent="MainPanel/DataContainer/LabelsContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="MainPanel/DataContainer/LabelsContainer/VBoxContainer/TotalContainer"]
+custom_minimum_size = Vector2(128, 32)
+layout_mode = 2
+text = "Total Tags:"
+vertical_alignment = 1
+
+[node name="TotalTagsLbl" type="Label" parent="MainPanel/DataContainer/LabelsContainer/VBoxContainer/TotalContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0"
+horizontal_alignment = 2
+vertical_alignment = 1
+text_overrun_behavior = 3

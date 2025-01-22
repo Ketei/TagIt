@@ -1424,6 +1424,26 @@ func is_online_version_higher(local: Array[int], online: Array[int]) -> bool:
 	return false # Versions are equal
 
 
+func get_database_stats() -> Dictionary:
+	var return_dict: Dictionary = {
+		"tag_count": 0,
+		"data_count": 0}
+	
+	tag_database.query(
+		"SELECT 
+		(SELECT COUNT(*) FROM tags) as tag_count, 
+		(SELECT COUNT(*) FROM data) as data_count;")
+	
+	var result := tag_database.query_result
+	
+	if result.is_empty():
+		return return_dict
+	else:
+		return_dict["tag_count"] = result[0]["tag_count"]
+		return_dict["data_count"] = result[0]["data_count"]
+		return return_dict
+
+
 func log_message(message: String, log_level: LogLevel) -> void:
 	var log_msg: String = str("[", Time.get_time_string_from_system(), "]")
 	
