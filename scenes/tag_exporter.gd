@@ -123,8 +123,6 @@ func on_search_tag_text_submitted(text: String) -> void:
 		else:
 			pages_lbl.text = "/ " + str(maxi(1, ceili(all_valid_tags.size() / float(STEP))))
 			set_next_arrow_disabled(all_valid_tags.size() < ((value + 1) * STEP))
-			
-		
 
 
 func add_tag(tag_string: String, tag_idx: int) -> void:
@@ -133,6 +131,9 @@ func add_tag(tag_string: String, tag_idx: int) -> void:
 	tag_item.set_text(0, tag_string)
 	tag_item.set_metadata(0, tag_idx)
 	tag_item.set_editable(0, true)
+	
+	tag_item.set_checked(0, Arrays.binary_search(selected_ids, tag_idx) != -1)
+	
 
 
 func on_arrow_page_pressed(sum_val: int) -> void:
