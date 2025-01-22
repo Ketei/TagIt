@@ -133,7 +133,6 @@ func add_tag(tag_string: String, tag_idx: int) -> void:
 	tag_item.set_editable(0, true)
 	
 	tag_item.set_checked(0, Arrays.binary_search(selected_ids, tag_idx) != -1)
-	
 
 
 func on_arrow_page_pressed(sum_val: int) -> void:
