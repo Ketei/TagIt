@@ -1,4 +1,4 @@
-[gd_scene load_steps=61 format=3 uid="uid://eaxngd263vbi"]
+[gd_scene load_steps=62 format=3 uid="uid://eaxngd263vbi"]
 
 [ext_resource type="Script" path="res://scenes/tagit_main_window.gd" id="1_3rneb"]
 [ext_resource type="Texture2D" uid="uid://kkvcqst6wv4k" path="res://icons/new_icon.svg" id="2_3s1fn"]
@@ -13,6 +13,7 @@
 [ext_resource type="Script" path="res://scenes/wiki_delta_timer.gd" id="6_kbhuc"]
 [ext_resource type="Texture2D" uid="uid://dhnj5fgmhx4jk" path="res://icons/create_tag_icon.svg" id="6_wbwch"]
 [ext_resource type="Texture2D" uid="uid://d83q0hy74uit" path="res://icons/search_icon.svg" id="7_cq671"]
+[ext_resource type="Texture2D" uid="uid://cg42djkjsef7v" path="res://icons/tag_prioritizer.svg" id="7_diklt"]
 [ext_resource type="Texture2D" uid="uid://djfchfj7er3v6" path="res://icons/blacklist_icon.svg" id="8_1cbv1"]
 [ext_resource type="LabelSettings" uid="uid://dhe44w5njgeym" path="res://style/label_help_style.tres" id="8_2hfj2"]
 [ext_resource type="Script" path="res://scenes/tag_editor_script.gd" id="8_aldxp"]
@@ -125,7 +126,7 @@ layout_mode = 2
 layout_mode = 2
 text = "Menu"
 switch_on_hover = true
-item_count = 14
+item_count = 15
 popup/item_0/text = "New Project"
 popup/item_0/icon = ExtResource("2_3s1fn")
 popup/item_1/text = "New Alt List"
@@ -143,30 +144,33 @@ popup/item_4/id = 2
 popup/item_5/id = 100
 popup/item_5/disabled = true
 popup/item_5/separator = true
-popup/item_6/text = "Sort Tags"
-popup/item_6/icon = ExtResource("5_m11cu")
-popup/item_6/id = 4
-popup/item_7/text = "Blacklist"
-popup/item_7/icon = ExtResource("8_1cbv1")
-popup/item_7/id = 7
-popup/item_8/id = 101
-popup/item_8/disabled = true
-popup/item_8/separator = true
-popup/item_9/text = "Tag Wizard"
-popup/item_9/icon = ExtResource("9_2kq2q")
-popup/item_9/id = 8
-popup/item_10/text = "Load Template"
-popup/item_10/icon = ExtResource("10_xx8s6")
-popup/item_10/id = 9
-popup/item_11/text = "Load from Text"
-popup/item_11/icon = ExtResource("11_e0od5")
-popup/item_11/id = 10
-popup/item_12/id = 102
-popup/item_12/disabled = true
-popup/item_12/separator = true
-popup/item_13/text = "Quit"
-popup/item_13/icon = ExtResource("12_yqt35")
-popup/item_13/id = 11
+popup/item_6/text = "Change Priority"
+popup/item_6/icon = ExtResource("7_diklt")
+popup/item_6/id = 17
+popup/item_7/text = "Sort Tags"
+popup/item_7/icon = ExtResource("5_m11cu")
+popup/item_7/id = 4
+popup/item_8/text = "Blacklist"
+popup/item_8/icon = ExtResource("8_1cbv1")
+popup/item_8/id = 7
+popup/item_9/id = 101
+popup/item_9/disabled = true
+popup/item_9/separator = true
+popup/item_10/text = "Tag Wizard"
+popup/item_10/icon = ExtResource("9_2kq2q")
+popup/item_10/id = 8
+popup/item_11/text = "Load Template"
+popup/item_11/icon = ExtResource("10_xx8s6")
+popup/item_11/id = 9
+popup/item_12/text = "Load from Text"
+popup/item_12/icon = ExtResource("11_e0od5")
+popup/item_12/id = 10
+popup/item_13/id = 102
+popup/item_13/disabled = true
+popup/item_13/separator = true
+popup/item_14/text = "Quit"
+popup/item_14/icon = ExtResource("12_yqt35")
+popup/item_14/id = 11
 
 [node name="HelpButton" type="MenuButton" parent="MainContainer/MenuMargin/MenuContainer/MenuButtonCont"]
 layout_mode = 2
@@ -442,6 +446,15 @@ size_flags_vertical = 3
 [node name="ButtonsContainer" type="VBoxContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/TagsPanel/TagsContainer"]
 layout_mode = 2
 alignment = 2
+
+[node name="ChangePrioBtn" type="Button" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/TagsPanel/TagsContainer/ButtonsContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Change Tags Priority"
+theme_override_constants/icon_max_width = 32
+icon = ExtResource("7_diklt")
+flat = true
 
 [node name="ExportBtn" type="Button" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/TagsPanel/TagsContainer/ButtonsContainer"]
 custom_minimum_size = Vector2(0, 32)

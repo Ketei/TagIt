@@ -20,6 +20,7 @@ const TEXT_LOADER = preload("res://scenes/text_loader.tscn")
 const ALL_TAGS_PANEL = preload("res://scenes/all_tags_panel.tscn")
 const TAG_EXPORTER = preload("res://scenes/tag_exporter.tscn")
 const ABOUT_WINDOW = preload("res://scenes/help_window.tscn")
+const TAG_PRIORITIZER = preload("res://scenes/tag_prioritizer.tscn")
 # ----- Script Preload -----
 const LineConfirmationDialog = preload("res://scenes/dialogs/line_confirmation_dialog.gd")
 const UnsavedConfirmationDialog = preload("res://scenes/dialogs/unsaved_confirmation_dialog.gd")
@@ -68,6 +69,8 @@ var _image_changed: bool = false
 var _block_events: bool = false
 var _help_pressed: bool = false
 var _suggestion_blacklist: PackedStringArray = []
+var custom_order_list: Dictionary = {}
+var prio_list_node: Control = null
 
 # ----- Windows -----
 @onready var tagger_container: PanelContainer = $MainContainer/TaggerContainer
@@ -86,7 +89,6 @@ var _suggestion_blacklist: PackedStringArray = []
 
 
 # ----- Tagger -----
-
 @onready var tagger_site_opt_btn: OptionButton = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/BtnCotnainer/SiteOptBtn
 @onready var generate_list_btn: Button = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/BtnCotnainer/GenerateBtn
 @onready var project_image: TextureRect = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/ImageContainer/PanelContainer/ProjectImage
@@ -111,6 +113,7 @@ var _suggestion_blacklist: PackedStringArray = []
 @onready var generate_version_opt_btn: OptionButton = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/ListVersionContainer/GenerateVersionOptBtn
 @onready var menu_button: MenuButton = $MainContainer/MenuMargin/MenuContainer/MenuButtonCont/MenuButton
 @onready var help_button: MenuButton = $MainContainer/MenuMargin/MenuContainer/MenuButtonCont/HelpButton
+@onready var change_prio_btn: Button = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/TagsPanel/TagsContainer/ButtonsContainer/ChangePrioBtn
 # ----------------
 # ----- Tag Review -----
 @onready var new_tag_btn: Button = $MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer/ButtonButtons/NewTagBtn
@@ -294,6 +297,7 @@ func _ready() -> void:
 	add_tag_ln_edt.timer_finished.connect(on_search_timer_timeout)
 	search_tag_btn.pressed.connect(on_search_all_tags_pressed)
 	help_button.get_popup().id_pressed.connect(on_help_id_pressed)
+	change_prio_btn.pressed.connect(on_menu_button_id_selected.bind(17))
 	# --- Edit Tag ---
 	all_tags_search_ln_edt.text_submitted.connect(on_search_text_submitted)
 	new_tag_btn.pressed.connect(on_new_tag_pressed)
@@ -397,7 +401,8 @@ func _notification(what):
 							tagger_suggestion_tree.get_all_suggestions_text(),
 							groups_suggestions_tree.get_all_groups(),
 							image_path,
-							alts)
+							alts,
+							custom_order_list.duplicate())
 					projects.save()
 				else:
 					_saving = true
@@ -446,7 +451,8 @@ func _notification(what):
 								tagger_suggestion_tree.get_all_suggestions_text(),
 								groups_suggestions_tree.get_all_groups(),
 								image_path,
-								alts)
+								alts,
+								custom_order_list)
 						
 						projects.save()
 					else:# Save was cancelled
@@ -826,7 +832,8 @@ func save_current_project_indexed() -> void:
 			tagger_suggestion_tree.get_all_suggestions_text(),
 			groups_suggestions_tree.get_all_groups(),
 			image_path,
-			alts)
+			alts,
+			custom_order_list)
 	projects.save()
 	_save_required = false
 
@@ -1031,6 +1038,18 @@ func on_menu_button_id_selected(id: int) -> void:
 				return
 			
 			instantiate_save_selector()
+		17: # Change Prio
+			if prio_list_node != null:
+				return
+			prio_list_node = TAG_PRIORITIZER.instantiate()
+			tagger_container.add_child(prio_list_node)
+			prio_list_node.priority_tags = custom_order_list
+			prio_list_node.close_pressed.connect(on_prio_list_close)
+
+
+func on_prio_list_close() -> void:
+	prio_list_node.queue_free()
+	prio_list_node = null
 
 
 func on_help_id_pressed(id: int) -> void:
@@ -1088,6 +1107,9 @@ func clear_all_tagger() -> void:
 	tags_label.clear()
 	alt_lists.clear()
 	alt_lists.append([])
+	custom_order_list.clear()
+	if prio_list_node != null:
+		prio_list_node.priority_tags = {}
 	list_version_container.visible = false
 	alt_select_container.visible = false
 
@@ -1116,7 +1138,8 @@ func on_selector_project_saved(title: String) -> void:
 			tagger_suggestion_tree.get_all_suggestions_text(),
 			groups_suggestions_tree.get_all_groups(),
 			image_path,
-			alts)
+			alts,
+			custom_order_list.duplicate())
 	
 	projects.save()
 	
@@ -1167,6 +1190,11 @@ func on_selector_project_selected(project_idx: int) -> void:
 		alt_opt_btn.add_item(alt_list_dict["name"])
 		generate_version_opt_btn.add_item(alt_list_dict["name"])
 		alt_lists.append(alt_list_dict["list"])
+	
+	custom_order_list = projects.projects[project_idx]["custom_priorities"].duplicate() if projects.projects[project_idx].has("custom_priorities") else {}
+	
+	if prio_list_node != null:
+		prio_list_node.priority_tags = custom_order_list
 	
 	selector.stop_queued_cards()
 	selector.play_outro()
@@ -1325,16 +1353,45 @@ func on_generate_tag_list_btn_pressed() -> void:
 	var sorted_tags: Dictionary = SingletonManager.TagIt.sort_tag_ids_by_priority(final_tag_ids)
 	if not sorted_tags.has(0):
 		sorted_tags[0] = Array([], TYPE_INT, &"", null)
-	var priorities: Array = sorted_tags.keys()
-	var tags_array: Array[String] = []
+	
+	# --- Preparing for custom order ---
+	var named_ids: Dictionary = {}
+	
+	for priority in sorted_tags:
+		# ID: Name
+		var tag_names := SingletonManager.TagIt.get_tags_name(sorted_tags[priority])
+		
+		for tag_id in tag_names:
+			if custom_order_list.has(tag_names[tag_id]):
+				named_ids[tag_names[tag_id]] = custom_order_list[tag_names[tag_id]]
+			else:
+				named_ids[tag_names[tag_id]] = priority
+	
+	for unid_tag in tags["tag"]:
+		if custom_order_list.has(unid_tag):
+			named_ids[unid_tag] = custom_order_list[unid_tag]
+		else:
+			named_ids[unid_tag] = 0
+	
+	# --- Custom order applied ---
+	
+	# --- Cramming into a dictionary Priority:[text, tags] ---
+	var repeat_priorities: Dictionary = {}
+	
+	for tag_name in named_ids:
+		if not repeat_priorities.has(named_ids[tag_name]):
+			repeat_priorities[named_ids[tag_name]] = Array([], TYPE_STRING, &"", null)
+		repeat_priorities[named_ids[tag_name]].append(tag_name)
+	
+	# --- Crammed ---
+	
+	var priorities: Array = repeat_priorities.keys()
 	priorities.sort_custom(Arrays.sort_custom_desc)
+	var tags_array: Array[String] = []
 	
 	for priority in priorities:
-		if priority == 0:
-			tags_array.append_array(tags["tag"])
-			if sorted_tags[0].is_empty():
-				continue
-		tags_array.append_array(SingletonManager.TagIt.get_tags_name(sorted_tags[priority]).values())
+		tags_array.append_array(repeat_priorities[priority])
+	
 	var website_data: Dictionary = SingletonManager.TagIt.get_site_formatting(tagger_site_opt_btn.get_selected_website_id())
 	
 	for tag_idx in range(tags_array.size()):

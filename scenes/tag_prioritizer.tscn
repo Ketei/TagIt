@@ -1,0 +1,100 @@
+[gd_scene load_steps=8 format=3 uid="uid://b752jtpnj4uey"]
+
+[ext_resource type="Script" path="res://scripts/tag_prioritizer_script.gd" id="1_bxmgk"]
+[ext_resource type="Script" path="res://addons/tnowe_extra_controls/elements/draggable.gd" id="2_adgwv"]
+[ext_resource type="Texture2D" uid="uid://vypb46ut3fil" path="res://icons/x_icon.svg" id="3_cb0gp"]
+[ext_resource type="Theme" uid="uid://u13wuypqagrc" path="res://style/table_theme.tres" id="4_tp88c"]
+[ext_resource type="PackedScene" uid="uid://djrqboi0xp74" path="res://scenes/autofill_line_edit.tscn" id="5_02oia"]
+[ext_resource type="Script" path="res://scenes/prio_tree_script.gd" id="5_t0njb"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mcewb"]
+bg_color = Color(0.19, 0.19, 0.2, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="TagPrioritizer" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_bxmgk")
+
+[node name="MainDraggable" type="Container" parent="."]
+custom_minimum_size = Vector2(280, 300)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -320.0
+offset_top = -424.0
+offset_right = -40.0
+offset_bottom = -124.0
+grow_horizontal = 0
+grow_vertical = 0
+script = ExtResource("2_adgwv")
+drop_color = Color(0.5, 0.5, 0.5, 0)
+
+[node name="MainPanel" type="PanelContainer" parent="MainDraggable"]
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_mcewb")
+
+[node name="MainMargin" type="MarginContainer" parent="MainDraggable/MainPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 3
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="MainContainer" type="VBoxContainer" parent="MainDraggable/MainPanel/MainMargin"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainDraggable/MainPanel/MainMargin/MainContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+mouse_filter = 1
+text = "Change Tag Priorities"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CloseWindowBtn" type="Button" parent="MainDraggable/MainPanel/MainMargin/MainContainer/Label"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -24.0
+offset_top = -12.0
+offset_bottom = 12.0
+grow_horizontal = 0
+grow_vertical = 2
+icon = ExtResource("3_cb0gp")
+flat = true
+expand_icon = true
+
+[node name="PrioTree" type="Tree" parent="MainDraggable/MainPanel/MainMargin/MainContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("4_tp88c")
+columns = 2
+column_titles_visible = true
+allow_reselect = true
+hide_folding = true
+hide_root = true
+script = ExtResource("5_t0njb")
+
+[node name="AddTagLnEdt" parent="MainDraggable/MainPanel/MainMargin/MainContainer" instance=ExtResource("5_02oia")]
+layout_mode = 2
+placeholder_text = "Add Tag"
+list_direction = 1
+item_limit = 5
+replace_on_item_select = true
+use_timer = true

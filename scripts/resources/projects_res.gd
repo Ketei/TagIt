@@ -28,7 +28,7 @@ static func get_projects() -> TagItProjectResource:
 	return TagItProjectResource.new()
 
 
-func create_project(p_name: String, tags: Array[String], suggestions: Array[String], groups: Array[int], image_path: String, alt_lists: Array[Dictionary]) -> int:
+func create_project(p_name: String, tags: Array[String], suggestions: Array[String], groups: Array[int], image_path: String, alt_lists: Array[Dictionary], custom_priorities: Dictionary) -> int:
 	var project_index: int = projects.size()
 	projects.append({
 		"name": p_name,
@@ -36,18 +36,20 @@ func create_project(p_name: String, tags: Array[String], suggestions: Array[Stri
 		"suggestions": suggestions,
 		"groups": groups,
 		"image_path": image_path,
-		"alt_lists": alt_lists})
+		"alt_lists": alt_lists,
+		"custom_priorities": custom_priorities})
 	return project_index
 
 
-func overwrite_project(project_idx: int,p_name: String, tags: Array[String], suggestions: Array[String], groups: Array[int], image_path: String, alt_lists: Array[Dictionary]) -> void:
+func overwrite_project(project_idx: int,p_name: String, tags: Array[String], suggestions: Array[String], groups: Array[int], image_path: String, alt_lists: Array[Dictionary], custom_priorities: Dictionary) -> void:
 	projects[project_idx] = {
 		"name": p_name,
 		"tags": tags,
 		"suggestions": suggestions,
 		"groups": groups,
 		"image_path": image_path,
-		"alt_lists": alt_lists}
+		"alt_lists": alt_lists,
+		"custom_priorities": custom_priorities}
 
 
 func delete_project(project_idx: int) -> void:
