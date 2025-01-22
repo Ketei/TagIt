@@ -79,7 +79,7 @@ func close_esix_api() -> void:
 	if wiki_working:
 		if not wiki_timer.is_stopped():
 			wiki_timer.stop()
-			wiki_requester.cancel_request()
+		wiki_requester.cancel_request()
 
 
 func get_tag_request_url(tag_name: String, order := "date", limit: int = 75) -> String:
