@@ -7,6 +7,7 @@ signal request_get(request_response: Array)
 signal prio_get(request_response: Array)
 signal suggestions_found(for_tag: String, suggestions: Array[String])
 signal tag_search_results_found(for_tag: String, tags: PackedStringArray)
+signal wiki_responded(tag: String, wiki: String, parents: PackedStringArray, aliases: PackedStringArray, suggestions: PackedStringArray)
 
 enum JobTypes {
 	WIKI,
@@ -18,21 +19,26 @@ enum JobTypes {
 const ENDPOINT_TAGS: String = "https://e621.net/tags.json?"
 const ENDPOINT_ALIASES: String = "https://e621.net/tag_aliases.json?search[name_matches]="
 const ENDPOINT_PARENTS: String = "https://e621.net/tag_implications.json?search[antecedent_name]="
+const ENDPOINT_WIKI: String = "https://e621.net/wiki_pages.json?limit=1&title="
 const HEADERS: PackedStringArray = [
-	"User-Agent: TaglistMaker/3.0.0 (by Ketei)"
+	"User-Agent: TaglistMaker/3.2.3 (by Ketei)"
 ]
 
 @export var suggestion_limit: int = 30
 
 var requester: HTTPRequest
 var priority_requester: HTTPRequest
+var wiki_requester: HTTPRequest
 
 var jobs: Array[Dictionary] = []
 
 var job_timer: Timer
+var wiki_timer: Timer
 var regex: RegEx
 
 var working: bool = false
+var prio_working: bool = false
+var wiki_working: bool = false
 
 
 func _ready() -> void:
@@ -44,6 +50,10 @@ func _ready() -> void:
 	priority_requester.timeout = 10
 	priority_requester.request_completed.connect(on_prio_request_completed)
 	add_child(priority_requester)
+	wiki_requester = HTTPRequest.new()
+	wiki_requester.timeout = 10
+	wiki_requester.request_completed.connect(on_prio_request_completed)
+	add_child(wiki_requester)
 	regex = RegEx.new()
 	job_timer = Timer.new()
 	job_timer.autostart = false
@@ -51,6 +61,11 @@ func _ready() -> void:
 	job_timer.wait_time = 1.2
 	job_timer.timeout.connect(on_timer_timeout)
 	add_child(job_timer)
+	wiki_timer = Timer.new()
+	wiki_timer.autostart = false
+	wiki_timer.one_shot = true
+	wiki_timer.wait_time = 1.0
+	add_child(wiki_timer)
 
 
 func _notification(what):
@@ -88,9 +103,134 @@ func search_suggestions(for_tag: String) -> void:
 			JobTypes.SUGGESTION)
 
 
-func convert_from_wiki(text_from_wiki: String) -> String:
-	#var body_reply: String = "thumb #323057 thumb #2581520 thumb #3998445\r\n\r\nA [[male]] character that appears [[young|visibly underage]].\r\n\r\nh4. Related Tags\r\n* [[shota]]\r\n\r\nh4. Not To Be Confused With\r\n* [[younger_male]]\r\n\r\nh4. See Also\r\n* [[young_ambiguous]]\r\n* [[young_female]]\r\n* [b]young_male[/b]\r\n* [[young_intersex]]\r\n** [[young andromorph]]\r\n** [[young_gynomorph]]\r\n** [[young_herm]]\r\n** [[young_maleherm]]"
+func search_for_wiki(tag: String) -> void:
+	if wiki_working:
+		return
 	
+	wiki_working = true
+	
+	if not wiki_timer.is_stopped():
+		await wiki_timer.timeout
+	
+	var json = JSON.new()
+	var wiki: String = ""
+	var parents: PackedStringArray = []
+	var aliases: PackedStringArray = []
+	var suggestions: PackedStringArray = []
+	
+	wiki_timer.start()
+	SingletonManager.TagIt.log_message(
+			"[eSix API] Requesting e621 for WIKI.",
+			DataManager.LogLevel.INFO)
+	SingletonManager.TagIt.log_silent(
+		"[eSix API] Requesting e621 for tag: " + tag,
+		DataManager.LogLevel.INFO)
+	wiki_requester.request(ENDPOINT_WIKI + tag, HEADERS)
+	
+	var result = await wiki_requester.request_completed
+	
+	if result[0] == HTTPRequest.RESULT_SUCCESS and result[1] == 200:
+		SingletonManager.TagIt.log_silent(
+				"[eSix API] WIKI request successful",
+				DataManager.LogLevel.INFO)
+		if json.parse(result[3].get_string_from_utf8()) == OK and typeof(json.data) == TYPE_ARRAY and not json.data.is_empty():
+			if typeof(json.data[0]) == TYPE_DICTIONARY and json.data[0].has("body") and not json.data[0]["body"].is_empty():
+				wiki = format_esix_wiki(json.data[0]["body"])
+	else:
+		SingletonManager.TagIt.log_silent(
+		str("[eSix API] WIKI request failed: ", result[0], "/", result[1]),
+		DataManager.LogLevel.INFO)
+	
+	if not wiki_timer.is_stopped():
+		await wiki_timer.timeout
+	
+	wiki_timer.start()
+	
+	SingletonManager.TagIt.log_message(
+			"[eSix API] Requesting e621 for PARENTS.",
+			DataManager.LogLevel.INFO)
+	wiki_requester.request(ENDPOINT_PARENTS + tag, HEADERS)
+	
+	var p_res = await wiki_requester.request_completed
+	
+	if p_res[0] == HTTPRequest.RESULT_SUCCESS and p_res[1] == 200:
+		SingletonManager.TagIt.log_silent(
+				"[eSix API] PARENTS request successful",
+				DataManager.LogLevel.INFO)
+		if json.parse(p_res[3].get_string_from_utf8()) == OK and typeof(json.data) == TYPE_ARRAY and not json.data.is_empty():
+			for dict_item in json.data:
+				if typeof(dict_item) != TYPE_DICTIONARY or dict_item["status"] != "active" or not dict_item.has("descendant_names"):
+					continue
+				for descendant_name in dict_item["descendant_names"]:
+					if not parents.has(descendant_name):
+						parents.append(descendant_name)
+	else:
+		SingletonManager.TagIt.log_silent(
+		str("[eSix API] PARENTS request failed: ", result[0], "/", result[1]),
+		DataManager.LogLevel.INFO)
+	
+	if not wiki_timer.is_stopped():
+		await wiki_timer.timeout
+	
+	wiki_timer.start()
+	SingletonManager.TagIt.log_message(
+			"[eSix API] Requesting e621 for ALIASES.",
+			DataManager.LogLevel.INFO)
+	wiki_requester.request(ENDPOINT_ALIASES + tag, HEADERS)
+	
+	var a_res = await wiki_requester.request_completed
+	
+	if a_res[0] == HTTPRequest.RESULT_SUCCESS and a_res[1] == 200:
+		SingletonManager.TagIt.log_silent(
+				"[eSix API] ALIASES request successful",
+				DataManager.LogLevel.INFO)
+		if json.parse(a_res[3].get_string_from_utf8()) == OK and typeof(json.data) == TYPE_ARRAY and not json.data.is_empty():
+			for alias_dict in json.data:
+				if typeof(alias_dict) != TYPE_DICTIONARY or not alias_dict.has("antecedent_name"):
+					continue
+				if not aliases.has(alias_dict["antecedent_name"]):
+					aliases.append(alias_dict["antecedent_name"])
+	else:
+		SingletonManager.TagIt.log_silent(
+		str("[eSix API] ALIASES request failed: ", result[0], "/", result[1]),
+		DataManager.LogLevel.INFO)
+	
+	if not wiki_timer.is_stopped():
+		await wiki_timer.timeout
+	
+	wiki_timer.start()
+	SingletonManager.TagIt.log_message(
+			"[eSix API] Requesting e621 for SUGGESTIONS.",
+			DataManager.LogLevel.INFO)
+	wiki_requester.request(ENDPOINT_TAGS + "limit=1&search[name_matches]=" + tag, HEADERS)
+	
+	var s_res = await wiki_requester.request_completed
+	
+	if s_res[0] == HTTPRequest.RESULT_SUCCESS and s_res[1] == 200:
+		SingletonManager.TagIt.log_silent(
+				"[eSix API] SUGGESTIONS request successful",
+				DataManager.LogLevel.INFO)
+		if json.parse(s_res[3].get_string_from_utf8()) == OK and typeof(json.data) == TYPE_ARRAY and not json.data.is_empty():
+			if typeof(json.data[0]) == TYPE_DICTIONARY and json.data[0].has("related_tags") and not json.data[0]["related_tags"].is_empty():
+				var strength_tags: Dictionary = parse_tag_strength(json.data[0]["related_tags"])
+				
+				for strength_key in strength_tags.keys():
+					if 70 <= float(strength_key):
+						suggestions.append_array(PackedStringArray(strength_tags[strength_key]))
+	else:
+		SingletonManager.TagIt.log_silent(
+		str("[eSix API] SUGGESTIONS request failed: ", result[0], "/", result[1]),
+		DataManager.LogLevel.INFO)
+	
+	SingletonManager.TagIt.log_message(
+			"[eSix API] WIKI request completed.",
+			DataManager.LogLevel.INFO)
+	
+	wiki_working = false
+	wiki_responded.emit(tag, wiki, parents, aliases, suggestions)
+
+
+func format_esix_wiki(text_from_wiki: String) -> String:
 	regex.clear()
 	regex.compile("[Tt]humb #\\d+\\s*")
 	var return_string: String = regex.sub( # clears "thumb #XXXX"
@@ -151,7 +291,6 @@ func convert_from_wiki(text_from_wiki: String) -> String:
 func on_timer_timeout() -> void:
 	if not jobs.is_empty():
 		var req_url: Dictionary = jobs.pop_front()
-		# a request to:\n" + req_url["url"]
 		SingletonManager.TagIt.log_message("[eSIx API] Making a request to e621", DataManager.LogLevel.INFO)
 		requester.request(req_url["url"], HEADERS)
 		var response: Array = await request_get

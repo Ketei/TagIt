@@ -6,6 +6,23 @@ var root_tree: TreeItem = null
 
 func _ready() -> void:
 	root_tree = create_item()
+	focus_exited.connect(_on_focus_lost)
+
+
+func _input(_event: InputEvent) -> void:
+	if has_focus():
+		if Input.is_action_just_pressed(&"ui_text_delete") and get_next_selected(null) != null:
+			var current: TreeItem = get_next_selected(null)
+			while current != null:
+				var next = get_next_selected(current)
+				current.free()
+				current = next
+			get_viewport().set_input_as_handled()
+
+
+func _on_focus_lost() -> void:
+	if get_next_selected(null) != null:
+		deselect_all()
 
 
 func add_tag(text: String, id: int = -1) -> void:

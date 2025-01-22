@@ -1,6 +1,7 @@
 extends VBoxContainer
 
 
+var current_tag: String = ""
 var current_id: int = -1
 var initial_parents: Array[int] = []
 var initial_aliases: Array[int] = []
@@ -26,12 +27,14 @@ var initial_groups: Array[int] = []
 @onready var tooltip_ln_edt: LineEdit = $MainContainer/WikiContainer/TooltipLnEdt
 @onready var saved_notification: PanelContainer = $MainContainer/WikiContainer/TitleContainer/SaveTagBtn/SavedNotification
 @onready var is_valid_chk_bx: CheckBox = $MainContainer/InfoContainer/BasicsContainer/NameContainer/ValidPanel/IsValidChkBx
+@onready var dl_esix_btn: Button = $MainContainer/WikiContainer/TitleContainer/DlESixBtn
 
 
 func _ready() -> void:
 	load_tag_groups()
 	load_categories()
 	saved_notification.visible = false
+	dl_esix_btn.pressed.connect(_on_dl_esix_btn_pressed)
 	save_tag_btn.pressed.connect(on_save_tag_pressed)
 	add_alias_ln_edt.text_submitted.connect(on_alias_submitted)
 	add_parent_ln_edt.text_submitted.connect(on_parent_submitted)
@@ -43,6 +46,7 @@ func _ready() -> void:
 	SingletonManager.TagIt.category_deleted.connect(on_category_deleted)
 	SingletonManager.TagIt.group_created.connect(on_group_created)
 	SingletonManager.TagIt.group_deleted.connect(on_group_deleted)
+	SingletonManager.eSixAPI.wiki_responded.connect(_on_wiki_responded)
 
 
 func on_save_tag_pressed() -> void:
@@ -123,28 +127,64 @@ func on_save_tag_pressed() -> void:
 	save_tag_btn.disabled = false
 
 
+func _on_dl_esix_btn_pressed() -> void:
+	dl_esix_btn.disabled = true
+	
+	SingletonManager.eSixAPI.search_for_wiki(current_tag.replace(" ", "_"))
+
+
+func _on_wiki_responded(tag: String, wiki: String, parent_array: PackedStringArray, aliases: PackedStringArray, suggestions: PackedStringArray) -> void:
+	dl_esix_btn.disabled = false
+	
+	if not Strings.nocasecmp_equal(current_tag.replace(" ", "_"), tag):
+		return
+	
+	wiki_txt_edt.text = wiki
+	
+	for parent in parent_array:
+		var clean_parent: String = parent.replace("_", " ")
+		if clean_parent == current_tag:
+			continue
+		if not parents.has_tag(clean_parent):
+			parents.add_tag(clean_parent)
+	
+	for alias in aliases:
+		var clean_alias: String = alias.replace("_", " ")
+		if clean_alias == current_tag:
+			continue
+		if not aliases_tree.has_tag(clean_alias):
+			aliases_tree.add_tag(clean_alias)
+	
+	for suggestion in suggestions:
+		var clean_suggestion: String = suggestion.replace("_", " ")
+		if clean_suggestion == current_tag:
+			continue
+		if not suggestions_tree.has_tag(clean_suggestion):
+			suggestions_tree.add_tag(clean_suggestion)
+
+
 func on_alias_submitted(alias_text: String) -> void:
-	var new_alias: String = alias_text.strip_edges()
+	var new_alias: String = alias_text.strip_edges().to_lower()
 	add_alias_ln_edt.clear()
-	if new_alias.is_empty() or aliases_tree.has_tag(new_alias):
+	if new_alias.is_empty() or aliases_tree.has_tag(new_alias) or new_alias == current_tag:
 		return
 	
 	aliases_tree.add_tag(new_alias)
 
 
 func on_parent_submitted(parent_text: String) -> void:
-	var new_parent: String = parent_text.strip_edges()
+	var new_parent: String = parent_text.strip_edges().to_lower()
 	add_parent_ln_edt.clear()
-	if new_parent.is_empty() or parents.has_tag(new_parent):
+	if new_parent.is_empty() or parents.has_tag(new_parent) or new_parent == current_tag:
 		return
 	
 	parents.add_tag(new_parent)
 
 
 func on_suggestion_submitted(suggestion_text: String) -> void:
-	var new_sugg: String = suggestion_text.strip_edges()
+	var new_sugg: String = suggestion_text.strip_edges().to_lower()
 	add_sugg_ln_edt.clear()
-	if new_sugg.is_empty() or suggestions_tree.has_tag(new_sugg):
+	if new_sugg.is_empty() or suggestions_tree.has_tag(new_sugg) or new_sugg == current_tag:
 		return
 	
 	suggestions_tree.add_tag(new_sugg)
@@ -217,6 +257,7 @@ func clear_trees() -> void:
 func load_tag(tag_id: int) -> void:
 	var tag_data := SingletonManager.TagIt.get_tag_data(tag_id)
 	current_id = tag_id
+	current_tag = tag_data["tag"]
 	clear_all()
 	
 	tag_title_lbl.text = Strings.title_case(tag_data["tag"])

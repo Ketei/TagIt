@@ -1,4 +1,4 @@
-[gd_scene load_steps=62 format=3 uid="uid://eaxngd263vbi"]
+[gd_scene load_steps=63 format=3 uid="uid://eaxngd263vbi"]
 
 [ext_resource type="Script" path="res://scenes/tagit_main_window.gd" id="1_3rneb"]
 [ext_resource type="Texture2D" uid="uid://kkvcqst6wv4k" path="res://icons/new_icon.svg" id="2_3s1fn"]
@@ -55,6 +55,7 @@
 [ext_resource type="Script" path="res://scenes/tools_loader_script.gd" id="38_yel2c"]
 [ext_resource type="Texture2D" uid="uid://cdtejl0p8c4cr" path="res://icons/pointer_right.svg" id="39_angsb"]
 [ext_resource type="Texture2D" uid="uid://d24o3rwmiwpcp" path="res://icons/disconnected_icon.svg" id="45_kqm3t"]
+[ext_resource type="Texture2D" uid="uid://dxdflg0nv5wuy" path="res://icons/download_esix.svg" id="46_ftjsj"]
 [ext_resource type="Script" path="res://scripts/hydrus.gd" id="46_jhrpg"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0wwcl"]
@@ -763,6 +764,7 @@ theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
 [node name="TagSearchContainer" type="Control" parent="MainContainer/TagsPanel/TagsMargin"]
+visible = false
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -874,7 +876,6 @@ icon_alignment = 1
 expand_icon = true
 
 [node name="TagEditContainer" type="VBoxContainer" parent="MainContainer/TagsPanel/TagsMargin"]
-visible = false
 layout_mode = 2
 script = ExtResource("8_aldxp")
 
@@ -1017,7 +1018,7 @@ layout_mode = 2
 size_flags_vertical = 3
 hide_folding = true
 hide_root = true
-select_mode = 1
+select_mode = 2
 script = ExtResource("11_18ujp")
 
 [node name="RelatedContainer" type="HBoxContainer" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer"]
@@ -1038,7 +1039,7 @@ layout_mode = 2
 size_flags_vertical = 3
 hide_folding = true
 hide_root = true
-select_mode = 1
+select_mode = 2
 script = ExtResource("10_c408k")
 
 [node name="AddParentLnEdt" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/RelatedContainer/ParentsContainer" instance=ExtResource("18_btkx1")]
@@ -1065,7 +1066,7 @@ layout_mode = 2
 size_flags_vertical = 3
 hide_folding = true
 hide_root = true
-select_mode = 1
+select_mode = 2
 script = ExtResource("10_c408k")
 
 [node name="AddSuggLnEdt" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/RelatedContainer/SuggestionsContainer" instance=ExtResource("18_btkx1")]
@@ -1090,6 +1091,19 @@ alignment = 2
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Wiki"
+
+[node name="DlESixBtn" type="Button" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/WikiContainer/TitleContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "Download tag from e621"
+icon = ExtResource("46_ftjsj")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="VSeparator" type="VSeparator" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/WikiContainer/TitleContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
 
 [node name="SaveTagBtn" type="Button" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/WikiContainer/TitleContainer"]
 custom_minimum_size = Vector2(32, 32)
@@ -1143,6 +1157,7 @@ expand_icon = true
 [node name="WikiTxtEdt" type="TextEdit" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/WikiContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+wrap_mode = 1
 
 [node name="TooltipLnEdt" type="LineEdit" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/WikiContainer"]
 layout_mode = 2

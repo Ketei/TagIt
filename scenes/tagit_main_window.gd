@@ -1907,7 +1907,7 @@ func on_new_tag_pressed() -> void:
 	var dialog_response: Array = await new_tag_dialog.creation_finished
 	
 	if dialog_response[0]:
-		if SingletonManager.TagIt.has_tag(dialog_response[1]):
+		if SingletonManager.TagIt.has_tag(dialog_response[1]) and SingletonManager.TagIt.has_data(SingletonManager.TagIt.get_tag_id(dialog_response[1])):
 			load_and_select_tag(SingletonManager.TagIt.get_tag_id(dialog_response[1]))
 		else:
 			create_tag(dialog_response[1])
