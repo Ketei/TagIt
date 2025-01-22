@@ -1783,11 +1783,11 @@ layout_mode = 2
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_right = 4
 
-[node name="LogsLabel" type="RichTextLabel" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/LogsContainer/PanelContainer/MarginContainer"]
+[node name="SettingsLogsTxtEdt" type="TextEdit" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/LogsContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-bbcode_enabled = true
+theme_override_colors/font_readonly_color = Color(1, 1, 1, 1)
+editable = false
+wrap_mode = 1
 
 [node name="HydrusNode" type="Node" parent="."]
 process_thread_group = 2

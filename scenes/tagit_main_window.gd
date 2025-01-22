@@ -143,7 +143,8 @@ var prio_list_node: Control = null
 @onready var settings_image_load_spn_bx: SpinBox = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/EnableContainer/ToggleContainer/ImageLoadSpnBx
 @onready var settings_load_img_chk_btn: CheckButton = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/EnableContainer/ToggleContainer/LoadImgChkBtn
 @onready var settings_site_opt_btn: OptionButton = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/SitePanel/MainContainer/OptionsContainer/DefaultSiteOptBtn
-@onready var settings_logs_label: RichTextLabel = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/LogsContainer/PanelContainer/MarginContainer/LogsLabel
+#@onready var settings_logs_label: RichTextLabel = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/LogsContainer/PanelContainer/MarginContainer/LogsLabel
+@onready var settings_logs_txt_edt: TextEdit = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/LogsContainer/PanelContainer/MarginContainer/SettingsLogsTxtEdt
 @onready var settings_key_ln_edt: LineEdit = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/ApiContainer/KeyContainer/KeyLnEdt
 @onready var settings_port_spn_bx: SpinBox = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/ApiContainer/PortContainer/PortSpnBx
 @onready var settings_connection_status_txt_rect: TextureRect = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/ApiContainer/ButtonsContainer/ConnectionStatusTxtRect
@@ -2141,10 +2142,14 @@ func on_dialog_cancel_free(dialog: AcceptDialog) -> void:
 
 
 func on_log_created(msg: String) -> void:
+	if 201 < settings_logs_txt_edt.get_line_count():
+		var first_line: String = settings_logs_txt_edt.get_line(0)
+		settings_logs_txt_edt.text = settings_logs_txt_edt.text.substr(first_line.length()).strip_edges(true, false)
+	
 	if 1000 < msg.length():
-		settings_logs_label.append_text(msg.substr(0, 1000) + "...")
+		settings_logs_txt_edt.text += msg.substr(0, 1000) + "\n"
 	else:
-		settings_logs_label.append_text(msg + "\n")
+		settings_logs_txt_edt.text += msg + "\n"
 
 
 func on_select_image_pressed() -> void:
@@ -2739,4 +2744,4 @@ func heal_json_dict(dict: Dictionary) -> void:
 
 
 func _on_clear_logs_pressed() -> void:
-	settings_logs_label.clear()
+	settings_logs_txt_edt.clear()
