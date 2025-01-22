@@ -25,6 +25,32 @@ func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:
 	return typeof(data) == TYPE_DICTIONARY and data.has_all(["type", "tag_names", "tree", "tree_type"]) and data["type"] == "tag_array"
 
 
+func _get_drag_data(_at_position: Vector2) -> Variant:
+	if get_next_selected(null) == null:
+		return null
+	
+	var selected_tags: Array[String] = []
+	
+	var current: TreeItem = get_next_selected(null)
+	
+	while current != null:
+		selected_tags.append(current.get_text(0))
+		current = get_next_selected(current)
+	
+	var tags_label := Label.new()
+	var tag_count: int = selected_tags.size()
+	tags_label.text = str("    ", tag_count, " tag")
+	if 1 != tag_count:
+		tags_label.text += "s"
+	set_drag_preview(tags_label)
+	return {
+		"type": "tag_list",
+		#"tag_ids": get_selected_ids(),
+		"tag_names": selected_tags,
+		"tree_type": 1,
+		"tree": self}
+
+
 func _drop_data(_at_position: Vector2, data: Variant) -> void:
 	if data["tag_names"].is_empty():
 		return
