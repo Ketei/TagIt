@@ -1459,3 +1459,18 @@ func log_message(message: String, log_level: LogLevel) -> void:
 			push_error(log_msg)
 	
 	message_logged.emit(log_msg)
+
+
+func log_silent(message: String, log_level: LogLevel) -> void:
+	var log_msg: String = str("[", Time.get_time_string_from_system(), "]")
+	
+	match log_level:
+		LogLevel.INFO:
+			log_msg += "[INFO] " + message
+			print(log_msg)
+		LogLevel.WARNING:
+			log_msg += "[WARNING] " + message
+			push_warning(log_msg)
+		LogLevel.ERROR:
+			log_msg += "[ERROR] " + message
+			push_error(log_msg)
