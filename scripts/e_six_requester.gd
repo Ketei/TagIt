@@ -68,12 +68,18 @@ func _ready() -> void:
 	add_child(wiki_timer)
 
 
-func _notification(what):
-	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+func close_esix_api() -> void:
 		if working:
 			jobs.clear()
-			job_timer.stop()
+			if not job_timer.is_stopped():
+				job_timer.stop()
 			requester.cancel_request()
+		if prio_working:
+			priority_requester.cancel_request()
+		if wiki_working:
+			if not wiki_timer.is_stopped():
+				wiki_timer.stop()
+				wiki_requester.cancel_request()
 
 
 func get_tag_request_url(tag_name: String, order := "date", limit: int = 75) -> String:

@@ -1237,6 +1237,7 @@ func set_tag_group(tag_id: int, group_id: int) -> void:
 
 # Do what needs before quitting. Then quit
 func quit_request() -> void:
+	SingletonManager.eSixAPI.close_esix_api()
 	tag_database.close_db()
 	settings.save()
 	get_tree().quit()
