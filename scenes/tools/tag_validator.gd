@@ -36,9 +36,23 @@ func _on_add_from_text_pressed() -> void:
 	var new_tags: PackedStringArray = await new_window.tags_finished
 	
 	if not new_tags.is_empty():
+		var existing: Array[String] = []
+		
 		for tag in new_tags:
-			if not create_valid_tree.has_tag(tag):
-				create_valid_tree.add_tag(tag)
+			if SingletonManager.TagIt.has_tag(tag):
+				existing.append(tag)
+			else:
+				if not create_valid_tree.has_tag(tag):
+					create_valid_tree.add_tag(tag)
+		
+		if not existing.is_empty():
+			validator_tree.clear_tags()
+			for tag in existing:
+				validator_tree.add_tag(
+					SingletonManager.TagIt.get_tag_id(tag),
+					tag,
+					SingletonManager.TagIt.is_tag_valid(
+							SingletonManager.TagIt.get_tag_id(tag)))
 	
 	new_window.queue_free()
 
