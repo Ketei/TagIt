@@ -181,21 +181,15 @@ func _ready() -> void:
 	else:
 		# Clean up tags that are not found in any of the reference tables.
 		tag_database.query(
-			"DELETE FROM tags WHERE id NOT IN (
-				SELECT tag_id FROM data
-				UNION
-				SELECT parent FROM relationships
-				UNION
-				SELECT child FROM relationships
-				UNION
-				SELECT tag_id FROM suggestions
-				UNION
-				SELECT antecedent FROM aliases
-				UNION
-				SELECT consequent FROM aliases
-				UNION
-				SELECT suggestion_id FROM suggestions
-			);"
+			"DELETE FROM tags
+			WHERE is_valid != 0
+			AND NOT EXISTS (SELECT 1 FROM data WHERE data.tag_id = tags.id)
+			AND NOT EXISTS (SELECT 1 FROM relationships WHERE relationships.parent = tags.id)
+			AND NOT EXISTS (SELECT 1 FROM relationships WHERE relationships.child = tags.id)
+			AND NOT EXISTS (SELECT 1 FROM suggestions WHERE suggestions.tag_id = tags.id)
+			AND NOT EXISTS (SELECT 1 FROM aliases WHERE aliases.antecedent = tags.id)
+			AND NOT EXISTS (SELECT 1 FROM aliases WHERE aliases.consequent = tags.id)
+			AND NOT EXISTS (SELECT 1 FROM suggestions WHERE suggestions.suggestion_id = tags.id);"
 		)
 	
 	var data_tags: Array[String] = []
