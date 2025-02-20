@@ -37,12 +37,11 @@ func _ready() -> void:
 	_allow_signals = false
 	close_button.visible = false
 	margin.visible = false
-	#search_ln_edt.visible = false
 	search_panel.visible = false
 	dim_light.visible = false
 	black.size_flags_stretch_ratio = 0.0
 	container.cards_displayed.connect(on_cards_displayed)
-	close_button.pressed.connect(close_pressed.emit)
+	close_button.pressed.connect(on_close_pressed)
 	search_ln_edt.text_submitted.connect(on_search_text_submitted)
 
 
@@ -52,6 +51,12 @@ func _input(_event: InputEvent) -> void:
 		if group_save_enabled:
 			save_finished.emit(false, "")
 		get_viewport().set_input_as_handled()
+
+
+func on_close_pressed() -> void:
+	close_pressed.emit()
+	if group_save_enabled:
+		save_finished.emit(false, "")
 
 
 func on_cards_displayed() -> void:
