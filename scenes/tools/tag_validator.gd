@@ -28,7 +28,14 @@ func on_tag_creation_submitted(add_text: String) -> void:
 	var clean_text: String = add_text.strip_edges().to_lower()
 	create_valid_ln_edt.clear()
 	
-	if clean_text.is_empty() or SingletonManager.TagIt.has_tag(clean_text) or create_valid_tree.has_tag(clean_text):
+	if clean_text.is_empty() or create_valid_tree.has_tag(clean_text):
+		return
+	
+	if SingletonManager.TagIt.has_tag(clean_text):
+		page_spinbox.value = 1
+		validator_tree.clear_tags()
+		tag_results = [SingletonManager.TagIt.get_tag_id(clean_text)]
+		validator_tree.set_tags(tag_results)
 		return
 	
 	create_valid_tree.add_tag(clean_text)
