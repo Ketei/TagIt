@@ -92,6 +92,18 @@ static func beautify_int(value: int) -> String:
 	return result
 
 
+static func clean_prefix(from: String, prefix: String) -> String:
+	while from.begins_with(prefix):
+		from = from.trim_prefix(from)
+	return from
+
+
+static func clean_suffix(from: String, suffix: String) -> String:
+	while from.ends_with(suffix):
+		from = from.trim_suffix(suffix)
+	return from
+
+
 static func levenshtein_distance(string_1: String, string_2: String) -> float:
 	# Written by ChatGPT
 	var len_1: int = string_1.length()
