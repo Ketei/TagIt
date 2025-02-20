@@ -95,7 +95,7 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 	scroll_to_item(last_tag)
 
 
-func _on_tags_created(tag_names: Array[String], _valid: bool) -> void:
+func _on_tags_created(tag_names: Array[String]) -> void:
 	for tag in tag_names:
 		on_tag_created(tag, SingletonManager.TagIt.get_tag_id(tag))
 

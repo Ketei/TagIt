@@ -626,7 +626,7 @@ func create_empty_tags(tags: Array[String], create_valid: bool = true) -> void:
 	for new_tags in tag_database.query_result:
 		register_tag_to_memory(new_tags["id"], new_tags["name"], create_valid)
 	
-	tags_created.emit(tags.duplicate(), create_valid)
+	tags_created.emit(tags.duplicate())
 	
 	log_message("Tags created: " + ", ".join(tags), LogLevel.INFO)
 
