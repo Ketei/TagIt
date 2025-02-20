@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://dneuppmq0w14s"]
+
+[ext_resource type="Script" path="res://scenes/dialogs/tag_reader_dialog.gd" id="1_pa7c2"]
+
+[node name="TagReaderDialog" type="ConfirmationDialog"]
+title = "Add Tags"
+initial_position = 1
+size = Vector2i(350, 600)
+visible = true
+ok_button_text = "Submit"
+script = ExtResource("1_pa7c2")
+
+[node name="NewTagsTxtEdt" type="TextEdit" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 342.0
+offset_bottom = 551.0
+placeholder_text = "One tag per line"
