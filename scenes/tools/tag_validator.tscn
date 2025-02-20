@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://bpt667xe6g7q"]
+[gd_scene load_steps=9 format=3 uid="uid://bpt667xe6g7q"]
 
 [ext_resource type="Script" path="res://scenes/tools/tag_validator.gd" id="1_ytlwd"]
 [ext_resource type="Theme" uid="uid://u13wuypqagrc" path="res://style/table_theme.tres" id="2_ar7j6"]
 [ext_resource type="Script" path="res://scenes/validator_tree_script.gd" id="3_tfj57"]
 [ext_resource type="Texture2D" uid="uid://d83q0hy74uit" path="res://icons/search_icon.svg" id="4_67t5w"]
+[ext_resource type="Texture2D" uid="uid://dmjor0d4lqveu" path="res://icons/reset_icon.svg" id="5_mt7kd"]
 [ext_resource type="Texture2D" uid="uid://dahtjy0xwoxxi" path="res://icons/load_file_icon.svg" id="5_qq4ue"]
 [ext_resource type="Script" path="res://scenes/tools/create_valid_tag_tree_script.gd" id="6_4ta2e"]
 
@@ -83,7 +84,22 @@ layout_mode = 2
 text = "Create Invalid Tags"
 horizontal_alignment = 1
 
-[node name="Button" type="Button" parent="CreatorContainer/PanelContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CreatorContainer/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="ClearButton" type="Button" parent="CreatorContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+tooltip_text = "Clear All"
+icon = ExtResource("5_mt7kd")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="ImportButton" type="Button" parent="CreatorContainer/PanelContainer/HBoxContainer"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 size_flags_horizontal = 8

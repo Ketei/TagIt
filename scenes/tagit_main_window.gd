@@ -1850,6 +1850,9 @@ func add_tag(tag_name: String, clean_suggestions: bool = true) -> void:
 
 
 func on_esix_api_suggestions_found(for_tag: String, suggestions: Array[String]) -> void:
+	if for_tag.is_empty():
+		return
+	
 	if tags_tree.has_tag(for_tag):
 		for suggestion in suggestions:
 			add_suggestion(suggestion)

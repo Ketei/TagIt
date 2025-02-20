@@ -21,7 +21,7 @@ const ENDPOINT_ALIASES: String = "https://e621.net/tag_aliases.json?search[name_
 const ENDPOINT_PARENTS: String = "https://e621.net/tag_implications.json?search[antecedent_name]="
 const ENDPOINT_WIKI: String = "https://e621.net/wiki_pages.json?limit=1&title="
 const HEADERS: PackedStringArray = [
-	"User-Agent: TaglistMaker/3.2.3 (by Ketei)"
+	"User-Agent: TaglistMaker/3.2.4 (by Ketei)"
 ]
 
 @export var suggestion_limit: int = 30
@@ -104,6 +104,7 @@ func queue_job(url: String, job_type: JobTypes) -> void:
 
 ## Searches suggestions for a tag
 func search_suggestions(for_tag: String) -> void:
+	SingletonManager.TagIt.log_silent("[eSIx API] Queueing request for tag \"" + for_tag + "\"", DataManager.LogLevel.INFO)
 	queue_job(
 			get_tag_request_url(for_tag, "count", 1),
 			JobTypes.SUGGESTION)
@@ -309,7 +310,7 @@ func on_timer_timeout() -> void:
 
 func process_response(response: Array, response_type: JobTypes) -> void:
 	if response.is_empty():
-		suggestions_found.emit(response[0]["name"], [])
+		suggestions_found.emit("", [])
 		return
 	
 	if response_type == JobTypes.SUGGESTION:

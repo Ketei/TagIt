@@ -9,6 +9,7 @@ func _ready() -> void:
 	
 	SingletonManager.TagIt.tag_created.connect(on_tag_created)
 	SingletonManager.TagIt.tags_validity_updated.connect(on_tag_validity_updated)
+	SingletonManager.TagIt.tags_created.connect(_on_tags_created)
 
 
 func _input(event: InputEvent) -> void:
@@ -94,6 +95,11 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 	scroll_to_item(last_tag)
 
 
+func _on_tags_created(tag_names: Array[String]) -> void:
+	for tag in tag_names:
+		on_tag_created(tag, SingletonManager.TagIt.get_tag_id(tag))
+
+
 func on_focus_lost() -> void:
 	deselect_all()
 
@@ -115,9 +121,8 @@ func add_tag(tag_id: int, tag_name: String, tooltip: String, icon: Texture2D, ca
 	new_tag.set_tooltip_text(0, tooltip)
 	
 	if not new_tag.get_metadata(0)["valid"]:
-		new_tag.set_custom_color(0, Color.CRIMSON)
+		new_tag.set_custom_color(0, DataManager.INVALID_COLOR)
 	
-	#new_tag.collapsed = true
 	return new_tag
 
 
@@ -134,7 +139,7 @@ func on_tag_validity_updated(tag_ids: Array[int], valid: bool) -> void:
 			if tag.get_metadata(0)["id"] == id:
 				tag.get_metadata(0)["valid"] = valid
 				if not valid:
-					tag.set_custom_color(0, Color.CRIMSON)
+					tag.set_custom_color(0, DataManager.INVALID_COLOR)
 				else:
 					tag.clear_custom_color(0)
 				break
@@ -155,7 +160,7 @@ func on_tag_created(tag_name: String, tag_id: int) -> void:
 			tag.get_metadata(0)["id"] = tag_id
 			tag.get_metadata(0)["valid"] = is_valid
 			if not is_valid:
-				tag.set_custom_color(0, Color.CRIMSON)
+				tag.set_custom_color(0, DataManager.INVALID_COLOR)
 			else:
 				tag.clear_custom_color(0)
 			break
@@ -189,7 +194,7 @@ func update_tag(tag_id: int, parents: Array[String], valid: bool) -> void:
 			if valid:
 				tag.clear_custom_color(0)
 			else:
-				tag.set_custom_color(0, Color.CRIMSON)
+				tag.set_custom_color(0, DataManager.INVALID_COLOR)
 			break
 
 
