@@ -21,7 +21,7 @@ const ENDPOINT_ALIASES: String = "https://e621.net/tag_aliases.json?search[name_
 const ENDPOINT_PARENTS: String = "https://e621.net/tag_implications.json?search[antecedent_name]="
 const ENDPOINT_WIKI: String = "https://e621.net/wiki_pages.json?limit=1&title="
 const HEADERS: PackedStringArray = [
-	"User-Agent: TaglistMaker/3.2.3 (by Ketei)"
+	"User-Agent: TaglistMaker/3.2.4 (by Ketei)"
 ]
 
 @export var suggestion_limit: int = 30
