@@ -11,7 +11,6 @@ func _ready() -> void:
 	item_edited.connect(on_item_edited)
 	set_column_expand(0, true)
 	set_column_expand(1, false)
-	#set_column_custom_minimum_width(1, 100)
 	set_column_custom_minimum_width(1, 25)
 
 
@@ -29,8 +28,11 @@ func add_tag(tag_id: int, tag_name: String, tag_valid: bool) -> void:
 	
 	new_tag.set_cell_mode(0, TreeItem.CELL_MODE_STRING)
 	new_tag.set_cell_mode(1, TreeItem.CELL_MODE_CHECK)
-
-	new_tag.set_checked(1, tag_valid)
+	
+	if _modify_tags.has(tag_id):
+		new_tag.set_checked(1, _modify_tags[tag_id])
+	else:
+		new_tag.set_checked(1, tag_valid)
 	
 	new_tag.set_text(0, tag_name)
 	

@@ -42,64 +42,58 @@ func field_edited() -> void:
 
 func on_tag_searched(search_text: String) -> void:
 	var clean_text: String = search_text.strip_edges().to_lower()
-	#search_ln_edt.clear()
+	
 	page_spinbox.value = 1
+	validator_tree.clear_tags()
+	tag_results.clear()
 	
 	if clean_text.is_empty():
 		return
 	
 	var search_mode: int = 0
-	tag_results.clear()
 	
 	if clean_text == DataManager.SEARCH_WILDCARD:
-		search_mode = -1
+		search_mode = 4
 	else:
 		if clean_text.begins_with(DataManager.SEARCH_WILDCARD):
-			search_mode += 1
+			search_mode += 2
 			clean_text = clean_text.trim_prefix(DataManager.SEARCH_WILDCARD)
 		
 		if clean_text.ends_with(DataManager.SEARCH_WILDCARD):
-			search_mode += 2
+			search_mode += 1
 			clean_text = clean_text.trim_suffix(DataManager.SEARCH_WILDCARD)
 	
 	match search_mode:
-		-1:# Show all
-			tag_results = SingletonManager.TagIt.get_all_ids()
-			#validator_tree.set_tags()
-		0: # Exact
-			if SingletonManager.TagIt.has_tag(clean_text):
-				tag_results.append(SingletonManager.TagIt.get_tag_id(clean_text))
-		1: # Ends with
-			var tags := SingletonManager.TagIt.get_tags(SingletonManager.TagIt.get_all_tag_ids(true))
+		2: # Ends with
+			var tags := SingletonManager.TagIt.get_all_tag_names(false)
 			for tag in tags:
-				if tags[tag]["name"].ends_with(clean_text):
-					tag_results.append(tag)
-			
-			#validator_tree.set_tags(id_array)
-		2: # Begins with
-			var tags := SingletonManager.TagIt.get_tags(SingletonManager.TagIt.get_all_tag_ids(true))
-			for tag in tags:
-				if tags[tag]["name"].begins_with(clean_text):
-					tag_results.append(tag)
-			#validator_tree.set_tags(id_array)
+				if tag.ends_with(clean_text):
+					tag_results.append(SingletonManager.TagIt.get_tag_id(tag))
 		3: # Contains
-			var tags := SingletonManager.TagIt.get_tags(SingletonManager.TagIt.get_all_tag_ids(true))
+			var tags := SingletonManager.TagIt.get_all_tag_names(false)
 			for tag in tags:
-				if tags[tag]["name"].contains(clean_text):
-					tag_results.append(tag)
-			#validator_tree.set_tags(id_array)
+				if tag.contains(clean_text):
+					tag_results.append(SingletonManager.TagIt.get_tag_id(tag))
+		4:# Show all
+			tag_results = SingletonManager.TagIt.get_all_ids()
+		_: # Beggins With
+			var tags := SingletonManager.TagIt.get_all_tag_names(false)
+			for tag in tags:
+				if tag.begins_with(clean_text):
+					tag_results.append(SingletonManager.TagIt.get_tag_id(tag))
 	
 	var slice: Array[int] = tag_results.slice(0, SingletonManager.TagIt.settings.results_per_search)
-	@warning_ignore("integer_division")
-	page_spinbox.max_value = maxi(1, ceili(tag_results.size() / SingletonManager.TagIt.settings.results_per_search))
+	page_spinbox.max_value = maxi(1, ceili(tag_results.size() / float(SingletonManager.TagIt.settings.results_per_search)))
 	max_page_label.text = "/ " + str(page_spinbox.max_value)
 	
 	validator_tree.set_tags(slice)
 
 
 func on_tag_page_changed(new_page: float) -> void:
-	@warning_ignore("narrowing_conversion")
-	var slice: Array[int] = tag_results.slice(0, SingletonManager.TagIt.settings.results_per_search * new_page)
+	validator_tree.clear_tags()
+	var from: int = int(new_page - 1) * SingletonManager.TagIt.settings.results_per_search
+	var to: int = SingletonManager.TagIt.settings.results_per_search * int(new_page)
+	var slice: Array[int] = tag_results.slice(from, to)
 	validator_tree.set_tags(slice)
 
 
@@ -116,8 +110,7 @@ func on_save_pressed() -> void:
 		SingletonManager.TagIt.create_empty_tags(new_tags_invalid, false)
 	
 	validator_tree.clear_edited_tags()
-	validator_tree.clear_tags()
-	create_valid_tree.clear_tags()
+	create_valid_tree.set_all_tags_added()
 	
 	if unsaved_changes:
 		unsaved_changes = false
