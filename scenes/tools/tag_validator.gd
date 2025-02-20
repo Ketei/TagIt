@@ -16,12 +16,35 @@ var unsaved_changes: bool = false
 @onready var create_valid_ln_edt: LineEdit = $CreatorContainer/HBoxContainer/CreateValidLnEdt
 @onready var page_spinbox: SpinBox = $TreeContainer/HBoxContainer/PageSpinbox
 @onready var max_page_label: Label = $TreeContainer/HBoxContainer/MaxPageLabel
+@onready var clear_button: Button = $CreatorContainer/PanelContainer/HBoxContainer/ClearButton
+@onready var import_button: Button = $CreatorContainer/PanelContainer/HBoxContainer/ImportButton
 
 
 func _ready() -> void:
 	search_ln_edt.text_submitted.connect(on_tag_searched)
 	create_valid_ln_edt.text_submitted.connect(on_tag_creation_submitted)
 	page_spinbox.value_changed.connect(on_tag_page_changed)
+	clear_button.pressed.connect(_on_clear_pressed)
+	import_button.pressed.connect(_on_add_from_text_pressed)
+
+
+func _on_add_from_text_pressed() -> void:
+	var new_window := preload("res://scenes/dialogs/tag_reader_dialog.tscn").instantiate()
+	add_child(new_window)
+	new_window.show()
+	
+	var new_tags: PackedStringArray = await new_window.tags_finished
+	
+	if not new_tags.is_empty():
+		for tag in new_tags:
+			if not create_valid_tree.has_tag(tag):
+				create_valid_tree.add_tag(tag)
+	
+	new_window.queue_free()
+
+
+func _on_clear_pressed() -> void:
+	create_valid_tree.clear_tags()
 
 
 func on_tag_creation_submitted(add_text: String) -> void:

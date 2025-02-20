@@ -9,6 +9,7 @@ func _ready() -> void:
 	set_column_title(0,"Invalid Tags")
 	root_tree = create_item()
 	set_column_expand(0, true)
+	button_clicked.connect(on_button_clicked)
 
 
 func add_tag(tag_name: String) -> void:
