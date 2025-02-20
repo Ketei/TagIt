@@ -12,6 +12,7 @@ signal category_created(category_id: int)
 signal tag_deleted(tag_id: int)
 signal tag_updated(tag_id: int)
 signal tag_created(tag_name: String, tag_id: int)
+signal tags_created(tag_names: Array[String])
 signal tags_validity_updated(tag_ids: Array[int], valid: bool)
 signal website_created(site_id: int, site_name: String)
 signal website_deleted(site_id: int)
@@ -19,11 +20,12 @@ signal website_deleted(site_id: int)
 const DATABASE_PATH: String = "user://tag_database.db"
 const SEARCH_WILDCARD: String = "*"
 const DB_VERSION: int = 1
-const TAGIT_VERSION: String = "3.2.3"
+const TAGIT_VERSION: String = "3.2.4"
 const MAX_PARENT_RECURSION: int = 100
 const IMAGE_LIMITS: Vector2i = Vector2i(700, 700)
 const LEV_DISTANCE: float = 0.75
 const LEV_LOOP_LIMIT: int = 100
+const INVALID_COLOR: Color = Color(0.859, 0.302, 0.376)
 
 enum LogLevel {
 	INFO,
@@ -32,15 +34,11 @@ enum LogLevel {
 }
 
 var tag_database: SQLite = null
-#var projects_database: SQLite = null
-#var tag_relations: TagRelationsRes = null
 var icons: Dictionary = {} # id: {name: string, texture: resource}
 var loaded_tags: Dictionary = {} # Loaded in memory as need quick access. name -> id
-var invalid_tags: Array[int] = [] # MIGHT not be needed in memory. Check once working on the tag list
+var invalid_tags: Array[int] = []
 var tag_search_array: PackedStringArray = []
 var tag_search_data: PackedStringArray = []
-#var current_tags: int = 0
-#var data_tags: Array[int] = []
 var settings: AppSettingsRes = null
 var _default_icon_color: Color = Color.WHITE
 var splash_node: CanvasLayer = null
@@ -127,7 +125,7 @@ func _ready() -> void:
 					icon_color TEXT,
 					FOREIGN KEY (icon_id) REFERENCES icons (id) ON DELETE SET DEFAULT ON UPDATE NO ACTION);")
 		tag_database.create_table("groups", tag_groups)
-		tag_database.query(
+		tag_database.query( # hydrus prefixes
 			"CREATE TABLE hydrus_prefixes (
 				category_id INTEGER PRIMARY KEY NOT NULL,
 				prefix TEXT,
@@ -613,6 +611,7 @@ func create_empty_tag(tag_name: String) -> void:
 
 func create_empty_tags(tags: Array[String], create_valid: bool = true) -> void:
 	var new_rows: Array[Dictionary] = []
+	
 	for tag in tags:
 		new_rows.append({"name": tag, "is_valid": int(create_valid)})
 	
@@ -626,6 +625,8 @@ func create_empty_tags(tags: Array[String], create_valid: bool = true) -> void:
 	
 	for new_tags in tag_database.query_result:
 		register_tag_to_memory(new_tags["id"], new_tags["name"], create_valid)
+	
+	tags_created.emit(tags.duplicate(), create_valid)
 	
 	log_message("Tags created: " + ", ".join(tags), LogLevel.INFO)
 
@@ -1041,7 +1042,7 @@ func set_tag_valid(tag_id: int, is_valid: bool) -> void:
 		invalid_tags.remove_at(Arrays.binary_search(invalid_tags, tag_id))
 	else:
 		Arrays.insert_sorted_asc(invalid_tags, tag_id)
-	
+	print("Valid is: ", tag_id)
 	tags_validity_updated.emit(Array([tag_id], TYPE_INT, &"", null), is_valid)
 
 
@@ -1060,7 +1061,7 @@ func set_tags_valid(tag_ids: Array[int], is_valid: bool) -> void:
 				invalid_tags.remove_at(invalid_idx)
 		else:
 			Arrays.insert_sorted_asc(invalid_tags, tag)
-	
+	print("Valid are: ", tag_ids)
 	tags_validity_updated.emit(tag_ids.duplicate(), is_valid)
 
 
