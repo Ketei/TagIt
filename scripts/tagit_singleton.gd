@@ -1036,7 +1036,7 @@ func set_tag_valid(tag_id: int, is_valid: bool) -> void:
 		invalid_tags.remove_at(Arrays.binary_search(invalid_tags, tag_id))
 	else:
 		Arrays.insert_sorted_asc(invalid_tags, tag_id)
-	print("Valid is: ", tag_id)
+	
 	tags_validity_updated.emit(Array([tag_id], TYPE_INT, &"", null), is_valid)
 
 
