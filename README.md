@@ -16,7 +16,7 @@ If you're on **Windows**, download:
 - godotgif.windows.template_release.x86_64.dll
 - libgdsqlite.windows.template_release.x86_64.dll.
 
-Rename `tagit.windows.x86_64.exe` to `tagit.exe` and run it.
+Rename `tagit.windows.x86_64.exe` to `tagit.exe`.
 
 If you're on **Linux**, download:
 - tagit.pck
@@ -24,10 +24,12 @@ If you're on **Linux**, download:
 - libgodotgif.linux.template_release.x86_64.so
 - libgdsqlite.linux.template_release.x86_64.so.
 
-Rename `tagit.linux.x86_64` to `tagit.x86_64` and run it.
+Rename `tagit.linux.x86_64` to `tagit.x86_64`.
 
-Lastly create an empty text file WITHOUT the extension and write the version of the files you've downloaded and save it. Now you can launch the tagger through the executable.
+Lastly create an empty text file named `version` WITHOUT the extension and write the version of the files you've downloaded. Now you can launch the tagger through the executable.
 > If you downloaded 3.0.0 then write on the file `3.0.0` and nothing else.
+
+Now just launch `tagit.exe`/`tagit.x86_64`.
 
 > [!CAUTION]
 > Not using the intended names could render the software unusable.
