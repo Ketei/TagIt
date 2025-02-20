@@ -154,7 +154,7 @@ func on_save_pressed() -> void:
 		SingletonManager.TagIt.create_empty_tags(new_tags_invalid, false)
 	
 	validator_tree.clear_edited_tags()
-	create_valid_tree.set_all_tags_added()
+	create_valid_tree.clear_tags()
 	
 	if unsaved_changes:
 		unsaved_changes = false
