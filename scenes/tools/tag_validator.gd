@@ -108,10 +108,12 @@ func on_save_pressed() -> void:
 	var invalid_tags: Array[int] = validator_tree.get_tags_edited(false)
 	var new_tags_invalid: Array[String] = create_valid_tree.get_new_invalid_tags()
 	
-	SingletonManager.TagIt.set_tags_valid(valid_tags, true)
-	SingletonManager.TagIt.set_tags_valid(invalid_tags, false)
-	
-	SingletonManager.TagIt.create_empty_tags(new_tags_invalid, false)
+	if not valid_tags.is_empty():
+		SingletonManager.TagIt.set_tags_valid(valid_tags, true)
+	if not invalid_tags.is_empty():
+		SingletonManager.TagIt.set_tags_valid(invalid_tags, false)
+	if not new_tags_invalid.is_empty():
+		SingletonManager.TagIt.create_empty_tags(new_tags_invalid, false)
 	
 	validator_tree.clear_edited_tags()
 	validator_tree.clear_tags()
