@@ -618,7 +618,6 @@ func on_bg_type_selected(bg_type: int) -> void:
 
 
 func save_character() -> void:
-	#var checked_clothing: int = 0
 	var body_textures: Array[int] = []
 	
 	for item in body_texture_tree.get_root().get_children():
@@ -801,7 +800,7 @@ func generate_tags() -> Array[String]:
 		character_tags.append_array(body_opt_btn.get_item_metadata(character["body"]))
 	
 		if not character["species"].is_empty():
-			character_tags.append(character["name"])
+			character_tags.append(character["species"])
 		
 		character_tags.append(gender_opt_btn.get_item_text(character["gender"]))
 		character_tags.append(gender_opt_btn.get_item_metadata(character["gender"]).format([body_opt_btn.get_item_metadata(character["body"])[0]]))

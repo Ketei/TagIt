@@ -98,6 +98,9 @@ func on_save_pressed() -> void:
 	if tool_scene == null:
 		return
 	
+	if warn_unsaved:
+		warn_unsaved = false
+	
 	tool_scene.on_save_pressed()
 	saved_notification.visible = true
 	save_button.disabled = true
