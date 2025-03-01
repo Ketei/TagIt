@@ -5,9 +5,7 @@ signal something_changed
 
 const MessageConfirmationDialog = preload("res://scenes/dialogs/message_confirmation_dialog.gd")
 const TOOL_ID: String = "templates"
-const BIN_ICON = preload("res://icons/bin_icon.svg")
 
-#var template_memory: Array[Dictionary] = []
 var template_resource: TemplateResource = null
 var tool_description: String = "Create tag list templates."
 var requires_save: bool = true
