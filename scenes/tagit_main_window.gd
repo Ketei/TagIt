@@ -1093,6 +1093,7 @@ func new_list() -> void:
 	current_project = -1
 	_suggestion_blacklist.clear()
 	clear_all_tagger()
+	_save_required = false
 
 
 func clear_all_tagger() -> void:
