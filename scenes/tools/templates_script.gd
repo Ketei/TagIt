@@ -392,6 +392,12 @@ func on_save_pressed() -> void:
 				OS.move_to_trash(TemplateResource.get_thumbnail_path() + thumbnail_path)
 			thumbnail_path = ""
 		
+		elif not thumbnail_path.is_empty() and template_resource.template_stash[stash_key]["thumbnail"] != null:
+			if thumbnail_path.get_extension() == "jpg":
+				OS.move_to_trash(TemplateResource.get_thumbnail_path() + thumbnail_path)
+				thumbnail_path = thumbnail_path.trim_suffix(".jpg") + ".webp"
+			template_resource.template_stash[stash_key]["thumbnail"].save_webp(TemplateResource.get_thumbnail_path() + thumbnail_path)
+		
 		template_resource.overwrite_template(
 			stash_key,
 			template_resource.template_stash[stash_key]["title"],
