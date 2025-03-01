@@ -407,15 +407,24 @@ func on_save_pressed() -> void:
 	
 	for mem_template in template_memory:
 		if mem_template["template_index"] == -1:
-			var image_title: String = Strings.random_string64()
-			var img: Image = mem_template["thumbnail"].get_image()
-			img.save_jpg("user://templates/thumbnails/" + image_title + ".jpg")
+			var image_title: String = ""
+			if mem_template["thumbnail"] != null:
+				image_title = Strings.random_string64()
+				
+				while FileAccess.file_exists("user://templates/thumbnails/" + image_title + ".webp"):
+					image_title = Strings.random_string64()
+				
+				image_title += ".webp"
+				
+				var img: Image = mem_template["thumbnail"].get_image()
+				img.save_webp("user://templates/thumbnails/" + image_title, true)
+				
 			target_resource.new_template(
 					mem_template["title"],
 					mem_template["description"],
 					mem_template["tags"],
 					mem_template["groups"],
-					image_title + ".jpg"
+					image_title
 					)
 		else:
 			var img_path: String = target_resource.templates[mem_template["template_index"]]["thumbnail"]
@@ -424,8 +433,10 @@ func on_save_pressed() -> void:
 				OS.move_to_trash(TemplateResource.get_thumbnail_path() + img_path)
 				img_path = ""
 			else:
+				if img_path.get_extension() == "jpg":
+					img_path = img_path.trim_suffix(".jpg") + ".webp"
 				var img: Image = mem_template["thumbnail"].get_image()
-				img.save_jpg(TemplateResource.get_thumbnail_path() + img_path)
+				img.save_webp(TemplateResource.get_thumbnail_path() + img_path)
 			
 			target_resource.overwrite_template(
 				mem_template["template_index"],
