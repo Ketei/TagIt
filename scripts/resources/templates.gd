@@ -1,9 +1,11 @@
 class_name TemplateResource
 extends Resource
 
+
 const TEMPLATE_PATH: String = "user://templates/templates.tres"
 const TEMPLATE_THUMBNAILS: String = "user://templates/thumbnails/"
 @export var templates: Array[Dictionary] = []
+var template_stash: Dictionary = {}
 
 
 static func get_thumbnail_path() -> String:
@@ -36,6 +38,28 @@ func new_template(title: String, description: String, tags: Array[String], group
 		"thumbnail": thumbnail})
 
 
+func stash_template(index: int, title: String, description: String, tags: Array[String], groups: Array[int], thumbnail: Image) -> void:
+	template_stash[index] = {
+		"title": title,
+		"description": description,
+		"groups": groups,
+		"tags": tags,
+		"thumbnail": thumbnail
+	}
+
+
+func is_stashed(index: int) -> bool:
+	return template_stash.has(index)
+
+
+func drop_stashed(index: int) -> void:
+	template_stash.erase(index)
+
+
+func clear_stash() -> void:
+	template_stash.clear()
+
+
 func overwrite_template(template_idx: int, title: String, description: String, tags: Array[String], groups: Array[int], thumbnail: String) -> void:
 	templates[template_idx] = {
 		"title": title,
@@ -53,8 +77,13 @@ func delete_template_thumbnail(template_idx: int) -> void:
 	if not templates[template_idx]["thumbnail"].is_empty() and FileAccess.file_exists(get_thumbnail_path() + templates[template_idx]["thumbnail"]):
 		OS.move_to_trash(get_thumbnail_path() + templates[template_idx]["thumbnail"])
 
+
 func get_template(template_idx: int) -> Dictionary:
 	return templates[template_idx].duplicate()
+
+
+func get_stash(stash_idx: int) -> Dictionary:
+	return template_stash[stash_idx]
 
 
 func save() -> void:
