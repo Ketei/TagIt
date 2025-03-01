@@ -252,7 +252,7 @@ func on_template_deleted(deleted_index: int) -> void:
 		template_resource.drop_stashed(deleted_index)
 	
 	if deleted_index == current_template:
-		template_title.clear()
+		template_title.text = ""
 		description_txt_edt.clear()
 		clear_thumbnail.disabled = true
 		clear_fields()
