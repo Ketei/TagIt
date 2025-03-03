@@ -1,6 +1,9 @@
 extends IDTree
 
 
+signal suggestions_dropped(suggestions: Array[String])
+
+
 func _ready() -> void:
 	create_item()
 	set_column_expand(0, true)
@@ -86,11 +89,13 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 			1,
 			SingletonManager.TagIt.get_category_icon_color(1))
 	
-	
 	if data["tree_type"] == 0:
 		data["tree"].delete_tags(data["tag_names"])
 	elif data["tree_type"] == 2:
 		data["tree"].mark_tags(data["tag_names"])
+	
+	if data["tree_type"] == 0 or data["tree_type"] == 1:
+		suggestions_dropped.emit(data["tag_names"])
 	
 	scroll_to_item(last_tag)
 

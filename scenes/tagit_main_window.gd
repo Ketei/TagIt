@@ -143,7 +143,6 @@ var prio_list_node: Control = null
 @onready var settings_image_load_spn_bx: SpinBox = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/EnableContainer/ToggleContainer/ImageLoadSpnBx
 @onready var settings_load_img_chk_btn: CheckButton = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/EnableContainer/ToggleContainer/LoadImgChkBtn
 @onready var settings_site_opt_btn: OptionButton = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/SitePanel/MainContainer/OptionsContainer/DefaultSiteOptBtn
-#@onready var settings_logs_label: RichTextLabel = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/LogsContainer/PanelContainer/MarginContainer/LogsLabel
 @onready var settings_logs_txt_edt: TextEdit = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/LogsContainer/PanelContainer/MarginContainer/SettingsLogsTxtEdt
 @onready var settings_key_ln_edt: LineEdit = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/ApiContainer/KeyContainer/KeyLnEdt
 @onready var settings_port_spn_bx: SpinBox = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/ApiContainer/PortContainer/PortSpnBx
@@ -157,6 +156,7 @@ var prio_list_node: Control = null
 @onready var settings_search_esix_tags_btn: CheckButton = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ESixApiPanel/MainContainer/SearchContainer/SearchESixTagsBtn
 @onready var settings_results_per_srch_spn_bx: SpinBox = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ResultsPerSearchPanel/MainContainer/HBoxContainer/ResPerSrchSpnBx
 @onready var settings_clear_logs_btn: Button = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/LogsContainer/LogsHeader/ClearLogsBtn
+@onready var settings_blacklist_used_chk_btn: CheckButton = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/BlacklistUsedPanel/MainContainer/BlacklistUsedChkBtn
 
 # --------------------
 # ----- Wiki -----
@@ -269,6 +269,7 @@ func _ready() -> void:
 	settings_request_sugg_chk_btn.button_pressed = SingletonManager.TagIt.settings.request_suggestions
 	settings_relevancy_spn_bx.value = SingletonManager.TagIt.settings.suggestion_relevancy
 	settings_relevancy_spn_bx.editable = settings_request_sugg_chk_btn.button_pressed
+	settings_blacklist_used_chk_btn.button_pressed = SingletonManager.TagIt.settings.blacklist_used_suggestions
 	wiki_image_side.visible = settings_load_img_chk_btn.button_pressed
 	thumbnail_size_changer.select(SingletonManager.TagIt.settings.wiki_thumbnail_size)
 	on_thumbnail_size_changed(thumbnail_size_changer.selected)
@@ -276,6 +277,7 @@ func _ready() -> void:
 	tagger_suggestion_tree.size.y = SingletonManager.TagIt.settings.suggestions_height
 	
 	# --- Tagger ---
+	tags_tree.suggestions_dropped.connect(_on_suggestions_dropped)
 	open_img_btn.pressed.connect(on_select_image_pressed)
 	clear_img_btn.pressed.connect(on_clear_image_pressed)
 	export_btn.pressed.connect(export_tags)
@@ -348,6 +350,7 @@ func _ready() -> void:
 	settings_results_per_srch_spn_bx.value_changed.connect(on_results_per_search_changed)
 	settings_image_load_spn_bx.value_changed.connect(on_wiki_image_amount_changed)
 	settings_clear_logs_btn.pressed.connect(_on_clear_logs_pressed)
+	settings_blacklist_used_chk_btn.toggled.connect(_on_blacklist_used_suggestions_toggled)
 	
 	SingletonManager.eSixAPI.suggestions_found.connect(on_esix_api_suggestions_found)
 	
@@ -474,6 +477,14 @@ func _notification(what):
 func _list_changed() -> void:
 	if not _save_required:
 		_save_required = true
+
+
+func _on_suggestions_dropped(suggestions: Array[String]) -> void:
+	Arrays.append_uniques(_suggestion_blacklist, suggestions)
+
+
+func _on_blacklist_used_suggestions_toggled(enabled: bool) -> void:
+	SingletonManager.TagIt.settings.blacklist_used_suggestions = enabled
 
 
 func on_import_button_id_pressed(id: int) -> void:
@@ -1081,8 +1092,8 @@ func on_blacklist_cancelled() -> void:
 	selector = null
 
 
-func on_new_blacklist(new_blacklist: PackedStringArray) -> void:
-	_suggestion_blacklist = new_blacklist
+func on_new_blacklist() -> void:
+	#_suggestion_blacklist = new_blacklist
 	selector.visible = false
 	selector.queue_free()
 	selector = null
@@ -1823,8 +1834,8 @@ func add_tag(tag_name: String, clean_suggestions: bool = true) -> void:
 							group_id)
 			
 			for suggestion_id in suggestion_dict:
-				if not tagger_suggestion_tree.has_suggestion(suggestion_dict[suggestion_id]) and not clean_tag == suggestion_dict[suggestion_id]:
-					tagger_suggestion_tree.add_suggestion(suggestion_dict[suggestion_id])
+				if clean_tag != suggestion_dict[suggestion_id]:
+					add_suggestion(suggestion_dict[suggestion_id])
 			
 			clean_tag = tag_data["tag"]
 			category = tag_data["category"]
@@ -2053,6 +2064,11 @@ func on_suggestions_activated(suggestions: Array[String], tree: Tree) -> void:
 
 func blacklist_tags(tags: Array[String]) -> void:
 	Arrays.append_uniques(_suggestion_blacklist, tags)
+
+
+func blacklist_tag(tag: String) -> void:
+	if not _suggestion_blacklist.has(tag):
+		_suggestion_blacklist.append(tag)
 
 
 func generate_icon_range() -> void:

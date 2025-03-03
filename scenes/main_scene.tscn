@@ -1384,6 +1384,25 @@ size_flags_stretch_ratio = 2.0
 text = "Makes it so tags you manually remove won't be suggested again on that list."
 label_settings = ExtResource("8_2hfj2")
 
+[node name="BlacklistUsedPanel" type="PanelContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer"]
+layout_mode = 2
+
+[node name="MainContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/BlacklistUsedPanel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="BlacklistUsedChkBtn" type="CheckButton" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/BlacklistUsedPanel/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Blacklist used suggestions"
+
+[node name="AutofilLabel" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/BlacklistUsedPanel/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "Makes it so tags you add won't be suggested again on that list."
+label_settings = ExtResource("8_2hfj2")
+
 [node name="LinksPanel" type="PanelContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer"]
 layout_mode = 2
 
