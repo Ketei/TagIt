@@ -1688,6 +1688,8 @@ func on_wiki_searched(search_text: String) -> void:
 		
 	else:
 		wiki_rtl.clear()
+		wiki_search_ln_edt.editable = true
+		wiki_search_btn.disabled = false
 		wiki_title_lbl.text = "[Not Found]"
 		wiki_parents_container.visible = false
 		wiki_aliases_container.visible = false
