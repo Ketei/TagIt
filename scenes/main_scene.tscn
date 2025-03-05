@@ -1,4 +1,4 @@
-[gd_scene load_steps=63 format=3 uid="uid://eaxngd263vbi"]
+[gd_scene load_steps=64 format=3 uid="uid://eaxngd263vbi"]
 
 [ext_resource type="Script" path="res://scenes/tagit_main_window.gd" id="1_3rneb"]
 [ext_resource type="Texture2D" uid="uid://kkvcqst6wv4k" path="res://icons/new_icon.svg" id="2_3s1fn"]
@@ -42,6 +42,7 @@
 [ext_resource type="Script" path="res://scenes/tag_search_container.gd" id="25_l1y5q"]
 [ext_resource type="Theme" uid="uid://u13wuypqagrc" path="res://style/table_theme.tres" id="26_8xsa4"]
 [ext_resource type="Script" path="res://scenes/large_image_script.gd" id="26_cj3pc"]
+[ext_resource type="Script" path="res://scripts/right_click_popup.gd" id="27_pbn41"]
 [ext_resource type="Texture2D" uid="uid://vypb46ut3fil" path="res://icons/x_icon.svg" id="29_gsfm7"]
 [ext_resource type="Texture2D" uid="uid://bw5u0gth430jt" path="res://icons/spin_load.svg" id="29_valht"]
 [ext_resource type="Script" path="res://addons/tnowe_extra_controls/elements/scroll_zoom_view.gd" id="29_vpytr"]
@@ -308,10 +309,15 @@ icon_alignment = 1
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("26_8xsa4")
+allow_rmb_select = true
 hide_root = true
 select_mode = 2
 scroll_horizontal_enabled = false
 script = ExtResource("4_e0v1j")
+
+[node name="MainTaggerPopup" type="PopupMenu" parent="MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer/CurrentTagsContainer/TagsTree"]
+size = Vector2i(120, 90)
+script = ExtResource("27_pbn41")
 
 [node name="BarItems" type="HBoxContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer/CurrentTagsContainer"]
 layout_mode = 2
@@ -1684,7 +1690,6 @@ text = "+"
 [node name="IconsTree" type="Tree" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/MainContainer/IconsContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-mouse_force_pass_scroll_events = false
 theme = ExtResource("26_8xsa4")
 columns = 2
 hide_folding = true
@@ -1715,7 +1720,6 @@ text = "+"
 [node name="GroupsTree" type="Tree" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/MainContainer/GroupsContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-mouse_force_pass_scroll_events = false
 theme = ExtResource("26_8xsa4")
 theme_override_constants/icon_max_width = 16
 hide_folding = true
@@ -1748,7 +1752,6 @@ text = "+"
 [node name="CategoryTree" type="Tree" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/MainContainer/CategoryContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-mouse_force_pass_scroll_events = false
 theme = ExtResource("26_8xsa4")
 columns = 2
 column_titles_visible = true
@@ -1785,7 +1788,6 @@ icon_alignment = 1
 custom_minimum_size = Vector2(0, 160)
 layout_mode = 2
 size_flags_vertical = 3
-mouse_force_pass_scroll_events = false
 theme = ExtResource("26_8xsa4")
 hide_folding = true
 hide_root = true
