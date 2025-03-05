@@ -517,6 +517,7 @@ func on_file_selected(file_path: String, overwrite: bool, file_dialog: FileDialo
 		SingletonManager.TagIt.log_message(
 				"The file couldn't be loaded.",
 				DataManager.LogLevel.ERROR)
+		notify_import(false, false)
 		return
 	
 	if json.parse(file_string) != OK:
@@ -527,12 +528,14 @@ func on_file_selected(file_path: String, overwrite: bool, file_dialog: FileDialo
 						".\nError: ",
 						json.get_error_message()),
 				DataManager.LogLevel.ERROR)
+		notify_import(false, false)
 		return
 	
 	if typeof(json.data) != TYPE_DICTIONARY:
 		SingletonManager.TagIt.log_message(
 				"The data structure in the provided JSON couldn't be loaded.",
 				DataManager.LogLevel.ERROR)
+		notify_import(false, false)
 		return
 		
 	var data: Dictionary = json.data.duplicate()
@@ -541,15 +544,18 @@ func on_file_selected(file_path: String, overwrite: bool, file_dialog: FileDialo
 		SingletonManager.TagIt.log_message(
 				"[JSON PARSER] JSON missing type.",
 				DataManager.LogLevel.ERROR)
+		notify_import(false, false)
 		return
 	
 	if data["type"] == 0:
 		if not data.has_all(["aliases", "category", "group", "group_desc", "group_suggestions", "is_valid", "name", "parents", "priority", "suggestions", "tooltip", "type", "wiki"]):
 			SingletonManager.TagIt.log_message("[JSON PARSER] JSON data is a dictionary but is missing some keys.", SingletonManager.TagIt.LogLevel.ERROR)
+			notify_import(false, false)
 			return
 	
 		if not typeof(data["category"]) == TYPE_DICTIONARY or not data["category"].has_all(["category_color", "category_icon", "description", "icon_name", "name"]):
 			SingletonManager.TagIt.log_message("[JSON PARSER] JSON data category is missing some data.", SingletonManager.TagIt.LogLevel.ERROR)
+			notify_import(false, false)
 			return
 		
 		json_tag_to_db(data, overwrite)
@@ -557,6 +563,7 @@ func on_file_selected(file_path: String, overwrite: bool, file_dialog: FileDialo
 	elif data["type"] == 1:
 		if not data.has_all(["categories", "groups", "icons", "tags", "type"]):
 			SingletonManager.TagIt.log_message("[JSON PARSER] JSON data is a dictionary but is missing some keys.", SingletonManager.TagIt.LogLevel.ERROR)
+			notify_import(false, false)
 			return
 		json_group_to_db(data, overwrite)
 
@@ -2240,6 +2247,7 @@ func json_tag_to_db(data: Dictionary, overwrite: bool = false) -> void:
 		SingletonManager.TagIt.log_message(
 				"[JSON PARSER] JSON data doesn't have a tag name.",
 				DataManager.LogLevel.ERROR)
+		notify_import(false, false)
 		return
 	
 	var icon_id: int = 0
@@ -2310,6 +2318,7 @@ func json_tag_to_db(data: Dictionary, overwrite: bool = false) -> void:
 			SingletonManager.TagIt.log_message(
 					"[TagIt] Tag \"" + clean_name + "\" already in DB. Skipping.",
 					SingletonManager.TagIt.LogLevel.INFO)
+		notify_import()
 		return
 
 	SingletonManager.TagIt.create_tag(
@@ -2338,6 +2347,21 @@ func json_tag_to_db(data: Dictionary, overwrite: bool = false) -> void:
 				_new_tag_suggestions.append(grp_id)
 	if not _new_tag_suggestions.is_empty():
 		SingletonManager.TagIt.add_group_suggestions(new_tag_id, _new_tag_suggestions)
+	
+	notify_import()
+
+
+func notify_import(multiple: bool = false, success: bool = true) -> void:
+	var message := preload("res://scenes/dialogs/message_confirmation_dialog.gd").new()
+	message.title = "Finished"
+	if success:
+		message.message = "Tags Imported" if multiple else "Tag Imported"
+	else:
+		message.message = "Failed to import tags" if multiple else "Failed to import tag"
+	add_child(message)
+	message.show()
+	await message.dialog_finished
+	message.queue_free()
 
 
 func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
@@ -2538,6 +2562,8 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 							&"",
 							null),
 					clean_tag)
+	
+	notify_import(true)
 
 
 func db_tag_to_json(tag_id: int, path: String) -> void:
