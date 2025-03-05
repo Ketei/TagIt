@@ -48,7 +48,6 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if autofill_list.has_focus() and event is InputEventKey:
-	#if event is InputEventKey:
 		if Input.is_action_just_pressed(close_event) and autofill_list.is_selected((autofill_list.item_count - 1) * list_direction):
 			grab_focus()
 			autofill_list.visible = false
@@ -167,7 +166,7 @@ func add_item(item: String, alias: String = "") -> void:
 			idx = autofill_list.add_item(item + " → " + alias)
 		autofill_list.move_item(idx, 0)
 		idx = 0
-	autofill_list.set_item_metadata(idx, item)
+	autofill_list.set_item_metadata(idx, item if alias.is_empty() else alias)
 
 
 func clear_list() -> void:

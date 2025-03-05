@@ -143,7 +143,6 @@ var prio_list_node: Control = null
 @onready var settings_image_load_spn_bx: SpinBox = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/EnableContainer/ToggleContainer/ImageLoadSpnBx
 @onready var settings_load_img_chk_btn: CheckButton = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/EnableContainer/ToggleContainer/LoadImgChkBtn
 @onready var settings_site_opt_btn: OptionButton = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/SitePanel/MainContainer/OptionsContainer/DefaultSiteOptBtn
-#@onready var settings_logs_label: RichTextLabel = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/LogsContainer/PanelContainer/MarginContainer/LogsLabel
 @onready var settings_logs_txt_edt: TextEdit = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/LogsContainer/PanelContainer/MarginContainer/SettingsLogsTxtEdt
 @onready var settings_key_ln_edt: LineEdit = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/ApiContainer/KeyContainer/KeyLnEdt
 @onready var settings_port_spn_bx: SpinBox = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/ApiContainer/PortContainer/PortSpnBx
@@ -157,6 +156,7 @@ var prio_list_node: Control = null
 @onready var settings_search_esix_tags_btn: CheckButton = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ESixApiPanel/MainContainer/SearchContainer/SearchESixTagsBtn
 @onready var settings_results_per_srch_spn_bx: SpinBox = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ResultsPerSearchPanel/MainContainer/HBoxContainer/ResPerSrchSpnBx
 @onready var settings_clear_logs_btn: Button = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/LogsContainer/LogsHeader/ClearLogsBtn
+@onready var settings_blacklist_used_chk_btn: CheckButton = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/BlacklistUsedPanel/MainContainer/BlacklistUsedChkBtn
 
 # --------------------
 # ----- Wiki -----
@@ -269,6 +269,7 @@ func _ready() -> void:
 	settings_request_sugg_chk_btn.button_pressed = SingletonManager.TagIt.settings.request_suggestions
 	settings_relevancy_spn_bx.value = SingletonManager.TagIt.settings.suggestion_relevancy
 	settings_relevancy_spn_bx.editable = settings_request_sugg_chk_btn.button_pressed
+	settings_blacklist_used_chk_btn.button_pressed = SingletonManager.TagIt.settings.blacklist_used_suggestions
 	wiki_image_side.visible = settings_load_img_chk_btn.button_pressed
 	thumbnail_size_changer.select(SingletonManager.TagIt.settings.wiki_thumbnail_size)
 	on_thumbnail_size_changed(thumbnail_size_changer.selected)
@@ -276,6 +277,7 @@ func _ready() -> void:
 	tagger_suggestion_tree.size.y = SingletonManager.TagIt.settings.suggestions_height
 	
 	# --- Tagger ---
+	tags_tree.suggestions_dropped.connect(_on_suggestions_dropped)
 	open_img_btn.pressed.connect(on_select_image_pressed)
 	clear_img_btn.pressed.connect(on_clear_image_pressed)
 	export_btn.pressed.connect(export_tags)
@@ -348,6 +350,7 @@ func _ready() -> void:
 	settings_results_per_srch_spn_bx.value_changed.connect(on_results_per_search_changed)
 	settings_image_load_spn_bx.value_changed.connect(on_wiki_image_amount_changed)
 	settings_clear_logs_btn.pressed.connect(_on_clear_logs_pressed)
+	settings_blacklist_used_chk_btn.toggled.connect(_on_blacklist_used_suggestions_toggled)
 	
 	SingletonManager.eSixAPI.suggestions_found.connect(on_esix_api_suggestions_found)
 	
@@ -476,6 +479,14 @@ func _list_changed() -> void:
 		_save_required = true
 
 
+func _on_suggestions_dropped(suggestions: Array[String]) -> void:
+	Arrays.append_uniques(_suggestion_blacklist, suggestions)
+
+
+func _on_blacklist_used_suggestions_toggled(enabled: bool) -> void:
+	SingletonManager.TagIt.settings.blacklist_used_suggestions = enabled
+
+
 func on_import_button_id_pressed(id: int) -> void:
 	var new_file_dialog := FileDialog.new()
 	new_file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
@@ -506,6 +517,7 @@ func on_file_selected(file_path: String, overwrite: bool, file_dialog: FileDialo
 		SingletonManager.TagIt.log_message(
 				"The file couldn't be loaded.",
 				DataManager.LogLevel.ERROR)
+		notify_import(false, false)
 		return
 	
 	if json.parse(file_string) != OK:
@@ -516,12 +528,14 @@ func on_file_selected(file_path: String, overwrite: bool, file_dialog: FileDialo
 						".\nError: ",
 						json.get_error_message()),
 				DataManager.LogLevel.ERROR)
+		notify_import(false, false)
 		return
 	
 	if typeof(json.data) != TYPE_DICTIONARY:
 		SingletonManager.TagIt.log_message(
 				"The data structure in the provided JSON couldn't be loaded.",
 				DataManager.LogLevel.ERROR)
+		notify_import(false, false)
 		return
 		
 	var data: Dictionary = json.data.duplicate()
@@ -530,15 +544,18 @@ func on_file_selected(file_path: String, overwrite: bool, file_dialog: FileDialo
 		SingletonManager.TagIt.log_message(
 				"[JSON PARSER] JSON missing type.",
 				DataManager.LogLevel.ERROR)
+		notify_import(false, false)
 		return
 	
 	if data["type"] == 0:
 		if not data.has_all(["aliases", "category", "group", "group_desc", "group_suggestions", "is_valid", "name", "parents", "priority", "suggestions", "tooltip", "type", "wiki"]):
 			SingletonManager.TagIt.log_message("[JSON PARSER] JSON data is a dictionary but is missing some keys.", SingletonManager.TagIt.LogLevel.ERROR)
+			notify_import(false, false)
 			return
 	
 		if not typeof(data["category"]) == TYPE_DICTIONARY or not data["category"].has_all(["category_color", "category_icon", "description", "icon_name", "name"]):
 			SingletonManager.TagIt.log_message("[JSON PARSER] JSON data category is missing some data.", SingletonManager.TagIt.LogLevel.ERROR)
+			notify_import(false, false)
 			return
 		
 		json_tag_to_db(data, overwrite)
@@ -546,6 +563,7 @@ func on_file_selected(file_path: String, overwrite: bool, file_dialog: FileDialo
 	elif data["type"] == 1:
 		if not data.has_all(["categories", "groups", "icons", "tags", "type"]):
 			SingletonManager.TagIt.log_message("[JSON PARSER] JSON data is a dictionary but is missing some keys.", SingletonManager.TagIt.LogLevel.ERROR)
+			notify_import(false, false)
 			return
 		json_group_to_db(data, overwrite)
 
@@ -1081,8 +1099,8 @@ func on_blacklist_cancelled() -> void:
 	selector = null
 
 
-func on_new_blacklist(new_blacklist: PackedStringArray) -> void:
-	_suggestion_blacklist = new_blacklist
+func on_new_blacklist() -> void:
+	#_suggestion_blacklist = new_blacklist
 	selector.visible = false
 	selector.queue_free()
 	selector = null
@@ -1093,6 +1111,7 @@ func new_list() -> void:
 	current_project = -1
 	_suggestion_blacklist.clear()
 	clear_all_tagger()
+	_save_required = false
 
 
 func clear_all_tagger() -> void:
@@ -1687,6 +1706,8 @@ func on_wiki_searched(search_text: String) -> void:
 		
 	else:
 		wiki_rtl.clear()
+		wiki_search_ln_edt.editable = true
+		wiki_search_btn.disabled = false
 		wiki_title_lbl.text = "[Not Found]"
 		wiki_parents_container.visible = false
 		wiki_aliases_container.visible = false
@@ -1820,8 +1841,8 @@ func add_tag(tag_name: String, clean_suggestions: bool = true) -> void:
 							group_id)
 			
 			for suggestion_id in suggestion_dict:
-				if not tagger_suggestion_tree.has_suggestion(suggestion_dict[suggestion_id]) and not clean_tag == suggestion_dict[suggestion_id]:
-					tagger_suggestion_tree.add_suggestion(suggestion_dict[suggestion_id])
+				if clean_tag != suggestion_dict[suggestion_id]:
+					add_suggestion(suggestion_dict[suggestion_id])
 			
 			clean_tag = tag_data["tag"]
 			category = tag_data["category"]
@@ -2052,6 +2073,11 @@ func blacklist_tags(tags: Array[String]) -> void:
 	Arrays.append_uniques(_suggestion_blacklist, tags)
 
 
+func blacklist_tag(tag: String) -> void:
+	if not _suggestion_blacklist.has(tag):
+		_suggestion_blacklist.append(tag)
+
+
 func generate_icon_range() -> void:
 	icon_range.clear()
 	for id in SingletonManager.TagIt.icons.keys():
@@ -2221,6 +2247,7 @@ func json_tag_to_db(data: Dictionary, overwrite: bool = false) -> void:
 		SingletonManager.TagIt.log_message(
 				"[JSON PARSER] JSON data doesn't have a tag name.",
 				DataManager.LogLevel.ERROR)
+		notify_import(false, false)
 		return
 	
 	var icon_id: int = 0
@@ -2291,6 +2318,7 @@ func json_tag_to_db(data: Dictionary, overwrite: bool = false) -> void:
 			SingletonManager.TagIt.log_message(
 					"[TagIt] Tag \"" + clean_name + "\" already in DB. Skipping.",
 					SingletonManager.TagIt.LogLevel.INFO)
+		notify_import()
 		return
 
 	SingletonManager.TagIt.create_tag(
@@ -2319,6 +2347,21 @@ func json_tag_to_db(data: Dictionary, overwrite: bool = false) -> void:
 				_new_tag_suggestions.append(grp_id)
 	if not _new_tag_suggestions.is_empty():
 		SingletonManager.TagIt.add_group_suggestions(new_tag_id, _new_tag_suggestions)
+	
+	notify_import()
+
+
+func notify_import(multiple: bool = false, success: bool = true) -> void:
+	var message := preload("res://scenes/dialogs/message_confirmation_dialog.gd").new()
+	message.title = "Finished"
+	if success:
+		message.message = "Tags Imported" if multiple else "Tag Imported"
+	else:
+		message.message = "Failed to import tags" if multiple else "Failed to import tag"
+	add_child(message)
+	message.show()
+	await message.dialog_finished
+	message.queue_free()
 
 
 func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
@@ -2519,6 +2562,8 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 							&"",
 							null),
 					clean_tag)
+	
+	notify_import(true)
 
 
 func db_tag_to_json(tag_id: int, path: String) -> void:

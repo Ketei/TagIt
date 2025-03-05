@@ -56,6 +56,10 @@ size_flags_vertical = 3
 hide_folding = true
 hide_root = true
 
+[node name="AddTagLnEdt" type="LineEdit" parent="MainCenter/MainPanel/MainMargin/MainContainer"]
+layout_mode = 2
+placeholder_text = "Add Tag..."
+
 [node name="ButtonContainer" type="HBoxContainer" parent="MainCenter/MainPanel/MainMargin/MainContainer"]
 layout_mode = 2
 

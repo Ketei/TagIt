@@ -177,8 +177,10 @@ func on_parent_submitted(parent_text: String) -> void:
 	add_parent_ln_edt.clear()
 	if new_parent.is_empty() or parents.has_tag(new_parent) or new_parent == current_tag:
 		return
-	
-	parents.add_tag(new_parent)
+	if SingletonManager.TagIt.has_tag(new_parent) and SingletonManager.TagIt.has_alias(SingletonManager.TagIt.get_tag_id(new_parent)):
+		parents.add_tag(SingletonManager.TagIt.get_alias_name(new_parent))
+	else:
+		parents.add_tag(new_parent)
 
 
 func on_suggestion_submitted(suggestion_text: String) -> void:
@@ -187,7 +189,10 @@ func on_suggestion_submitted(suggestion_text: String) -> void:
 	if new_sugg.is_empty() or suggestions_tree.has_tag(new_sugg) or new_sugg == current_tag:
 		return
 	
-	suggestions_tree.add_tag(new_sugg)
+	if SingletonManager.TagIt.has_tag(new_sugg) and SingletonManager.TagIt.has_alias(SingletonManager.TagIt.get_tag_id(new_sugg)):
+		suggestions_tree.add_tag(SingletonManager.TagIt.get_alias_name(new_sugg))
+	else:
+		suggestions_tree.add_tag(new_sugg)
 
 
 func on_category_created(cat_id: int) -> void:

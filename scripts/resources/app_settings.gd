@@ -10,6 +10,7 @@ const SETTINGS_PATH: String = "user://tagit_settings.tres"
 @export var use_autofill: bool = true
 @export var include_invalid: bool = false
 @export var blacklist_removed: bool = false
+@export var blacklist_used_suggestions: bool = false
 @export var link_to_esix: bool = false
 @export var load_wiki_images: bool = false
 @export var wiki_images: int = 16
