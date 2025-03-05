@@ -114,6 +114,8 @@ var prio_list_node: Control = null
 @onready var menu_button: MenuButton = $MainContainer/MenuMargin/MenuContainer/MenuButtonCont/MenuButton
 @onready var help_button: MenuButton = $MainContainer/MenuMargin/MenuContainer/MenuButtonCont/HelpButton
 @onready var change_prio_btn: Button = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/TagsPanel/TagsContainer/ButtonsContainer/ChangePrioBtn
+@onready var main_tagger_popup: RightClickPopupMenu = $MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer/CurrentTagsContainer/TagsTree/MainTaggerPopup
+
 # ----------------
 # ----- Tag Review -----
 @onready var new_tag_btn: Button = $MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer/ButtonButtons/NewTagBtn
@@ -301,6 +303,10 @@ func _ready() -> void:
 	search_tag_btn.pressed.connect(on_search_all_tags_pressed)
 	help_button.get_popup().id_pressed.connect(on_help_id_pressed)
 	change_prio_btn.pressed.connect(on_menu_button_id_selected.bind(17))
+	tags_tree.move_tags_to_new_list_pressed.connect(_on_move_tag_to_new_list_pressed)
+	tags_tree.move_tags_to_list_pressed.connect(_on_move_tags_to_list_pressed)
+	tags_tree.search_in_wiki_pressed.connect(_on_search_in_wiki_pressed)
+	tags_tree.tags_changed.connect(_list_changed)
 	# --- Edit Tag ---
 	all_tags_search_ln_edt.text_submitted.connect(on_search_text_submitted)
 	new_tag_btn.pressed.connect(on_new_tag_pressed)
@@ -755,7 +761,14 @@ func on_esix_wiki_search() -> void:
 		ESIX_SEARCH_URL + wiki_search_ln_edt.text.strip_edges())
 
 
-func create_alt_list() -> void:
+func _on_create_alt_list_pressed() -> void:
+	var result: bool = await create_alt_list()
+	if result:
+		alt_opt_btn.select(alt_opt_btn.item_count - 1)
+		on_alt_list_selected(alt_opt_btn.item_count - 1)
+
+
+func create_alt_list(tags: Array[String] = []) -> bool:
 	var name_list := LineConfirmationDialog.new()
 	add_child(name_list)
 	name_list.allow_empty = false
@@ -764,29 +777,45 @@ func create_alt_list() -> void:
 	name_list.focus_line_edit()
 	var result: Array = await name_list.dialog_finished
 	if result[0]:
-		alt_lists.append([])
+		alt_lists.append(tags)
 		alt_opt_btn.add_item(result[1])
 		generate_version_opt_btn.add_item(result[1])
 		if not alt_select_container.visible:
 			alt_select_container.visible = true
 			list_version_container.visible = true
+		tags_tree.add_alt_list(result[1])
 		_list_changed()
-		alt_opt_btn.select(alt_opt_btn.item_count - 1)
-		on_alt_list_selected(alt_opt_btn.item_count - 1)
 	name_list.queue_free()
+	return result[0]
+
+
+func _on_move_tag_to_new_list_pressed(tags: Array[String], indexes: Array[int]) -> void:
+	var result: bool = await create_alt_list(tags)
+	tags_tree._on_tags_moved(result, indexes)
+	if result:
+		_list_changed()
+
+
+func _on_move_tags_to_list_pressed(list_idx: int, tags: Array[String], indexes: Array[int]) -> void:
+	Arrays.append_uniques(alt_lists[list_idx], tags)
+	tags_tree._on_tags_moved(true, indexes)
+	_list_changed()
 
 
 func on_delete_list_pressed() -> void:
 	alt_lists.remove_at(current_alt)
 	alt_opt_btn.remove_item(current_alt)
 	generate_version_opt_btn.remove_item(current_alt - 1)
+	tags_tree.delete_alt_list(current_alt)
 	current_alt -= 1
+	tags_tree._on_alt_list_switched(current_alt)
 	alt_opt_btn.select(current_alt)
 	generate_version_opt_btn.select(current_alt - 1)
 	load_alt_list(current_alt)
 	if alt_opt_btn.item_count == 1:
 		alt_select_container.visible = false
 		list_version_container.visible = false
+	_list_changed()
 
 
 func on_alt_list_selected(idx: int) -> void:
@@ -796,6 +825,7 @@ func on_alt_list_selected(idx: int) -> void:
 	current_alt = idx
 	load_alt_list(idx)
 	delete_alt_list_btn.disabled = idx == 0
+	tags_tree._on_alt_list_switched(idx)
 	SingletonManager.TagIt.settings.request_suggestions = search_suggestions
 
 
@@ -1046,7 +1076,7 @@ func on_menu_button_id_selected(id: int) -> void:
 		14: # New Alt List
 			if _block_events:
 				return
-			create_alt_list()
+			_on_create_alt_list_pressed()
 		16: # Save as
 			if _block_events:
 				return
@@ -1482,6 +1512,13 @@ func on_wiki_thumbnail_pressed(thumbnail_id: int, img_idx: int) -> void:
 	var _heads: Dictionary = parse_hydrus_image_headers(response[2])
 	hydrus_images.load_full_image.emit(response[3], _heads["content-type"].split("/")[1])
 	wiki_panel.image_index = img_idx
+
+
+func _on_search_in_wiki_pressed(tag: String) -> void:
+	if wiki_search_ln_edt.editable:
+		tab_bar.current_tab = 1
+		on_wiki_searched(tag)
+	
 
 
 func on_wiki_image_loaded(full_image: SpriteFrames, animated: bool) -> void:

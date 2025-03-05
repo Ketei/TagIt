@@ -2,13 +2,33 @@ extends IDTree
 
 
 signal suggestions_dropped(suggestions: Array[String])
+signal move_tags_to_list_pressed(list_idx: int, tags: Array[String], indexes: Array[int])
+signal move_tags_to_new_list_pressed(tags: Array[String], indexes: Array[int])
+signal search_in_wiki_pressed(tag: String)
+signal tags_changed
+
+
+var _current_alt: int = 0
+var alt_list_submenu: PopupMenu = null
+@onready var main_tagger_popup: RightClickPopupMenu = $MainTaggerPopup
 
 
 func _ready() -> void:
 	create_item()
 	set_column_expand(0, true)
 	
+	alt_list_submenu = PopupMenu.new()
+	alt_list_submenu.add_item("- New list -")
+	alt_list_submenu.add_item("* Common List *")
+	main_tagger_popup.add_item("Open in Wiki", 0)
+	alt_list_submenu.set_item_disabled(1, true)
+	main_tagger_popup.add_submenu_node_item("Move to Alt List", alt_list_submenu, 1)
+	main_tagger_popup.add_item("Delete", 2)
+	
 	focus_exited.connect(on_focus_lost)
+	item_mouse_selected.connect(_on_item_mouse_selected)
+	alt_list_submenu.index_pressed.connect(_on_submenu_index_pressed)
+	main_tagger_popup.id_pressed.connect(_on_main_popup_id_pressed)
 	
 	SingletonManager.TagIt.tag_created.connect(on_tag_created)
 	SingletonManager.TagIt.tags_validity_updated.connect(on_tag_validity_updated)
@@ -22,6 +42,7 @@ func _input(event: InputEvent) -> void:
 			var next: TreeItem = get_next_selected(next_target)
 			next_target.free()
 			next_target = next
+		tags_changed.emit()
 		get_viewport().set_input_as_handled()
 
 
@@ -103,6 +124,87 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 func _on_tags_created(tag_names: Array[String]) -> void:
 	for tag in tag_names:
 		on_tag_created(tag, SingletonManager.TagIt.get_tag_id(tag))
+
+
+func _on_item_mouse_selected(_mouse_position: Vector2, mouse_button_index: int) -> void:
+	if mouse_button_index != MOUSE_BUTTON_RIGHT:
+		return
+	var selected: Array[String] = get_selected_tags()
+	main_tagger_popup.set_item_disabled(0, !(selected.size() == 1) and SingletonManager.TagIt.has_tag(selected[0]))
+	main_tagger_popup.show_in_bounds(get_global_mouse_position())
+
+
+func _on_alt_list_switched(list_idx: int) -> void:
+	if _current_alt != -1:
+		alt_list_submenu.set_item_disabled(_current_alt + 1, false)
+	
+	if list_idx != -1:
+		alt_list_submenu.set_item_disabled(list_idx + 1, true)
+	
+	_current_alt = list_idx
+
+
+func _on_main_popup_id_pressed(id: int) -> void:
+	if id == 0:
+		search_in_wiki_pressed.emit(get_selected().get_text(0))
+	elif id == 2:
+		var to_delete: TreeItem = get_next_selected(null)
+		while to_delete != null:
+			var next: TreeItem = get_next_selected(to_delete)
+			to_delete.free()
+			to_delete = next
+		tags_changed.emit()
+
+
+func _on_submenu_index_pressed(index: int) -> void:
+	if index == 0:
+		move_tags_to_new_list_pressed.emit(
+			get_selected_tags(),
+			get_selected_array())
+	else:
+		move_tags_to_list_pressed.emit(
+				index - 1,
+				get_selected_tags(),
+				get_selected_array())
+
+
+func delete_alt_list(idx: int) -> void:
+	alt_list_submenu.remove_item(idx + 1)
+	if _current_alt == idx:
+		_current_alt = -1
+
+
+func get_selected_tags() -> Array[String]:
+	var slected: Array[String] = []
+	var initial: TreeItem = get_next_selected(null)
+	
+	while initial != null:
+		slected.append(initial.get_text(0))
+		initial = get_next_selected(initial)
+	
+	return slected
+
+
+func get_selected_array() -> Array[int]:
+	var result: Array[int] = []
+	var initial: TreeItem = get_next_selected(null)
+	
+	while initial != null:
+		result.append(initial.get_index())
+		initial = get_next_selected(initial)
+	
+	return result
+
+
+func add_alt_list(alt_list_name: String) -> void:
+	alt_list_submenu.add_item(alt_list_name)
+
+
+func _on_tags_moved(result: bool, indexes: Array[int]) -> void:
+	if result:
+		indexes.sort_custom(Arrays.sort_custom_desc)
+		for index in indexes:
+			get_root().get_child(index).free()
 
 
 func on_focus_lost() -> void:
