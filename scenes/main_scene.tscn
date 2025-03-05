@@ -1684,6 +1684,7 @@ text = "+"
 [node name="IconsTree" type="Tree" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/MainContainer/IconsContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+mouse_force_pass_scroll_events = false
 theme = ExtResource("26_8xsa4")
 columns = 2
 hide_folding = true
@@ -1714,6 +1715,7 @@ text = "+"
 [node name="GroupsTree" type="Tree" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/MainContainer/GroupsContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+mouse_force_pass_scroll_events = false
 theme = ExtResource("26_8xsa4")
 theme_override_constants/icon_max_width = 16
 hide_folding = true
@@ -1746,6 +1748,7 @@ text = "+"
 [node name="CategoryTree" type="Tree" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/MainContainer/CategoryContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+mouse_force_pass_scroll_events = false
 theme = ExtResource("26_8xsa4")
 columns = 2
 column_titles_visible = true
@@ -1782,6 +1785,7 @@ icon_alignment = 1
 custom_minimum_size = Vector2(0, 160)
 layout_mode = 2
 size_flags_vertical = 3
+mouse_force_pass_scroll_events = false
 theme = ExtResource("26_8xsa4")
 hide_folding = true
 hide_root = true
