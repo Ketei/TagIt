@@ -20,9 +20,9 @@ signal website_deleted(site_id: int)
 const DATABASE_PATH: String = "user://tag_database.db"
 const SEARCH_WILDCARD: String = "*"
 const DB_VERSION: int = 1
-const TAGIT_VERSION: String = "3.3.1"
+const TAGIT_VERSION: String = "3.3.2"
 const MAX_PARENT_RECURSION: int = 100
-const IMAGE_LIMITS: Vector2i = Vector2i(700, 700)
+const IMAGE_LIMITS: Vector2i = Vector2i(1000, 1000)
 const LEV_DISTANCE: float = 0.75
 const LEV_LOOP_LIMIT: int = 100
 const INVALID_COLOR: Color = Color(0.859, 0.302, 0.376)
