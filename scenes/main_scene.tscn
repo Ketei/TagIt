@@ -257,6 +257,7 @@ tab_3/title = "Tools"
 tab_4/title = "Settings"
 
 [node name="TaggerContainer" type="PanelContainer" parent="MainContainer"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = ExtResource("2_u628d")
@@ -502,7 +503,6 @@ size_flags_stretch_ratio = 3.0
 text = "Generate List"
 
 [node name="WikiPanel" type="PanelContainer" parent="MainContainer"]
-visible = false
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = ExtResource("2_u628d")
@@ -519,9 +519,9 @@ theme_override_constants/margin_bottom = 4
 layout_mode = 2
 
 [node name="WikiInfoContainer" type="VBoxContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer"]
+custom_minimum_size = Vector2(635, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 8.0
 
 [node name="InfoMargin" type="MarginContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer"]
 layout_mode = 2
@@ -676,6 +676,8 @@ icon = ExtResource("23_cbccr")
 [node name="ImageContainer" type="VBoxContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer"]
 custom_minimum_size = Vector2(630, 0)
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
 
 [node name="WikiDets" type="HBoxContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/ImageContainer"]
 layout_mode = 2
@@ -721,6 +723,7 @@ size_flags_horizontal = 3
 alignment = 1
 
 [node name="ViewerContainer" type="PanelContainer" parent="MainContainer/WikiPanel"]
+visible = false
 layout_mode = 2
 
 [node name="ScrollZoomView" type="MarginContainer" parent="MainContainer/WikiPanel/ViewerContainer"]
