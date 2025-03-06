@@ -267,6 +267,8 @@ func _ready() -> void:
 		settings_image_load_spn_bx.editable = true
 		settings_key_ln_edt.editable = true
 		settings_port_spn_bx.editable = true
+		settings_request_api_btn.disabled = false
+		settings_connect_api_btn.disabled = false
 	settings_image_load_spn_bx.value = SingletonManager.TagIt.settings.wiki_images
 	settings_request_sugg_chk_btn.button_pressed = SingletonManager.TagIt.settings.request_suggestions
 	settings_relevancy_spn_bx.value = SingletonManager.TagIt.settings.suggestion_relevancy
@@ -367,7 +369,7 @@ func _ready() -> void:
 	
 	SingletonManager.TagIt.hide_splash()
 	
-	if SingletonManager.TagIt.settings.has_valid_hydrus_login():
+	if SingletonManager.TagIt.settings.load_wiki_images and SingletonManager.TagIt.settings.has_valid_hydrus_login():
 		hydrus_connected = await connect_to_hydrus(
 			SingletonManager.TagIt.settings.hydrus_port,
 			SingletonManager.TagIt.settings.hydrus_key)
@@ -717,15 +719,22 @@ func on_wiki_timer_timeout() -> void:
 	var results: PackedStringArray = []
 	
 	if prefix and suffix:
-		results = SingletonManager.TagIt.search_for_tag_contains(clean_text, wiki_search_ln_edt.item_limit, true, true)
+		results = SingletonManager.TagIt.search_for_tag_contains(clean_text, add_tag_ln_edt.item_limit, true)
 	elif suffix:
-		results = SingletonManager.TagIt.search_for_tag_suffix(clean_text, wiki_search_ln_edt.item_limit, true, true)
+		results = SingletonManager.TagIt.search_for_tag_suffix(clean_text, add_tag_ln_edt.item_limit, true)
 	else:
-		results = SingletonManager.TagIt.search_for_tag_prefix(clean_text, wiki_search_ln_edt.item_limit, true, true)
+		results = SingletonManager.TagIt.search_for_tag_prefix(clean_text, add_tag_ln_edt.item_limit, true)
+	
+	var id_results: Array[int] = Array(SingletonManager.TagIt.get_tags_ids(results).values(), TYPE_INT, &"", null)
+	
+	var tags_with_aliases: Dictionary = SingletonManager.TagIt.get_aliases_consequent_names_from(id_results)
 	
 	if not results.is_empty():
 		for tag in results:
-			wiki_search_ln_edt.add_item(tag)
+			if tags_with_aliases.has(SingletonManager.TagIt.get_tag_id(tag)):
+				wiki_search_ln_edt.add_item(tag, tags_with_aliases[SingletonManager.TagIt.get_tag_id(tag)])
+			else:
+				wiki_search_ln_edt.add_item(tag)
 		wiki_search_ln_edt.show_items()
 
 
@@ -1587,8 +1596,9 @@ func on_connect_to_hydrus() -> void:
 	settings_request_api_btn.disabled = true
 	settings_connect_api_btn.disabled = true
 	
-	@warning_ignore("narrowing_conversion")
-	if not await connect_to_hydrus(settings_port_spn_bx.value, settings_key_ln_edt.text):
+	hydrus_connected = await connect_to_hydrus(int(settings_port_spn_bx.value), settings_key_ln_edt.text)
+	
+	if not hydrus_connected:
 		settings_request_api_btn.disabled = false
 		settings_connect_api_btn.disabled = false
 
@@ -1745,12 +1755,12 @@ func on_wiki_searched(search_text: String) -> void:
 		wiki_rtl.clear()
 		wiki_search_ln_edt.editable = true
 		wiki_search_btn.disabled = false
-		wiki_title_lbl.text = "[Not Found]"
+		wiki_title_lbl.text = "[ No Wiki Entry ]"
 		wiki_parents_container.visible = false
 		wiki_aliases_container.visible = false
 		wiki_section_separator.visible = false
-		wiki_cat_lbl.text = ""
-		wiki_prio_lbl.text = ""
+		wiki_cat_lbl.text = "[No Category]"
+		wiki_prio_lbl.text = "[N/A]"
 
 
 
