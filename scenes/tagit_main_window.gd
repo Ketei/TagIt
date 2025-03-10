@@ -2113,7 +2113,8 @@ func on_tab_changed(tab:int) -> void:
 
 func on_suggestions_activated(suggestions: Array[String], tree: Tree) -> void:
 	for suggestion in suggestions:
-		add_tag(suggestion)
+		if not tags_tree.has_tag(suggestion):
+			add_tag(suggestion)
 	tree.delete_tags(suggestions)
 	blacklist_tags(suggestions)
 

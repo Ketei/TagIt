@@ -20,10 +20,11 @@ func _ready() -> void:
 	alt_list_submenu = PopupMenu.new()
 	alt_list_submenu.add_item("- New list -")
 	alt_list_submenu.add_item("* Common List *")
-	main_tagger_popup.add_item("Open in Wiki", 0)
+	
+	main_tagger_popup.add_item("Wiki", 0)
 	alt_list_submenu.set_item_disabled(1, true)
 	main_tagger_popup.add_submenu_node_item("Move to List", alt_list_submenu, 1)
-	main_tagger_popup.add_item("Delete", 2)
+	main_tagger_popup.add_item("Remove", 2)
 	
 	focus_exited.connect(on_focus_lost)
 	item_mouse_selected.connect(_on_item_mouse_selected)
@@ -93,6 +94,8 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 	var last_tag: TreeItem = null
 	
 	for data_id in tags_data:
+		if has_tag(tags_data[data_id]["tag"]):
+			continue
 		last_tag = add_tag(
 			data_id,
 			tags_data[data_id]["tag"],
@@ -102,6 +105,8 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 			Color.from_string(categories[tags_data[data_id]["category"]]["icon_color"], Color.WHITE))
 	
 	for generic_tag in names:
+		if has_tag(generic_tag):
+			continue
 		last_tag = add_tag(
 			-1,
 			generic_tag,
