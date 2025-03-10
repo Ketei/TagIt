@@ -220,3 +220,21 @@ static func difference(array_a: Array, array_b: Array) -> Array:
 		if not array_a.has(item):
 			difference_items.append(item)
 	return difference_items
+
+
+static func clean_tag_array(array: Variant) -> void:
+	if typeof(array) != TYPE_ARRAY and typeof(array) != TYPE_PACKED_STRING_ARRAY:
+		return
+	
+	var idx: int = -1
+	for item in array:
+		idx += 1
+		if typeof(item) == TYPE_STRING:
+			array[idx] = array[idx].strip_edges().replace("_", " ").to_lower()
+
+
+static func remove_all(array: Variant, remove_what: Variant) -> void:
+	var target_index: int = array.find(remove_what)
+	while target_index != -1:
+		array.remove_at(target_index)
+		target_index = array.find(remove_what)
