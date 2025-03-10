@@ -295,7 +295,7 @@ alignment = 1
 text_overrun_behavior = 3
 selected = 0
 item_count = 1
-popup/item_0/text = "All Lists"
+popup/item_0/text = "* Main List *"
 
 [node name="DeleteAltListBtn" type="Button" parent="MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer/CurrentTagsContainer/AltSelectContainer"]
 custom_minimum_size = Vector2(32, 32)
