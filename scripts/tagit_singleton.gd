@@ -1009,6 +1009,12 @@ func has_data(tag_id: int) -> bool:
 	return not tag_database.select_rows("data", "tag_id = " + str(tag_id), ["id"]).is_empty()
 
 
+func has_tag_data(tag: String) -> bool:
+	if not has_tag(tag):
+		return false
+	return has_data(get_tag_id(tag))
+
+
 func has_tag(tag_name: String) -> bool: 
 	# We use this because we already have the names loaded in memory. Faster this way.
 	return loaded_tags.has(tag_name)
