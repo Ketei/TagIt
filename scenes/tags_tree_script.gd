@@ -22,7 +22,7 @@ func _ready() -> void:
 	alt_list_submenu.add_item("* Common List *")
 	main_tagger_popup.add_item("Open in Wiki", 0)
 	alt_list_submenu.set_item_disabled(1, true)
-	main_tagger_popup.add_submenu_node_item("Move to Alt List", alt_list_submenu, 1)
+	main_tagger_popup.add_submenu_node_item("Move to List", alt_list_submenu, 1)
 	main_tagger_popup.add_item("Delete", 2)
 	
 	focus_exited.connect(on_focus_lost)

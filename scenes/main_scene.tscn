@@ -425,6 +425,9 @@ text = "List Version:"
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+selected = 0
+item_count = 1
+popup/item_0/text = "* Main List *"
 
 [node name="TagsPanel" type="PanelContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField"]
 custom_minimum_size = Vector2(0, 150)

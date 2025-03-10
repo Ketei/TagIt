@@ -814,12 +814,12 @@ func _on_move_tags_to_list_pressed(list_idx: int, tags: Array[String], indexes: 
 func on_delete_list_pressed() -> void:
 	alt_lists.remove_at(current_alt)
 	alt_opt_btn.remove_item(current_alt)
-	generate_version_opt_btn.remove_item(current_alt - 1)
+	generate_version_opt_btn.remove_item(current_alt)
 	tags_tree.delete_alt_list(current_alt)
 	current_alt -= 1
 	tags_tree._on_alt_list_switched(current_alt)
 	alt_opt_btn.select(current_alt)
-	generate_version_opt_btn.select(current_alt - 1)
+	generate_version_opt_btn.select(current_alt)
 	load_alt_list(current_alt)
 	if alt_opt_btn.item_count == 1:
 		alt_select_container.visible = false
@@ -841,7 +841,7 @@ func on_alt_list_selected(idx: int) -> void:
 func load_alt_list(idx: int) -> void:
 	clear_main_tag_list()
 	for tag in alt_lists[idx]:
-		add_tag(tag, false)
+		add_tag(tag, false, true)
 
 
 func save_alt_list(index: int) -> void:
@@ -1159,9 +1159,9 @@ func clear_all_tagger() -> void:
 	clear_group_suggestions()
 	project_image.texture = null
 	clear_img_btn.disabled = true
-	generate_version_opt_btn.clear()
-	for alt in range(alt_opt_btn.item_count - 1, 0, -1):
+	for alt in range(1, alt_opt_btn.item_count):
 		alt_opt_btn.remove_item(alt)
+		generate_version_opt_btn.remove_item(alt)
 	delete_alt_list_btn.disabled = true
 	tags_label.clear()
 	alt_lists.clear()
@@ -1392,14 +1392,15 @@ func on_generate_tag_list_btn_pressed() -> void:
 		tags["tag"] = tag
 	
 	# Alt list index 0 is the main list. More than one means an alt exists.
-	# If an alt exists one HAS to be selected.
-	if 1 < alt_lists.size():
-		if generate_version_opt_btn.selected + 1 == current_alt:
+	# If an alt exists one HAS to be selected. And the alt has to NOT be 0
+	# as those tags are added up there ↑
+	if 1 < alt_lists.size() and generate_version_opt_btn.selected != 0:
+		if generate_version_opt_btn.selected == current_alt:
 			var tag_data: Dictionary = tags_tree.get_tags()
 			Arrays.append_uniques(tags["id"], tag_data["id"])
 			Arrays.append_uniques(tags["tag"], tag_data["tag"])
 		else:
-			for tag in alt_lists[generate_version_opt_btn.selected + 1]:
+			for tag in alt_lists[generate_version_opt_btn.selected]:
 				if SingletonManager.TagIt.has_tag(tag):
 					var id: int = SingletonManager.TagIt.get_tag_id(tag)
 					if not tags["id"].has(id):
@@ -1845,7 +1846,7 @@ func on_set_category_color(id: int, initial: String) -> void:
 	color_dialog.queue_free()
 
 
-func add_tag(tag_name: String, clean_suggestions: bool = true) -> void:
+func add_tag(tag_name: String, clean_suggestions: bool = true, skip_suggestions: bool = false) -> void:
 	var clean_tag: String = tag_name.strip_edges().to_lower()
 	add_tag_ln_edt.clear_no_signal()
 	
@@ -1880,16 +1881,17 @@ func add_tag(tag_name: String, clean_suggestions: bool = true) -> void:
 			var suggestion_dict := SingletonManager.TagIt.get_tags_name(SingletonManager.TagIt.get_suggestions(tag_id))
 			var groups_per_tag := SingletonManager.TagIt.get_groups_and_tags(SingletonManager.TagIt.get_suggested_groups(tag_id))
 			
-			for group_id in groups_per_tag:
-				if not groups_suggestions_tree.has_tag_group(group_id):
-					groups_suggestions_tree.add_suggestions(
-							groups_per_tag[group_id]["group_name"],
-							groups_per_tag[group_id]["tags"],
-							group_id)
-			
-			for suggestion_id in suggestion_dict:
-				if clean_tag != suggestion_dict[suggestion_id]:
-					add_suggestion(suggestion_dict[suggestion_id])
+			if not skip_suggestions:
+				for group_id in groups_per_tag:
+					if not groups_suggestions_tree.has_tag_group(group_id):
+						groups_suggestions_tree.add_suggestions(
+								groups_per_tag[group_id]["group_name"],
+								groups_per_tag[group_id]["tags"],
+								group_id)
+				
+				for suggestion_id in suggestion_dict:
+					if clean_tag != suggestion_dict[suggestion_id]:
+						add_suggestion(suggestion_dict[suggestion_id])
 			
 			clean_tag = tag_data["tag"]
 			category = tag_data["category"]
@@ -1908,7 +1910,7 @@ func add_tag(tag_name: String, clean_suggestions: bool = true) -> void:
 	if tagger_suggestion_tree.has_suggestion(clean_tag) and clean_suggestions:
 		tagger_suggestion_tree.delete_tag(clean_tag)
 	
-	if SingletonManager.TagIt.settings.request_suggestions:
+	if SingletonManager.TagIt.settings.request_suggestions and not skip_suggestions:
 		SingletonManager.eSixAPI.search_suggestions(clean_tag)
 	
 	if target_tree != null:
