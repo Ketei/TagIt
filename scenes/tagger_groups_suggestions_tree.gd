@@ -30,15 +30,6 @@ func on_focus_lost() -> void:
 	deselect_all()
 
 
-#func get_selected_ids() -> Array[int]:
-	#var selected_ids: Array[int] = []
-	#var current: TreeItem = get_next_selected(null)
-	#while current != null:
-		#selected_ids.append(current.get_metadata(0))
-		#current = get_next_selected(current)
-	#return selected_ids
-
-
 func get_selected_names() -> Array[String]:
 	var selected_ids: Array[String] = []
 	var current: TreeItem = get_next_selected(null)
@@ -71,7 +62,6 @@ func has_tag_group(group_id: int) -> bool:
 
 func on_item_activated() -> void:
 	suggestions_activated.emit(get_selected_names(), self)
-	delete_selected()
 
 
 func delete_tags(tags: Array[String]) -> void:
