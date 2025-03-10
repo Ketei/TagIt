@@ -1,14 +1,9 @@
-extends HBoxContainer
+extends TagItTool
 
-
-signal something_changed
 
 const MessageConfirmationDialog = preload("res://scenes/dialogs/message_confirmation_dialog.gd")
-const TOOL_ID: String = "templates"
 
 var template_resource: TemplateResource = null
-var tool_description: String = "Create tag list templates."
-var requires_save: bool = true
 var current_template: int = -1:
 	set(new_current):
 		current_template = new_current
@@ -43,6 +38,11 @@ var template_edited: bool = false:
 @onready var clear_thumbnail: Button = $SetupContainer/InfoContaienr/ImageContainer/ButtonContainer/ClearThumbnail
 @onready var search_group_ln_edt: LineEdit = $SetupContainer/GroupsContainer/SearchGroupLnEdt
 
+
+func _init() -> void:
+	tool_id = "templates"
+	tool_description = "Create tag list templates."
+	requires_save = true
 
 
 # Called when the node enters the scene tree for the first time.

@@ -1,16 +1,9 @@
-extends VBoxContainer
+extends TagItTool
 
-
-@warning_ignore("unused_signal")
-signal something_changed # Unused, but required to exist
 
 const NEW_ALIAS_CONFIRM_DIALOG = preload("res://scenes/dialogs/new_alias_confirm_dialog.tscn")
-const TOOL_ID: String = "aliaser"
 
-#var results_keys: Array[String] = []
 var alias_results: Array[Dictionary] = []
-var tool_description: String = "Review, create and remove aliases."
-var requires_save: bool = false
 
 @onready var aliases_tree: Tree = $AliasesTree
 @onready var search_alias_ln_edt: LineEdit = $ButtonsContainer/InteractContainer/SearchAliasLnEdt
@@ -19,6 +12,12 @@ var requires_save: bool = false
 @onready var new_alias_btn: Button = $ButtonsContainer/InteractContainer/NewAliasBtn
 @onready var prev_page_btn: Button = $PagesMargin/PageContainer/PrevPageBtn
 @onready var next_page_btn: Button = $PagesMargin/PageContainer/NextPageBtn
+
+
+func _init() -> void:
+	tool_id = "aliaser"
+	tool_description = "Review, create and remove aliases."
+	requires_save = false
 
 
 func _ready() -> void:

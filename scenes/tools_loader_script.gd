@@ -17,11 +17,15 @@ const TOOLS: Array[Dictionary] = [
 		"scene": preload("res://scenes/tools/tag_validator.tscn"),
 		"name": "Tag Validator"
 	},
+	{
+		"scene": preload("res://scenes/tools/tag_fetcher.tscn"),
+		"name": "Tag Fetcher"
+	},
 ]
 
 const MessageConfirmationDialog = preload("res://scenes/dialogs/message_confirmation_dialog.gd")
 
-var tool_scene: Control = null
+var tool_scene: TagItTool = null
 var warn_unsaved: bool = false
 var current_tool_idx: int = -1
 
@@ -70,7 +74,12 @@ func on_tool_selected(idx: int) -> void:
 	
 	if tool_scene != null:
 		tool_scene.something_changed.disconnect(_on_tool_something_changed)
+		tool_scene.disable_save.disconnect(_on_tool_set_save.bind(false))
+		tool_scene.enable_save.disconnect(_on_tool_set_save.bind(true))
+		tool_scene.disable_switch.disconnect(_on_tool_set_switch.bind(false))
+		tool_scene.enable_switch.disconnect(_on_tool_set_switch.bind(true))
 		tool_scene.queue_free()
+	option_button.disabled = false
 	
 	var new_id: int = option_button.get_item_id(idx)
 	
@@ -79,6 +88,10 @@ func on_tool_selected(idx: int) -> void:
 	tool_desc_lbl.text = tool_scene.tool_description
 	save_button.disabled = not tool_scene.requires_save
 	tool_scene.something_changed.connect(_on_tool_something_changed)
+	tool_scene.disable_save.connect(_on_tool_set_save.bind(false))
+	tool_scene.enable_save.connect(_on_tool_set_save.bind(true))
+	tool_scene.disable_switch.connect(_on_tool_set_switch.bind(false))
+	tool_scene.enable_switch.connect(_on_tool_set_switch.bind(true))
 	
 	if save_button.disabled:
 		save_button.tooltip_text = "Tool doesn't require saving"
@@ -92,6 +105,14 @@ func on_tool_selected(idx: int) -> void:
 func _on_tool_something_changed() -> void:
 	if not warn_unsaved:
 		warn_unsaved = true
+
+
+func _on_tool_set_save(set_enabled: bool) -> void:
+	save_button.disabled = not set_enabled
+
+
+func _on_tool_set_switch(set_enabled: bool) -> void:
+	option_button.disabled = not set_enabled
 
 
 func on_save_pressed() -> void:
@@ -109,11 +130,11 @@ func on_save_pressed() -> void:
 	
 	tween_slide.tween_property(saved_notification, "modulate", Color.TRANSPARENT, 1.0)
 	tween_slide.set_parallel()
-	tween_slide.tween_property(saved_notification, "position", Vector2(-54, 76), 1.0)
+	tween_slide.tween_property(saved_notification, "position", Vector2(1, 80), 1.0)
 	
 	await tween_slide.finished
 	
 	saved_notification.visible = false
 	saved_notification.modulate = Color.WHITE
-	saved_notification.position = Vector2(-54, 38)
+	saved_notification.position = Vector2(1, 38)
 	save_button.disabled = false
