@@ -775,6 +775,7 @@ theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
 [node name="TagSearchContainer" type="Control" parent="MainContainer/TagsPanel/TagsMargin"]
+visible = false
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -886,7 +887,6 @@ icon_alignment = 1
 expand_icon = true
 
 [node name="TagEditContainer" type="VBoxContainer" parent="MainContainer/TagsPanel/TagsMargin"]
-visible = false
 layout_mode = 2
 script = ExtResource("8_aldxp")
 
@@ -1209,9 +1209,9 @@ size_flags_horizontal = 3
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 tooltip_text = "Save Tool Settings"
+text = "Save Changes"
 icon = ExtResource("4_n5y6n")
 flat = true
-icon_alignment = 1
 
 [node name="SavedNotification" type="PanelContainer" parent="MainContainer/ToolsPanel/ToolsMargin/ToolsContainer/HeaderContainer/SaveButton"]
 z_index = 1
