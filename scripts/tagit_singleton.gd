@@ -275,6 +275,17 @@ func get_tag_groups() -> Dictionary:
 	return groups
 
 
+func get_tag_group_cell(group_id: int, column_id: String) -> Variant:
+	var cell: Array = tag_database.select_rows(
+			"groups",
+			"id = " + str(group_id),
+			[column_id])
+	if cell.is_empty():
+		return null
+	else:
+		return cell[0][column_id]
+
+
 func remove_tag_group(group_id: int) -> void:
 	tag_database.delete_rows("groups", "id = " + str(group_id))
 	group_deleted.emit(group_id)
