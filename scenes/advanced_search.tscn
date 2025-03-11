@@ -1,0 +1,137 @@
+[gd_scene load_steps=3 format=3 uid="uid://yfpugvocal7b"]
+
+[ext_resource type="Script" path="res://scenes/advanced_search_script.gd" id="1_5kkwc"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_73lig"]
+bg_color = Color(0.25098, 0.25098, 0.25098, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(0.25098, 0.25098, 0.25098, 1)
+corner_radius_top_left = 5
+corner_radius_bottom_left = 5
+
+[node name="AdvSearch" type="PanelContainer"]
+offset_right = 287.0
+offset_bottom = 212.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_73lig")
+script = ExtResource("1_5kkwc")
+
+[node name="MainContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="TagContainer" type="HBoxContainer" parent="MainContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainContainer/TagContainer"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Name"
+vertical_alignment = 1
+
+[node name="TagLnEdt" type="LineEdit" parent="MainContainer/TagContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Tag"
+clear_button_enabled = true
+
+[node name="CatContainer" type="HBoxContainer" parent="MainContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainContainer/CatContainer"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Category"
+vertical_alignment = 1
+
+[node name="CategoryOptBtn" type="OptionButton" parent="MainContainer/CatContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+selected = 0
+item_count = 1
+popup/item_0/text = "- Any -"
+
+[node name="PrioContainer" type="HBoxContainer" parent="MainContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainContainer/PrioContainer"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Priority"
+vertical_alignment = 1
+
+[node name="PrioSpnBox" type="SpinBox" parent="MainContainer/PrioContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+editable = false
+
+[node name="PrioOptBtn" type="OptionButton" parent="MainContainer/PrioContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+selected = 0
+item_count = 4
+popup/item_0/text = "Any"
+popup/item_0/id = 25
+popup/item_1/text = "Exact"
+popup/item_2/text = "Or Greater"
+popup/item_2/id = 5
+popup/item_3/text = "Or Lower"
+popup/item_3/id = 3
+
+[node name="GroupContainer" type="HBoxContainer" parent="MainContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainContainer/GroupContainer"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Group"
+vertical_alignment = 1
+
+[node name="GroupOptBtn" type="OptionButton" parent="MainContainer/GroupContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+selected = 0
+item_count = 1
+popup/item_0/text = "- Any -"
+
+[node name="ValidContainer" type="HBoxContainer" parent="MainContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainContainer/ValidContainer"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Valid"
+vertical_alignment = 1
+
+[node name="ValidOptBtn" type="OptionButton" parent="MainContainer/ValidContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+selected = 0
+item_count = 3
+popup/item_0/text = "All"
+popup/item_1/text = "Valid Only"
+popup/item_1/id = 1
+popup/item_2/text = "Invalid Only"
+popup/item_2/id = 2
+
+[node name="ButtonContainer" type="HBoxContainer" parent="MainContainer"]
+layout_mode = 2
+
+[node name="CloseBtn" type="Button" parent="MainContainer/ButtonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "Close"
+
+[node name="SearchBtn" type="Button" parent="MainContainer/ButtonContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+text = "Search"

@@ -48,6 +48,7 @@ var _help_pressed: bool = false
 var _suggestion_blacklist: PackedStringArray = []
 var _group_blacklist: PackedInt64Array = []
 var _close_signaled: bool = false
+var _cleanup_timeout: bool = false
 
 var selector: Control = null:
 	set(new_selector):
@@ -247,7 +248,7 @@ func _ready() -> void:
 			sites[site]["name"], site)
 	
 	for group in groups:
-		settings_groups_tree.create_group(groups[group]["name"], groups[group]["description"], group)
+		settings_groups_tree.create_group(groups[group]["name"], group)
 	
 	var menu_popup: PopupMenu = menu_button.get_popup()
 	
@@ -389,7 +390,6 @@ func _ready() -> void:
 			settings_port_spn_bx.value = SingletonManager.TagIt.settings.hydrus_port
 			settings_key_ln_edt.text = SingletonManager.TagIt.settings.hydrus_key
 
-var _cleanup_timeout: bool = false
 
 func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
@@ -1870,17 +1870,17 @@ func on_group_deleted(group_id: int) -> void:
 	SingletonManager.TagIt.remove_tag_group(group_id)
 
 
-func on_set_group_desc(id: int, prev_desc: String) -> void:
+func on_set_group_desc(id: int) -> void:
 	var new_desc_window = SET_DESC_DIALOG.instantiate()
 	add_child(new_desc_window)
-	new_desc_window.set_desc(prev_desc)
+	new_desc_window.set_desc(
+			SingletonManager.TagIt.get_tag_group_cell(id, "description"))
 	new_desc_window.show()
 	new_desc_window.focus_first()
 	
 	var response: Array = await new_desc_window.dialog_finished
 	if response[0]:
-		SingletonManager.TagIt.set_category_desc(id, response[1])
-	
+		SingletonManager.TagIt.set_group_desc(id, response[1])
 	new_desc_window.queue_free()
 
 
@@ -2262,7 +2262,6 @@ func on_create_group_pressed() -> void:
 	if result[0]:
 		settings_groups_tree.create_group(
 			result[1],
-			result[2],
 			SingletonManager.TagIt.create_tag_group(result[1], result[2]))
 	
 	dialog_window.queue_free()
