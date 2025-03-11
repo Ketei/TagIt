@@ -40,6 +40,14 @@ const HYDRUS_FILE_ENDPOINT: String = "get_files/file?file_id="
 
 @export var search_time: float = 0.3
 
+var _saving: bool = false # Used if a save instance is on screen.
+var _save_required: bool = false
+var _image_changed: bool = false
+var _block_events: bool = false
+var _help_pressed: bool = false
+var _suggestion_blacklist: PackedStringArray = []
+var _close_signaled: bool = false
+
 var selector: Control = null:
 	set(new_selector):
 		selector = new_selector
@@ -63,15 +71,10 @@ var hydrus_connected: bool = false:
 			settings_connection_status_txt_rect.modulate = Color(0.78, 0.139, 0.117)
 var loading_image: bool = false
 var loading_thumbnails: bool = false
-var _saving: bool = false # Used if a save instance is on screen.
-var _save_required: bool = false
-var _image_changed: bool = false
-var _block_events: bool = false
-var _help_pressed: bool = false
-var _suggestion_blacklist: PackedStringArray = []
+
 var custom_order_list: Dictionary = {}
 var prio_list_node: Control = null
-var _close_signaled: bool = false
+var sort_submenu: PopupMenu = null
 
 # ----- Windows -----
 @onready var tagger_container: PanelContainer = $MainContainer/TaggerContainer
@@ -87,7 +90,6 @@ var _close_signaled: bool = false
 # --- Quick Access ---
 @onready var template_btn: Button = $MainContainer/MenuMargin/MenuContainer/QuickAccessCtnr/TemplateBtn
 # --------------------
-
 
 # ----- Tagger -----
 @onready var tagger_site_opt_btn: OptionButton = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/BtnCotnainer/SiteOptBtn
@@ -198,6 +200,13 @@ func _ready() -> void:
 	hide_all_sections()
 	tab_bar.current_tab = 0
 	on_tab_changed(0)
+	
+	sort_submenu = PopupMenu.new()
+	sort_submenu.add_item("Alphabetically")
+	sort_submenu.add_item("Category")
+	sort_submenu.id_pressed.connect(_on_sort_submenu_id_selected)
+	menu_button.get_popup().set_item_submenu_node(7, sort_submenu)
+	
 	tag_searcher.visible = true
 	tag_editor.visible = false
 	settings_api_container.visible = false
@@ -518,6 +527,14 @@ func _on_blacklist_used_suggestions_toggled(enabled: bool) -> void:
 	SingletonManager.TagIt.settings.blacklist_used_suggestions = enabled
 
 
+func _on_sort_submenu_id_selected(id: int) -> void:
+	match id:
+		0:
+			sort_tags_alphabetical()
+		1:
+			sort_tags_category()
+
+
 func on_import_button_id_pressed(id: int) -> void:
 	var new_file_dialog := FileDialog.new()
 	new_file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
@@ -764,10 +781,29 @@ func on_wiki_timer_timeout() -> void:
 func sort_tags_alphabetical() -> void:
 	var children: Array[TreeItem] = tags_tree.get_root().get_children()
 	children.sort_custom(_sort_tree_alphabetical)
+	
+	children[0].move_before(tags_tree.get_root().get_child(0))
+	
+	for index in range(1, children.size()):
+		children[index].move_after(children[index - 1])
+
+
+func sort_tags_category() -> void:
+	var children: Array[TreeItem] = tags_tree.get_root().get_children()
+	children.sort_custom(_sort_tree_category)
+	
+	children[0].move_before(tags_tree.get_root().get_child(0))
+	
+	for index in range(1, children.size()):
+		children[index].move_after(children[index - 1])
 
 
 func _sort_tree_alphabetical(a: TreeItem, b: TreeItem) -> bool:
 	return a.get_text(0).naturalnocasecmp_to(b.get_text(0)) < 0
+
+
+func _sort_tree_category(a: TreeItem, b: TreeItem) -> bool:
+	return a.get_metadata(0)["category"] < b.get_metadata(0)["category"]
 
 
 func add_suggestion(suggestion: String) -> void:
@@ -1086,7 +1122,7 @@ func on_menu_button_id_selected(id: int) -> void:
 				return
 			instance_project_loader_selector()
 		4: # Sort Alphabetical
-			sort_tags_alphabetical()
+			return
 		7: # Suggestion Blacklist
 			if _block_events:
 				return
