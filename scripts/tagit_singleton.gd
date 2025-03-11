@@ -1383,6 +1383,10 @@ func set_category_name(category_id: int, new_name: String) -> void:
 	update_category(category_id, {"name": new_name})
 
 
+func set_category_desc(category_id: int, new_description: String) -> void:
+	update_category(category_id, {"description": new_description})
+
+
 func set_group_desc(group_id: int, desc: String) -> void:
 	tag_database.update_rows(
 		"groups",
