@@ -35,3 +35,4 @@ custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 focus_previous = NodePath("../NameContainer/NameLnEdt")
 placeholder_text = "Description"
+wrap_mode = 1

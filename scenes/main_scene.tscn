@@ -1,4 +1,4 @@
-[gd_scene load_steps=63 format=3 uid="uid://eaxngd263vbi"]
+[gd_scene load_steps=64 format=3 uid="uid://eaxngd263vbi"]
 
 [ext_resource type="Script" path="res://scenes/tagit_main_window.gd" id="1_3rneb"]
 [ext_resource type="Texture2D" uid="uid://kkvcqst6wv4k" path="res://icons/new_icon.svg" id="2_3s1fn"]
@@ -42,6 +42,7 @@
 [ext_resource type="Script" path="res://scenes/tag_search_container.gd" id="25_l1y5q"]
 [ext_resource type="Theme" uid="uid://u13wuypqagrc" path="res://style/table_theme.tres" id="26_8xsa4"]
 [ext_resource type="Script" path="res://scenes/large_image_script.gd" id="26_cj3pc"]
+[ext_resource type="Script" path="res://scripts/right_click_popup.gd" id="27_pbn41"]
 [ext_resource type="Texture2D" uid="uid://vypb46ut3fil" path="res://icons/x_icon.svg" id="29_gsfm7"]
 [ext_resource type="Texture2D" uid="uid://bw5u0gth430jt" path="res://icons/spin_load.svg" id="29_valht"]
 [ext_resource type="Script" path="res://addons/tnowe_extra_controls/elements/scroll_zoom_view.gd" id="29_vpytr"]
@@ -294,7 +295,7 @@ alignment = 1
 text_overrun_behavior = 3
 selected = 0
 item_count = 1
-popup/item_0/text = "All Lists"
+popup/item_0/text = "* Main List *"
 
 [node name="DeleteAltListBtn" type="Button" parent="MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer/CurrentTagsContainer/AltSelectContainer"]
 custom_minimum_size = Vector2(32, 32)
@@ -308,10 +309,15 @@ icon_alignment = 1
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("26_8xsa4")
+allow_rmb_select = true
 hide_root = true
 select_mode = 2
 scroll_horizontal_enabled = false
 script = ExtResource("4_e0v1j")
+
+[node name="MainTaggerPopup" type="PopupMenu" parent="MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer/CurrentTagsContainer/TagsTree"]
+size = Vector2i(120, 90)
+script = ExtResource("27_pbn41")
 
 [node name="BarItems" type="HBoxContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer/CurrentTagsContainer"]
 layout_mode = 2
@@ -419,6 +425,9 @@ text = "List Version:"
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+selected = 0
+item_count = 1
+popup/item_0/text = "* Main List *"
 
 [node name="TagsPanel" type="PanelContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField"]
 custom_minimum_size = Vector2(0, 150)
@@ -513,9 +522,9 @@ theme_override_constants/margin_bottom = 4
 layout_mode = 2
 
 [node name="WikiInfoContainer" type="VBoxContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer"]
+custom_minimum_size = Vector2(635, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 8.0
 
 [node name="InfoMargin" type="MarginContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer"]
 layout_mode = 2
@@ -670,6 +679,8 @@ icon = ExtResource("23_cbccr")
 [node name="ImageContainer" type="VBoxContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer"]
 custom_minimum_size = Vector2(630, 0)
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
 
 [node name="WikiDets" type="HBoxContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/ImageContainer"]
 layout_mode = 2
@@ -764,6 +775,7 @@ theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
 [node name="TagSearchContainer" type="Control" parent="MainContainer/TagsPanel/TagsMargin"]
+visible = false
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -875,7 +887,6 @@ icon_alignment = 1
 expand_icon = true
 
 [node name="TagEditContainer" type="VBoxContainer" parent="MainContainer/TagsPanel/TagsMargin"]
-visible = false
 layout_mode = 2
 script = ExtResource("8_aldxp")
 
@@ -1198,9 +1209,9 @@ size_flags_horizontal = 3
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 tooltip_text = "Save Tool Settings"
+text = "Save Changes"
 icon = ExtResource("4_n5y6n")
 flat = true
-icon_alignment = 1
 
 [node name="SavedNotification" type="PanelContainer" parent="MainContainer/ToolsPanel/ToolsMargin/ToolsContainer/HeaderContainer/SaveButton"]
 z_index = 1
@@ -1684,7 +1695,6 @@ text = "+"
 [node name="IconsTree" type="Tree" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/MainContainer/IconsContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-mouse_force_pass_scroll_events = false
 theme = ExtResource("26_8xsa4")
 columns = 2
 hide_folding = true
@@ -1715,7 +1725,6 @@ text = "+"
 [node name="GroupsTree" type="Tree" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/MainContainer/GroupsContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-mouse_force_pass_scroll_events = false
 theme = ExtResource("26_8xsa4")
 theme_override_constants/icon_max_width = 16
 hide_folding = true
@@ -1748,7 +1757,6 @@ text = "+"
 [node name="CategoryTree" type="Tree" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CustomDataPanel/AllContainer/MainContainer/CategoryContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-mouse_force_pass_scroll_events = false
 theme = ExtResource("26_8xsa4")
 columns = 2
 column_titles_visible = true
@@ -1785,7 +1793,6 @@ icon_alignment = 1
 custom_minimum_size = Vector2(0, 160)
 layout_mode = 2
 size_flags_vertical = 3
-mouse_force_pass_scroll_events = false
 theme = ExtResource("26_8xsa4")
 hide_folding = true
 hide_root = true

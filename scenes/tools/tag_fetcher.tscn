@@ -1,0 +1,87 @@
+[gd_scene load_steps=4 format=3 uid="uid://cw2aeveshn5m6"]
+
+[ext_resource type="Script" path="res://scenes/tools/tag_fetcher.gd" id="1_p4pos"]
+[ext_resource type="Theme" uid="uid://u13wuypqagrc" path="res://style/table_theme.tres" id="1_wbcnj"]
+[ext_resource type="Script" path="res://scripts/lookable_tree.gd" id="2_3x56h"]
+
+[node name="TagFetcher" type="HBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+script = ExtResource("1_p4pos")
+
+[node name="QueueContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="HeaderContainer" type="HBoxContainer" parent="QueueContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="QueueContainer/HeaderContainer"]
+layout_mode = 2
+text = "Queue"
+
+[node name="ClearQueueBtn" type="Button" parent="QueueContainer/HeaderContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "Clear Queue"
+
+[node name="QueueTree" type="Tree" parent="QueueContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("1_wbcnj")
+columns = 2
+column_titles_visible = true
+hide_folding = true
+hide_root = true
+select_mode = 1
+script = ExtResource("2_3x56h")
+
+[node name="AddQueueLnEdt" type="LineEdit" parent="QueueContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Add to Queue"
+
+[node name="FetchContainer" type="HBoxContainer" parent="QueueContainer"]
+layout_mode = 2
+
+[node name="FetchProgress" type="ProgressBar" parent="QueueContainer/FetchContainer"]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 1.0
+show_percentage = false
+
+[node name="CancelFetchBtn" type="Button" parent="QueueContainer/FetchContainer"]
+custom_minimum_size = Vector2(80, 32)
+layout_mode = 2
+disabled = true
+text = "Cancel"
+
+[node name="FetchTagsBtn" type="Button" parent="QueueContainer/FetchContainer"]
+custom_minimum_size = Vector2(100, 32)
+layout_mode = 2
+text = "Fetch Data"
+
+[node name="LogContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="LogContainer"]
+layout_mode = 2
+text = "Log"
+
+[node name="LogLabel" type="RichTextLabel" parent="LogContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+
+[node name="HTTPRequest" type="HTTPRequest" parent="."]

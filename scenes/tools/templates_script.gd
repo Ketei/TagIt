@@ -1,14 +1,9 @@
-extends HBoxContainer
+extends TagItTool
 
-
-signal something_changed
 
 const MessageConfirmationDialog = preload("res://scenes/dialogs/message_confirmation_dialog.gd")
-const TOOL_ID: String = "templates"
 
 var template_resource: TemplateResource = null
-var tool_description: String = "Create tag list templates."
-var requires_save: bool = true
 var current_template: int = -1:
 	set(new_current):
 		current_template = new_current
@@ -44,6 +39,11 @@ var template_edited: bool = false:
 @onready var search_group_ln_edt: LineEdit = $SetupContainer/GroupsContainer/SearchGroupLnEdt
 
 
+func _init() -> void:
+	tool_id = "templates"
+	tool_description = "Create tag list templates."
+	requires_save = true
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -59,11 +59,18 @@ func _ready() -> void:
 	
 	var groups: Dictionary = SingletonManager.TagIt.get_tag_groups()
 	
+	var group_arrays: Array[Array] = []
+	
 	for group_id in groups:
+		group_arrays.append([group_id, groups[group_id]["name"]])
+	
+	group_arrays.sort_custom(_sort_groups_array)
+	
+	for array in group_arrays:
 		var new_group: TreeItem = group_tree.get_root().create_child()
 		new_group.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
-		new_group.set_text(0, groups[group_id]["name"])
-		new_group.set_metadata(0, group_id)
+		new_group.set_text(0, array[1])
+		new_group.set_metadata(0, array[0])
 		new_group.set_editable(0, false)
 	
 	template_title.text_changed.connect(_on_title_changed)
@@ -112,6 +119,10 @@ func _input(_event: InputEvent) -> void:
 					template_resource.save()
 				confirmation.queue_free()
 			get_viewport().set_input_as_handled()
+
+
+func _sort_groups_array(a: Array, b: Array) -> bool:
+	return a[1].naturalnocasecmp_to(b[1]) < 0
 
 
 func _on_title_changed(text: String) -> void:
@@ -361,6 +372,33 @@ func on_search_timer_timeout() -> void:
 				tag,
 				SingletonManager.TagIt.get_alias_name(tag) if SingletonManager.TagIt.has_alias(SingletonManager.TagIt.get_tag_id(tag)) else "")
 		add_tag_ln_edt.show_items()
+
+
+func insert_tree_group_sorted(item_text: String, item_id: int) -> void:
+	var target_index: int = 0
+	
+	for item in group_tree.get_root().get_children():
+		# We look through the items until we find the correct index
+		if item.get_text(0).naturalnocasecmp_to(item_text) > 0:
+			break
+		else:
+			target_index += 1
+	
+	# We don't create the item until now to possibly save 1 loop.
+	var new_item: TreeItem = group_tree.get_root().create_child()
+	new_item.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
+	
+	new_item.set_text(0, item_text)
+	
+	new_item.set_metadata(0, item_id)
+	
+	new_item.set_editable(0, true)
+	
+	if target_index != new_item.get_index(): # We need to move it
+		if target_index == 0:
+			new_item.move_before(group_tree.get_root().get_child(0))
+		else:
+			new_item.move_after(group_tree.get_root().get_child(target_index - 1))
 
 
 func on_save_pressed() -> void:

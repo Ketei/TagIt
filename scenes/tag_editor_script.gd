@@ -34,6 +34,8 @@ func _ready() -> void:
 	load_tag_groups()
 	load_categories()
 	saved_notification.visible = false
+	group_opt_btn.get_popup().max_size.y = 300
+	category_opt_btn.get_popup().max_size.y = 300
 	dl_esix_btn.pressed.connect(_on_dl_esix_btn_pressed)
 	save_tag_btn.pressed.connect(on_save_tag_pressed)
 	add_alias_ln_edt.text_submitted.connect(on_alias_submitted)
@@ -41,6 +43,7 @@ func _ready() -> void:
 	add_sugg_ln_edt.text_submitted.connect(on_suggestion_submitted)
 	add_parent_ln_edt.timer_finished.connect(on_search_timer_timeout.bind(add_parent_ln_edt))
 	add_sugg_ln_edt.timer_finished.connect(on_search_timer_timeout.bind(add_sugg_ln_edt))
+	search_group_ln_edt.text_changed.connect(_on_search_group_text_changed)
 	SingletonManager.TagIt.category_created.connect(on_category_created)
 	SingletonManager.TagIt.category_icon_updated.connect(on_icon_updated)
 	SingletonManager.TagIt.category_deleted.connect(on_category_deleted)
@@ -233,15 +236,71 @@ func load_tag_groups() -> void:
 	group_opt_btn.add_item(" - N/A -", 0)
 	
 	var tag_groups := SingletonManager.TagIt.get_tag_groups()
+	var name_id: Array[Array] = []
 	
-	for group in tag_groups:
-		group_opt_btn.add_item(tag_groups[group]["name"], group)
-		gr_sugg_tree.add_group(group, tag_groups[group]["name"])
+	for group_id in tag_groups:
+		name_id.append([group_id, tag_groups[group_id]["name"]])
+	
+	name_id.sort_custom(_sort_groups_array)
+	
+	for group in name_id:
+		group_opt_btn.add_item(group[1], group[0])
+		gr_sugg_tree.add_group(group[0], group[1])
+
+
+func _sort_groups_array(a: Array, b: Array) -> bool:
+	return a[1].naturalnocasecmp_to(b[1]) < 0
 
 
 func on_group_created(group_id: int, group_name: String) -> void:
-	group_opt_btn.add_item(group_name, group_id)
-	gr_sugg_tree.add_group(group_id, group_name)
+	var all_groups: Array[Array] = []
+	var selected_group: int = -1 if group_opt_btn.selected == -1 else group_opt_btn.get_item_id(group_opt_btn.selected)
+	
+	for group in range(group_opt_btn.item_count):
+		all_groups.append([group_opt_btn.get_item_id(group), group_opt_btn.get_item_text(group)])
+	
+	all_groups.append([group_id, group_name])
+	
+	all_groups.sort_custom(_sort_groups_array)
+	
+	group_opt_btn.clear()
+	
+	for grp in all_groups:
+		group_opt_btn.add_item(grp[1], grp[0])
+	
+	select_group(selected_group)
+	insert_tree_group_sorted(group_name, group_id)
+
+
+func _on_search_group_text_changed(text: String) -> void:
+	gr_sugg_tree.search_group(text.strip_edges().to_lower())
+
+
+func insert_tree_group_sorted(item_text: String, item_id: int) -> void:
+	var target_index: int = 0
+	
+	for item in gr_sugg_tree.get_root().get_children():
+		# We look through the items until we find the correct index
+		if item.get_text(0).naturalnocasecmp_to(item_text) > 0:
+			break
+		else:
+			target_index += 1
+	
+	# We don't create the item until now to possibly save 1 loop.
+	var new_item: TreeItem = gr_sugg_tree.get_root().create_child()
+	new_item.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
+	
+	new_item.set_text(0, item_text)
+	
+	new_item.set_metadata(0, item_id)
+	
+	new_item.set_editable(0, true)
+	
+	if target_index != new_item.get_index(): # We need to move it
+		if target_index == 0:
+			new_item.move_before(gr_sugg_tree.get_root().get_child(0))
+		else:
+			new_item.move_after(gr_sugg_tree.get_root().get_child(target_index - 1))
 
 
 func on_group_deleted(group_id: int) -> void:
@@ -310,6 +369,10 @@ func load_tag(tag_id: int) -> void:
 
 
 func select_group(group_id: int) -> void:
+	if group_id == -1:
+		group_opt_btn.select(-1)
+		return
+	
 	for item in range(group_opt_btn.item_count):
 		if group_opt_btn.get_item_id(item) == group_id:
 			group_opt_btn.select(item)

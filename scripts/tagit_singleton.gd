@@ -20,9 +20,9 @@ signal website_deleted(site_id: int)
 const DATABASE_PATH: String = "user://tag_database.db"
 const SEARCH_WILDCARD: String = "*"
 const DB_VERSION: int = 1
-const TAGIT_VERSION: String = "3.3.1"
+const TAGIT_VERSION: String = "3.3.2"
 const MAX_PARENT_RECURSION: int = 100
-const IMAGE_LIMITS: Vector2i = Vector2i(700, 700)
+const IMAGE_LIMITS: Vector2i = Vector2i(1000, 1000)
 const LEV_DISTANCE: float = 0.75
 const LEV_LOOP_LIMIT: int = 100
 const INVALID_COLOR: Color = Color(0.859, 0.302, 0.376)
@@ -1009,6 +1009,12 @@ func has_data(tag_id: int) -> bool:
 	return not tag_database.select_rows("data", "tag_id = " + str(tag_id), ["id"]).is_empty()
 
 
+func has_tag_data(tag: String) -> bool:
+	if not has_tag(tag):
+		return false
+	return has_data(get_tag_id(tag))
+
+
 func has_tag(tag_name: String) -> bool: 
 	# We use this because we already have the names loaded in memory. Faster this way.
 	return loaded_tags.has(tag_name)
@@ -1375,6 +1381,10 @@ func set_category_icon_color(category_id: int, color: String) -> void:
 
 func set_category_name(category_id: int, new_name: String) -> void:
 	update_category(category_id, {"name": new_name})
+
+
+func set_category_desc(category_id: int, new_description: String) -> void:
+	update_category(category_id, {"description": new_description})
 
 
 func set_group_desc(group_id: int, desc: String) -> void:

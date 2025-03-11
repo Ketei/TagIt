@@ -40,6 +40,13 @@ const HYDRUS_FILE_ENDPOINT: String = "get_files/file?file_id="
 
 @export var search_time: float = 0.3
 
+var _saving: bool = false # Used if a save instance is on screen.
+var _save_required: bool = false
+var _image_changed: bool = false
+var _block_events: bool = false
+var _help_pressed: bool = false
+var _suggestion_blacklist: PackedStringArray = []
+var _close_signaled: bool = false
 
 var selector: Control = null:
 	set(new_selector):
@@ -63,14 +70,11 @@ var hydrus_connected: bool = false:
 			settings_connection_status_txt_rect.texture = load("res://icons/disconnected_icon.svg")
 			settings_connection_status_txt_rect.modulate = Color(0.78, 0.139, 0.117)
 var loading_image: bool = false
-var _saving: bool = false # Used if a save instance is on screen.
-var _save_required: bool = false
-var _image_changed: bool = false
-var _block_events: bool = false
-var _help_pressed: bool = false
-var _suggestion_blacklist: PackedStringArray = []
+var loading_thumbnails: bool = false
+
 var custom_order_list: Dictionary = {}
 var prio_list_node: Control = null
+var sort_submenu: PopupMenu = null
 
 # ----- Windows -----
 @onready var tagger_container: PanelContainer = $MainContainer/TaggerContainer
@@ -86,7 +90,6 @@ var prio_list_node: Control = null
 # --- Quick Access ---
 @onready var template_btn: Button = $MainContainer/MenuMargin/MenuContainer/QuickAccessCtnr/TemplateBtn
 # --------------------
-
 
 # ----- Tagger -----
 @onready var tagger_site_opt_btn: OptionButton = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/BtnCotnainer/SiteOptBtn
@@ -114,6 +117,8 @@ var prio_list_node: Control = null
 @onready var menu_button: MenuButton = $MainContainer/MenuMargin/MenuContainer/MenuButtonCont/MenuButton
 @onready var help_button: MenuButton = $MainContainer/MenuMargin/MenuContainer/MenuButtonCont/HelpButton
 @onready var change_prio_btn: Button = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/TagsPanel/TagsContainer/ButtonsContainer/ChangePrioBtn
+@onready var main_tagger_popup: RightClickPopupMenu = $MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer/CurrentTagsContainer/TagsTree/MainTaggerPopup
+
 # ----------------
 # ----- Tag Review -----
 @onready var new_tag_btn: Button = $MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer/ButtonButtons/NewTagBtn
@@ -195,6 +200,13 @@ func _ready() -> void:
 	hide_all_sections()
 	tab_bar.current_tab = 0
 	on_tab_changed(0)
+	
+	sort_submenu = PopupMenu.new()
+	sort_submenu.add_item("Alphabetically")
+	sort_submenu.add_item("Category")
+	sort_submenu.id_pressed.connect(_on_sort_submenu_id_selected)
+	menu_button.get_popup().set_item_submenu_node(7, sort_submenu)
+	
 	tag_searcher.visible = true
 	tag_editor.visible = false
 	settings_api_container.visible = false
@@ -265,6 +277,8 @@ func _ready() -> void:
 		settings_image_load_spn_bx.editable = true
 		settings_key_ln_edt.editable = true
 		settings_port_spn_bx.editable = true
+		settings_request_api_btn.disabled = false
+		settings_connect_api_btn.disabled = false
 	settings_image_load_spn_bx.value = SingletonManager.TagIt.settings.wiki_images
 	settings_request_sugg_chk_btn.button_pressed = SingletonManager.TagIt.settings.request_suggestions
 	settings_relevancy_spn_bx.value = SingletonManager.TagIt.settings.suggestion_relevancy
@@ -301,6 +315,10 @@ func _ready() -> void:
 	search_tag_btn.pressed.connect(on_search_all_tags_pressed)
 	help_button.get_popup().id_pressed.connect(on_help_id_pressed)
 	change_prio_btn.pressed.connect(on_menu_button_id_selected.bind(17))
+	tags_tree.move_tags_to_new_list_pressed.connect(_on_move_tag_to_new_list_pressed)
+	tags_tree.move_tags_to_list_pressed.connect(_on_move_tags_to_list_pressed)
+	tags_tree.search_in_wiki_pressed.connect(_on_search_in_wiki_pressed)
+	tags_tree.tags_changed.connect(_list_changed)
 	# --- Edit Tag ---
 	all_tags_search_ln_edt.text_submitted.connect(on_search_text_submitted)
 	new_tag_btn.pressed.connect(on_new_tag_pressed)
@@ -361,7 +379,7 @@ func _ready() -> void:
 	
 	SingletonManager.TagIt.hide_splash()
 	
-	if SingletonManager.TagIt.settings.has_valid_hydrus_login():
+	if SingletonManager.TagIt.settings.load_wiki_images and SingletonManager.TagIt.settings.has_valid_hydrus_login():
 		hydrus_connected = await connect_to_hydrus(
 			SingletonManager.TagIt.settings.hydrus_port,
 			SingletonManager.TagIt.settings.hydrus_key)
@@ -369,6 +387,7 @@ func _ready() -> void:
 			settings_port_spn_bx.value = SingletonManager.TagIt.settings.hydrus_port
 			settings_key_ln_edt.text = SingletonManager.TagIt.settings.hydrus_key
 
+var _cleanup_timeout: bool = false
 
 func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
@@ -471,7 +490,28 @@ func _notification(what):
 			elif result == 2: # Cancel
 				save_confirmation.queue_free()
 				return
-		SingletonManager.TagIt.quit_request()
+		_close_signaled = true
+		
+		# Signal the subthread to stop work
+		hydrus_images.signal_close.emit() 
+		
+		if loading_image:
+			hydrus_large_image.cancel_request()
+		
+		if 0 < hydrus_images.working:
+			get_tree().create_timer(5.0).timeout.connect(func(): _cleanup_timeout = true)
+			
+			while 0 < hydrus_images.working and not _cleanup_timeout:
+				await get_tree().process_frame # Wait before checking again
+		
+		if 0 < hydrus_images.working:
+			SingletonManager.TagIt.log_silent(
+					"Program closed while subthread was still working",
+					DataManager.LogLevel.INFO)
+		
+		hydrus_images.queue_free.call_deferred()
+		
+		SingletonManager.TagIt.quit_request() # Calls get_tree().quit()
 
 
 func _list_changed() -> void:
@@ -485,6 +525,14 @@ func _on_suggestions_dropped(suggestions: Array[String]) -> void:
 
 func _on_blacklist_used_suggestions_toggled(enabled: bool) -> void:
 	SingletonManager.TagIt.settings.blacklist_used_suggestions = enabled
+
+
+func _on_sort_submenu_id_selected(id: int) -> void:
+	match id:
+		0:
+			sort_tags_alphabetical()
+		1:
+			sort_tags_category()
 
 
 func on_import_button_id_pressed(id: int) -> void:
@@ -711,25 +759,51 @@ func on_wiki_timer_timeout() -> void:
 	var results: PackedStringArray = []
 	
 	if prefix and suffix:
-		results = SingletonManager.TagIt.search_for_tag_contains(clean_text, wiki_search_ln_edt.item_limit, true, true)
+		results = SingletonManager.TagIt.search_for_tag_contains(clean_text, add_tag_ln_edt.item_limit, true)
 	elif suffix:
-		results = SingletonManager.TagIt.search_for_tag_suffix(clean_text, wiki_search_ln_edt.item_limit, true, true)
+		results = SingletonManager.TagIt.search_for_tag_suffix(clean_text, add_tag_ln_edt.item_limit, true)
 	else:
-		results = SingletonManager.TagIt.search_for_tag_prefix(clean_text, wiki_search_ln_edt.item_limit, true, true)
+		results = SingletonManager.TagIt.search_for_tag_prefix(clean_text, add_tag_ln_edt.item_limit, true)
+	
+	var id_results: Array[int] = Array(SingletonManager.TagIt.get_tags_ids(results).values(), TYPE_INT, &"", null)
+	
+	var tags_with_aliases: Dictionary = SingletonManager.TagIt.get_aliases_consequent_names_from(id_results)
 	
 	if not results.is_empty():
 		for tag in results:
-			wiki_search_ln_edt.add_item(tag)
+			if tags_with_aliases.has(SingletonManager.TagIt.get_tag_id(tag)):
+				wiki_search_ln_edt.add_item(tag, tags_with_aliases[SingletonManager.TagIt.get_tag_id(tag)])
+			else:
+				wiki_search_ln_edt.add_item(tag)
 		wiki_search_ln_edt.show_items()
 
 
 func sort_tags_alphabetical() -> void:
 	var children: Array[TreeItem] = tags_tree.get_root().get_children()
 	children.sort_custom(_sort_tree_alphabetical)
+	
+	children[0].move_before(tags_tree.get_root().get_child(0))
+	
+	for index in range(1, children.size()):
+		children[index].move_after(children[index - 1])
+
+
+func sort_tags_category() -> void:
+	var children: Array[TreeItem] = tags_tree.get_root().get_children()
+	children.sort_custom(_sort_tree_category)
+	
+	children[0].move_before(tags_tree.get_root().get_child(0))
+	
+	for index in range(1, children.size()):
+		children[index].move_after(children[index - 1])
 
 
 func _sort_tree_alphabetical(a: TreeItem, b: TreeItem) -> bool:
 	return a.get_text(0).naturalnocasecmp_to(b.get_text(0)) < 0
+
+
+func _sort_tree_category(a: TreeItem, b: TreeItem) -> bool:
+	return a.get_metadata(0)["category"] < b.get_metadata(0)["category"]
 
 
 func add_suggestion(suggestion: String) -> void:
@@ -755,7 +829,14 @@ func on_esix_wiki_search() -> void:
 		ESIX_SEARCH_URL + wiki_search_ln_edt.text.strip_edges())
 
 
-func create_alt_list() -> void:
+func _on_create_alt_list_pressed() -> void:
+	var result: bool = await create_alt_list()
+	if result:
+		alt_opt_btn.select(alt_opt_btn.item_count - 1)
+		on_alt_list_selected(alt_opt_btn.item_count - 1)
+
+
+func create_alt_list(tags: Array[String] = []) -> bool:
 	var name_list := LineConfirmationDialog.new()
 	add_child(name_list)
 	name_list.allow_empty = false
@@ -764,29 +845,45 @@ func create_alt_list() -> void:
 	name_list.focus_line_edit()
 	var result: Array = await name_list.dialog_finished
 	if result[0]:
-		alt_lists.append([])
+		alt_lists.append(tags)
 		alt_opt_btn.add_item(result[1])
 		generate_version_opt_btn.add_item(result[1])
 		if not alt_select_container.visible:
 			alt_select_container.visible = true
 			list_version_container.visible = true
+		tags_tree.add_alt_list(result[1])
 		_list_changed()
-		alt_opt_btn.select(alt_opt_btn.item_count - 1)
-		on_alt_list_selected(alt_opt_btn.item_count - 1)
 	name_list.queue_free()
+	return result[0]
+
+
+func _on_move_tag_to_new_list_pressed(tags: Array[String], indexes: Array[int]) -> void:
+	var result: bool = await create_alt_list(tags)
+	tags_tree._on_tags_moved(result, indexes)
+	if result:
+		_list_changed()
+
+
+func _on_move_tags_to_list_pressed(list_idx: int, tags: Array[String], indexes: Array[int]) -> void:
+	Arrays.append_uniques(alt_lists[list_idx], tags)
+	tags_tree._on_tags_moved(true, indexes)
+	_list_changed()
 
 
 func on_delete_list_pressed() -> void:
 	alt_lists.remove_at(current_alt)
 	alt_opt_btn.remove_item(current_alt)
-	generate_version_opt_btn.remove_item(current_alt - 1)
+	generate_version_opt_btn.remove_item(current_alt)
+	tags_tree.delete_alt_list(current_alt)
 	current_alt -= 1
+	tags_tree._on_alt_list_switched(current_alt)
 	alt_opt_btn.select(current_alt)
-	generate_version_opt_btn.select(current_alt - 1)
+	generate_version_opt_btn.select(current_alt)
 	load_alt_list(current_alt)
 	if alt_opt_btn.item_count == 1:
 		alt_select_container.visible = false
 		list_version_container.visible = false
+	_list_changed()
 
 
 func on_alt_list_selected(idx: int) -> void:
@@ -796,13 +893,14 @@ func on_alt_list_selected(idx: int) -> void:
 	current_alt = idx
 	load_alt_list(idx)
 	delete_alt_list_btn.disabled = idx == 0
+	tags_tree._on_alt_list_switched(idx)
 	SingletonManager.TagIt.settings.request_suggestions = search_suggestions
 
 
 func load_alt_list(idx: int) -> void:
 	clear_main_tag_list()
 	for tag in alt_lists[idx]:
-		add_tag(tag, false)
+		add_tag(tag, false, true)
 
 
 func save_alt_list(index: int) -> void:
@@ -1024,7 +1122,7 @@ func on_menu_button_id_selected(id: int) -> void:
 				return
 			instance_project_loader_selector()
 		4: # Sort Alphabetical
-			sort_tags_alphabetical()
+			return
 		7: # Suggestion Blacklist
 			if _block_events:
 				return
@@ -1046,7 +1144,7 @@ func on_menu_button_id_selected(id: int) -> void:
 		14: # New Alt List
 			if _block_events:
 				return
-			create_alt_list()
+			_on_create_alt_list_pressed()
 		16: # Save as
 			if _block_events:
 				return
@@ -1120,9 +1218,9 @@ func clear_all_tagger() -> void:
 	clear_group_suggestions()
 	project_image.texture = null
 	clear_img_btn.disabled = true
-	generate_version_opt_btn.clear()
-	for alt in range(alt_opt_btn.item_count - 1, 0, -1):
+	for alt in range(1, alt_opt_btn.item_count):
 		alt_opt_btn.remove_item(alt)
+		generate_version_opt_btn.remove_item(alt)
 	delete_alt_list_btn.disabled = true
 	tags_label.clear()
 	alt_lists.clear()
@@ -1353,14 +1451,15 @@ func on_generate_tag_list_btn_pressed() -> void:
 		tags["tag"] = tag
 	
 	# Alt list index 0 is the main list. More than one means an alt exists.
-	# If an alt exists one HAS to be selected.
-	if 1 < alt_lists.size():
-		if generate_version_opt_btn.selected + 1 == current_alt:
+	# If an alt exists one HAS to be selected. And the alt has to NOT be 0
+	# as those tags are added up there ↑
+	if 1 < alt_lists.size() and generate_version_opt_btn.selected != 0:
+		if generate_version_opt_btn.selected == current_alt:
 			var tag_data: Dictionary = tags_tree.get_tags()
 			Arrays.append_uniques(tags["id"], tag_data["id"])
 			Arrays.append_uniques(tags["tag"], tag_data["tag"])
 		else:
-			for tag in alt_lists[generate_version_opt_btn.selected + 1]:
+			for tag in alt_lists[generate_version_opt_btn.selected]:
 				if SingletonManager.TagIt.has_tag(tag):
 					var id: int = SingletonManager.TagIt.get_tag_id(tag)
 					if not tags["id"].has(id):
@@ -1429,13 +1528,19 @@ func parse_hydrus_image_headers(headers_array: PackedStringArray) -> Dictionary:
 
 
 func get_thumbnails(ids_array: Array) -> void:
+	if loading_thumbnails:
+		return
+	
+	loading_thumbnails = true
+	
 	var url_building: String = LOCAL_ADDRESS.format([SingletonManager.TagIt.settings.hydrus_port]) + THUMBNAILS
 	
 	var frames_to_create: Dictionary = {}
 	var headers := get_hydrus_headers()
 	
 	for pic_id in ids_array:
-
+		if _close_signaled:
+			break
 		hydrus_requester.request(url_building + str(pic_id), headers)
 		var response_array = await hydrus_requester.request_completed
 		
@@ -1448,15 +1553,8 @@ func get_thumbnails(ids_array: Array) -> void:
 			"format": _heads["content-type"].split("/")[1]
 			}
 		
-		
-	hydrus_images.create_frames.emit(frames_to_create)
-		#hydrus_images.emit_signal.call_deferred("create_frames", response_array[3], _heads["content-type"].split("/")[1])
-		#hydrus_images.create_image_texture.call_deferred(response_array[3], _heads["content-type"].split("/")[1])
-		#var texture: SpriteFrames = await hydrus_images.frames_created
-		
-		#return_dictionary[int(pic_id)] = texture.get_frame_texture(&"default", 0)
-	
-	#return return_dictionary
+	if not _close_signaled:
+		hydrus_images.create_frames.emit(frames_to_create)
 
 
 func on_wiki_frame_created(frames: SpriteFrames, id: int) -> void:
@@ -1474,7 +1572,7 @@ func on_wiki_thumbnail_pressed(thumbnail_id: int, img_idx: int) -> void:
 	hydrus_large_image.request(url, get_hydrus_headers())
 	var response: Array = await hydrus_large_image.request_completed
 	
-	if response[0] != OK or response[1] != 200:
+	if response[0] != OK or response[1] != 200 or _close_signaled:
 		wiki_panel.hide_throbber()
 		loading_image = false
 		return
@@ -1482,6 +1580,13 @@ func on_wiki_thumbnail_pressed(thumbnail_id: int, img_idx: int) -> void:
 	var _heads: Dictionary = parse_hydrus_image_headers(response[2])
 	hydrus_images.load_full_image.emit(response[3], _heads["content-type"].split("/")[1])
 	wiki_panel.image_index = img_idx
+
+
+func _on_search_in_wiki_pressed(tag: String) -> void:
+	if wiki_search_ln_edt.editable:
+		tab_bar.current_tab = 1
+		on_wiki_searched(tag)
+	
 
 
 func on_wiki_image_loaded(full_image: SpriteFrames, animated: bool) -> void:
@@ -1550,8 +1655,9 @@ func on_connect_to_hydrus() -> void:
 	settings_request_api_btn.disabled = true
 	settings_connect_api_btn.disabled = true
 	
-	@warning_ignore("narrowing_conversion")
-	if not await connect_to_hydrus(settings_port_spn_bx.value, settings_key_ln_edt.text):
+	hydrus_connected = await connect_to_hydrus(int(settings_port_spn_bx.value), settings_key_ln_edt.text)
+	
+	if not hydrus_connected:
 		settings_request_api_btn.disabled = false
 		settings_connect_api_btn.disabled = false
 
@@ -1708,18 +1814,19 @@ func on_wiki_searched(search_text: String) -> void:
 		wiki_rtl.clear()
 		wiki_search_ln_edt.editable = true
 		wiki_search_btn.disabled = false
-		wiki_title_lbl.text = "[Not Found]"
+		wiki_title_lbl.text = "[ No Wiki Entry ]"
 		wiki_parents_container.visible = false
 		wiki_aliases_container.visible = false
 		wiki_section_separator.visible = false
-		wiki_cat_lbl.text = ""
-		wiki_prio_lbl.text = ""
+		wiki_cat_lbl.text = "[No Category]"
+		wiki_prio_lbl.text = "[N/A]"
 
 
 
 func on_frames_loading_finished() -> void:
 	wiki_search_ln_edt.editable = true
 	wiki_search_btn.disabled = false
+	loading_thumbnails = false
 
 
 func on_tag_updated(tag_id: int) -> void:
@@ -1798,7 +1905,7 @@ func on_set_category_color(id: int, initial: String) -> void:
 	color_dialog.queue_free()
 
 
-func add_tag(tag_name: String, clean_suggestions: bool = true) -> void:
+func add_tag(tag_name: String, clean_suggestions: bool = true, skip_suggestions: bool = false) -> void:
 	var clean_tag: String = tag_name.strip_edges().to_lower()
 	add_tag_ln_edt.clear_no_signal()
 	
@@ -1833,16 +1940,17 @@ func add_tag(tag_name: String, clean_suggestions: bool = true) -> void:
 			var suggestion_dict := SingletonManager.TagIt.get_tags_name(SingletonManager.TagIt.get_suggestions(tag_id))
 			var groups_per_tag := SingletonManager.TagIt.get_groups_and_tags(SingletonManager.TagIt.get_suggested_groups(tag_id))
 			
-			for group_id in groups_per_tag:
-				if not groups_suggestions_tree.has_tag_group(group_id):
-					groups_suggestions_tree.add_suggestions(
-							groups_per_tag[group_id]["group_name"],
-							groups_per_tag[group_id]["tags"],
-							group_id)
-			
-			for suggestion_id in suggestion_dict:
-				if clean_tag != suggestion_dict[suggestion_id]:
-					add_suggestion(suggestion_dict[suggestion_id])
+			if not skip_suggestions:
+				for group_id in groups_per_tag:
+					if not groups_suggestions_tree.has_tag_group(group_id):
+						groups_suggestions_tree.add_suggestions(
+								groups_per_tag[group_id]["group_name"],
+								groups_per_tag[group_id]["tags"],
+								group_id)
+				
+				for suggestion_id in suggestion_dict:
+					if clean_tag != suggestion_dict[suggestion_id]:
+						add_suggestion(suggestion_dict[suggestion_id])
 			
 			clean_tag = tag_data["tag"]
 			category = tag_data["category"]
@@ -1861,7 +1969,7 @@ func add_tag(tag_name: String, clean_suggestions: bool = true) -> void:
 	if tagger_suggestion_tree.has_suggestion(clean_tag) and clean_suggestions:
 		tagger_suggestion_tree.delete_tag(clean_tag)
 	
-	if SingletonManager.TagIt.settings.request_suggestions:
+	if SingletonManager.TagIt.settings.request_suggestions and not skip_suggestions:
 		SingletonManager.eSixAPI.search_suggestions(clean_tag)
 	
 	if target_tree != null:
@@ -2064,7 +2172,8 @@ func on_tab_changed(tab:int) -> void:
 
 func on_suggestions_activated(suggestions: Array[String], tree: Tree) -> void:
 	for suggestion in suggestions:
-		add_tag(suggestion)
+		if not tags_tree.has_tag(suggestion):
+			add_tag(suggestion)
 	tree.delete_tags(suggestions)
 	blacklist_tags(suggestions)
 

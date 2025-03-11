@@ -3,17 +3,18 @@ extends Node
 
 
 signal request_get(request_response: Array)
-#signal implications_get(request_response: Array)
 signal prio_get(request_response: Array)
 signal suggestions_found(for_tag: String, suggestions: Array[String])
 signal tag_search_results_found(for_tag: String, tags: PackedStringArray)
 signal wiki_responded(tag: String, wiki: String, parents: PackedStringArray, aliases: PackedStringArray, suggestions: PackedStringArray)
+signal _next_in_queue(uuid: String)
 
 enum JobTypes {
 	WIKI,
 	SUGGESTION,
 	ALIAS,
 	PARENTS,
+	FETCH,
 }
 
 const ENDPOINT_TAGS: String = "https://e621.net/tags.json?"
@@ -21,10 +22,12 @@ const ENDPOINT_ALIASES: String = "https://e621.net/tag_aliases.json?search[name_
 const ENDPOINT_PARENTS: String = "https://e621.net/tag_implications.json?search[antecedent_name]="
 const ENDPOINT_WIKI: String = "https://e621.net/wiki_pages.json?limit=1&title="
 const HEADERS: PackedStringArray = [
-	"User-Agent: TaglistMaker/3.3.1 (by Ketei)"
+	"User-Agent: TaglistMaker/3.3.2 (by Ketei)"
 ]
 
 @export var suggestion_limit: int = 30
+
+var _queue_uuid: PackedStringArray = []
 
 var requester: HTTPRequest
 var priority_requester: HTTPRequest
@@ -33,12 +36,11 @@ var wiki_requester: HTTPRequest
 var jobs: Array[Dictionary] = []
 
 var job_timer: Timer
-var wiki_timer: Timer
+var full_job_timer: Timer
 var regex: RegEx
 
 var working: bool = false
 var prio_working: bool = false
-var wiki_working: bool = false
 
 
 func _ready() -> void:
@@ -61,11 +63,11 @@ func _ready() -> void:
 	job_timer.wait_time = 1.2
 	job_timer.timeout.connect(on_timer_timeout)
 	add_child(job_timer)
-	wiki_timer = Timer.new()
-	wiki_timer.autostart = false
-	wiki_timer.one_shot = true
-	wiki_timer.wait_time = 1.0
-	add_child(wiki_timer)
+	full_job_timer = Timer.new()
+	full_job_timer.autostart = false
+	full_job_timer.one_shot = true
+	full_job_timer.wait_time = 1.0
+	add_child(full_job_timer)
 
 
 func close_esix_api() -> void:
@@ -76,9 +78,10 @@ func close_esix_api() -> void:
 		requester.cancel_request()
 	if prio_working:
 		priority_requester.cancel_request()
-	if wiki_working:
-		if not wiki_timer.is_stopped():
-			wiki_timer.stop()
+	if not _queue_uuid.is_empty():
+		if not full_job_timer.is_stopped():
+			full_job_timer.stop()
+		
 		wiki_requester.cancel_request()
 
 
@@ -87,9 +90,6 @@ func get_tag_request_url(tag_name: String, order := "date", limit: int = 75) -> 
 			"search[name_matches]=" + tag_name +\
 			"&search[order]=" + order +\
 			"&limit=" + str(clampi(limit, 1, 320))
-	
-	#if category != E621_CATEGORY.ALL:
-		#request_url += "&search[category]=" + str(category)
 	
 	return request_url
 
@@ -110,14 +110,9 @@ func search_suggestions(for_tag: String) -> void:
 			JobTypes.SUGGESTION)
 
 
-func search_for_wiki(tag: String) -> void:
-	if wiki_working:
-		return
-	
-	wiki_working = true
-	
-	if not wiki_timer.is_stopped():
-		await wiki_timer.timeout
+func _get_full_data(tag: String) -> Dictionary:
+	if not full_job_timer.is_stopped():
+		await full_job_timer.timeout
 	
 	var json = JSON.new()
 	var wiki: String = ""
@@ -125,9 +120,9 @@ func search_for_wiki(tag: String) -> void:
 	var aliases: PackedStringArray = []
 	var suggestions: PackedStringArray = []
 	
-	wiki_timer.start()
+	full_job_timer.start()
 	SingletonManager.TagIt.log_message(
-			"[eSix API] Requesting e621 for WIKI.",
+			"[eSix API] Requesting e621 for DATA.",
 			DataManager.LogLevel.INFO)
 	SingletonManager.TagIt.log_silent(
 		"[eSix API] Requesting e621 for tag: " + tag,
@@ -138,20 +133,20 @@ func search_for_wiki(tag: String) -> void:
 	
 	if result[0] == HTTPRequest.RESULT_SUCCESS and result[1] == 200:
 		SingletonManager.TagIt.log_silent(
-				"[eSix API] WIKI request successful",
+				"[eSix API] DATA request. Response received.",
 				DataManager.LogLevel.INFO)
 		if json.parse(result[3].get_string_from_utf8()) == OK and typeof(json.data) == TYPE_ARRAY and not json.data.is_empty():
 			if typeof(json.data[0]) == TYPE_DICTIONARY and json.data[0].has("body") and not json.data[0]["body"].is_empty():
 				wiki = format_esix_wiki(json.data[0]["body"])
 	else:
 		SingletonManager.TagIt.log_silent(
-		str("[eSix API] WIKI request failed: ", result[0], "/", result[1]),
+		str("[eSix API] DATA request failed: ", result[0], "/", result[1]),
 		DataManager.LogLevel.INFO)
 	
-	if not wiki_timer.is_stopped():
-		await wiki_timer.timeout
+	if not full_job_timer.is_stopped():
+		await full_job_timer.timeout
 	
-	wiki_timer.start()
+	full_job_timer.start()
 	
 	SingletonManager.TagIt.log_message(
 			"[eSix API] Requesting e621 for PARENTS.",
@@ -168,7 +163,7 @@ func search_for_wiki(tag: String) -> void:
 			for dict_item in json.data:
 				if typeof(dict_item) != TYPE_DICTIONARY or dict_item["status"] != "active" or not dict_item.has("descendant_names"):
 					continue
-				for descendant_name in dict_item["descendant_names"]:
+				for descendant_name:String in dict_item["descendant_names"]:
 					if not parents.has(descendant_name):
 						parents.append(descendant_name)
 	else:
@@ -176,10 +171,10 @@ func search_for_wiki(tag: String) -> void:
 		str("[eSix API] PARENTS request failed: ", result[0], "/", result[1]),
 		DataManager.LogLevel.INFO)
 	
-	if not wiki_timer.is_stopped():
-		await wiki_timer.timeout
+	if not full_job_timer.is_stopped():
+		await full_job_timer.timeout
 	
-	wiki_timer.start()
+	full_job_timer.start()
 	SingletonManager.TagIt.log_message(
 			"[eSix API] Requesting e621 for ALIASES.",
 			DataManager.LogLevel.INFO)
@@ -202,10 +197,10 @@ func search_for_wiki(tag: String) -> void:
 		str("[eSix API] ALIASES request failed: ", result[0], "/", result[1]),
 		DataManager.LogLevel.INFO)
 	
-	if not wiki_timer.is_stopped():
-		await wiki_timer.timeout
+	if not full_job_timer.is_stopped():
+		await full_job_timer.timeout
 	
-	wiki_timer.start()
+	full_job_timer.start()
 	SingletonManager.TagIt.log_message(
 			"[eSix API] Requesting e621 for SUGGESTIONS.",
 			DataManager.LogLevel.INFO)
@@ -220,21 +215,66 @@ func search_for_wiki(tag: String) -> void:
 		if json.parse(s_res[3].get_string_from_utf8()) == OK and typeof(json.data) == TYPE_ARRAY and not json.data.is_empty():
 			if typeof(json.data[0]) == TYPE_DICTIONARY and json.data[0].has("related_tags") and not json.data[0]["related_tags"].is_empty():
 				var strength_tags: Dictionary = parse_tag_strength(json.data[0]["related_tags"])
-				
 				for strength_key in strength_tags.keys():
 					if 70 <= float(strength_key):
-						suggestions.append_array(PackedStringArray(strength_tags[strength_key]))
+						for sugg_tag in strength_tags[strength_key]:
+							if not suggestions.has(sugg_tag):
+								suggestions.append(sugg_tag)
 	else:
 		SingletonManager.TagIt.log_silent(
 		str("[eSix API] SUGGESTIONS request failed: ", result[0], "/", result[1]),
 		DataManager.LogLevel.INFO)
 	
 	SingletonManager.TagIt.log_message(
-			"[eSix API] WIKI request completed.",
+			"[eSix API] DATA request completed.",
 			DataManager.LogLevel.INFO)
+	return {
+		"tag": tag,
+		"wiki": wiki,
+		"aliases": aliases,
+		"parents": parents,
+		"suggestions": suggestions}
+
+
+func search_for_wiki(tag: String) -> void:
+	var _uuid: String = await await_queue_turn()
 	
-	wiki_working = false
-	wiki_responded.emit(tag, wiki, parents, aliases, suggestions)
+	var result: Dictionary = await _get_full_data(tag)
+	
+	wiki_responded.emit(
+			result["tag"],
+			result["wiki"],
+			result["parents"],
+			result["aliases"],
+			result["suggestions"])
+	
+	_queue_turn_resolved()
+
+
+func await_queue_turn() -> String:
+	var uuid: String = Strings.random_string64()
+	
+	while _queue_uuid.has(uuid):
+		uuid = Strings.random_string64()
+	_queue_uuid.append(uuid)
+	
+	# If we're the only ones waiting, then it's our turn
+	var turn_reached: bool = _queue_uuid.size() == 1
+	
+	while not turn_reached:
+		turn_reached = await _next_in_queue == uuid
+	
+	return uuid
+
+
+func _queue_turn_resolved() -> void:
+	_queue_uuid.remove_at(0)
+	if not _queue_uuid.is_empty():
+		_next_in_queue.emit(_queue_uuid[0])
+
+
+func fetch_tag_data(tag: String) -> Dictionary:
+	return await _get_full_data(tag)
 
 
 func format_esix_wiki(text_from_wiki: String) -> String:
@@ -309,11 +349,10 @@ func on_timer_timeout() -> void:
 
 
 func process_response(response: Array, response_type: JobTypes) -> void:
-	if response.is_empty():
-		suggestions_found.emit("", [])
-		return
-	
 	if response_type == JobTypes.SUGGESTION:
+		if response.is_empty():
+			suggestions_found.emit("", [])
+			return
 		var suggestion_array: Dictionary = parse_tag_strength(
 				response[0]["related_tags"])
 		

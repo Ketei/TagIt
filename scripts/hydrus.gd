@@ -5,18 +5,36 @@ extends Node
 signal create_frames(frame_data: Dictionary)
 signal frames_created(frames_res: ImageFrames)
 signal frames_loading_finished
+signal signal_close
 
 signal full_image_loaded(image: SpriteFrames, is_animated: bool)
 signal load_full_image(image_data: PackedByteArray, image_format: String)
+signal work_finished
+
+var working: int = 0:
+	set(work_value):
+		working = work_value
+		if working == 0:
+			work_finished.emit()
+var close_signaled: bool = false
 
 
 func _ready():
 	create_frames.connect(create_image_texture)
 	load_full_image.connect(load_full)
+	signal_close.connect(_on_close_signaled)
+
+
+func _on_close_signaled() -> void:
+	close_signaled = true
 
 
 func create_image_texture(frame_data: Dictionary) -> void:
+	working += 1
+	
 	for image_id in frame_data:
+		if close_signaled:
+			break
 		var image := Image.new()
 		var return_texture: SpriteFrames = null
 		if frame_data[image_id]["format"] == "jpeg" or frame_data[image_id]["format"] == "jpg":
@@ -36,10 +54,13 @@ func create_image_texture(frame_data: Dictionary) -> void:
 			return_texture.rename_animation(&"gif", &"default")
 	
 		frames_created.emit(return_texture, image_id)
+	
+	working -= 1
 	frames_loading_finished.emit()
 
 
 func load_full(image_data: PackedByteArray, image_format: String) -> void:
+	working += 1
 	var image := Image.new()
 	var return_texture: SpriteFrames = null
 	var animated: bool = false
@@ -61,3 +82,4 @@ func load_full(image_data: PackedByteArray, image_format: String) -> void:
 		return_texture.rename_animation(&"gif", &"default")
 		animated = true
 	full_image_loaded.emit(return_texture, animated)
+	working -= 1

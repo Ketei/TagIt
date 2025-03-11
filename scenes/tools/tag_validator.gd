@@ -1,12 +1,7 @@
-extends HBoxContainer
+extends TagItTool
 
 
-signal something_changed
-
-const TOOL_ID: String = "validator"
-var tool_description: String = "Create or change if a tag is invalid."
 var tag_results: Array[int] = []
-var requires_save: bool = true
 
 var unsaved_changes: bool = false
 
@@ -18,6 +13,12 @@ var unsaved_changes: bool = false
 @onready var max_page_label: Label = $TreeContainer/HBoxContainer/MaxPageLabel
 @onready var clear_button: Button = $CreatorContainer/PanelContainer/HBoxContainer/ClearButton
 @onready var import_button: Button = $CreatorContainer/PanelContainer/HBoxContainer/ImportButton
+
+
+func _init() -> void:
+	tool_id = "validator"
+	tool_description = "Create or change if a tag is invalid."
+	requires_save = true
 
 
 func _ready() -> void:
