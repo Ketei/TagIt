@@ -46,6 +46,7 @@ var _image_changed: bool = false
 var _block_events: bool = false
 var _help_pressed: bool = false
 var _suggestion_blacklist: PackedStringArray = []
+var _group_blacklist: PackedInt64Array = []
 var _close_signaled: bool = false
 
 var selector: Control = null:
@@ -319,6 +320,7 @@ func _ready() -> void:
 	tags_tree.move_tags_to_list_pressed.connect(_on_move_tags_to_list_pressed)
 	tags_tree.search_in_wiki_pressed.connect(_on_search_in_wiki_pressed)
 	tags_tree.tags_changed.connect(_list_changed)
+	groups_suggestions_tree.groups_deleted.connect(_on_groups_deleted)
 	# --- Edit Tag ---
 	all_tags_search_ln_edt.text_submitted.connect(on_search_text_submitted)
 	new_tag_btn.pressed.connect(on_new_tag_pressed)
@@ -525,6 +527,10 @@ func _on_suggestions_dropped(suggestions: Array[String]) -> void:
 
 func _on_blacklist_used_suggestions_toggled(enabled: bool) -> void:
 	SingletonManager.TagIt.settings.blacklist_used_suggestions = enabled
+
+
+func _on_groups_deleted(new_groups: PackedInt64Array) -> void:
+	Arrays.append_uniques(_group_blacklist, new_groups)
 
 
 func _on_sort_submenu_id_selected(id: int) -> void:
@@ -809,6 +815,16 @@ func _sort_tree_category(a: TreeItem, b: TreeItem) -> bool:
 func add_suggestion(suggestion: String) -> void:
 	if not _suggestion_blacklist.has(suggestion) and not tagger_suggestion_tree.has_suggestion(suggestion):
 		tagger_suggestion_tree.add_suggestion(suggestion)
+
+
+func add_group(group_id: int, group_title: String, group_items: Dictionary) -> void:
+	if _group_blacklist.has(group_id) or groups_suggestions_tree.has_tag_group(group_id):
+		return
+	
+	groups_suggestions_tree.add_suggestions(
+			group_title,
+			group_items,
+			group_id)
 
 
 func on_wizard_finished(tags: Array[String]) -> void:
@@ -1186,6 +1202,7 @@ func on_help_id_pressed(id: int) -> void:
 func instantiate_blacklist() -> void:
 	selector = SUGGENSTION_BLACKLIST.instantiate()
 	selector.suggestion_blacklist = _suggestion_blacklist
+	selector.group_blacklist = _group_blacklist
 	selector.blacklist_submitted.connect(on_new_blacklist)
 	selector.blacklist_cancelled.connect(on_blacklist_cancelled)
 	add_child(selector)
@@ -1293,8 +1310,7 @@ func on_selector_project_selected(project_idx: int) -> void:
 	var groups := SingletonManager.TagIt.get_groups_and_tags(projects.projects[project_idx]["groups"])
 	
 	for group_id in groups:
-		if not groups_suggestions_tree.has_tag_group(group_id):
-			groups_suggestions_tree.add_suggestions(groups[group_id]["group_name"], groups[group_id]["tags"], groups)
+		add_group(group_id, groups[group_id]["group_name"], groups[group_id]["tags"])
 	
 	if not projects.projects[project_idx]["image_path"].is_empty() and FileAccess.file_exists(TagItProjectResource.get_thumbnails_path() + projects.projects[project_idx]["image_path"]):
 		var img := Image.load_from_file(TagItProjectResource.get_thumbnails_path() + projects.projects[project_idx]["image_path"])
@@ -1380,11 +1396,10 @@ func on_selector_template_selected(template_idx: int) -> void:
 	var groups_per_tag: Dictionary = SingletonManager.TagIt.get_groups_and_tags(template_data["groups"])
 	
 	for group_id in groups_per_tag:
-		if not groups_suggestions_tree.has_tag_group(group_id):
-			groups_suggestions_tree.add_suggestions(
-					groups_per_tag[group_id]["group_name"],
-					groups_per_tag[group_id]["tags"],
-					group_id)
+		add_group(
+				group_id,
+				groups_per_tag[group_id]["group_name"],
+				groups_per_tag[group_id]["tags"])
 	
 	selector.stop_queued_cards()
 	selector.play_outro()
@@ -1942,11 +1957,10 @@ func add_tag(tag_name: String, clean_suggestions: bool = true, skip_suggestions:
 			
 			if not skip_suggestions:
 				for group_id in groups_per_tag:
-					if not groups_suggestions_tree.has_tag_group(group_id):
-						groups_suggestions_tree.add_suggestions(
-								groups_per_tag[group_id]["group_name"],
-								groups_per_tag[group_id]["tags"],
-								group_id)
+					add_group(
+							group_id,
+							groups_per_tag[group_id]["group_name"],
+							groups_per_tag[group_id]["tags"])
 				
 				for suggestion_id in suggestion_dict:
 					if clean_tag != suggestion_dict[suggestion_id]:
