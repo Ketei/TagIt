@@ -530,7 +530,8 @@ func _on_blacklist_used_suggestions_toggled(enabled: bool) -> void:
 
 
 func _on_groups_deleted(new_groups: PackedInt64Array) -> void:
-	Arrays.append_uniques(_group_blacklist, new_groups)
+	if SingletonManager.TagIt.settings.blacklist_removed:
+		Arrays.append_uniques(_group_blacklist, new_groups)
 
 
 func _on_sort_submenu_id_selected(id: int) -> void:
@@ -2193,7 +2194,8 @@ func on_suggestions_activated(suggestions: Array[String], tree: Tree) -> void:
 
 
 func blacklist_tags(tags: Array[String]) -> void:
-	Arrays.append_uniques(_suggestion_blacklist, tags)
+	if SingletonManager.TagIt.settings.blacklist_removed:
+		Arrays.append_uniques(_suggestion_blacklist, tags)
 
 
 func blacklist_tag(tag: String) -> void:
