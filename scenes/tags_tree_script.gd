@@ -135,7 +135,7 @@ func _on_item_mouse_selected(_mouse_position: Vector2, mouse_button_index: int) 
 	if mouse_button_index != MOUSE_BUTTON_RIGHT:
 		return
 	var selected: Array[String] = get_selected_tags()
-	main_tagger_popup.set_item_disabled(0, !(selected.size() == 1) and SingletonManager.TagIt.has_tag(selected[0]))
+	main_tagger_popup.set_item_disabled(0, !( selected.size() == 1 and SingletonManager.TagIt.has_tag_data(selected[0]) ))
 	main_tagger_popup.show_in_bounds(get_global_mouse_position())
 
 
@@ -287,7 +287,7 @@ func update_category_color(category_id: int, category_color: String) -> void:
 
 func update_category_icon(category_id: int, category_icon: Texture2D) -> void:
 	for tag in get_root().get_children():
-		if tag.get_metadata(0) == category_id:
+		if tag.get_metadata(0)["category"] == category_id:
 			tag.set_icon(0, category_icon)
 
 
