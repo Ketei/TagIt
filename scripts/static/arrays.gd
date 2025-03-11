@@ -129,30 +129,42 @@ static func containsn(array: Array, what: String) -> bool:
 
 
 static func append_uniques(array_to_append: Variant, items: Variant) -> void:
-	match typeof(array_to_append):
-		TYPE_ARRAY:
-			if array_to_append.is_typed():
-				var type: int = array_to_append.get_typed_builtin()
-				for item in items:
-					if typeof(item) == type and not array_to_append.has(item):
-						array_to_append.append(item)
-					else:
-						push_error("Array item doesn't match typed array type.")
-			else:
-				for item in items:
-					if not array_to_append.has(item):
-						array_to_append.append(item)
-		TYPE_PACKED_STRING_ARRAY:
-			if items.is_typed():
-				if items.get_typed_builtin() != TYPE_STRING:
-					return
-				for item in items:
-					if not array_to_append.has(item):
-						array_to_append.append(item)
-			else:
-				for item in items:
-					if typeof(item) == TYPE_STRING and not array_to_append.has(item):
-						array_to_append.append(item)
+	var array_to: int = typeof(array_to_append)
+	var array_from: int = typeof(items)
+	if ( array_to < 28 or 38 < array_to ) or ( array_from < 28 or 38 < array_from ):
+		push_error("Provided data isn't Array")
+		return
+	
+	var append_type: int = 0
+	
+	if array_to == TYPE_ARRAY:
+		append_type = array_to_append.get_typed_builtin()
+	else:
+		match array_to:
+			TYPE_PACKED_INT32_ARRAY:
+				append_type = TYPE_INT
+			TYPE_PACKED_INT64_ARRAY:
+				append_type = TYPE_INT
+			TYPE_PACKED_FLOAT32_ARRAY:
+				append_type = TYPE_FLOAT
+			TYPE_PACKED_FLOAT64_ARRAY:
+				append_type = TYPE_FLOAT
+			TYPE_PACKED_STRING_ARRAY:
+				append_type = TYPE_STRING
+			TYPE_PACKED_VECTOR2_ARRAY:
+				append_type = TYPE_VECTOR2
+			TYPE_PACKED_VECTOR3_ARRAY:
+				append_type = TYPE_VECTOR3
+			TYPE_PACKED_VECTOR4_ARRAY:
+				append_type = TYPE_VECTOR4
+			TYPE_PACKED_COLOR_ARRAY:
+				append_type = TYPE_COLOR
+			_:
+				append_type = TYPE_NIL
+	
+	for item in items:
+		if not array_to_append.has(item) and (append_type == TYPE_NIL or typeof(item) == append_type):
+			array_to_append.append(item)
 
 
 static func append_uniques_asc(array_to_append: Variant, items: Variant) -> void:
