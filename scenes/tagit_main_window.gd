@@ -40,7 +40,6 @@ const HYDRUS_FILE_ENDPOINT: String = "get_files/file?file_id="
 
 @export var search_time: float = 0.3
 
-
 var selector: Control = null:
 	set(new_selector):
 		selector = new_selector
@@ -63,6 +62,7 @@ var hydrus_connected: bool = false:
 			settings_connection_status_txt_rect.texture = load("res://icons/disconnected_icon.svg")
 			settings_connection_status_txt_rect.modulate = Color(0.78, 0.139, 0.117)
 var loading_image: bool = false
+var loading_thumbnails: bool = false
 var _saving: bool = false # Used if a save instance is on screen.
 var _save_required: bool = false
 var _image_changed: bool = false
@@ -71,6 +71,7 @@ var _help_pressed: bool = false
 var _suggestion_blacklist: PackedStringArray = []
 var custom_order_list: Dictionary = {}
 var prio_list_node: Control = null
+var _close_signaled: bool = false
 
 # ----- Windows -----
 @onready var tagger_container: PanelContainer = $MainContainer/TaggerContainer
@@ -377,6 +378,7 @@ func _ready() -> void:
 			settings_port_spn_bx.value = SingletonManager.TagIt.settings.hydrus_port
 			settings_key_ln_edt.text = SingletonManager.TagIt.settings.hydrus_key
 
+var _cleanup_timeout: bool = false
 
 func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
@@ -479,7 +481,28 @@ func _notification(what):
 			elif result == 2: # Cancel
 				save_confirmation.queue_free()
 				return
-		SingletonManager.TagIt.quit_request()
+		_close_signaled = true
+		
+		# Signal the subthread to stop work
+		hydrus_images.signal_close.emit() 
+		
+		if loading_image:
+			hydrus_large_image.cancel_request()
+		
+		if 0 < hydrus_images.working:
+			get_tree().create_timer(5.0).timeout.connect(func(): _cleanup_timeout = true)
+			
+			while 0 < hydrus_images.working and not _cleanup_timeout:
+				await get_tree().process_frame # Wait before checking again
+		
+		if 0 < hydrus_images.working:
+			SingletonManager.TagIt.log_silent(
+					"Program closed while subthread was still working",
+					DataManager.LogLevel.INFO)
+		
+		hydrus_images.queue_free.call_deferred()
+		
+		SingletonManager.TagIt.quit_request() # Calls get_tree().quit()
 
 
 func _list_changed() -> void:
@@ -1469,13 +1492,19 @@ func parse_hydrus_image_headers(headers_array: PackedStringArray) -> Dictionary:
 
 
 func get_thumbnails(ids_array: Array) -> void:
+	if loading_thumbnails:
+		return
+	
+	loading_thumbnails = true
+	
 	var url_building: String = LOCAL_ADDRESS.format([SingletonManager.TagIt.settings.hydrus_port]) + THUMBNAILS
 	
 	var frames_to_create: Dictionary = {}
 	var headers := get_hydrus_headers()
 	
 	for pic_id in ids_array:
-
+		if _close_signaled:
+			break
 		hydrus_requester.request(url_building + str(pic_id), headers)
 		var response_array = await hydrus_requester.request_completed
 		
@@ -1488,15 +1517,8 @@ func get_thumbnails(ids_array: Array) -> void:
 			"format": _heads["content-type"].split("/")[1]
 			}
 		
-		
-	hydrus_images.create_frames.emit(frames_to_create)
-		#hydrus_images.emit_signal.call_deferred("create_frames", response_array[3], _heads["content-type"].split("/")[1])
-		#hydrus_images.create_image_texture.call_deferred(response_array[3], _heads["content-type"].split("/")[1])
-		#var texture: SpriteFrames = await hydrus_images.frames_created
-		
-		#return_dictionary[int(pic_id)] = texture.get_frame_texture(&"default", 0)
-	
-	#return return_dictionary
+	if not _close_signaled:
+		hydrus_images.create_frames.emit(frames_to_create)
 
 
 func on_wiki_frame_created(frames: SpriteFrames, id: int) -> void:
@@ -1514,7 +1536,7 @@ func on_wiki_thumbnail_pressed(thumbnail_id: int, img_idx: int) -> void:
 	hydrus_large_image.request(url, get_hydrus_headers())
 	var response: Array = await hydrus_large_image.request_completed
 	
-	if response[0] != OK or response[1] != 200:
+	if response[0] != OK or response[1] != 200 or _close_signaled:
 		wiki_panel.hide_throbber()
 		loading_image = false
 		return
@@ -1768,6 +1790,7 @@ func on_wiki_searched(search_text: String) -> void:
 func on_frames_loading_finished() -> void:
 	wiki_search_ln_edt.editable = true
 	wiki_search_btn.disabled = false
+	loading_thumbnails = false
 
 
 func on_tag_updated(tag_id: int) -> void:

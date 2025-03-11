@@ -41,7 +41,6 @@ var regex: RegEx
 
 var working: bool = false
 var prio_working: bool = false
-var wiki_working: bool = false
 
 
 func _ready() -> void:
@@ -79,9 +78,10 @@ func close_esix_api() -> void:
 		requester.cancel_request()
 	if prio_working:
 		priority_requester.cancel_request()
-	if wiki_working:
+	if not _queue_uuid.is_empty():
 		if not full_job_timer.is_stopped():
 			full_job_timer.stop()
+		
 		wiki_requester.cancel_request()
 
 
@@ -241,7 +241,6 @@ func search_for_wiki(tag: String) -> void:
 	
 	var result: Dictionary = await _get_full_data(tag)
 	
-	wiki_working = false
 	wiki_responded.emit(
 			result["tag"],
 			result["wiki"],
