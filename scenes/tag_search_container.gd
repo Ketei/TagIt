@@ -138,52 +138,26 @@ func _on_advanced_search_close_pressed() -> void:
 func _on_advanced_search(args: Dictionary) -> void:
 	var query: String = "SELECT tags.id, tags.name FROM tags JOIN data ON tags.id = data.tag_id"
 	
-	var where_used: bool = false
-	
-	if 0 < args["valid"]:
-		if args["valid"] == 1:
-			query += " WHERE data.is_valid = 1"
-		else:
-			query += " WHERE data.is_valid = 0"
-		where_used = true
+	var arguments: Array[String] = []
 	
 	if 0 < args["category"]:
-		if where_used:
-			query += " AND data.category_id = " + str(args["category"])
-		else:
-			query += " WHERE data.category_id = " + str(args["category"])
-			where_used = true
+		arguments.append("data.category_id = " + str(args["category"]))
 	
 	if args["priority"]["use"]:
-		if where_used:
-			match args["priority"]["operator"]:
-				OP_EQUAL:
-					query += " AND data.priority = " + str(args["priority"]["priority"])
-				OP_GREATER_EQUAL:
-					query += " AND data.priority >= " + str(args["priority"]["priority"])
-				OP_LESS_EQUAL:
-					query += " AND data.priority <= " + str(args["priority"]["priority"])
-				_:
-					query += " AND data.priority = " + str(args["priority"]["priority"])
-		else:
-			match args["priority"]["operator"]:
-				OP_EQUAL:
-					query += " WHERE data.priority = " + str(args["priority"]["priority"])
-				OP_GREATER_EQUAL:
-					query += " WHERE data.priority >= " + str(args["priority"]["priority"])
-				OP_LESS_EQUAL:
-					query += " WHERE data.priority <= " + str(args["priority"]["priority"])
-				_:
-					query += " WHERE data.priority = " + str(args["priority"]["priority"])
-			where_used = true
-		
+		arguments.append("data.priority " + args["operator"] + " " + str(args["priority"]["priority"]))
+	
 	if 0 < args["group"]:
-		if where_used:
-			query += " AND data.group_id = " + str(args["group"])
-		else:
-			query += " WHERE data.group_id = " + str(args["group"])
-			where_used = true
-		
+		arguments.append("data.group_id = " + str(args["group"]))
+	
+	if 0 < args["valid"]:
+		arguments.append("data.is_valid = 1" if args["valid"] == 1 else "data.is_valid = 0")
+	
+	if not arguments.is_empty():
+		query += " WHERE " + arguments.pop_front()
+	
+	for argument in arguments:
+		query += " AND " + argument
+	
 	query += ";"
 	
 	SingletonManager.TagIt.tag_database.query(query)
@@ -196,7 +170,6 @@ func _on_advanced_search(args: Dictionary) -> void:
 			new_results.append(col["id"])
 		
 		set_search_results(new_results)
-		
 	else:
 		var tag_match: String = args["text"]
 		var uses_prefix: bool = tag_match.begins_with(DataManager.SEARCH_WILDCARD)

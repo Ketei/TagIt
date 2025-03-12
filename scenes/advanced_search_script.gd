@@ -113,12 +113,26 @@ func _on_search_pressed() -> void:
 		"category": category_opt_btn.get_selected_id(),
 		"priority": {
 			"use": 0 < prio_opt_btn.selected,
-			"operator": prio_opt_btn.get_selected_id(),
+			"operator": operator_to_string(prio_opt_btn.get_selected_id()),
 			"priority": int(prio_spn_box.value)},
 		"group": group_opt_btn.get_selected_id(),
 		"valid": valid_opt_btn.get_selected_id()}
+	
+	
 	search_pressed.emit(args)
 
 
 func _on_cancel_pressed() -> void:
 	cancel_pressed.emit()
+
+
+func operator_to_string(operator: int) -> String:
+	match operator:
+		OP_EQUAL:
+			return "="
+		OP_GREATER_EQUAL:
+			return ">="
+		OP_LESS_EQUAL:
+			return "<="
+		_:
+			return "="
