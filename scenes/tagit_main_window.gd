@@ -383,12 +383,26 @@ func _ready() -> void:
 	SingletonManager.TagIt.hide_splash()
 	
 	if SingletonManager.TagIt.settings.load_wiki_images and SingletonManager.TagIt.settings.has_valid_hydrus_login():
+		settings_connection_status_txt_rect.modulate = Color(0.88, 0.727, 0.104)
+		settings_connect_api_btn.disabled = true
+		settings_request_api_btn.disabled = true
+		settings_key_ln_edt.editable = false
+		settings_port_spn_bx.editable = false
+		
+		settings_port_spn_bx.value = SingletonManager.TagIt.settings.hydrus_port
+		settings_key_ln_edt.text = SingletonManager.TagIt.settings.hydrus_key
 		hydrus_connected = await connect_to_hydrus(
-			SingletonManager.TagIt.settings.hydrus_port,
-			SingletonManager.TagIt.settings.hydrus_key)
-		if hydrus_connected:
-			settings_port_spn_bx.value = SingletonManager.TagIt.settings.hydrus_port
-			settings_key_ln_edt.text = SingletonManager.TagIt.settings.hydrus_key
+				SingletonManager.TagIt.settings.hydrus_port,
+				SingletonManager.TagIt.settings.hydrus_key)
+		
+		if not hydrus_connected:
+			settings_request_api_btn.disabled = false
+			settings_key_ln_edt.editable = true
+			settings_port_spn_bx.editable = true
+		else:
+			settings_connect_api_btn.text = "Disconnect"
+		
+		settings_connect_api_btn.disabled = false
 
 
 func _notification(what):
@@ -1668,14 +1682,26 @@ func search_hydrus_files(tags_array: Array[String], tag_count: int) -> Array:
 
 
 func on_connect_to_hydrus() -> void:
-	settings_request_api_btn.disabled = true
-	settings_connect_api_btn.disabled = true
-	
-	hydrus_connected = await connect_to_hydrus(int(settings_port_spn_bx.value), settings_key_ln_edt.text)
-	
 	if not hydrus_connected:
-		settings_request_api_btn.disabled = false
+		settings_request_api_btn.disabled = true
+		settings_connect_api_btn.disabled = true
+		settings_key_ln_edt.editable = false
+		settings_port_spn_bx.editable = false
+		settings_connection_status_txt_rect.modulate = Color(0.88, 0.727, 0.104)
+		hydrus_connected = await connect_to_hydrus(int(settings_port_spn_bx.value), settings_key_ln_edt.text)
+		
+		if not hydrus_connected:
+			settings_request_api_btn.disabled = false
+		else:
+			settings_connect_api_btn.text = "Disconnect"
 		settings_connect_api_btn.disabled = false
+	else:
+		settings_connect_api_btn.text = "Connect"
+		settings_request_api_btn.disabled = false
+		settings_key_ln_edt.editable = true
+		settings_port_spn_bx.editable = true
+		hydrus_connected = false
+		settings_connection_status_txt_rect.modulate = Color(0.78, 0.137, 0.118)
 
 
 func parse_hydrus_headers(headers_array: Array) -> Dictionary:
@@ -1727,12 +1753,13 @@ func connect_to_hydrus(port: int, key: String) -> bool:
 
 
 func request_hydrus_permissions(port: int) -> String:
-	var request_url: String = LOCAL_ADDRESS.format([str(port)]) + "request_new_permissions?name=TagIt%20-%20Tag%20List%20Assistant%26basic_permissions%3D%5B3%5D"
-	hydrus_requester.request(request_url)
+	var request_url: String = LOCAL_ADDRESS.format([str(port)]) + "request_new_permissions?name=TagIt%20-%20Tag%20List%20Assistant&basic_permissions=%5B3%5D"
+	
 	SingletonManager.TagIt.log_message(
 		"Requesting Hydrus access key.",
-		SingletonManager.TagIt.LogLevel.INFO
-	)
+		SingletonManager.TagIt.LogLevel.INFO)
+	
+	hydrus_requester.request(request_url)
 	var client_response: Array = await hydrus_requester.request_completed
 	
 	SingletonManager.TagIt.log_message(
@@ -1752,17 +1779,12 @@ func request_hydrus_permissions(port: int) -> String:
 func on_request_pressed() -> void:
 	settings_request_api_btn.disabled = true
 	settings_connect_api_btn.disabled = true
-	@warning_ignore("narrowing_conversion")
 	
-	var access_key: String = await request_hydrus_permissions(settings_port_spn_bx.value)
+	var access_key: String = await request_hydrus_permissions(int(settings_port_spn_bx.value))
 	
 	if not access_key.is_empty():
 		settings_key_ln_edt.text = access_key
-		#Tagger.queue_notification(
-			#"Received access key.
-			#Apply permissions on Hydrus then
-			#press \"Connect to Hydrus\"",
-			#"Key Received")
+	
 	settings_request_api_btn.disabled = false
 	settings_connect_api_btn.disabled = false
 
