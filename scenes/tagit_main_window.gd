@@ -535,8 +535,12 @@ func _list_changed() -> void:
 		_save_required = true
 
 
-func _on_suggestions_dropped(suggestions: Array[String]) -> void:
-	Arrays.append_uniques(_suggestion_blacklist, suggestions)
+func _on_suggestions_dropped(suggestions: Array[String], can_blacklist: bool) -> void:
+	if can_blacklist and SingletonManager.TagIt.settings.blacklist_used_suggestions:
+		Arrays.append_uniques(_suggestion_blacklist, suggestions)
+	
+	for tag in suggestions:
+		add_tag(tag)
 
 
 func _on_blacklist_used_suggestions_toggled(enabled: bool) -> void:

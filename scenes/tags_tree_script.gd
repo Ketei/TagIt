@@ -1,7 +1,7 @@
 extends IDTree
 
 
-signal suggestions_dropped(suggestions: Array[String])
+signal suggestions_dropped(suggestions: Array[String], can_blacklist: bool)
 signal move_tags_to_list_pressed(list_idx: int, tags: Array[String], indexes: Array[int])
 signal move_tags_to_new_list_pressed(tags: Array[String], indexes: Array[int])
 signal search_in_wiki_pressed(tag: String)
@@ -80,50 +80,22 @@ func _get_drag_data(_at_position: Vector2) -> Variant:
 func _drop_data(_at_position: Vector2, data: Variant) -> void:
 	if data["tag_names"].is_empty():
 		return
-	var ids: Array[int] = []
-	var names: Array[String] = []
+	
+	var unique_tags: Array[String] = []
 	
 	for tag in data["tag_names"]:
-		if SingletonManager.TagIt.has_tag(tag) and SingletonManager.TagIt.has_data(SingletonManager.TagIt.get_tag_id(tag)):
-			ids.append(SingletonManager.TagIt.get_tag_id(tag))
-		else:
-			names.append(tag)
-	
-	var tags_data: Dictionary = SingletonManager.TagIt.get_tags_data(ids)
-	var categories: Dictionary = SingletonManager.TagIt.get_categories()
-	var last_tag: TreeItem = null
-	
-	for data_id in tags_data:
-		if has_tag(tags_data[data_id]["tag"]):
+		if has_tag(tag):
 			continue
-		last_tag = add_tag(
-			data_id,
-			tags_data[data_id]["tag"],
-			tags_data[data_id]["tooltip"],
-			SingletonManager.TagIt.get_icon_texture(categories[tags_data[data_id]["category"]]["icon_id"]),
-			tags_data[data_id]["category"],
-			Color.from_string(categories[tags_data[data_id]["category"]]["icon_color"], Color.WHITE))
-	
-	for generic_tag in names:
-		if has_tag(generic_tag):
-			continue
-		last_tag = add_tag(
-			-1,
-			generic_tag,
-			generic_tag,
-			SingletonManager.TagIt.get_icon_texture(1),
-			1,
-			SingletonManager.TagIt.get_category_icon_color(1))
+		unique_tags.append(tag)
 	
 	if data["tree_type"] == 0:
 		data["tree"].delete_tags(data["tag_names"])
 	elif data["tree_type"] == 2:
 		data["tree"].mark_tags(data["tag_names"])
 	
-	if data["tree_type"] == 0 or data["tree_type"] == 1:
-		suggestions_dropped.emit(data["tag_names"])
-	
-	scroll_to_item(last_tag)
+	suggestions_dropped.emit(
+			unique_tags,
+			data["tree_type"] == 0 or data["tree_type"] == 1)
 
 
 func _on_tags_created(tag_names: Array[String]) -> void:
@@ -291,15 +263,9 @@ func update_category_icon(category_id: int, category_icon: Texture2D) -> void:
 			tag.set_icon(0, category_icon)
 
 
-func update_tag(tag_id: int, parents: Array[String], valid: bool) -> void:
+func update_tag(tag_id: int, _parents: Array[String], valid: bool) -> void:
 	for tag in get_root().get_children():
 		if tag.get_metadata(0)["id"] == tag_id:
-			for parent in tag.get_children():
-				parent.free()
-			
-			for new_parent in parents:
-				var new_parent_item: TreeItem = create_item(tag)
-				new_parent_item.set_text(0, new_parent)
 			
 			tag.get_metadata(0)["valid"] = valid
 			
