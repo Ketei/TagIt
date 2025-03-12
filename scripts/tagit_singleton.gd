@@ -20,7 +20,7 @@ signal website_deleted(site_id: int)
 const DATABASE_PATH: String = "user://tag_database.db"
 const SEARCH_WILDCARD: String = "*"
 const DB_VERSION: int = 1
-const TAGIT_VERSION: String = "3.3.2"
+const TAGIT_VERSION: String = "3.3.3"
 const MAX_PARENT_RECURSION: int = 100
 const IMAGE_LIMITS: Vector2i = Vector2i(1000, 1000)
 const LEV_DISTANCE: float = 0.75
@@ -273,6 +273,17 @@ func get_tag_groups() -> Dictionary:
 	for group in tag_database.select_rows("groups", "", ["*"]):
 		groups[group["id"]] = {"name": group["name"], "description": group["description"]}
 	return groups
+
+
+func get_tag_group_cell(group_id: int, column_id: String) -> Variant:
+	var cell: Array = tag_database.select_rows(
+			"groups",
+			"id = " + str(group_id),
+			[column_id])
+	if cell.is_empty():
+		return null
+	else:
+		return cell[0][column_id]
 
 
 func remove_tag_group(group_id: int) -> void:

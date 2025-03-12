@@ -1,6 +1,7 @@
-[gd_scene load_steps=64 format=3 uid="uid://eaxngd263vbi"]
+[gd_scene load_steps=66 format=3 uid="uid://eaxngd263vbi"]
 
 [ext_resource type="Script" path="res://scenes/tagit_main_window.gd" id="1_3rneb"]
+[ext_resource type="Theme" uid="uid://btyk3fvjow2xx" path="res://style/generic_theme.tres" id="1_heejv"]
 [ext_resource type="Texture2D" uid="uid://kkvcqst6wv4k" path="res://icons/new_icon.svg" id="2_3s1fn"]
 [ext_resource type="StyleBox" uid="uid://bhixcdmu2tfx" path="res://style/tab_panel_style.tres" id="2_u628d"]
 [ext_resource type="Script" path="res://scenes/tags_tree_script.gd" id="4_e0v1j"]
@@ -55,6 +56,7 @@
 [ext_resource type="Texture2D" uid="uid://npwxg0xrpf8j" path="res://icons/pointer_left.svg" id="38_focfw"]
 [ext_resource type="Script" path="res://scenes/tools_loader_script.gd" id="38_yel2c"]
 [ext_resource type="Texture2D" uid="uid://cdtejl0p8c4cr" path="res://icons/pointer_right.svg" id="39_angsb"]
+[ext_resource type="PackedScene" uid="uid://yfpugvocal7b" path="res://scenes/advanced_search.tscn" id="42_8l23o"]
 [ext_resource type="Texture2D" uid="uid://d24o3rwmiwpcp" path="res://icons/disconnected_icon.svg" id="45_kqm3t"]
 [ext_resource type="Texture2D" uid="uid://dxdflg0nv5wuy" path="res://icons/download_esix.svg" id="46_ftjsj"]
 [ext_resource type="Script" path="res://scripts/hydrus.gd" id="46_jhrpg"]
@@ -92,6 +94,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_heejv")
 script = ExtResource("1_3rneb")
 
 [node name="BackgroundColor" type="ColorRect" parent="."]
@@ -775,7 +778,6 @@ theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
 [node name="TagSearchContainer" type="Control" parent="MainContainer/TagsPanel/TagsMargin"]
-visible = false
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -886,7 +888,28 @@ flat = true
 icon_alignment = 1
 expand_icon = true
 
+[node name="AdvSearch" type="Button" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer/ButtonButtons/PageContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "Advanced Search"
+
+[node name="AdvSearch" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer/ButtonButtons/PageContainer/AdvSearch" instance=ExtResource("42_8l23o")]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -307.0
+offset_top = -212.0
+offset_right = 0.0
+offset_bottom = 252.0
+grow_horizontal = 0
+grow_vertical = 0
+starting_position = Vector2(-166, 32)
+
 [node name="TagEditContainer" type="VBoxContainer" parent="MainContainer/TagsPanel/TagsMargin"]
+visible = false
 layout_mode = 2
 script = ExtResource("8_aldxp")
 
@@ -1562,6 +1585,7 @@ disabled = true
 text = "Request"
 
 [node name="ConnectAPIBtn" type="Button" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/ApiContainer/ButtonsContainer"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 disabled = true
 text = "Connect"

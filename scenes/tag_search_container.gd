@@ -11,6 +11,8 @@ var groups: Dictionary = {}
 @onready var prev_page: Button = $MenuContainer/ButtonButtons/PageContainer/PrevPage
 @onready var next_page: Button = $MenuContainer/ButtonButtons/PageContainer/NextPage
 @onready var all_tags_search_ln_edt: LineEdit = $MenuContainer/AllTagsSearchLnEdt
+@onready var adv_search_btn: Button = $MenuContainer/ButtonButtons/PageContainer/AdvSearch
+@onready var adv_search: PanelContainer = $MenuContainer/ButtonButtons/PageContainer/AdvSearch/AdvSearch
 
 
 func _ready() -> void:
@@ -18,12 +20,17 @@ func _ready() -> void:
 	set_next_arrow_disabled(true)
 	current_page_spn_bx.value_changed.connect(on_value_changed)
 	
+	adv_search.visible = false
+	
 	categories = SingletonManager.TagIt.get_categories()
 	groups = SingletonManager.TagIt.get_tag_groups()
 	
 	next_page.pressed.connect(on_arrow_button_pressed.bind(1))
 	prev_page.pressed.connect(on_arrow_button_pressed.bind(-1))
 	all_tags_search_ln_edt.timer_finished.connect(on_search_timer_timeout)
+	adv_search.search_pressed.connect(_on_advanced_search)
+	adv_search.cancel_pressed.connect(_on_advanced_search_close_pressed)
+	adv_search_btn.pressed.connect(_on_advanced_search_pressed)
 	SingletonManager.TagIt.category_created.connect(on_categories_changed)
 	SingletonManager.TagIt.category_deleted.connect(on_categories_changed)
 	SingletonManager.TagIt.group_created.connect(on_groups_changed)
@@ -118,6 +125,86 @@ func on_category_color_changed(id: int, color: String) -> void:
 func on_category_icon_changed(id: int, icon: int) -> void:
 	if not categories.is_empty():
 		categories[id]["icon_id"] = icon
+
+
+func _on_advanced_search_pressed() -> void:
+	adv_search.visible = not adv_search.visible
+
+
+func _on_advanced_search_close_pressed() -> void:
+	adv_search.visible = false
+
+
+func _on_advanced_search(args: Dictionary) -> void:
+	var query: String = "SELECT tags.id, tags.name FROM tags JOIN data ON tags.id = data.tag_id"
+	
+	var arguments: Array[String] = []
+	
+	if 0 < args["category"]:
+		arguments.append("data.category_id = " + str(args["category"]))
+	
+	if args["priority"]["use"]:
+		arguments.append("data.priority " + args["operator"] + " " + str(args["priority"]["priority"]))
+	
+	if 0 < args["group"]:
+		arguments.append("data.group_id = " + str(args["group"]))
+	
+	if 0 < args["valid"]:
+		arguments.append("data.is_valid = 1" if args["valid"] == 1 else "data.is_valid = 0")
+	
+	if not arguments.is_empty():
+		query += " WHERE " + arguments.pop_front()
+	
+	for argument in arguments:
+		query += " AND " + argument
+	
+	query += ";"
+	
+	SingletonManager.TagIt.tag_database.query(query)
+	var result: Array = SingletonManager.TagIt.tag_database.query_result
+	
+	if args["text"].is_empty() or args["text"] == DataManager.SEARCH_WILDCARD: # Show all results
+		var new_results: Array[int] = []
+		
+		for col in result:
+			new_results.append(col["id"])
+		
+		set_search_results(new_results)
+	else:
+		var tag_match: String = args["text"]
+		var uses_prefix: bool = tag_match.begins_with(DataManager.SEARCH_WILDCARD)
+		var uses_suffix: bool = false
+		
+		if uses_prefix:
+			tag_match = tag_match.trim_prefix(DataManager.SEARCH_WILDCARD)
+		
+		uses_suffix = tag_match.ends_with(DataManager.SEARCH_WILDCARD)
+		
+		if uses_suffix:
+			tag_match = tag_match.trim_suffix(DataManager.SEARCH_WILDCARD)
+		
+		tag_match = tag_match.to_lower()
+		
+		var new_search: Array[int] = []
+		
+		if not uses_prefix and not uses_suffix: # Exact
+			for col in result:
+				if col["name"] == tag_match:
+					new_search.append(col["id"])
+		elif uses_prefix and uses_suffix:  # Contains
+			for col in result:
+				if col["name"].containsn(tag_match):
+					new_search.append(col["id"])
+		if uses_prefix: # Ends with
+			for col in result:
+				if col["name"].ends_with(tag_match):
+					new_search.append(col["id"])
+		if uses_suffix: # Begins with
+			for col in result:
+				if col["name"].begins_with(tag_match):
+					new_search.append(col["id"])
+		
+		set_search_results(new_search)
 
 
 func set_search_results(result_array: Array[int]) -> void:
