@@ -223,14 +223,17 @@ static func substract_array(target_array: Array, substract_items: Array) -> void
 		target_array.remove_at(target_idx)
 
 
-static func difference(array_a: Array, array_b: Array) -> Array:
+### [param a_ref_only] will make it so that we only check what items a has
+## that b doesn't and skip chekcing what b has that a doesn't.
+static func difference(array_a: Array, array_b: Array, a_ref_only: bool = true) -> Array:
 	var difference_items: Array = []
 	for item in array_a:
 		if not array_b.has(item):
 			difference_items.append(item)
-	for item in array_b:
-		if not array_a.has(item):
-			difference_items.append(item)
+	if a_ref_only:
+		for item in array_b:
+			if not array_a.has(item):
+				difference_items.append(item)
 	return difference_items
 
 
