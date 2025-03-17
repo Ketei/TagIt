@@ -19,7 +19,7 @@ signal website_deleted(site_id: int)
 
 const DATABASE_PATH: String = "user://tag_database.db"
 const SEARCH_WILDCARD: String = "*"
-const DB_VERSION: int = 1
+const DB_VERSION: int = 2
 const TAGIT_VERSION: String = "3.3.4"
 const MAX_PARENT_RECURSION: int = 100
 const IMAGE_LIMITS: Vector2i = Vector2i(1000, 1000)
@@ -69,8 +69,9 @@ func _ready() -> void:
 	tag_database.query("PRAGMA synchronous = NORMAL; PRAGMA journal_mode = WAL; PRAGMA temp_store = MEMORY;")
 	
 	tag_database.query("SELECT name FROM sqlite_master WHERE type = 'table';")
+	var current_tables: Array = tag_database.query_result
 	
-	if tag_database.query_result.is_empty():
+	if current_tables.is_empty():
 		var version_table: Dictionary = {
 			"version": {"data_type": "int", "not_null": true},#, "primary_key": true},
 			"author": {"data_type": "text"}}
@@ -98,7 +99,7 @@ func _ready() -> void:
 		
 		var prefix_table: Dictionary = {
 			"prefix": {"data_type": "text", "primary_key": true, "not_null": true, "unique": true},
-			"format": {"data_type": "text"}}
+			"format": {"data_type": "text", "default": null}}
 		
 		tag_database.create_table("tags", tags_table)
 		tag_database.create_table("icons", icons_table)
@@ -120,16 +121,12 @@ func _ready() -> void:
 				"CREATE TABLE categories ( 
 					id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
 					icon_id INTEGER DEFAULT 1,
-					name TEXT,
-					description TEXT,
-					icon_color TEXT,
+					name TEXT DEFAULT NULL,
+					description TEXT DEFAULT NULL,
+					icon_color TEXT DEFAULT 'ffffff',
+					hydrus_prefix TEXT DEFAULT NULL,
 					FOREIGN KEY (icon_id) REFERENCES icons (id) ON DELETE SET DEFAULT ON UPDATE NO ACTION);")
 		tag_database.create_table("groups", tag_groups)
-		tag_database.query( # hydrus prefixes
-			"CREATE TABLE hydrus_prefixes (
-				category_id INTEGER PRIMARY KEY NOT NULL,
-				prefix TEXT,
-				FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE CASCADE ON UPDATE NO ACTION);")
 		tag_database.query( # aliases
 				"CREATE TABLE aliases (
 					antecedent INTEGER NOT NULL,
@@ -142,9 +139,9 @@ func _ready() -> void:
 					id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
 					tag_id INTEGER NOT NULL, 
 					category_id INTEGER NOT NULL DEFAULT 1, 
-					group_id INTEGER,
-					description TEXT,
-					tooltip TEXT,
+					group_id INTEGER DEFAULT NULL,
+					description TEXT DEFAULT NULL,
+					tooltip TEXT DEFAULT NULL,
 					priority INTEGER NOT NULL DEFAULT 0,
 					FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE ON UPDATE NO ACTION,
 					FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE SET DEFAULT ON UPDATE NO ACTION,
@@ -179,6 +176,12 @@ func _ready() -> void:
 					"description": "A category for tags that lacks specificity.",
 					"icon_color": "ffffff"})
 	else:
+		verify_db_tables(current_tables)
+		var version: int = tag_database.select_rows("_version", "", ["version"])[0]["version"]
+		if version < DB_VERSION:
+			update_tables(version)
+			tag_database.update_rows("_version", "version = " + str(version), {"version": DB_VERSION})
+		
 		# Clean up tags that are not found in any of the reference tables.
 		tag_database.query(
 			"DELETE FROM tags
@@ -205,7 +208,9 @@ func _ready() -> void:
 	_default_icon_color = Color.from_string(default_color, Color.WHITE)
 	
 	for icon in tag_database.select_rows("icons", "", ["id", "name"]):
-		icons[icon["id"]] = {"name": icon["name"], "texture": null}
+		icons[icon["id"]] = {
+			"name": icon["name"] if icon["name"] != null else "",
+			"texture": null}
 	
 	invalid_tags.sort()
 	data_tags.sort_custom(Arrays.sort_custom_alphabetically_asc)
@@ -230,8 +235,160 @@ func _get_icon_data(id: int) -> Dictionary: # Maybe integrate up
 	icon_image.load_webp_from_buffer(db_data[0]["image"])
 	
 	return {
-		"name": db_data[0]["name"],
+		"name": db_data[0]["name"] if db_data[0]["name"] != null else "",
 		"texture": ImageTexture.create_from_image(icon_image)}
+
+
+# Incrementally applies updates to the table structure
+func update_tables(current_version: int) -> void:
+	var update_version: int = current_version
+	# Changes in version
+	# 1 -> 2:
+		# Create colum on "groups" called "hydrus_prefixes"
+		# Move data from "hydrus_prefixes" to column "hydrus_prefix"
+	if update_version == 1:
+		tag_database.query("SELECT name FROM sqlite_master WHERE type='table' AND name='hydrus_prefixes';")
+		if not tag_database.query_result.is_empty():
+			var prefixes: Array = tag_database.select_rows("hydrus_prefixes", "", ["*"])
+			
+			tag_database.query("PRAGMA table_info(categories);")
+			var result: Array = tag_database.query_result
+			
+			var has_column: bool = false
+			for column in result:
+				if column["name"] == "hydrus_prefix":
+					has_column = true
+					break
+			
+			if not has_column:
+				tag_database.query(
+						"ALTER TABLE categories ADD COLUMN hydrus_prefix TEXT DEFAULT NULL;")
+			
+			for h_prefix in prefixes:
+				tag_database.update_rows(
+						"categories",
+						"id = " + str(h_prefix["category_id"]),
+						{"hydrus_prefix": h_prefix["prefix"]})
+			
+			tag_database.drop_table("hydrus_prefixes")
+			log_silent(
+					"Database updated from version 1 to version 2.",
+					DataManager.LogLevel.INFO)
+			update_version += 1
+
+
+# Ensures that all required tables exist. Only checks for tables, not columns.
+func verify_db_tables(tables: Array) -> void:
+	const required_tables: Dictionary = {
+		"tags": {
+			"id": {"data_type": "int", "auto_increment": true, "not_null": true, "primary_key": true, "unique": true},
+			"name": {"data_type": "text", "not_null": true},
+			"is_valid": {"data_type": "int", "not_null": true, "default": 1}},
+		"icons": {
+			"id": {"data_type": "int", "primary_key": true, "not_null": true, "auto_increment": true, "unique": true},
+			"name": {"data_type": "text"},
+			"image": {"data_type": "blob"}},
+		"prefixes": {
+			"prefix": {"data_type": "text", "primary_key": true, "not_null": true, "unique": true},
+			"format": {"data_type": "text"}},
+		"suggestions": "CREATE TABLE suggestions ( 
+					tag_id INTEGER NOT NULL, 
+					suggestion_id INGETER NOT NULL, 
+					PRIMARY KEY (tag_id, suggestion_id), 
+					FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE ON UPDATE NO ACTION, 
+					FOREIGN KEY (suggestion_id) REFERENCES tags(id));",
+		"group_suggestions": "CREATE TABLE group_suggestions (
+					tag_id INTEGER NOT NULL PRIMARY KEY,
+					group_id INTEGER NOT NULL,
+					FOREIGN KEY (group_id) REFERENCES groups (id) ON DELETE CASCADE ON UPDATE NO ACTION,
+					FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE ON UPDATE NO ACTION);",
+		"categories": "CREATE TABLE categories ( 
+					id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
+					icon_id INTEGER DEFAULT 1,
+					name TEXT DEFAULT NULL,
+					description TEXT DEFAULT NULL,
+					icon_color TEXT DEFAULT 'ffffff',
+					hydrus_prefix TEXT DEFAULT NULL,
+					FOREIGN KEY (icon_id) REFERENCES icons (id) ON DELETE SET DEFAULT ON UPDATE NO ACTION);",
+		"groups": {
+			"id": {"data_type": "int", "primary_key": true, "not_null": true, "auto_increment": true, "unique": true},
+			"name": {"data_type": "text"}, 
+			"description": {"data_type": "text"}},
+		"aliases": "CREATE TABLE aliases (
+					antecedent INTEGER NOT NULL,
+					consequent INTEGER NOT NULL,
+					PRIMARY KEY (antecedent, consequent),
+					FOREIGN KEY (antecedent) REFERENCES tags (id) ON DELETE CASCADE ON UPDATE NO ACTION,
+					FOREIGN KEY (consequent) REFERENCES tags (id) ON DELETE CASCADE ON UPDATE NO ACTION);",
+		"data": "CREATE TABLE data ( 
+					id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+					tag_id INTEGER NOT NULL, 
+					category_id INTEGER NOT NULL DEFAULT 1, 
+					group_id INTEGER DEFAULT NULL,
+					description TEXT DEFAULT NULL,
+					tooltip TEXT DEFAULT NULL,
+					priority INTEGER NOT NULL DEFAULT 0,
+					FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE ON UPDATE NO ACTION,
+					FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE SET DEFAULT ON UPDATE NO ACTION,
+					FOREIGN KEY (group_id) REFERENCES groups (id) ON DELETE SET NULL ON UPDATE NO ACTION);",
+		"_version": {
+			"version": {"data_type": "int", "not_null": true},#, "primary_key": true},
+			"author": {"data_type": "text"}},
+		"relationships": "CREATE TABLE relationships ( 
+				parent INTEGER NOT NULL, 
+				child INTEGER NOT NULL, 
+				PRIMARY KEY (parent, child), 
+				FOREIGN KEY (parent) REFERENCES tags (id) ON DELETE CASCADE ON UPDATE NO ACTION, 
+				FOREIGN KEY (child) REFERENCES tags (id) ON DELETE CASCADE ON UPDATE NO ACTION);",
+		"sites": {
+			"id": {"data_type": "int", "primary_key": true, "not_null": true, "auto_increment": true, "unique": true},
+			"name": {"data_type": "text"},
+			"whitespace": {"data_type": "text", "not_null": true},
+			"separator": {"data_type": "text", "not_null": true}}
+		}
+	
+	var existing_tables: Array[String] = []
+	
+	for table in tables:
+		existing_tables.append(table["name"])
+	
+	var missing_tables: Array = Arrays.difference(required_tables.keys(), existing_tables, false)
+	
+	if not missing_tables.is_empty():
+		for table in missing_tables:
+			log_silent(
+					str("Table \" ", table, "\" is missing, recreating."),
+					DataManager.LogLevel.WARNING)
+			if typeof(required_tables[table]) == TYPE_DICTIONARY:
+				tag_database.create_table(table, required_tables[table])
+			elif typeof(required_tables[table]) == TYPE_STRING:
+				tag_database.query(required_tables[table])
+			else:
+				log_silent("Error creating table.", DataManager.LogLevel.ERROR)
+				quit_request()
+				break
+			
+			if table == "icons":
+				tag_database.insert_rows(
+						"icons",
+						[
+							{
+								"id": 1,
+								"name": "generic",
+								"image": preload("res://icons/icon_tag_generic.svg").get_image().save_webp_to_buffer()
+							}
+						])
+			elif table == "_version":
+				tag_database.insert_row("_version", {"version": DB_VERSION, "author": "Ketei"})
+			elif table == "categories":
+				tag_database.insert_row(
+						"categories",
+						{
+							"id": 1,
+							"icon_id": 1,
+							"name": "Generic",
+							"description": "A category for tags that lacks specificity.",
+							"icon_color": "ffffff"})
 
 
 func get_icon_name(icon_id: int) -> String:
@@ -271,7 +428,9 @@ func get_icon_texture(id: int) -> Texture2D:
 func get_tag_groups() -> Dictionary:
 	var groups: Dictionary = {}
 	for group in tag_database.select_rows("groups", "", ["*"]):
-		groups[group["id"]] = {"name": group["name"], "description": group["description"]}
+		groups[group["id"]] = {
+			"name": group["name"] if group["name"] != null else "",
+			"description": group["description"] if group["description"] != null else ""}
 	return groups
 
 
@@ -860,10 +1019,7 @@ func get_suggested_groups(from_tag: int) -> Array[int]:
 # --- Hydrus Categories ---
 
 func set_hydrus_category_prefix(category_id: int, prefix: String) -> void:
-	if tag_database.select_rows("hydrus_prefixes", "category_id = " + str(category_id), ["category_id"]).is_empty():
-		tag_database.insert_row("hydrus_prefixes", {"category_id": category_id, "prefix": prefix})
-	else:
-		tag_database.update_rows("hydrus_prefixes", "category_id = " + str(category_id), {"prefix": prefix})
+	tag_database.update_rows("categories", "id = " + str(category_id), {"hydrus_prefix": prefix})
 
 
 func remove_hydrus_category_prefix(category_id: int) -> void:
@@ -871,18 +1027,19 @@ func remove_hydrus_category_prefix(category_id: int) -> void:
 
 
 func get_hydrus_category_prefix(category_id: int) -> String:
-	var data := tag_database.select_rows("hydrus_prefixes", "category_id = " + str(category_id), ["prefix"])
+	var data := tag_database.select_rows("categories", "id = " + str(category_id), ["hydrus_prefix"])
 	if data.is_empty():
 		return ""
-	return data[0]["prefix"]
+	return data[0]["hydrus_prefix"]
 
 # --- Sites ---
 
 func create_site(site_name: String, tag_whitespace: String, tag_separator: String) -> int:
+	@warning_ignore("incompatible_ternary")
 	tag_database.insert_row(
 			"sites",
 			{
-				"name": site_name,
+				"name": site_name if not site_name.is_empty() else null,
 				"whitespace": tag_whitespace,
 				"separator": tag_separator
 			})
@@ -898,7 +1055,7 @@ func delete_site(site_id: int) -> void:
 func get_site_data(site_id: int) -> Dictionary:
 	var site := tag_database.select_rows("sites", "id = " + str(site_id), ["*"])
 	return {
-		"name": site[0]["name"],
+		"name": site[0]["name"] if site[0]["name"] != null else "",
 		"whitespace": site[0]["whitespace"],
 		"separator": site[0]["separator"]}
 
@@ -1105,11 +1262,18 @@ func has_prefix(prefix: String) -> bool:
 
 
 func get_prefix_formatting(prefix: String) -> String:
-	return tag_database.select_rows("prefixes", str("prefix = '", prefix, "'"), ["format"])[0]["format"]
+	var result: Array = tag_database.select_rows("prefixes", str("prefix = '", prefix, "'"), ["format"])
+	return result[0]["format"] if result[0]["format"] != null else ""
 
 
 func add_prefix(prefix: String, formatting: String) -> void:
-	tag_database.insert_row("prefixes", {"prefix": prefix, "format": formatting})
+	@warning_ignore("incompatible_ternary")
+	tag_database.insert_row(
+			"prefixes",
+			{
+				"prefix": prefix,
+				"format": formatting if not formatting.is_empty() else null
+			})
 
 
 func erase_prefix(prefix: String) -> void:
@@ -1117,7 +1281,11 @@ func erase_prefix(prefix: String) -> void:
 
 
 func update_prefix(prefix: String, formatting: String) -> void:
-	tag_database.update_rows("prefixes", str("prefix = '", prefix, "'"), {"format": formatting})
+	@warning_ignore("incompatible_ternary")
+	tag_database.update_rows(
+			"prefixes",
+			str("prefix = '", prefix, "'"),
+			{"format": formatting if not formatting.is_empty() else null})
 
 
 func format_prefix(clean_text: String, _prefixes: Array[String] = [], _formats: Array[String] = [], _search: bool = true, _starting_prefix: String = "") -> Array[String]:
@@ -1128,7 +1296,7 @@ func format_prefix(clean_text: String, _prefixes: Array[String] = [], _formats: 
 		var prefix_dict: Dictionary = {}
 		var prefixes: Array[String] = []
 		for prefix_tree in get_prefixes_data():
-			prefix_dict[prefix_tree["prefix"]] = prefix_tree["format"]
+			prefix_dict[prefix_tree["prefix"]] = prefix_tree["format"] if prefix_tree["format"] != null else ""
 			prefixes.append(prefix_tree["prefix"])
 		prefixes.sort_custom(func(a: String, b: String): return a.length() > b.length())
 		for prefix in prefixes:
@@ -1343,9 +1511,12 @@ func save_icon(icon_name: String, icon_image: Image) -> int:
 	if Vector2i(16, 16) != icon_image.get_size():
 		icon_image.resize(16, 16, Image.INTERPOLATE_LANCZOS)
 	
+	@warning_ignore("incompatible_ternary")
 	tag_database.insert_row(
 			"icons",
-			{"name": icon_name, "image": icon_image.save_webp_to_buffer()})
+			{
+				"name": icon_name if not icon_name.is_empty() else null,
+				"image": icon_image.save_webp_to_buffer()})
 	
 	icons[tag_database.last_insert_rowid] = {"name": icon_name, "texture": null}
 	
