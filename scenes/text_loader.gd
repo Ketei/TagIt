@@ -21,9 +21,9 @@ func _input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed(&"ui_focus_next"):
 		if tags_text.has_focus():
 			if event.shift_pressed:
-				white_space_ln_edt.grab_focus()
-			else:
 				cancel_button.grab_focus()
+			else:
+				white_space_ln_edt.grab_focus()
 			get_viewport().set_input_as_handled()
 		elif white_space_ln_edt.has_focus():
 			if event.shift_pressed:

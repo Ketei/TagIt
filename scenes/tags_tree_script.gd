@@ -37,14 +37,17 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if has_focus() and get_selected() != null and event.is_action_pressed(&"ui_text_delete"):
-		var next_target:= get_next_selected(null)
-		while next_target != null:
-			var next: TreeItem = get_next_selected(next_target)
-			next_target.free()
-			next_target = next
-		tags_changed.emit()
-		get_viewport().set_input_as_handled()
+	if has_focus() and event is InputEventKey:
+		if get_selected() != null and Input.is_action_just_pressed(&"ui_text_delete"):
+			var next_target:= get_next_selected(null)
+			while next_target != null:
+				var next: TreeItem = get_next_selected(next_target)
+				next_target.free()
+				next_target = next
+			tags_changed.emit()
+			get_viewport().set_input_as_handled()
+		elif event.keycode == KEY_A and not event.is_echo() and Input.is_key_pressed(KEY_CTRL):
+			select_all()
 
 
 func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:
@@ -143,6 +146,11 @@ func _on_submenu_index_pressed(index: int) -> void:
 				index - 1,
 				get_selected_tags(),
 				get_selected_array())
+
+
+func select_all() -> void:
+	for tag in get_root().get_children():
+		tag.select(0)
 
 
 func delete_alt_list(idx: int) -> void:

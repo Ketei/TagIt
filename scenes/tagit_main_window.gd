@@ -248,7 +248,8 @@ func _ready() -> void:
 			sites[site]["name"], site)
 	
 	for group in groups:
-		settings_groups_tree.create_group(groups[group]["name"], group)
+		settings_groups_tree.create_group(groups[group]["name"],
+		group)
 	
 	var menu_popup: PopupMenu = menu_button.get_popup()
 	
