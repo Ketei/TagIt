@@ -284,6 +284,8 @@ func _ready() -> void:
 	clothing_tree.create_item()
 	body_traits.create_item()
 	
+	year_opt_btn.value = Time.get_datetime_dict_from_system().year
+	
 	clothing_tree.set_column_title(0, "Apparel Item")
 	body_traits.set_column_title(0, "Visible Body Trait")
 	body_texture_tree.set_column_title(0, "Body Part")
@@ -673,11 +675,6 @@ func _on_character_selected() -> void:
 	gender_lore_opt_btn.select(dict["lore_gender"])
 	age_opt_btn.select(dict["age"])
 	lore_age_opt_btn.select(dict["lore_age"])
-	#var clothing_array: Array[Control] = []
-	#clothing_array.append_array(clothing_a.get_children())
-	#clothing_array.append_array(clothing_b.get_children())
-	
-	#var bit_idx: int = -1
 	
 	var body_idx: int = -1
 	var body_root: TreeItem = body_texture_tree.get_root()
@@ -691,9 +688,13 @@ func _on_character_selected() -> void:
 		target.set_range(1, body_texture & 3)
 	
 	var check_idx: int = -1
+	
 	for cloth_check in clothing_tree.get_root().get_children():
 		check_idx += 1
 		cloth_check.set_checked(0, dict["clothing"][check_idx]["active"])
+		cloth_check.disable_folding = not dict["clothing"][check_idx]["active"]
+		if dict["clothing"][check_idx]["active"] == false and not cloth_check.collapsed:
+			cloth_check.collapsed = true
 		var subtype_idx: int = -1
 		for subtype in cloth_check.get_children():
 			subtype_idx += 1
@@ -783,11 +784,6 @@ func generate_tags() -> Array[String]:
 		_:
 			tags.append("group")
 	
-	#var clothing_checks: Array[Control] = []
-	#clothing_checks.append_array(clothing_a.get_children())
-	#clothing_checks.append_array(clothing_b.get_children())
-	#const clothing_scores: PackedInt32Array = [150, 50, 150, 10, 10, 10, 10, 0, 0, 10]
-	
 	for character in characters:
 		var character_tags: Array[String] = []
 		var clothing_score: int = 0
@@ -820,9 +816,12 @@ func generate_tags() -> Array[String]:
 		var last_wear: int = -1
 		
 		var clothing_idx: int = -1
+		
 		for clothing_dict:Dictionary in character["clothing"]:
 			clothing_idx += 1
 			if clothing_dict["active"]:
+				if only_wear and last_wear != -1:
+					only_wear = false
 				last_wear = clothing_idx
 				clothing_score += CLOTHING[clothing_idx]["score"]
 				character_tags.append(CLOTHING[clothing_idx]["tag"])
@@ -832,9 +831,6 @@ func generate_tags() -> Array[String]:
 					if subitem:
 						character_tags.append(CLOTHING[clothing_idx]["options"][subitem_idx])
 				
-				if only_wear and last_wear != -1:
-					only_wear = false
-		
 		if only_wear and last_wear != -1:
 			character_tags.append(CLOTHING[last_wear]["only_tag"])
 		
@@ -859,8 +855,6 @@ func generate_tags() -> Array[String]:
 			if bod_trait:
 				character_tags.append(BODY_TRAITS[trait_idx]["tag"])
 		
-		Arrays.append_uniques(tags, character_tags)
-		
 		if 30 <= clothing_score:
 			character_tags.append("fully clothed")
 		elif 20 <= clothing_score:
@@ -869,6 +863,8 @@ func generate_tags() -> Array[String]:
 			character_tags.append("mostly nude")
 		else:
 			character_tags.append("nude")
+		
+		Arrays.append_uniques(tags, character_tags)
 	
 	return tags
 
