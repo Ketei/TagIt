@@ -26,6 +26,7 @@ const IMAGE_LIMITS: Vector2i = Vector2i(1000, 1000)
 const LEV_DISTANCE: float = 0.75
 const LEV_LOOP_LIMIT: int = 100
 const INVALID_COLOR: Color = Color(0.859, 0.302, 0.376)
+const PREFIX_SEPARATOR: String = "|"
 
 enum LogLevel {
 	INFO,
@@ -1304,7 +1305,7 @@ func format_prefix(clean_text: String, _prefixes: Array[String] = [], _formats: 
 		_prefixes = prefixes
 	var final_array: Array[String] = []
 	
-	for part in Strings.split_and_strip(clean_text, "|"):
+	for part in Strings.split_and_strip(clean_text, PREFIX_SEPARATOR):
 		var prefixed: bool = false
 		var prefix_idx: int = -1
 		for prefix in _prefixes:
