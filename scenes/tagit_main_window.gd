@@ -383,6 +383,11 @@ func _ready() -> void:
 	
 	SingletonManager.TagIt.hide_splash()
 	
+	if not SingletonManager.TagIt.settings.news_shown:
+		var news_window: PanelContainer = preload("res://scenes/update_window.tscn").instantiate()
+		add_child(news_window)
+		news_window.visible = true
+	
 	if SingletonManager.TagIt.settings.load_wiki_images and SingletonManager.TagIt.settings.has_valid_hydrus_login():
 		settings_connection_status_txt_rect.modulate = Color(0.88, 0.727, 0.104)
 		settings_connect_api_btn.disabled = true
