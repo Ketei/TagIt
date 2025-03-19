@@ -1,4 +1,4 @@
-[gd_scene load_steps=48 format=3 uid="uid://hpbimfahb425"]
+[gd_scene load_steps=49 format=3 uid="uid://hpbimfahb425"]
 
 [ext_resource type="Script" path="res://scripts/view_switcher_panel.gd" id="1_fvq4v"]
 [ext_resource type="Script" path="res://scripts/wizard_script.gd" id="1_whkki"]
@@ -59,6 +59,13 @@ script = ExtResource("35_5nkt3")
 friction = 4.0
 minimum_velocity = 0.4
 rebound_strength = 7.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vtu6n"]
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_flt4j"]
 bg_color = Color(0.2852, 0.297187, 0.31, 1)
@@ -147,7 +154,10 @@ text = "Artist"
 [node name="ArtistLineEdit" type="LineEdit" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/ArtistContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+focus_next = NodePath("../../HBoxContainer2/YearOptBtn")
+focus_previous = NodePath("../../../../../MarginContainer/NavigationContainer/PreviousButton")
 placeholder_text = "Artist Name"
+caret_blink = true
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer"]
 layout_mode = 2
@@ -160,6 +170,8 @@ text = "Year"
 [node name="YearOptBtn" type="SpinBox" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/HBoxContainer2"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
+focus_next = NodePath("../UnkownYearBtn")
+focus_previous = NodePath("../../ArtistContainer/ArtistLineEdit")
 min_value = 1700.0
 max_value = 2025.0
 value = 2024.0
@@ -169,6 +181,8 @@ alignment = 1
 [node name="UnkownYearBtn" type="CheckButton" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/HBoxContainer2"]
 custom_minimum_size = Vector2(170, 0)
 layout_mode = 2
+focus_next = NodePath("../../MediumContainer/MediumOptBtn")
+focus_previous = NodePath("../YearOptBtn")
 text = "Unknown year"
 
 [node name="MediumContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer"]
@@ -183,6 +197,8 @@ text = "Medium"
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+focus_next = NodePath("../../TypeContainer/MediaTypeOptBtn")
+focus_previous = NodePath("../../HBoxContainer2/UnkownYearBtn")
 selected = 0
 item_count = 4
 popup/item_0/text = "Digital Media (Artwork)"
@@ -205,6 +221,8 @@ text = "Type"
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+focus_next = NodePath("../../../../../MarginContainer/NavigationContainer/NextButton")
+focus_previous = NodePath("../../MediumContainer/MediumOptBtn")
 
 [node name="ImageContainer" type="CenterContainer" parent="MainPanel/MainContainer/MainPanel"]
 visible = false
@@ -347,12 +365,16 @@ layout_mode = 2
 [node name="ColoredCheckBox" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/ColorContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+focus_next = NodePath("../ShadedSketchBox")
+focus_previous = NodePath("../../../../../../MarginContainer/NavigationContainer/PreviousButton")
 text = "Colored"
 alignment = 1
 
 [node name="ShadedSketchBox" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/ColorContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+focus_next = NodePath("../../LineContainer/LineStyleOptBtn")
+focus_previous = NodePath("../ColoredCheckBox")
 text = "Shaded"
 alignment = 1
 
@@ -368,6 +390,8 @@ text = "Completion"
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+focus_next = NodePath("../../BGContainer/BgOptBtn")
+focus_previous = NodePath("../../ColorContainer/ShadedSketchBox")
 selected = 0
 item_count = 3
 popup/item_0/text = "Sketch"
@@ -388,6 +412,8 @@ text = "Background"
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+focus_next = NodePath("../../BGTypeContainer/BGTypeOptBtn")
+focus_previous = NodePath("../../LineContainer/LineStyleOptBtn")
 selected = 0
 item_count = 3
 popup/item_0/text = "N/A"
@@ -409,6 +435,8 @@ text = "BG Type"
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+focus_next = NodePath("../../TimeContainer/DaytimeOptBtn")
+focus_previous = NodePath("../../BGContainer/BgOptBtn")
 
 [node name="TimeContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
@@ -422,6 +450,8 @@ text = "Time"
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+focus_next = NodePath("../../LocationContainer/LocationOptBtn")
+focus_previous = NodePath("../../BGTypeContainer/BGTypeOptBtn")
 selected = 0
 item_count = 3
 popup/item_0/text = "N/A"
@@ -442,6 +472,8 @@ text = "Location"
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+focus_next = NodePath("../../../../../../MarginContainer/NavigationContainer/NextButton")
+focus_previous = NodePath("../../TimeContainer/DaytimeOptBtn")
 selected = 0
 item_count = 3
 popup/item_0/text = "N/A"
@@ -466,86 +498,188 @@ alignment = 1
 
 [node name="AngleContainer" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
+focus_neighbor_left = NodePath(".")
+focus_neighbor_top = NodePath(".")
+focus_neighbor_right = NodePath("../AngleContainer2")
+focus_neighbor_bottom = NodePath("../AngleContainer6")
+focus_next = NodePath("../AngleContainer2")
+focus_previous = NodePath("../../../../../MarginContainer/NavigationContainer/PreviousButton")
 angle_tags = Array[String](["high-angle view", "front view"])
 angle_texture = ExtResource("5_gwi0h")
 
 [node name="AngleContainer2" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
+focus_neighbor_left = NodePath("../AngleContainer")
+focus_neighbor_top = NodePath(".")
+focus_neighbor_right = NodePath("../AngleContainer3")
+focus_neighbor_bottom = NodePath("../AngleContainer7")
+focus_next = NodePath("../AngleContainer3")
+focus_previous = NodePath("../AngleContainer")
 angle_tags = Array[String](["high-angle view", "three-quarter view", "front view"])
 angle_texture = ExtResource("6_uy6fe")
 
 [node name="AngleContainer3" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
+focus_neighbor_left = NodePath("../AngleContainer2")
+focus_neighbor_top = NodePath(".")
+focus_neighbor_right = NodePath("../AngleContainer4")
+focus_neighbor_bottom = NodePath("../AngleContainer8")
+focus_next = NodePath("../AngleContainer4")
+focus_previous = NodePath("../AngleContainer2")
 angle_tags = Array[String](["high-angle view", "side view"])
 angle_texture = ExtResource("7_r0r6t")
 
 [node name="AngleContainer4" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
+focus_neighbor_left = NodePath("../AngleContainer3")
+focus_neighbor_top = NodePath(".")
+focus_neighbor_right = NodePath("../AngleContainer5")
+focus_neighbor_bottom = NodePath("../AngleContainer9")
+focus_next = NodePath("../AngleContainer5")
+focus_previous = NodePath("../AngleContainer3")
 angle_tags = Array[String](["high-angle view", "three-quarter view", "rear view"])
 angle_texture = ExtResource("8_xwvoq")
 
 [node name="AngleContainer5" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
+focus_neighbor_left = NodePath("../AngleContainer4")
+focus_neighbor_top = NodePath(".")
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath("../AngleContainer10")
+focus_next = NodePath("../AngleContainer6")
+focus_previous = NodePath("../AngleContainer4")
 angle_tags = Array[String](["high-angle view", "rear view"])
 angle_texture = ExtResource("9_oqo5k")
 
 [node name="AngleContainer6" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
+focus_neighbor_left = NodePath(".")
+focus_neighbor_top = NodePath("../AngleContainer")
+focus_neighbor_right = NodePath("../AngleContainer7")
+focus_neighbor_bottom = NodePath("../AngleContainer11")
+focus_next = NodePath("../AngleContainer7")
+focus_previous = NodePath("../AngleContainer5")
 angle_tags = Array[String](["front view"])
 angle_texture = ExtResource("10_u2alw")
 
 [node name="AngleContainer7" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
+focus_neighbor_left = NodePath("../AngleContainer6")
+focus_neighbor_top = NodePath("../AngleContainer2")
+focus_neighbor_right = NodePath("../AngleContainer8")
+focus_neighbor_bottom = NodePath("../AngleContainer12")
+focus_next = NodePath("../AngleContainer8")
+focus_previous = NodePath("../AngleContainer6")
 angle_tags = Array[String](["three-quarter view"])
 angle_texture = ExtResource("11_ve3nk")
 
 [node name="AngleContainer8" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
+focus_neighbor_left = NodePath("../AngleContainer7")
+focus_neighbor_top = NodePath("../AngleContainer3")
+focus_neighbor_right = NodePath("../AngleContainer9")
+focus_neighbor_bottom = NodePath("../AngleContainer13")
+focus_next = NodePath("../AngleContainer9")
+focus_previous = NodePath("../AngleContainer7")
 angle_tags = Array[String](["side view"])
 angle_texture = ExtResource("12_ymbs7")
 
 [node name="AngleContainer9" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
+focus_neighbor_left = NodePath("../AngleContainer8")
+focus_neighbor_top = NodePath("../AngleContainer4")
+focus_neighbor_right = NodePath("../AngleContainer10")
+focus_neighbor_bottom = NodePath("../AngleContainer14")
+focus_next = NodePath("../AngleContainer10")
+focus_previous = NodePath("../AngleContainer8")
 angle_tags = Array[String](["rear view", "three-quarter view"])
 angle_texture = ExtResource("13_fsnou")
 
 [node name="AngleContainer10" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
+focus_neighbor_left = NodePath("../AngleContainer9")
+focus_neighbor_top = NodePath("../AngleContainer5")
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath("../AngleContainer15")
+focus_next = NodePath("../AngleContainer11")
+focus_previous = NodePath("../AngleContainer9")
 angle_tags = Array[String](["rear view"])
 angle_texture = ExtResource("14_rxqjh")
 
 [node name="AngleContainer11" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
+focus_neighbor_left = NodePath(".")
+focus_neighbor_top = NodePath("../AngleContainer6")
+focus_neighbor_right = NodePath("../AngleContainer12")
+focus_neighbor_bottom = NodePath(".")
+focus_next = NodePath("../AngleContainer12")
+focus_previous = NodePath("../AngleContainer10")
 angle_tags = Array[String](["low-angle view", "front view"])
 angle_texture = ExtResource("15_qfmer")
 
 [node name="AngleContainer12" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
+focus_neighbor_left = NodePath("../AngleContainer11")
+focus_neighbor_top = NodePath("../AngleContainer7")
+focus_neighbor_right = NodePath("../AngleContainer13")
+focus_neighbor_bottom = NodePath("../AngleContainer16")
+focus_next = NodePath("../AngleContainer13")
+focus_previous = NodePath("../AngleContainer11")
 angle_tags = Array[String](["low-angle view", "front view", "three-quarter view"])
 angle_texture = ExtResource("16_myr52")
 
 [node name="AngleContainer13" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
+focus_neighbor_left = NodePath("../AngleContainer12")
+focus_neighbor_top = NodePath("../AngleContainer8")
+focus_neighbor_right = NodePath("../AngleContainer14")
+focus_neighbor_bottom = NodePath("../AngleContainer17")
+focus_next = NodePath("../AngleContainer14")
+focus_previous = NodePath("../AngleContainer12")
 angle_tags = Array[String](["low-angle view", "side view"])
 angle_texture = ExtResource("17_72lc1")
 
 [node name="AngleContainer14" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
+focus_neighbor_left = NodePath("../AngleContainer13")
+focus_neighbor_top = NodePath("../AngleContainer9")
+focus_neighbor_right = NodePath("../AngleContainer15")
+focus_neighbor_bottom = NodePath("../AngleContainer17")
+focus_next = NodePath("../AngleContainer15")
+focus_previous = NodePath("../AngleContainer13")
 angle_tags = Array[String](["low-angle view", "three-quarter view", "rear view"])
 angle_texture = ExtResource("18_y5x77")
 
 [node name="AngleContainer15" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
+focus_neighbor_left = NodePath("../AngleContainer14")
+focus_neighbor_top = NodePath("../AngleContainer10")
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath(".")
+focus_next = NodePath("../AngleContainer16")
+focus_previous = NodePath("../AngleContainer14")
 angle_tags = Array[String](["low-angle view", "rear view"])
 angle_texture = ExtResource("19_o7o3y")
 
 [node name="AngleContainer16" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
+focus_neighbor_left = NodePath(".")
+focus_neighbor_top = NodePath("../AngleContainer12")
+focus_neighbor_right = NodePath("../AngleContainer17")
+focus_neighbor_bottom = NodePath(".")
+focus_next = NodePath("../AngleContainer17")
+focus_previous = NodePath("../AngleContainer15")
 angle_tags = Array[String](["bird's-eye view"])
 angle_texture = ExtResource("20_ll01c")
 
 [node name="AngleContainer17" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
 layout_mode = 2
+focus_neighbor_left = NodePath("../AngleContainer16")
+focus_neighbor_top = NodePath("../AngleContainer13")
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath(".")
+focus_next = NodePath("../../../../../MarginContainer/NavigationContainer/NextButton")
+focus_previous = NodePath("../AngleContainer16")
 angle_tags = Array[String](["worm's-eye view"])
 angle_texture = ExtResource("21_cdcvx")
 
@@ -583,6 +717,8 @@ layout_mode = 2
 custom_minimum_size = Vector2(200, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+focus_next = NodePath("../GenderOptBtnR")
+focus_previous = NodePath("../../../../../../../../MarginContainer/NavigationContainer/PreviousButton")
 alignment = 1
 script = ExtResource("3_ycvrq")
 
@@ -597,12 +733,16 @@ stretch_mode = 5
 custom_minimum_size = Vector2(200, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+focus_next = NodePath("../../AddPairingBtn")
+focus_previous = NodePath("../GenderOptBtnL")
 alignment = 1
 script = ExtResource("3_ycvrq")
 
 [node name="AddPairingBtn" type="Button" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/SexesContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
+focus_next = NodePath("../../MinglingContainer/Sexing/Threesome")
+focus_previous = NodePath("../HBoxContainer/GenderOptBtnR")
 text = "Add"
 
 [node name="MinglingContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer"]
@@ -615,16 +755,22 @@ alignment = 1
 [node name="Threesome" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer/Sexing"]
 custom_minimum_size = Vector2(180, 32)
 layout_mode = 2
+focus_next = NodePath("../Foursome2")
+focus_previous = NodePath("../../../SexesContainer/AddPairingBtn")
 text = "Threesome"
 
 [node name="Foursome2" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer/Sexing"]
 custom_minimum_size = Vector2(180, 32)
 layout_mode = 2
+focus_next = NodePath("../Fivesome3")
+focus_previous = NodePath("../Threesome")
 text = "Foursome"
 
 [node name="Fivesome3" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer/Sexing"]
 custom_minimum_size = Vector2(180, 32)
 layout_mode = 2
+focus_next = NodePath("../../Grouping/Gangbang")
+focus_previous = NodePath("../Foursome2")
 text = "Fivesome"
 
 [node name="Grouping" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer"]
@@ -635,18 +781,24 @@ alignment = 1
 custom_minimum_size = Vector2(180, 32)
 layout_mode = 2
 tooltip_text = "Three or more individuals are having sex with a single character."
+focus_next = NodePath("../RevGangbang2")
+focus_previous = NodePath("../../Sexing/Fivesome3")
 text = "Gangbang"
 
 [node name="RevGangbang2" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer/Grouping"]
 custom_minimum_size = Vector2(180, 32)
 layout_mode = 2
 tooltip_text = "One individual having sex with a group of characters."
+focus_next = NodePath("../Orgy")
+focus_previous = NodePath("../Gangbang")
 text = "Reverse Gangbang"
 
 [node name="Orgy" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer/Grouping"]
 custom_minimum_size = Vector2(180, 32)
 layout_mode = 2
 tooltip_text = "Five or more characters having sex freely among each other."
+focus_next = NodePath("../../../../../../../../MarginContainer/NavigationContainer/NextButton")
+focus_previous = NodePath("../RevGangbang2")
 text = "Orgy"
 
 [node name="TextureRect" type="TextureRect" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer"]
@@ -664,6 +816,7 @@ alignment = 1
 [node name="ScrollContainer" type="ScrollContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2"]
 custom_minimum_size = Vector2(280, 450)
 layout_mode = 2
+follow_focus = true
 
 [node name="CheckboxContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer"]
 layout_mode = 2
@@ -673,6 +826,8 @@ layout_mode = 2
 
 [node name="AndAmb" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/AndroContainer"]
 layout_mode = 2
+focus_next = NodePath("../AndAnd")
+focus_previous = NodePath("../../../../../HBoxContainer/VBoxContainer/MinglingContainer/Grouping/Orgy")
 text = "Andromorph / Ambiguous"
 
 [node name="AndAnd" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/AndroContainer"]
@@ -685,6 +840,8 @@ text = "Andromorph / Female"
 
 [node name="AndM" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/AndroContainer"]
 layout_mode = 2
+focus_next = NodePath("../../FemaleContainer/FAmb")
+focus_previous = NodePath("../AndF")
 text = "Andromorph / Male"
 
 [node name="FemaleContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer"]
@@ -692,11 +849,13 @@ layout_mode = 2
 
 [node name="FAmb" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/FemaleContainer"]
 layout_mode = 2
+focus_previous = NodePath("../../AndroContainer/AndM")
 text = "Female / Ambiguous
 "
 
 [node name="FF" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/FemaleContainer"]
 layout_mode = 2
+focus_next = NodePath("../../GynoContainer/GAmb")
 text = "Female / Female"
 
 [node name="GynoContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer"]
@@ -704,6 +863,7 @@ layout_mode = 2
 
 [node name="GAmb" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/GynoContainer"]
 layout_mode = 2
+focus_previous = NodePath("../../FemaleContainer/FF")
 text = "Gynomorph / Ambiguous"
 
 [node name="GAnd" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/GynoContainer"]
@@ -724,6 +884,7 @@ text = "Gynomorph / Herm"
 
 [node name="GM" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/GynoContainer"]
 layout_mode = 2
+focus_next = NodePath("../../HermContainer/HAmb")
 text = "Gynomorph / Male"
 
 [node name="HermContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer"]
@@ -731,6 +892,7 @@ layout_mode = 2
 
 [node name="HAmb" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/HermContainer"]
 layout_mode = 2
+focus_previous = NodePath("../../GynoContainer/GM")
 text = "Herm / Ambiguous"
 
 [node name="HF" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/HermContainer"]
@@ -743,6 +905,7 @@ text = "Herm / Herm"
 
 [node name="HM" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/HermContainer"]
 layout_mode = 2
+focus_next = NodePath("../../MaleContainer/MAmb")
 text = "Herm / Male"
 
 [node name="MaleContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer"]
@@ -750,6 +913,7 @@ layout_mode = 2
 
 [node name="MAmb" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleContainer"]
 layout_mode = 2
+focus_previous = NodePath("../../HermContainer/HM")
 text = "Male / Ambiguous"
 
 [node name="MF" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleContainer"]
@@ -758,6 +922,7 @@ text = "Male / Female"
 
 [node name="MM" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleContainer"]
 layout_mode = 2
+focus_next = NodePath("../../MaleHermContainer/MHAmb")
 text = "Male / Male"
 
 [node name="MaleHermContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer"]
@@ -765,6 +930,7 @@ layout_mode = 2
 
 [node name="MHAmb" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer"]
 layout_mode = 2
+focus_previous = NodePath("../../MaleContainer/MM")
 text = "Male Herm / Ambiguous"
 
 [node name="MHAnd" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer"]
@@ -789,11 +955,14 @@ text = "Male Herm / Male"
 
 [node name="MHMH" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer"]
 layout_mode = 2
+focus_next = NodePath("../../../../ClearPairingsBtn")
 text = "Male Herm / Male Herm"
 
 [node name="ClearPairingsBtn" type="Button" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
+focus_next = NodePath("../../../../../MarginContainer/NavigationContainer/NextButton")
+focus_previous = NodePath("../ScrollContainer/CheckboxContainer/MaleHermContainer/MHMH")
 text = "Clear All"
 
 [node name="Characters" type="MarginContainer" parent="MainPanel/MainContainer/MainPanel"]
@@ -825,6 +994,8 @@ text = "Characters"
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 tooltip_text = "Create Character"
+focus_next = NodePath("../../CharactersTree")
+focus_previous = NodePath("../../../../../../MarginContainer/NavigationContainer/PreviousButton")
 icon = ExtResource("7_wnkv1")
 flat = true
 icon_alignment = 1
@@ -834,6 +1005,8 @@ expand_icon = true
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 4.0
+focus_next = NodePath("../../../../../MarginContainer/NavigationContainer/NextButton")
+focus_previous = NodePath("../Header/NewCharBtn")
 mouse_force_pass_scroll_events = false
 hide_folding = true
 hide_root = true
@@ -842,6 +1015,7 @@ hide_root = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 3.0
+follow_focus = true
 script = ExtResource("34_e8ccm")
 speed = 700.0
 wheel_scroll_damper = SubResource("Resource_yc1il")
@@ -876,7 +1050,11 @@ text = "Character Tag"
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+focus_next = NodePath("../../BodyContainer/BodyContainer/BodyOptBtn")
+focus_previous = NodePath("../../../../../ChracterTree/CharactersTree")
 mouse_filter = 1
+placeholder_text = "Unkown Character"
+caret_blink = true
 
 [node name="HSeparator4" type="HSeparator" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField"]
 layout_mode = 2
@@ -901,6 +1079,8 @@ text = "Body Type"
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+focus_next = NodePath("../../SpeciesBox/SpeciesLnEdt")
+focus_previous = NodePath("../../../NameContainer/CharacterTagLnEdt")
 mouse_filter = 1
 text_overrun_behavior = 3
 
@@ -917,7 +1097,11 @@ text = "Species"
 [node name="SpeciesLnEdt" type="LineEdit" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/BodyContainer/SpeciesBox"]
 layout_mode = 2
 size_flags_horizontal = 3
+focus_next = NodePath("../../../AgeGenderContainer/HBoxContainer/GenderContainer/GenderOptBtn")
+focus_previous = NodePath("../../BodyContainer/BodyOptBtn")
 mouse_filter = 1
+placeholder_text = "No Species"
+caret_blink = true
 
 [node name="HSeparator" type="HSeparator" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField"]
 layout_mode = 2
@@ -945,6 +1129,8 @@ text = "Apparent Gender"
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+focus_next = NodePath("../../GenderLoreContainer/GenderLoreOptBtn")
+focus_previous = NodePath("../../../../BodyContainer/SpeciesBox/SpeciesLnEdt")
 mouse_filter = 1
 text_overrun_behavior = 3
 
@@ -962,6 +1148,8 @@ text = "Lore Gender"
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+focus_next = NodePath("../../../AgeMainContainer/AgeContainer/AgeOptBtn")
+focus_previous = NodePath("../../GenderContainer/GenderOptBtn")
 mouse_filter = 1
 text_overrun_behavior = 3
 
@@ -983,6 +1171,8 @@ text = "Apparent Age"
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+focus_next = NodePath("../../LoreAgeContainer/LoreAgeOptBtn")
+focus_previous = NodePath("../../../HBoxContainer/GenderLoreContainer/GenderLoreOptBtn")
 mouse_filter = 1
 text_overrun_behavior = 3
 
@@ -1000,6 +1190,8 @@ text = "Lore Age"
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+focus_next = NodePath("../../../../BodyTextureTree")
+focus_previous = NodePath("../../AgeContainer/AgeOptBtn")
 mouse_filter = 1
 text_overrun_behavior = 3
 
@@ -1012,9 +1204,12 @@ theme_override_constants/separation = 8
 custom_minimum_size = Vector2(0, 260)
 layout_mode = 2
 size_flags_vertical = 3
+focus_next = NodePath("../Others/ClothingTree")
+focus_previous = NodePath("../AgeGenderContainer/AgeMainContainer/LoreAgeContainer/LoreAgeOptBtn")
 mouse_filter = 1
 mouse_force_pass_scroll_events = false
 theme = ExtResource("7_slw3q")
+theme_override_styles/focus = SubResource("StyleBoxFlat_vtu6n")
 columns = 2
 column_titles_visible = true
 hide_folding = true
@@ -1034,9 +1229,12 @@ custom_minimum_size = Vector2(0, 260)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+focus_next = NodePath("../BodyTraits")
+focus_previous = NodePath("../../BodyTextureTree")
 mouse_filter = 1
 mouse_force_pass_scroll_events = false
 theme = ExtResource("7_slw3q")
+theme_override_styles/focus = SubResource("StyleBoxFlat_vtu6n")
 column_titles_visible = true
 hide_root = true
 
@@ -1045,120 +1243,14 @@ custom_minimum_size = Vector2(0, 260)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+focus_next = NodePath("../../../../../../../../MarginContainer/NavigationContainer/NextButton")
+focus_previous = NodePath("../ClothingTree")
 mouse_filter = 1
 mouse_force_pass_scroll_events = false
 theme = ExtResource("7_slw3q")
+theme_override_styles/focus = SubResource("StyleBoxFlat_vtu6n")
 column_titles_visible = true
 hide_root = true
-
-[node name="ClothingContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField"]
-visible = false
-layout_mode = 2
-
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/ClothingContainer"]
-custom_minimum_size = Vector2(0, 24)
-layout_mode = 2
-mouse_filter = 1
-text = "Wearing"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="ClothingA" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/ClothingContainer"]
-layout_mode = 2
-
-[node name="TopWear" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/ClothingContainer/ClothingA"]
-custom_minimum_size = Vector2(0.035, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-mouse_filter = 1
-text = "Topwear"
-alignment = 1
-text_overrun_behavior = 3
-
-[node name="UnderWear" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/ClothingContainer/ClothingA"]
-custom_minimum_size = Vector2(0.035, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-mouse_filter = 1
-text = "Underwear"
-alignment = 1
-text_overrun_behavior = 3
-
-[node name="BottomWear" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/ClothingContainer/ClothingA"]
-custom_minimum_size = Vector2(0.035, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-mouse_filter = 1
-text = "Bottomwear"
-alignment = 1
-text_overrun_behavior = 3
-
-[node name="LegWear" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/ClothingContainer/ClothingA"]
-custom_minimum_size = Vector2(0.035, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-mouse_filter = 1
-text = "Legwear"
-alignment = 1
-text_overrun_behavior = 3
-
-[node name="ArmWear" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/ClothingContainer/ClothingA"]
-custom_minimum_size = Vector2(0.035, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-mouse_filter = 1
-text = "Armwear"
-alignment = 1
-text_overrun_behavior = 3
-
-[node name="ClothingB" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/ClothingContainer"]
-layout_mode = 2
-
-[node name="FootWear" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/ClothingContainer/ClothingB"]
-custom_minimum_size = Vector2(0.035, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-mouse_filter = 1
-text = "Footwear"
-alignment = 1
-text_overrun_behavior = 3
-
-[node name="HeadWear" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/ClothingContainer/ClothingB"]
-custom_minimum_size = Vector2(0.035, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-mouse_filter = 1
-text = "Headwear"
-alignment = 1
-text_overrun_behavior = 3
-
-[node name="Collar" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/ClothingContainer/ClothingB"]
-custom_minimum_size = Vector2(0.035, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-mouse_filter = 1
-text = "Collar"
-alignment = 1
-text_overrun_behavior = 3
-
-[node name="LegWear" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/ClothingContainer/ClothingB"]
-custom_minimum_size = Vector2(0.035, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-mouse_filter = 1
-text = "Eyewear"
-alignment = 1
-text_overrun_behavior = 3
-icon_alignment = 2
-
-[node name="ArmWear" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/ClothingContainer/ClothingB"]
-custom_minimum_size = Vector2(0.035, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-mouse_filter = 1
-text = "Diaper"
-alignment = 1
-text_overrun_behavior = 3
 
 [node name="CharacterBlocked" type="Control" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel"]
 visible = false
@@ -1180,6 +1272,10 @@ alignment = 1
 [node name="PreviousButton" type="Button" parent="MainPanel/MainContainer/MarginContainer/NavigationContainer"]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
+focus_neighbor_left = NodePath(".")
+focus_neighbor_right = NodePath("../NextButton")
+focus_next = NodePath("../../../MainPanel/MetaContainer/MainContainer/ArtistContainer/ArtistLineEdit")
+focus_previous = NodePath("../NextButton")
 text = "Previous"
 
 [node name="Pages" type="HBoxContainer" parent="MainPanel/MainContainer/MarginContainer/NavigationContainer"]
@@ -1206,6 +1302,10 @@ text = "1"
 [node name="NextButton" type="Button" parent="MainPanel/MainContainer/MarginContainer/NavigationContainer"]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
+focus_neighbor_left = NodePath("../PreviousButton")
+focus_neighbor_right = NodePath(".")
+focus_next = NodePath("../PreviousButton")
+focus_previous = NodePath("../../../MainPanel/MetaContainer/MainContainer/TypeContainer/MediaTypeOptBtn")
 text = "Next"
 
 [node name="ProjectTextureContainer" type="Container" parent="."]

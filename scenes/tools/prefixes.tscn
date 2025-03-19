@@ -47,6 +47,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 4.0
 placeholder_text = "Test Prefix"
+caret_blink = true
 
 [node name="TestPrefixBtn" type="Button" parent="TestContainer"]
 layout_mode = 2

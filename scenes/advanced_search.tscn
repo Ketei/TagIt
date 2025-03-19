@@ -36,7 +36,14 @@ custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Tag name. Use * as wildcard."
+focus_neighbor_left = NodePath(".")
+focus_neighbor_top = NodePath(".")
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath("../../CatContainer/CategoryOptBtn")
+focus_next = NodePath("../../CatContainer/CategoryOptBtn")
+focus_previous = NodePath("../../ButtonContainer/CloseBtn")
 clear_button_enabled = true
+caret_blink = true
 
 [node name="CatContainer" type="HBoxContainer" parent="MainContainer"]
 layout_mode = 2
@@ -51,6 +58,12 @@ vertical_alignment = 1
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+focus_neighbor_left = NodePath(".")
+focus_neighbor_top = NodePath("../../TagContainer/TagLnEdt")
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath("../../PrioContainer/PrioSpnBox")
+focus_next = NodePath("../../PrioContainer/PrioSpnBox")
+focus_previous = NodePath("../../TagContainer/TagLnEdt")
 selected = 0
 item_count = 1
 popup/item_0/text = "- Any -"
@@ -67,11 +80,23 @@ vertical_alignment = 1
 [node name="PrioSpnBox" type="SpinBox" parent="MainContainer/PrioContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
+focus_neighbor_left = NodePath(".")
+focus_neighbor_top = NodePath("../../CatContainer/CategoryOptBtn")
+focus_neighbor_right = NodePath("../PrioOptBtn")
+focus_neighbor_bottom = NodePath("../../GroupContainer/GroupOptBtn")
+focus_next = NodePath("../PrioOptBtn")
+focus_previous = NodePath("../../CatContainer/CategoryOptBtn")
 editable = false
 
 [node name="PrioOptBtn" type="OptionButton" parent="MainContainer/PrioContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
+focus_neighbor_left = NodePath("../PrioSpnBox")
+focus_neighbor_top = NodePath("../../CatContainer/CategoryOptBtn")
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath("../../GroupContainer/GroupOptBtn")
+focus_next = NodePath("../../GroupContainer/GroupOptBtn")
+focus_previous = NodePath("../PrioSpnBox")
 selected = 0
 item_count = 4
 popup/item_0/text = "Any"
@@ -96,6 +121,12 @@ vertical_alignment = 1
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+focus_neighbor_left = NodePath(".")
+focus_neighbor_top = NodePath("../../PrioContainer/PrioOptBtn")
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath("../../ValidContainer/ValidOptBtn")
+focus_next = NodePath("../../ValidContainer/ValidOptBtn")
+focus_previous = NodePath("../../PrioContainer/PrioOptBtn")
 selected = 0
 item_count = 1
 popup/item_0/text = "- Any -"
@@ -113,6 +144,12 @@ vertical_alignment = 1
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+focus_neighbor_left = NodePath(".")
+focus_neighbor_top = NodePath("../../GroupContainer/GroupOptBtn")
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath("../../ButtonContainer/SearchBtn")
+focus_next = NodePath("../../ButtonContainer/SearchBtn")
+focus_previous = NodePath("../../GroupContainer/GroupOptBtn")
 selected = 0
 item_count = 3
 popup/item_0/text = "All"
@@ -124,15 +161,27 @@ popup/item_2/id = 2
 [node name="ButtonContainer" type="HBoxContainer" parent="MainContainer"]
 layout_mode = 2
 
-[node name="CloseBtn" type="Button" parent="MainContainer/ButtonContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 2.0
-text = "Close"
-
 [node name="SearchBtn" type="Button" parent="MainContainer/ButtonContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 3.0
+focus_neighbor_left = NodePath(".")
+focus_neighbor_top = NodePath("../../ValidContainer/ValidOptBtn")
+focus_neighbor_right = NodePath("../CloseBtn")
+focus_neighbor_bottom = NodePath(".")
+focus_next = NodePath("../CloseBtn")
+focus_previous = NodePath("../../ValidContainer/ValidOptBtn")
 text = "Search"
+
+[node name="CloseBtn" type="Button" parent="MainContainer/ButtonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+focus_neighbor_left = NodePath("../SearchBtn")
+focus_neighbor_top = NodePath("../../ValidContainer/ValidOptBtn")
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath(".")
+focus_next = NodePath("../../TagContainer/TagLnEdt")
+focus_previous = NodePath("../SearchBtn")
+text = "Close"

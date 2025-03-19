@@ -39,6 +39,10 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 
 
+func focus_main() -> void:
+	tags_text.grab_focus()
+
+
 func on_accept_pressed() -> void:
 	tags_split.emit(
 			Strings.split_tags(

@@ -45,6 +45,7 @@ script = ExtResource("2_3x56h")
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Add to Queue"
+caret_blink = true
 
 [node name="FetchContainer" type="HBoxContainer" parent="QueueContainer"]
 layout_mode = 2

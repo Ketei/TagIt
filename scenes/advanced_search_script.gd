@@ -48,6 +48,8 @@ func _ready() -> void:
 	close_btn.pressed.connect(_on_cancel_pressed)
 	prio_opt_btn.item_selected.connect(_on_prio_selected)
 	
+	tag_ln_edt.text_submitted.connect(_on_text_submitted)
+	
 	SingletonManager.TagIt.category_created.connect(_on_category_created)
 	SingletonManager.TagIt.category_deleted.connect(_on_category_deleted)
 	
@@ -124,6 +126,28 @@ func _on_search_pressed() -> void:
 
 func _on_cancel_pressed() -> void:
 	cancel_pressed.emit()
+	if close_btn.has_focus():
+		close_btn.release_focus()
+
+
+func _on_text_submitted(text: String) -> void:
+	if text.strip_edges().is_empty():
+		return
+	_on_search_pressed()
+
+
+func clear_fields() -> void:
+	tag_ln_edt.clear()
+	category_opt_btn.select(0)
+	prio_spn_box.value = 0
+	prio_opt_btn.select(0)
+	group_opt_btn.select(0)
+	valid_opt_btn.select(0)
+
+
+func focus_main() -> void:
+	tag_ln_edt.grab_focus()
+	tag_ln_edt.select_all()
 
 
 func operator_to_string(operator: int) -> String:
