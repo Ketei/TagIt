@@ -9,5 +9,5 @@ func _ready() -> void:
 
 
 func _on_ok_pressed() -> void:
-	SingletonManager.TagIt.settings.news_shown = true
+	SingletonManager.TagIt.settings.news_shown = DataManager.TAGIT_VERSION_ARRAY
 	queue_free()

@@ -8,10 +8,11 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wmi3y"]
 content_margin_left = 6.0
 content_margin_right = 6.0
-bg_color = Color(0.262516, 0.311519, 0.433683, 1)
+bg_color = Color(0.224, 0.264, 0.32, 1)
 border_width_left = 3
 border_width_top = 3
 border_width_right = 3
+border_color = Color(0.4, 0.545098, 0.682353, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 expand_margin_left = 5.0
@@ -20,14 +21,15 @@ anti_aliasing = false
 
 [sub_resource type="LabelSettings" id="LabelSettings_qlc7s"]
 font_size = 25
-font_color = Color(0.509804, 1, 1, 1)
+font_color = Color(0.94902, 0.94902, 0.94902, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1u7h1"]
 content_margin_top = 10.0
-bg_color = Color(0.124236, 0.153099, 0.225366, 1)
+bg_color = Color(0.140146, 0.16032, 0.189402, 1)
 border_width_left = 3
 border_width_right = 3
 border_width_bottom = 3
+border_color = Color(0.4, 0.545098, 0.682353, 1)
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 expand_margin_left = 5.0
@@ -83,6 +85,19 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_1u7h1")
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
-text = "[ul]
+text = "[font_size=20][b][color=SKY_BLUE]What's new[/color][/b][/font_size]
+
 Created a \"What's new\" window to inform of important updates and new features.
+
+Improved keyboard navigation in some windows:
+[ul] Wizard
+ Advanced Search
+ Tab Navigation (Ctrl+Tab/Ctrl+Shift+Tab)[/ul]
+
+Some popups will now focus their main item when appearing.
+
+[font_size=20][b][color=SKY_BLUE]Fixes[/color][/b][/font_size]
+[ul]
+Fixed the wizard not adding clothing status for characters
+Fixed wizard not adding the \"* only\" tags.
 [/ul]"
