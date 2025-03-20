@@ -21,9 +21,6 @@ const ENDPOINT_TAGS: String = "https://e621.net/tags.json?"
 const ENDPOINT_ALIASES: String = "https://e621.net/tag_aliases.json?search[name_matches]="
 const ENDPOINT_PARENTS: String = "https://e621.net/tag_implications.json?search[antecedent_name]="
 const ENDPOINT_WIKI: String = "https://e621.net/wiki_pages.json?limit=1&title="
-const HEADERS: PackedStringArray = [
-	"User-Agent: TaglistMaker/3.3.4 (by Ketei)"
-]
 
 @export var suggestion_limit: int = 30
 
@@ -41,6 +38,14 @@ var regex: RegEx
 
 var working: bool = false
 var prio_working: bool = false
+
+
+static func get_headers() -> PackedStringArray:
+	return PackedStringArray([
+		str(
+			"User-Agent: TaglistMaker/",
+			".".join(DataManager.TAGIT_VERSION_ARRAY),
+			" (by Ketei)")])
 
 
 func _ready() -> void:
@@ -127,7 +132,7 @@ func _get_full_data(tag: String) -> Dictionary:
 	SingletonManager.TagIt.log_silent(
 		"[eSix API] Requesting e621 for tag: " + tag,
 		DataManager.LogLevel.INFO)
-	wiki_requester.request(ENDPOINT_WIKI + tag, HEADERS)
+	wiki_requester.request(ENDPOINT_WIKI + tag, get_headers())
 	
 	var result = await wiki_requester.request_completed
 	
@@ -151,7 +156,7 @@ func _get_full_data(tag: String) -> Dictionary:
 	SingletonManager.TagIt.log_message(
 			"[eSix API] Requesting e621 for PARENTS.",
 			DataManager.LogLevel.INFO)
-	wiki_requester.request(ENDPOINT_PARENTS + tag, HEADERS)
+	wiki_requester.request(ENDPOINT_PARENTS + tag, get_headers())
 	
 	var p_res = await wiki_requester.request_completed
 	
@@ -178,7 +183,7 @@ func _get_full_data(tag: String) -> Dictionary:
 	SingletonManager.TagIt.log_message(
 			"[eSix API] Requesting e621 for ALIASES.",
 			DataManager.LogLevel.INFO)
-	wiki_requester.request(ENDPOINT_ALIASES + tag, HEADERS)
+	wiki_requester.request(ENDPOINT_ALIASES + tag, get_headers())
 	
 	var a_res = await wiki_requester.request_completed
 	
@@ -204,7 +209,7 @@ func _get_full_data(tag: String) -> Dictionary:
 	SingletonManager.TagIt.log_message(
 			"[eSix API] Requesting e621 for SUGGESTIONS.",
 			DataManager.LogLevel.INFO)
-	wiki_requester.request(ENDPOINT_TAGS + "limit=1&search[name_matches]=" + tag, HEADERS)
+	wiki_requester.request(ENDPOINT_TAGS + "limit=1&search[name_matches]=" + tag, get_headers())
 	
 	var s_res = await wiki_requester.request_completed
 	
@@ -339,7 +344,7 @@ func on_timer_timeout() -> void:
 	if not jobs.is_empty():
 		var req_url: Dictionary = jobs.pop_front()
 		SingletonManager.TagIt.log_message("[eSIx API] Making a request to e621", DataManager.LogLevel.INFO)
-		requester.request(req_url["url"], HEADERS)
+		requester.request(req_url["url"], get_headers())
 		var response: Array = await request_get
 		SingletonManager.TagIt.log_message("[eSix API] Response received", DataManager.LogLevel.INFO)
 		process_response(response, req_url["type"])
@@ -405,7 +410,7 @@ func search_for_tags(tag_query: String) -> void:
 
 
 func request_prio(url: String) -> void:
-	priority_requester.request(url, HEADERS)
+	priority_requester.request(url, get_headers())
 
 
 func on_prio_request_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
