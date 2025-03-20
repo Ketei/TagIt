@@ -415,14 +415,18 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if not _block_events and event is InputEventKey:
-		if event.is_action_pressed(&"ui_focus_next") and not event.is_echo() and Input.is_key_pressed(KEY_CTRL):
-			if not tab_bar.has_focus():
-				tab_bar.grab_focus()
-			if Input.is_key_pressed(KEY_SHIFT):
-				tab_bar.current_tab = posmod(tab_bar.current_tab - 1, 5)
-			else:
-				tab_bar.current_tab = posmod(tab_bar.current_tab + 1, 5)
-			get_viewport().set_input_as_handled()
+		if not event.is_echo() and Input.is_key_pressed(KEY_CTRL):
+			if event.is_action_pressed(&"ui_focus_next"):
+				if not tab_bar.has_focus():
+					tab_bar.grab_focus()
+				if Input.is_key_pressed(KEY_SHIFT):
+					tab_bar.current_tab = posmod(tab_bar.current_tab - 1, 5)
+				else:
+					tab_bar.current_tab = posmod(tab_bar.current_tab + 1, 5)
+				get_viewport().set_input_as_handled()
+			elif tab_bar.current_tab == 0 and Input.is_key_pressed(KEY_G):
+				generate_tag_list()
+				get_viewport().set_input_as_handled()
 
 
 func _notification(what):
@@ -1495,6 +1499,10 @@ func on_link_esix_toggled(is_toggled: bool) -> void:
 
 
 func on_generate_tag_list_btn_pressed() -> void:
+	generate_tag_list()
+
+
+func generate_tag_list() -> void:
 	var tags: Dictionary = {}
 	
 	# Getting main list tags

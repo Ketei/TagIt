@@ -92,9 +92,10 @@ text = "[font_size=20][b][color=SKY_BLUE]New[/color][/b][/font_size]
 Created a \"What's new\" window to inform of important updates and new features.
 
 Improved keyboard navigation in some windows:
-[ul] Wizard
- Advanced Search
- Tab Navigation (Ctrl+Tab/Ctrl+Shift+Tab)[/ul]
+[ul] Wizard field navigation using the Tab key.
+ Advanced Search; Navigation with Tab key.
+ Tab Navigation (Ctrl+Tab/Ctrl+Shift+Tab)
+ Generate tag list (CTRL+G) while on the Tagger tab.[/ul]
 
 Some popups will now focus their main item when first appearing.
 
