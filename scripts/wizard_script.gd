@@ -277,6 +277,10 @@ var current_project_size: Vector2 = Vector2(310, 34)
 @onready var project_texture_container: Draggable = $ProjectTextureContainer
 # ---------------
 
+#@onready var angle_container_start: Button = $MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow/AngleContainer
+#@onready var angle_container_end: Button = $MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow/AngleContainer17
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	characters_tree.create_item()
@@ -358,6 +362,13 @@ func _ready() -> void:
 	reset_zoom_btn.pressed.connect(on_reset_zoom_button_pressed)
 	minimize_image_btn.pressed.connect(on_minimize_button_pressed)
 	close_wizard_btn.pressed.connect(_on_close_wizard_pressed)
+	body_texture_tree.focus_exited.connect(_on_character_item_tree_focus_lost.bind(body_texture_tree))
+	clothing_tree.focus_exited.connect(_on_character_item_tree_focus_lost.bind(clothing_tree))
+	body_traits.focus_exited.connect(_on_character_item_tree_focus_lost.bind(body_traits))
+
+
+func focus_main() -> void:
+	artist_line_edit.grab_focus()
 
 
 func _on_close_wizard_pressed() -> void:
@@ -491,6 +502,23 @@ func on_next_pressed() -> void:
 		current_page += 1
 	else:
 		wizard_finished.emit(generate_tags())
+	
+	match current_page:
+		0:
+			next_button.focus_previous = media_type_opt_btn.get_path()
+			previous_button.focus_next = artist_line_edit.get_path()
+		1:
+			next_button.focus_previous = location_opt_btn.get_path()
+			previous_button.focus_next = colored_check_box.get_path()
+		2:
+			next_button.focus_previous = $MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow/AngleContainer17.get_path()
+			previous_button.focus_next = $MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow/AngleContainer.get_path()
+		3:
+			next_button.focus_previous = $MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer/Grouping/Orgy.get_path()
+			previous_button.focus_next = gender_opt_btn_l.get_path()
+		4:
+			next_button.focus_previous = characters_tree.get_path() if characters.is_empty() else body_traits.get_path()
+			previous_button.focus_next = new_char_btn.get_path()
 
 
 func on_previous_pressed() -> void:
@@ -503,12 +531,16 @@ func on_previous_pressed() -> void:
 func on_character_tag_changed(new_char: String) -> void:
 	if current_character == -1:
 		return
-	characters_tree.get_root().get_child(current_character).set_text(0, new_char.strip_edges())
+	var new_name: String = new_char.strip_edges()
+	characters_tree.get_root().get_child(current_character).set_text(0, "Unkown Character" if new_name.is_empty() else new_name)
 
 
-func create_character(default_name: String = "Unknown Character") -> void:
+func create_character(default_name: String = "") -> void:
+	if characters.is_empty():
+		characters_tree.focus_next = character_tag_ln_edt.get_path()
+	
 	var new_character: TreeItem = characters_tree.get_root().create_child()
-	new_character.set_text(0, default_name)
+	new_character.set_text(0, "Unknown Character" if default_name.is_empty() else default_name)
 	new_character.add_button(0, BIN_ICON, 0, false, "Delete Character")
 	var clothing_array: Array[Dictionary] = []
 	clothing_array.resize(clothing_tree.get_root().get_child_count())
@@ -544,6 +576,8 @@ func on_character_button_clicked(item: TreeItem, _column: int, id: int, _mouse_b
 		0:
 			var remove: int = item.get_index()
 			characters.remove_at(remove)
+			if characters.is_empty():
+				characters_tree.focus_next = next_button.get_path()
 			if current_character == remove:
 				current_character = -1
 				clear_character()
@@ -660,6 +694,11 @@ func save_character() -> void:
 		"bodies": body_textures,
 		"clothing": new_clothing,
 		"traits": selected_traits}
+
+
+func _on_character_item_tree_focus_lost(tree: Tree) -> void:
+	if tree.get_selected() != null:
+		tree.deselect_all()
 
 
 func _on_character_selected() -> void:
