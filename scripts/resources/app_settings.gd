@@ -22,7 +22,7 @@ const SETTINGS_PATH: String = "user://tagit_settings.tres"
 @export var request_suggestions: bool = false
 @export var suggestion_relevancy: int = 45
 @export var search_tags_on_esix: bool = false
-@export var news_shown: bool = false
+@export var news_shown: Array[int] = [0,0,0]
 
 
 static func get_settings() -> AppSettingsRes:
