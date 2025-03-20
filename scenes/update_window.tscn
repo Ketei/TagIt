@@ -24,7 +24,10 @@ font_size = 25
 font_color = Color(0.94902, 0.94902, 0.94902, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1u7h1"]
+content_margin_left = 10.0
 content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
 bg_color = Color(0.140146, 0.16032, 0.189402, 1)
 border_width_left = 3
 border_width_right = 3
@@ -85,8 +88,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_1u7h1")
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
-text = "[font_size=20][b][color=SKY_BLUE]What's new[/color][/b][/font_size]
-
+text = "[font_size=20][b][color=SKY_BLUE]New[/color][/b][/font_size]
 Created a \"What's new\" window to inform of important updates and new features.
 
 Improved keyboard navigation in some windows:
@@ -94,7 +96,7 @@ Improved keyboard navigation in some windows:
  Advanced Search
  Tab Navigation (Ctrl+Tab/Ctrl+Shift+Tab)[/ul]
 
-Some popups will now focus their main item when appearing.
+Some popups will now focus their main item when first appearing.
 
 [font_size=20][b][color=SKY_BLUE]Fixes[/color][/b][/font_size]
 [ul]

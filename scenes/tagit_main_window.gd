@@ -384,7 +384,9 @@ func _ready() -> void:
 	SingletonManager.TagIt.hide_splash()
 	
 	if SingletonManager.TagIt.settings.news_shown < DataManager.TAGIT_VERSION_ARRAY:
+		_block_events = true
 		var news_window: PanelContainer = preload("res://scenes/update_window.tscn").instantiate()
+		news_window.window_closed.connect(_on_news_closed)
 		add_child(news_window)
 		news_window.visible = true
 	
@@ -576,6 +578,10 @@ func _on_sort_submenu_id_selected(id: int) -> void:
 			sort_tags_alphabetical()
 		1:
 			sort_tags_category()
+
+
+func _on_news_closed() -> void:
+	_block_events = false
 
 
 func on_import_button_id_pressed(id: int) -> void:
