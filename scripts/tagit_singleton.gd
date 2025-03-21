@@ -249,34 +249,32 @@ func update_tables(current_version: int) -> void:
 		# Create colum on "groups" called "hydrus_prefixes"
 		# Move data from "hydrus_prefixes" to column "hydrus_prefix"
 	if update_version == 1:
-		tag_database.query("SELECT name FROM sqlite_master WHERE type='table' AND name='hydrus_prefixes';")
-		if not tag_database.query_result.is_empty():
-			var prefixes: Array = tag_database.select_rows("hydrus_prefixes", "", ["*"])
-			
-			tag_database.query("PRAGMA table_info(categories);")
-			var result: Array = tag_database.query_result
-			
-			var has_column: bool = false
-			for column in result:
-				if column["name"] == "hydrus_prefix":
-					has_column = true
-					break
-			
-			if not has_column:
-				tag_database.query(
-						"ALTER TABLE categories ADD COLUMN hydrus_prefix TEXT DEFAULT NULL;")
-			
-			for h_prefix in prefixes:
-				tag_database.update_rows(
-						"categories",
-						"id = " + str(h_prefix["category_id"]),
-						{"hydrus_prefix": h_prefix["prefix"]})
+		var prefixes: Array = tag_database.select_rows("hydrus_prefixes", "", ["*"])
+		
+		tag_database.query("PRAGMA table_info(categories);")
+		var result: Array = tag_database.query_result
+		
+		var has_column: bool = false
+		for column in result:
+			if column["name"] == "hydrus_prefix":
+				has_column = true
+				break
+		
+		if not has_column:
+			tag_database.query(
+					"ALTER TABLE categories ADD COLUMN hydrus_prefix TEXT DEFAULT NULL;")
+		
+		for h_prefix in prefixes:
+			tag_database.update_rows(
+					"categories",
+					"id = " + str(h_prefix["category_id"]),
+					{"hydrus_prefix": h_prefix["prefix"]})
 			
 			tag_database.drop_table("hydrus_prefixes")
-			log_silent(
-					"Database updated from version 1 to version 2.",
-					DataManager.LogLevel.INFO)
-			update_version += 1
+		log_silent(
+				"Database updated from version 1 to version 2.",
+				DataManager.LogLevel.INFO)
+		update_version += 1
 	# Changes in version 2 -> 3:
 	#	Changed group_suggestions to use a composite primary key. As before each tag could only suggest 1 group
 	#	Fixed typo on schema creation on suggestions.suggestion_id (INGETER -> INTEGER)
