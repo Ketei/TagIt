@@ -19,7 +19,7 @@ signal website_deleted(site_id: int)
 
 const DATABASE_PATH: String = "user://tag_database.db"
 const SEARCH_WILDCARD: String = "*"
-const DB_VERSION: int = 2
+const DB_VERSION: int = 3
 const TAGIT_VERSION_ARRAY: Array[int] = [3,3,5]
 const MAX_PARENT_RECURSION: int = 100
 const IMAGE_LIMITS: Vector2i = Vector2i(1000, 1000)
@@ -108,14 +108,15 @@ func _ready() -> void:
 		tag_database.query( # suggestions
 				"CREATE TABLE suggestions ( 
 					tag_id INTEGER NOT NULL, 
-					suggestion_id INGETER NOT NULL, 
+					suggestion_id INTEGER NOT NULL, 
 					PRIMARY KEY (tag_id, suggestion_id), 
 					FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE ON UPDATE NO ACTION, 
 					FOREIGN KEY (suggestion_id) REFERENCES tags(id));")
 		tag_database.query( # group_suggestions
 				"CREATE TABLE group_suggestions (
-					tag_id INTEGER NOT NULL PRIMARY KEY,
+					tag_id INTEGER NOT NULL,
 					group_id INTEGER NOT NULL,
+					PRIMARY KEY(tag_id, group_id),
 					FOREIGN KEY (group_id) REFERENCES groups (id) ON DELETE CASCADE ON UPDATE NO ACTION,
 					FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE ON UPDATE NO ACTION);")
 		tag_database.query( # categories
@@ -276,6 +277,44 @@ func update_tables(current_version: int) -> void:
 					"Database updated from version 1 to version 2.",
 					DataManager.LogLevel.INFO)
 			update_version += 1
+	# Changes in version 2 -> 3:
+	#	Changed group_suggestions to use a composite primary key. As before each tag could only suggest 1 group
+	#	Fixed typo on schema creation on suggestions.suggestion_id (INGETER -> INTEGER)
+	if update_version == 2:
+		# PK to composite PK
+		tag_database.query(
+			"CREATE TABLE group_suggestions_new (
+				tag_id INTEGER NOT NULL,
+				group_id INTEGER NOT NULL,
+				PRIMARY KEY (tag_id, group_id),
+				FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE ON UPDATE NO ACTION,
+				FOREIGN KEY (group_id) REFERENCES groups (id) ON DELETE CASCADE ON UPDATE NO ACTION);")
+		tag_database.query(
+			"INSERT INTO group_suggestions_new (tag_id, group_id) 
+			SELECT tag_id, group_id 
+			FROM group_suggestions;")
+		tag_database.query("DROP TABLE group_suggestions")
+		tag_database.query("ALTER TABLE group_suggestions_new RENAME TO group_suggestions")
+		
+		# INGETER -> INTEGER
+		tag_database.query(
+			"CREATE TABLE suggestions_new (
+				tag_id INTEGER NOT NULL,
+				suggestion_id INTEGER NOT NULL,
+				PRIMARY KEY (tag_id, suggestion_id),
+				FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE ON UPDATE NO ACTION,
+				FOREIGN KEY (suggestion_id) REFERENCES tags (id) ON DELETE CASCADE ON UPDATE NO ACTION);")
+		tag_database.query(
+			"INSERT INTO suggestions_new (tag_id, suggestion_id) 
+			SELECT tag_id, suggestion_id 
+			FROM suggestions;")
+		tag_database.query("DROP TABLE suggestions;")
+		tag_database.query("ALTER TABLE suggestions_new RENAME TO suggestions;")
+		
+		log_silent(
+					"Database updated from version 2 to version 3.",
+					DataManager.LogLevel.INFO)
+		update_version += 1
 
 
 # Ensures that all required tables exist. Only checks for tables, not columns.
@@ -294,13 +333,14 @@ func verify_db_tables(tables: Array) -> void:
 			"format": {"data_type": "text"}},
 		"suggestions": "CREATE TABLE suggestions ( 
 					tag_id INTEGER NOT NULL, 
-					suggestion_id INGETER NOT NULL, 
+					suggestion_id INTEGER NOT NULL, 
 					PRIMARY KEY (tag_id, suggestion_id), 
 					FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE ON UPDATE NO ACTION, 
-					FOREIGN KEY (suggestion_id) REFERENCES tags(id));",
+					FOREIGN KEY (suggestion_id) REFERENCES tags (id) ON DELETE CASCADE ON UPDATE NO ACTION);",
 		"group_suggestions": "CREATE TABLE group_suggestions (
-					tag_id INTEGER NOT NULL PRIMARY KEY,
+					tag_id INTEGER NOT NULL,
 					group_id INTEGER NOT NULL,
+					PRIMARY KEY (tag_id, group_id),
 					FOREIGN KEY (group_id) REFERENCES groups (id) ON DELETE CASCADE ON UPDATE NO ACTION,
 					FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE ON UPDATE NO ACTION);",
 		"categories": "CREATE TABLE categories ( 
