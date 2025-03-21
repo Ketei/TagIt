@@ -99,8 +99,12 @@ Improved keyboard navigation in some windows:
 
 Some popups will now focus their main item when first appearing.
 
+[font_size=20][b][color=SKY_BLUE]Changed[/color][/b][/font_size]
+[ul]Card selector bg is now darker & better looking card search[/ul]
+
 [font_size=20][b][color=SKY_BLUE]Fixes[/color][/b][/font_size]
 [ul]
 Fixed the wizard not adding clothing status for characters
 Fixed wizard not adding the \"* only\" tags.
+Fixed not being able to suggest 2 or more groups on a tag.
 [/ul]"
