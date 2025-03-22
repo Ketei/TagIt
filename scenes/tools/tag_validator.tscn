@@ -59,6 +59,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Search Tag"
+caret_blink = true
 
 [node name="Button" type="Button" parent="TreeContainer/SearchContainer"]
 custom_minimum_size = Vector2(32, 32)
@@ -127,6 +128,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Add Tag"
+caret_blink = true
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="CreatorContainer"]
 layout_mode = 2

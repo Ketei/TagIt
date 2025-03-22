@@ -337,6 +337,7 @@ expand_icon = true
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Add Tag"
+caret_blink = true
 list_direction = 1
 
 [node name="SuggestionContainer" type="VSplitContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer"]
@@ -505,6 +506,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
+tooltip_text = "Builds the current tag list. (Ctrl + G)"
 text = "Generate List"
 
 [node name="WikiPanel" type="PanelContainer" parent="MainContainer"]
@@ -664,6 +666,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Search Wiki"
+caret_blink = true
 list_direction = 1
 replace_on_item_select = true
 
@@ -809,6 +812,7 @@ metadata/_edit_use_anchors_ = true
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Search Tag"
+caret_blink = true
 replace_on_item_select = true
 use_timer = true
 
@@ -1574,6 +1578,7 @@ custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
 editable = false
+caret_blink = true
 secret = true
 
 [node name="ButtonsContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ImagesPanel/MainContainer/ApiContainer"]

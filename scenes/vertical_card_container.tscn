@@ -63,7 +63,7 @@ editable_cards = true
 [node name="DimLight" type="ColorRect" parent="."]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
-color = Color(0, 0, 0, 0.27451)
+color = Color(0, 0, 0, 0.588235)
 
 [node name="VBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2

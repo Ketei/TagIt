@@ -383,6 +383,13 @@ func _ready() -> void:
 	
 	SingletonManager.TagIt.hide_splash()
 	
+	if SingletonManager.TagIt.settings.news_shown < DataManager.TAGIT_VERSION_ARRAY:
+		_block_events = true
+		var news_window: PanelContainer = preload("res://scenes/update_window.tscn").instantiate()
+		news_window.window_closed.connect(_on_news_closed)
+		add_child(news_window)
+		news_window.visible = true
+	
 	if SingletonManager.TagIt.settings.load_wiki_images and SingletonManager.TagIt.settings.has_valid_hydrus_login():
 		settings_connection_status_txt_rect.modulate = Color(0.88, 0.727, 0.104)
 		settings_connect_api_btn.disabled = true
@@ -404,6 +411,22 @@ func _ready() -> void:
 			settings_connect_api_btn.text = "Disconnect"
 		
 		settings_connect_api_btn.disabled = false
+
+
+func _input(event: InputEvent) -> void:
+	if not _block_events and event is InputEventKey:
+		if not event.is_echo() and Input.is_key_pressed(KEY_CTRL):
+			if event.is_action_pressed(&"ui_focus_next"):
+				if not tab_bar.has_focus():
+					tab_bar.grab_focus()
+				if Input.is_key_pressed(KEY_SHIFT):
+					tab_bar.current_tab = posmod(tab_bar.current_tab - 1, 5)
+				else:
+					tab_bar.current_tab = posmod(tab_bar.current_tab + 1, 5)
+				get_viewport().set_input_as_handled()
+			elif tab_bar.current_tab == 0 and Input.is_key_pressed(KEY_G):
+				generate_tag_list()
+				get_viewport().set_input_as_handled()
 
 
 func _notification(what):
@@ -559,6 +582,10 @@ func _on_sort_submenu_id_selected(id: int) -> void:
 			sort_tags_alphabetical()
 		1:
 			sort_tags_category()
+
+
+func _on_news_closed() -> void:
+	_block_events = false
 
 
 func on_import_button_id_pressed(id: int) -> void:
@@ -1049,6 +1076,7 @@ func instantiate_text_loader() -> void:
 	selector.tags_split.connect(on_split_tags)
 	selector.split_cancelled.connect(on_split_cancelled)
 	add_child(selector)
+	selector.focus_main()
 
 
 func on_split_cancelled() -> void:
@@ -1098,6 +1126,7 @@ func instantiate_wizard() -> void:
 	selector.wizard_finished.connect(on_wizard_finished)
 	selector.wizard_cancelled.connect(on_wizard_cancelled)
 	add_child(selector)
+	selector.focus_main()
 	selector.set_project_texture(project_image.texture)
 
 
@@ -1388,6 +1417,7 @@ func on_search_all_tags_pressed() -> void:
 	searcher.tags_selected.connect(on_search_tags_added)
 	searcher.panel_close_pressed.connect(on_searcher_close_pressed.bind(searcher))
 	tagger_container.add_child(searcher)
+	searcher.focus_main()
 	search_tag_btn.disabled = true
 
 
@@ -1469,6 +1499,10 @@ func on_link_esix_toggled(is_toggled: bool) -> void:
 
 
 func on_generate_tag_list_btn_pressed() -> void:
+	generate_tag_list()
+
+
+func generate_tag_list() -> void:
 	var tags: Dictionary = {}
 	
 	# Getting main list tags

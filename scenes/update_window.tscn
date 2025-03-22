@@ -1,0 +1,110 @@
+[gd_scene load_steps=7 format=3 uid="uid://lvl8me4d3ngw"]
+
+[ext_resource type="Script" path="res://scenes/update_window_script.gd" id="1_2tgd3"]
+[ext_resource type="Texture2D" uid="uid://vypb46ut3fil" path="res://icons/x_icon.svg" id="2_ms83o"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rkm3r"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wmi3y"]
+content_margin_left = 6.0
+content_margin_right = 6.0
+bg_color = Color(0.224, 0.264, 0.32, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_color = Color(0.4, 0.545098, 0.682353, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+expand_margin_left = 5.0
+expand_margin_right = 5.0
+anti_aliasing = false
+
+[sub_resource type="LabelSettings" id="LabelSettings_qlc7s"]
+font_size = 25
+font_color = Color(0.94902, 0.94902, 0.94902, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1u7h1"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.140146, 0.16032, 0.189402, 1)
+border_width_left = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.4, 0.545098, 0.682353, 1)
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+expand_margin_left = 5.0
+expand_margin_right = 5.0
+anti_aliasing = false
+anti_aliasing_size = 0.01
+
+[node name="UpdateWindow" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_2tgd3")
+
+[node name="MainCenter" type="CenterContainer" parent="."]
+layout_mode = 2
+
+[node name="MainPanel" type="PanelContainer" parent="MainCenter"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_rkm3r")
+
+[node name="MainContainer" type="VBoxContainer" parent="MainCenter/MainPanel"]
+custom_minimum_size = Vector2(400, 500)
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="TitlePanel" type="PanelContainer" parent="MainCenter/MainPanel/MainContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_wmi3y")
+
+[node name="TitleContainer" type="HBoxContainer" parent="MainCenter/MainPanel/MainContainer/TitlePanel"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="MainCenter/MainPanel/MainContainer/TitlePanel/TitleContainer"]
+layout_mode = 2
+text = "What's new"
+label_settings = SubResource("LabelSettings_qlc7s")
+
+[node name="CloseButton" type="Button" parent="MainCenter/MainPanel/MainContainer/TitlePanel/TitleContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+icon = ExtResource("2_ms83o")
+flat = true
+icon_alignment = 1
+
+[node name="InfoContainer" type="PanelContainer" parent="MainCenter/MainPanel/MainContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_1u7h1")
+
+[node name="ChangesRTLabel" type="RichTextLabel" parent="MainCenter/MainPanel/MainContainer/InfoContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "[font_size=20][b][color=SKY_BLUE]New[/color][/b][/font_size]
+Created a \"What's new\" window to inform of important updates and new features.
+
+Improved keyboard navigation in some windows:
+[ul] Wizard field navigation using the Tab key.
+ Advanced Search; Navigation with Tab key.
+ Tab Navigation (Ctrl+Tab/Ctrl+Shift+Tab)
+ Generate tag list (CTRL+G) while on the Tagger tab.[/ul]
+
+Some popups will now focus their main item when first appearing.
+
+[font_size=20][b][color=SKY_BLUE]Changed[/color][/b][/font_size]
+[ul]Card selector bg is now darker & better looking card search[/ul]
+
+[font_size=20][b][color=SKY_BLUE]Fixes[/color][/b][/font_size]
+[ul]
+Fixed the wizard not adding clothing status for characters
+Fixed wizard not adding the \"* only\" tags.
+Fixed not being able to suggest 2 or more groups on a tag.
+[/ul]"

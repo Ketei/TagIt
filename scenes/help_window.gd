@@ -20,7 +20,7 @@ func _ready() -> void:
 	total_tags_lbl.text = Strings.beautify_int(stats["tag_count"])
 	
 	get_viewport().gui_release_focus()
-	version_label.text = DataManager.TAGIT_VERSION
+	version_label.text = ".".join(DataManager.TAGIT_VERSION_ARRAY)
 	close_button.pressed.connect(close_pressed.emit)
 	
 

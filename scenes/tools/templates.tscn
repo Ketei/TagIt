@@ -27,6 +27,7 @@ custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Search Template"
+caret_blink = true
 
 [node name="NewTemplateBtn" type="Button" parent="TemplatesContainer/HeaderContainer"]
 custom_minimum_size = Vector2(32, 32)
@@ -68,6 +69,7 @@ custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 placeholder_text = "Template Title"
 editable = false
+caret_blink = true
 
 [node name="DescriptionTxtEdt" type="TextEdit" parent="SetupContainer/InfoContaienr/TitleContainer"]
 layout_mode = 2
@@ -128,6 +130,7 @@ select_mode = 2
 
 [node name="AddTagLnEdt" parent="SetupContainer/TagsContainer" instance=ExtResource("5_t3cac")]
 layout_mode = 2
+caret_blink = true
 list_direction = 1
 replace_on_item_select = true
 use_timer = true
@@ -149,6 +152,7 @@ layout_mode = 2
 placeholder_text = "Search Group"
 clear_button_enabled = true
 right_icon = ExtResource("3_xrx8o")
+caret_blink = true
 
 [node name="GroupTree" type="Tree" parent="SetupContainer/GroupsContainer"]
 layout_mode = 2

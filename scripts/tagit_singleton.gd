@@ -19,13 +19,14 @@ signal website_deleted(site_id: int)
 
 const DATABASE_PATH: String = "user://tag_database.db"
 const SEARCH_WILDCARD: String = "*"
-const DB_VERSION: int = 2
-const TAGIT_VERSION: String = "3.3.4"
+const DB_VERSION: int = 3
+const TAGIT_VERSION_ARRAY: Array[int] = [3,3,5]
 const MAX_PARENT_RECURSION: int = 100
 const IMAGE_LIMITS: Vector2i = Vector2i(1000, 1000)
 const LEV_DISTANCE: float = 0.75
 const LEV_LOOP_LIMIT: int = 100
 const INVALID_COLOR: Color = Color(0.859, 0.302, 0.376)
+const PREFIX_SEPARATOR: String = "|"
 
 enum LogLevel {
 	INFO,
@@ -107,14 +108,15 @@ func _ready() -> void:
 		tag_database.query( # suggestions
 				"CREATE TABLE suggestions ( 
 					tag_id INTEGER NOT NULL, 
-					suggestion_id INGETER NOT NULL, 
+					suggestion_id INTEGER NOT NULL, 
 					PRIMARY KEY (tag_id, suggestion_id), 
 					FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE ON UPDATE NO ACTION, 
 					FOREIGN KEY (suggestion_id) REFERENCES tags(id));")
 		tag_database.query( # group_suggestions
 				"CREATE TABLE group_suggestions (
-					tag_id INTEGER NOT NULL PRIMARY KEY,
+					tag_id INTEGER NOT NULL,
 					group_id INTEGER NOT NULL,
+					PRIMARY KEY(tag_id, group_id),
 					FOREIGN KEY (group_id) REFERENCES groups (id) ON DELETE CASCADE ON UPDATE NO ACTION,
 					FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE ON UPDATE NO ACTION);")
 		tag_database.query( # categories
@@ -247,34 +249,70 @@ func update_tables(current_version: int) -> void:
 		# Create colum on "groups" called "hydrus_prefixes"
 		# Move data from "hydrus_prefixes" to column "hydrus_prefix"
 	if update_version == 1:
-		tag_database.query("SELECT name FROM sqlite_master WHERE type='table' AND name='hydrus_prefixes';")
-		if not tag_database.query_result.is_empty():
-			var prefixes: Array = tag_database.select_rows("hydrus_prefixes", "", ["*"])
-			
-			tag_database.query("PRAGMA table_info(categories);")
-			var result: Array = tag_database.query_result
-			
-			var has_column: bool = false
-			for column in result:
-				if column["name"] == "hydrus_prefix":
-					has_column = true
-					break
-			
-			if not has_column:
-				tag_database.query(
-						"ALTER TABLE categories ADD COLUMN hydrus_prefix TEXT DEFAULT NULL;")
-			
-			for h_prefix in prefixes:
-				tag_database.update_rows(
-						"categories",
-						"id = " + str(h_prefix["category_id"]),
-						{"hydrus_prefix": h_prefix["prefix"]})
+		var prefixes: Array = tag_database.select_rows("hydrus_prefixes", "", ["*"])
+		
+		tag_database.query("PRAGMA table_info(categories);")
+		var result: Array = tag_database.query_result
+		
+		var has_column: bool = false
+		for column in result:
+			if column["name"] == "hydrus_prefix":
+				has_column = true
+				break
+		
+		if not has_column:
+			tag_database.query(
+					"ALTER TABLE categories ADD COLUMN hydrus_prefix TEXT DEFAULT NULL;")
+		
+		for h_prefix in prefixes:
+			tag_database.update_rows(
+					"categories",
+					"id = " + str(h_prefix["category_id"]),
+					{"hydrus_prefix": h_prefix["prefix"]})
 			
 			tag_database.drop_table("hydrus_prefixes")
-			log_silent(
-					"Database updated from version 1 to version 2.",
+		log_silent(
+				"Database updated from version 1 to version 2.",
+				DataManager.LogLevel.INFO)
+		update_version += 1
+	# Changes in version 2 -> 3:
+	#	Changed group_suggestions to use a composite primary key. As before each tag could only suggest 1 group
+	#	Fixed typo on schema creation on suggestions.suggestion_id (INGETER -> INTEGER)
+	if update_version == 2:
+		# PK to composite PK
+		tag_database.query(
+			"CREATE TABLE group_suggestions_new (
+				tag_id INTEGER NOT NULL,
+				group_id INTEGER NOT NULL,
+				PRIMARY KEY (tag_id, group_id),
+				FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE ON UPDATE NO ACTION,
+				FOREIGN KEY (group_id) REFERENCES groups (id) ON DELETE CASCADE ON UPDATE NO ACTION);")
+		tag_database.query(
+			"INSERT INTO group_suggestions_new (tag_id, group_id) 
+			SELECT tag_id, group_id 
+			FROM group_suggestions;")
+		tag_database.query("DROP TABLE group_suggestions")
+		tag_database.query("ALTER TABLE group_suggestions_new RENAME TO group_suggestions")
+		
+		# INGETER -> INTEGER
+		tag_database.query(
+			"CREATE TABLE suggestions_new (
+				tag_id INTEGER NOT NULL,
+				suggestion_id INTEGER NOT NULL,
+				PRIMARY KEY (tag_id, suggestion_id),
+				FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE ON UPDATE NO ACTION,
+				FOREIGN KEY (suggestion_id) REFERENCES tags (id) ON DELETE CASCADE ON UPDATE NO ACTION);")
+		tag_database.query(
+			"INSERT INTO suggestions_new (tag_id, suggestion_id) 
+			SELECT tag_id, suggestion_id 
+			FROM suggestions;")
+		tag_database.query("DROP TABLE suggestions;")
+		tag_database.query("ALTER TABLE suggestions_new RENAME TO suggestions;")
+		
+		log_silent(
+					"Database updated from version 2 to version 3.",
 					DataManager.LogLevel.INFO)
-			update_version += 1
+		update_version += 1
 
 
 # Ensures that all required tables exist. Only checks for tables, not columns.
@@ -293,13 +331,14 @@ func verify_db_tables(tables: Array) -> void:
 			"format": {"data_type": "text"}},
 		"suggestions": "CREATE TABLE suggestions ( 
 					tag_id INTEGER NOT NULL, 
-					suggestion_id INGETER NOT NULL, 
+					suggestion_id INTEGER NOT NULL, 
 					PRIMARY KEY (tag_id, suggestion_id), 
 					FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE ON UPDATE NO ACTION, 
-					FOREIGN KEY (suggestion_id) REFERENCES tags(id));",
+					FOREIGN KEY (suggestion_id) REFERENCES tags (id) ON DELETE CASCADE ON UPDATE NO ACTION);",
 		"group_suggestions": "CREATE TABLE group_suggestions (
-					tag_id INTEGER NOT NULL PRIMARY KEY,
+					tag_id INTEGER NOT NULL,
 					group_id INTEGER NOT NULL,
+					PRIMARY KEY (tag_id, group_id),
 					FOREIGN KEY (group_id) REFERENCES groups (id) ON DELETE CASCADE ON UPDATE NO ACTION,
 					FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE ON UPDATE NO ACTION);",
 		"categories": "CREATE TABLE categories ( 
@@ -1304,7 +1343,7 @@ func format_prefix(clean_text: String, _prefixes: Array[String] = [], _formats: 
 		_prefixes = prefixes
 	var final_array: Array[String] = []
 	
-	for part in Strings.split_and_strip(clean_text, "|"):
+	for part in Strings.split_and_strip(clean_text, PREFIX_SEPARATOR):
 		var prefixed: bool = false
 		var prefix_idx: int = -1
 		for prefix in _prefixes:

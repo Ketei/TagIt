@@ -129,6 +129,8 @@ func on_category_icon_changed(id: int, icon: int) -> void:
 
 func _on_advanced_search_pressed() -> void:
 	adv_search.visible = not adv_search.visible
+	if adv_search.visible:
+		adv_search.focus_main()
 
 
 func _on_advanced_search_close_pressed() -> void:
