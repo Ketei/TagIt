@@ -1,3 +1,4 @@
+class_name TagItWizard
 extends Control
 
 
@@ -10,6 +11,132 @@ const THREE_PLUS_COLOR_BODY: String = "multicolored"
 
 const BIN_ICON = preload("res://icons/bin_icon.svg")
 const CLOTHING: Array[Dictionary] = [
+	{
+		"section": "Armwear",
+		"tag": "armwear",
+		"only_tag": "armwear only",
+		"options": [
+			"Arm warmers",
+			"Bridal gauntlets",
+			"Detached sleeves",
+			"Elbow gloves",
+			"Elbow gloves",
+			"Fishnet armwear",
+			"Wrist warmers"],
+		"score": 10
+	},
+	{
+		"section": "Bottomwear",
+		"tag": "bottomwear",
+		"only_tag": "bottomwear only",
+		"options": [
+			"Loincloth",
+			"Pants",
+			"Shorts",
+			"Skirt",],
+		"score": 150
+	},
+	{
+		"section": "Collar",
+		"tag": "collar",
+		"only_tag": "collar only",
+		"options": [
+			"Chain collar",
+			"Frilly collar",
+			"Leather collar",
+			"Metal collar",
+			"Shock collar",
+			"Spiked collar",
+			"Studded collar",
+		],
+		"score": 0
+	},
+	{
+		"section": "Diaper",
+		"tag": "diaper",
+		"only_tag": "diaper only",
+		"options": [
+			"Abuniverse",
+			"Cloth diaper",
+			"Prilly diaper",
+			"Pull-ups (diaper)",
+		],
+		"score": 10
+	},
+	{
+		"section": "Eyewear",
+		"tag": "eyewear",
+		"only_tag": "eyewear only",
+		"options": [
+			"Blinders",
+			"Blindfold",
+			"Eye patch",
+			"Glasses",
+			"Goggles",
+			"Monocle",
+			"Shutter shades",
+			"Sunglasses",
+			"Visor",
+		],
+		"score": 0
+	},
+	{
+		"section": "Footwear",
+		"tag": "footwear",
+		"only_tag": "footwear only",
+		"options": [
+			"Boots",
+			"Crocs",
+			"Fishnet footwear",
+			"Foot wraps",
+			"High heels",
+			"Mary janes",
+			"Sandals",
+			"Slippers",
+			"Sneakers",
+			"Socks",],
+		"score": 10
+	},
+	{
+		"section": "Handwear",
+		"tag": "handwear",
+		"only_tag": "handwear only",
+		"options":[
+			"Boxing gloves",
+			"Fishnet handwear",
+			"Gloves",
+			"Mittens",
+			"Oven mitts",],
+		"score": 10
+	},
+	{
+		"section": "Headwear",
+		"tag": "headwear",
+		"only_tag": "headwear only",
+		"options": [
+			"Hat",
+			"Hat feather",
+			"Headkerchief",
+			"Headscarf",
+			"Hood",],
+		"score": 10
+	},
+	{
+		"section": "Legwear",
+		"tag": "Legwear",
+		"only_tag": "legwear only",
+		"options": [
+			"Fishnet legwear",
+			"Knee highs",
+			"Leggings",
+			"Leg warmers",
+			"Leg wraps",
+			"Pantyhose",
+			"Stockings",
+			"Tights",
+			"Thigh highs",],
+		"score": 10
+	},
 	{
 		"section": "Topwear",
 		"tag": "topwear",
@@ -38,147 +165,57 @@ const CLOTHING: Array[Dictionary] = [
 			"Thong",],
 		"score": 50
 	},
-	{
-		"section": "Bottomwear",
-		"tag": "bottomwear",
-		"only_tag": "bottomwear only",
-		"options": [
-			"Loincloth",
-			"Pants",
-			"Shorts",
-			"Skirt",],
-		"score": 150
-	},
-	{
-		"section": "Legwear",
-		"tag": "Legwear",
-		"only_tag": "legwear only",
-		"options": [
-			"Fishnet legwear",
-			"Knee highs",
-			"Leggings",
-			"Leg warmers",
-			"Leg wraps",
-			"Pantyhose",
-			"Stockings",
-			"Tights",
-			"Thigh highs",],
-		"score": 10
-	},
-	{
-		"section": "Armwear",
-		"tag": "armwear",
-		"only_tag": "armwear only",
-		"options": [
-			"Arm warmers",
-			"Bridal gauntlets",
-			"Detached sleeves",
-			"Elbow gloves",
-			"Elbow gloves",
-			"Fishnet armwear",
-			"Wrist warmers"],
-		"score": 10
-	},
-	{
-		"section": "Handwear",
-		"tag": "handwear",
-		"only_tag": "handwear only",
-		"options":[
-			"Boxing gloves",
-			"Fishnet handwear",
-			"Gloves",
-			"Mittens",
-			"Oven mitts",],
-		"score": 10
-	},
-	{
-		"section": "Footwear",
-		"tag": "footwear",
-		"only_tag": "footwear only",
-		"options": [
-			"Boots",
-			"Crocs",
-			"Fishnet footwear",
-			"Foot wraps",
-			"High heels",
-			"Mary janes",
-			"Sandals",
-			"Slippers",
-			"Sneakers",
-			"Socks",],
-		"score": 10
-	},
-	{
-		"section": "Headwear",
-		"tag": "headwear",
-		"only_tag": "headwear only",
-		"options": [
-			"Hat",
-			"Hat feather",
-			"Headkerchief",
-			"Headscarf",
-			"Hood",],
-		"score": 10
-	},
-	{
-		"section": "Collar",
-		"tag": "collar",
-		"only_tag": "collar only",
-		"options": [
-			"Chain collar",
-			"Frilly collar",
-			"Leather collar",
-			"Metal collar",
-			"Shock collar",
-			"Spiked collar",
-			"Studded collar",
-		],
-		"score": 0
-	},
-	{
-		"section": "Eyewear",
-		"tag": "eyewear",
-		"only_tag": "eyewear only",
-		"options": [
-			"Blinders",
-			"Blindfold",
-			"Eye patch",
-			"Glasses",
-			"Goggles",
-			"Monocle",
-			"Shutter shades",
-			"Sunglasses",
-			"Visor",
-		],
-		"score": 0
-	},
-	{
-		"section": "Diaper",
-		"tag": "diaper",
-		"only_tag": "diaper only",
-		"options": [
-			"Abuniverse",
-			"Cloth diaper",
-			"Prilly diaper",
-			"Pull-ups (diaper)",
-		],
-		"score": 10
-	}]
+	]
 const BODY_TRAITS: Array[Dictionary] = [
-	{"title": "Hair", "tag": "hair"},
-	{"title": "Horns", "tag": "horn"},
-	{"title": "Different colored eyes", "tag": "heterochromia"},
-	{"title": "Breasts", "tag": "breasts"},
-	{"title": "Wings", "tag": "wings"},
-	{"title": "Finger Claws", "tag": "finger claws"},
-	{"title": "Tail", "tag": "tail"},
-	{"title": "Penis", "tag": "penis"},
-	{"title": "Vagina", "tag": "pussy"},
 	{"title": "Anus", "tag": "anus"},
-	{"title": "Paws", "tag": "paws"},
+	{"title": "Balls", "tag": "balls"},
+	{"title": "Breasts", "tag": "breasts"},
+	{"title": "Claws", "tag": "claws"},
+	{"title": "Hair", "tag": "hair"},
+	{"title": "Different colored eyes", "tag": "heterochromia"},
+	{"title": "Horns", "tag": "horn"},
 	{"title": "Pawpads", "tag": "pawpads"},
-	{"title": "Toe Claws", "tag": "toe claws"}]
+	{"title": "Paws", "tag": "paws"},
+	{"title": "Penis", "tag": "penis"},
+	{"title": "Sheath", "tag": "sheath"},
+	{"title": "Slit", "tag": "genital slit"},
+	{"title": "Vagina", "tag": "pussy"},
+	{"title": "Wings", "tag": "wings"},
+	]
+const GENDERS: PackedStringArray = [
+	"Male",
+	"Female",
+	"Ambiguous Gender",
+	"Andromorph",
+	"Gynomorph",
+	"Hermaphrodite",
+	"Male Hermaphrodite"]
+const AGES: PackedStringArray = [
+	"Baby",
+	"Toddler",
+	"Child",
+	"Adolescent",
+	"Adult",
+	"Mature",
+	"Elderly"]
+const BODIES: PackedStringArray = [
+	"Anthro",
+	"Semi-Anthro",
+	"Semi-Feral",
+	"Feral",
+	"Human",
+	"Humanoid",
+	"Taur"]
+const BODY_TYPES: PackedStringArray = [
+	"Fur",
+	"Scales",
+	"Feathers",
+	"Wool",
+	"Skin",
+	"Body",
+	"Exoskeleton"]
 
+var storage: TagItStorage = TagItStorage.get_storage()
 var characters: Array[Dictionary] = []
 var sections: PackedStringArray = [
 	"Image Meta",
@@ -189,8 +226,18 @@ var sections: PackedStringArray = [
 var current_character: int = -1:
 	set(new_current):
 		current_character = new_current
-		character_blocked.visible = current_character == -1
-		character_field.modulate = Color(1, 1, 1, 0.392) if current_character == -1 else Color.WHITE
+		var valid_character: bool = 0 <= new_current
+		character_tag_ln_edt.editable = valid_character
+		species_ln_edt.editable = valid_character
+		body_opt_btn.disabled = not valid_character
+		gender_opt_btn.disabled = not valid_character
+		gender_lore_opt_btn.disabled = not valid_character
+		age_opt_btn.disabled = not valid_character
+		lore_age_opt_btn.disabled = not valid_character
+		body_texture_tree.get_root().collapsed = not valid_character
+		clothing_tree.get_root().collapsed = not valid_character
+		body_traits.get_root().collapsed = not valid_character
+		apply_character_btn.disabled = not valid_character
 var current_page: int = 0:
 	set(new_current):
 		current_page = new_current
@@ -210,21 +257,19 @@ var current_project_size: Vector2 = Vector2(310, 34)
 
 @onready var main_panel: PanelContainer = $MainPanel/MainContainer/MainPanel
 
-@onready var character_field: VBoxContainer = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField
-@onready var character_blocked: Control = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterBlocked
+@onready var character_field: VBoxContainer = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField
 
+@onready var body_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/BodyContainer/BodyContainer/BodyOptBtn
+@onready var species_ln_edt: LineEdit = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/BodyContainer/SpeciesBox/SpeciesLnEdt
+@onready var gender_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/AgeGenderContainer/HBoxContainer/GenderContainer/GenderOptBtn
+@onready var gender_lore_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/AgeGenderContainer/HBoxContainer/GenderLoreContainer/GenderLoreOptBtn
+@onready var age_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/AgeGenderContainer/AgeMainContainer/AgeContainer/AgeOptBtn
+@onready var lore_age_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/AgeGenderContainer/AgeMainContainer/LoreAgeContainer/LoreAgeOptBtn
+@onready var body_texture_tree: Tree = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/BodyTextureTree
+@onready var clothing_tree: Tree = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/Others/ClothingTree
+@onready var body_traits: Tree = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/Others/BodyTraits
+@onready var character_tag_ln_edt: LineEdit = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/NameContainer/CharacterTagLnEdt
 
-@onready var body_texture_tree: Tree = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/BodyTextureTree
-@onready var age_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/AgeMainContainer/AgeContainer/AgeOptBtn
-@onready var lore_age_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/AgeMainContainer/LoreAgeContainer/LoreAgeOptBtn
-@onready var gender_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/HBoxContainer/GenderContainer/GenderOptBtn
-@onready var gender_lore_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/HBoxContainer/GenderLoreContainer/GenderLoreOptBtn
-@onready var body_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/BodyContainer/BodyContainer/BodyOptBtn
-@onready var characters_tree: Tree = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/ChracterTree/CharactersTree
-@onready var character_tag_ln_edt: LineEdit = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/NameContainer/CharacterTagLnEdt
-@onready var species_ln_edt: LineEdit = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/BodyContainer/SpeciesBox/SpeciesLnEdt
-#@onready var clothing_a: HBoxContainer = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/ScrollPanel/CharacterField/ClothingContainer/ClothingA
-#@onready var clothing_b: HBoxContainer = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/ScrollPanel/CharacterField/ClothingContainer/ClothingB
 @onready var new_char_btn: Button = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/ChracterTree/Header/NewCharBtn
 
 @onready var pairing_checkbox_container: VBoxContainer = $MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer
@@ -249,8 +294,6 @@ var current_project_size: Vector2 = Vector2(310, 34)
 @onready var location_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/LocationContainer/LocationOptBtn
 @onready var sexing: HBoxContainer = $MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer/Sexing
 @onready var grouping: HBoxContainer = $MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer/Grouping
-@onready var clothing_tree: Tree = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/Others/ClothingTree
-@onready var body_traits: Tree = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/Others/BodyTraits
 
 @onready var image_panel: PanelContainer = $ProjectTextureContainer/MainPanel/MainContainer/ImagePanel
 
@@ -258,6 +301,8 @@ var current_project_size: Vector2 = Vector2(310, 34)
 @onready var minimize_image_btn: Button = $ProjectTextureContainer/MainPanel/MainContainer/HeaderContainer/MinimizeImageBtn
 
 @onready var close_wizard_btn: Button = $MainPanel/MainContainer/TitleLabel/CloseWizardBtn
+@onready var characters_tree: Tree = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/ChracterTree/CharactersTree
+@onready var apply_character_btn: Button = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/NameContainer/ApplyCharacterBtn
 
 # --- Images ---
 @onready var day: TextureRect = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Day
@@ -316,7 +361,9 @@ func _ready() -> void:
 	
 	media_type_opt_btn.get_popup().max_size.y = 200
 	
-	character_blocked.visible = true
+	body_texture_tree.get_root().collapsed = true
+	clothing_tree.get_root().collapsed = true
+	body_traits.get_root().collapsed = true
 	
 	var idx: int = -1
 	for wear_item in CLOTHING:
@@ -346,7 +393,7 @@ func _ready() -> void:
 	next_button.pressed.connect(on_next_pressed)
 	previous_button.pressed.connect(on_previous_pressed)
 	new_char_btn.pressed.connect(create_character)
-	characters_tree.item_selected.connect(_on_character_selected)
+	characters_tree.item_selected.connect(_on_character_selected, ConnectFlags.CONNECT_DEFERRED)
 	character_tag_ln_edt.text_changed.connect(on_character_tag_changed)
 	add_pairing_btn.pressed.connect(on_add_pairing_pressed)
 	clear_pairings_btn.pressed.connect(clear_pairings)
@@ -365,6 +412,29 @@ func _ready() -> void:
 	body_texture_tree.focus_exited.connect(_on_character_item_tree_focus_lost.bind(body_texture_tree))
 	clothing_tree.focus_exited.connect(_on_character_item_tree_focus_lost.bind(clothing_tree))
 	body_traits.focus_exited.connect(_on_character_item_tree_focus_lost.bind(body_traits))
+	character_tag_ln_edt.text_submitted.connect(_on_character_text_submitted)
+	character_tag_ln_edt.timer_finished.connect(_on_autofil_timer_finished)
+	character_tag_ln_edt.text_selected.connect(_on_text_selected)
+	apply_character_btn.pressed.connect(_on_character_name_focus_lost)
+
+
+func _on_autofil_timer_finished() -> void:
+	var clean_tag: String = character_tag_ln_edt.text.strip_edges().to_lower()
+	if clean_tag.is_empty():
+		return
+	var results: Array[String] = []
+	for item in storage.characters:
+		if item["tag"].begins_with(clean_tag):
+			results.append(item["tag"])
+	if results.is_empty():
+		return
+	character_tag_ln_edt.add_items(results)
+	character_tag_ln_edt.show_items()
+
+
+func _on_text_selected(new_text: String) -> void:
+	on_character_tag_changed(new_text)
+	_on_character_name_focus_lost()
 
 
 func focus_main() -> void:
@@ -386,6 +456,59 @@ func _on_cloth_item_edited() -> void:
 		edited.collapsed = true
 	elif not edited.disable_folding and edited.collapsed:
 		edited.collapsed = false
+
+
+func _on_character_text_submitted(_text: String) -> void:
+	_on_character_name_focus_lost()
+
+
+func _on_character_name_focus_lost() -> void:
+	var idx: int = -1
+	var character_text: String = character_tag_ln_edt.text.strip_edges().to_lower()
+	for character in storage.characters:
+		idx += 1
+		if character["tag"] == character_text:
+			apply_character(idx)
+			break
+
+
+func apply_character(character_index: int) -> void:
+	var data := storage.get_character(character_index)
+	
+	species_ln_edt.text = data.species
+	
+	body_opt_btn.select(data.body_type)
+	gender_opt_btn.select(data.gender)
+	gender_lore_opt_btn.select(data.gender_lore)
+	age_opt_btn.select(data.age)
+	lore_age_opt_btn.select(data.age_lore)
+	
+	for body_color in body_texture_tree.get_root().get_children():
+		if data.body_colors.has(body_color.get_text(0)):
+			body_color.set_checked(0, data.body_colors[body_color.get_text(0)]["enabled"])
+			body_color.set_range(1, data.body_colors[body_color.get_text(0)]["value"])
+	
+	for trait_enabled in body_traits.get_root().get_children():
+		if data.body_traits.has(trait_enabled.get_text(0)):
+			trait_enabled.set_checked(
+					0,
+					data.body_traits[trait_enabled.get_text(0)])
+	
+	for apparel_item in clothing_tree.get_root().get_children():
+		if not data.apparel.has(apparel_item.get_text(0)):
+			continue
+		apparel_item.set_checked(
+				0,
+				data.apparel[apparel_item.get_text(0)]["active"])
+		for specific in apparel_item.get_children():
+			if data.apparel[apparel_item.get_text(0)]["subtypes"].has(specific.get_text(0)):
+				specific.set_checked(
+						0,
+						data.apparel[apparel_item.get_text(0)]["subtypes"][specific.get_text(0)])
+		
+		apparel_item.disable_folding = not data.apparel[apparel_item.get_text(0)]["active"]
+		if not apparel_item.collapsed and not data.apparel[apparel_item.get_text(0)]["active"]:
+			apparel_item.collapsed = true
 
 
 func set_project_texture(new_texture: Texture2D) -> void:
@@ -438,9 +561,6 @@ func on_colored_toggled(is_toggled: bool) -> void:
 					background.texture = preload("res://textures/wizard/pattern.jpg")
 				6:
 					background.texture = preload("res://textures/wizard/textured.jpg")
-		
-		
-		
 		
 		if daytime_opt_btn.selected == 1:
 			if colored_check_box.button_pressed:
@@ -909,8 +1029,6 @@ func generate_tags() -> Array[String]:
 
 
 func add_tree_bodies() -> void:
-	const BODY_TYPES: PackedStringArray = ["Fur", "Scales", "Feathers", "Wool", "Skin", "Body", "Exoskeleton"]
-	
 	for bod_name in BODY_TYPES:
 		var new_bod: TreeItem = body_texture_tree.get_root().create_child()
 		new_bod.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
@@ -924,7 +1042,6 @@ func add_tree_bodies() -> void:
 
 
 func add_body_types(to: OptionButton, select: int = 0) -> void:
-	const BODIES: PackedStringArray = ["Anthro", "Semi-Anthro", "Semi-Feral", "Feral", "Human", "Humanoid", "Taur"]
 	const TAGS: Array[Array] = [["anthro"], ["anthro", "semi-anthro"], ["feral", "semi-anthro"], ["feral"], ["human"], ["humanoid"], ["taur"]]
 	
 	#var idx: int = -1
@@ -936,7 +1053,7 @@ func add_body_types(to: OptionButton, select: int = 0) -> void:
 
 
 func add_ages(to: OptionButton, include_na: bool = false, select: int = 4) -> void:
-	const AGES: PackedStringArray = ["Baby", "Toddler", "Child", "Adolescent", "Adult", "Mature", "Elderly"]
+	#const AGES: PackedStringArray = ["Baby", "Toddler", "Child", "Adolescent", "Adult", "Mature", "Elderly"]
 	const TAGS: PackedStringArray = ["baby", "toddler", "child", "adolescent", "", "", "elderly"]
 	var item_idx: int = -1
 	
@@ -954,7 +1071,7 @@ func add_ages(to: OptionButton, include_na: bool = false, select: int = 4) -> vo
 
 
 func add_genders(to: OptionButton, include_na: bool = false, select: int = 0) -> void:
-	const GENDERS: PackedStringArray = ["Male", "Female", "Ambiguous Gender", "Andromorph", "Gynomorph", "Hermaphrodite", "Male Hermaphrodite"]
+	#const GENDERS: PackedStringArray = ["Male", "Female", "Ambiguous Gender", "Andromorph", "Gynomorph", "Hermaphrodite", "Male Hermaphrodite"]
 	const ICONS: Array[Resource] = [
 		preload("res://icons/male_icon.svg"),
 		preload("res://icons/female_icon.svg"),

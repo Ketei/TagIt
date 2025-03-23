@@ -2,12 +2,14 @@ extends LineEdit
 
 
 signal timer_finished
+signal text_selected(string: String)
 
 @export_enum("Down", "Up") var list_direction: int = 0
 @export_range(1, 20, 1, "or_greater") var item_limit: int = 10
 @export var replace_on_item_select: bool = false
 @export var use_timer: bool = false
 @export var list_timeout: float = 0.2
+@export var close_on_focus_lost: bool = false
 
 var close_event: StringName = &""
 var open_event: StringName = &""
@@ -44,57 +46,70 @@ func _ready() -> void:
 	autofill_list.item_clicked.connect(on_list_item_selected)
 	autofill_list.focus_exited.connect(on_list_focus_lost)
 	text_submitted.connect(on_text_submitted)
+	if close_on_focus_lost:
+		focus_exited.connect(_on_focus_lost, ConnectFlags.CONNECT_DEFERRED)
 
 
 func _input(event: InputEvent) -> void:
-	if autofill_list.has_focus() and event is InputEventKey:
-		if Input.is_action_just_pressed(close_event) and autofill_list.is_selected((autofill_list.item_count - 1) * list_direction):
-			grab_focus()
-			autofill_list.visible = false
-			get_viewport().set_input_as_handled()
-		elif Input.is_action_just_pressed(&"ui_focus_next"):
-			text = autofill_list.get_item_metadata(autofill_list.get_selected_items()[0])
-			autofill_list.deselect_all()
-			grab_focus()
-			autofill_list.visible = false
-			caret_column = text.length()
-			get_viewport().set_input_as_handled()
-		elif Input.is_action_just_pressed(&"ui_accept"):
-			if replace_on_item_select:
+	if event is InputEventKey and not event.is_echo():
+		if autofill_list.has_focus():
+			if Input.is_action_just_pressed(close_event) and autofill_list.is_selected((autofill_list.item_count - 1) * list_direction):
+				grab_focus()
+				autofill_list.visible = false
+				get_viewport().set_input_as_handled()
+			elif Input.is_action_just_pressed(&"ui_focus_next"):
 				text = autofill_list.get_item_metadata(autofill_list.get_selected_items()[0])
-			text_submitted.emit(autofill_list.get_item_metadata(autofill_list.get_selected_items()[0]))
-			autofill_list.deselect_all()
-			grab_focus()
-			caret_column = text.length()
-			autofill_list.visible = false
-			get_viewport().set_input_as_handled()
-		elif Input.is_action_just_pressed(&"ui_cancel"):
-			autofill_list.visible = false
-			grab_focus()
-			caret_column = text.length()
-			get_viewport().set_input_as_handled()
-		elif event.is_action_pressed(&"ui_left") or event.is_action_pressed(&"ui_right"):
-			get_viewport().set_input_as_handled()
-		elif event.is_action_pressed(&"ui_up") and list_direction == 1:
-			if autofill_list.is_selected(0):
+				autofill_list.deselect_all()
+				grab_focus()
+				autofill_list.visible = false
+				caret_column = text.length()
+				text_selected.emit(text)
+				get_viewport().set_input_as_handled()
+			elif Input.is_action_just_pressed(&"ui_accept"):
+				if replace_on_item_select:
+					text = autofill_list.get_item_metadata(autofill_list.get_selected_items()[0])
+					text_selected.emit(text)
+				text_submitted.emit(autofill_list.get_item_metadata(autofill_list.get_selected_items()[0]))
+				autofill_list.deselect_all()
+				grab_focus()
+				caret_column = text.length()
+				autofill_list.visible = false
+				get_viewport().set_input_as_handled()
+			elif Input.is_action_just_pressed(&"ui_cancel"):
+				autofill_list.visible = false
+				grab_focus()
+				caret_column = text.length()
+				get_viewport().set_input_as_handled()
+			elif event.is_action_pressed(&"ui_left") or event.is_action_pressed(&"ui_right"):
+				get_viewport().set_input_as_handled()
+			elif event.is_action_pressed(&"ui_up") and list_direction == 1:
+				if autofill_list.is_selected(0):
+					autofill_list.select((autofill_list.item_count - 1) * list_direction)
+					get_viewport().set_input_as_handled()
+			elif event.is_action_pressed(&"ui_down") and list_direction == 0:
+				if autofill_list.is_selected(autofill_list.item_count - 1):
+					autofill_list.select(0)
+					get_viewport().set_input_as_handled()
+			elif event.is_pressed() and event.unicode != 0:
+				grab_focus()
+		elif has_focus():
+			if Input.is_action_just_pressed(open_event) and 0 < autofill_list.item_count:
+				autofill_list.visible = true
+				autofill_list.grab_focus()
 				autofill_list.select((autofill_list.item_count - 1) * list_direction)
+				autofill_list.ensure_current_is_visible()
 				get_viewport().set_input_as_handled()
-		elif event.is_action_pressed(&"ui_down") and list_direction == 0:
-			if autofill_list.is_selected(autofill_list.item_count - 1):
-				autofill_list.select(0)
+			elif Input.is_action_just_pressed(&"ui_cancel") and autofill_list.visible:
+				autofill_list.visible = false
 				get_viewport().set_input_as_handled()
-		elif event.is_pressed() and event.unicode != 0:
-			grab_focus()
-	elif has_focus() and event is InputEventKey:
-		if Input.is_action_just_pressed(open_event) and 0 < autofill_list.item_count:
-			autofill_list.visible = true
-			autofill_list.grab_focus()
-			autofill_list.select((autofill_list.item_count - 1) * list_direction)
-			autofill_list.ensure_current_is_visible()
-			get_viewport().set_input_as_handled()
-		elif Input.is_action_just_pressed(&"ui_cancel") and autofill_list.visible:
-			autofill_list.visible = false
-			get_viewport().set_input_as_handled()
+			elif Input.is_action_just_pressed(&"ui_focus_next"):
+				if autofill_list.visible:
+					autofill_list.visible = false
+
+
+func _on_focus_lost() -> void:
+	if autofill_list.visible and not autofill_list.has_focus():
+		autofill_list.visible = false
 
 
 func _on_timer_timeout() -> void:
@@ -129,6 +144,7 @@ func on_list_item_selected(index: int, _at_position: Vector2, mouse_button_index
 	if mouse_button_index == MOUSE_BUTTON_LEFT:
 		if replace_on_item_select:
 			text = autofill_list.get_item_metadata(index)
+			text_selected.emit(text)
 		text_submitted.emit(autofill_list.get_item_metadata(index))
 
 
@@ -141,13 +157,15 @@ func add_items(items: Array[String], clear_items: bool = true) -> void:
 	if list_direction == 0:
 		for item in items:
 			count += 1
-			autofill_list.add_item(item)
+			var idx: int = autofill_list.add_item(item)
+			autofill_list.set_item_metadata(idx, item)
 			if item_limit <= count:
 				break
 	else:
 		for item_idx in range(items.size() - 1, -1, -1):
 			count += 1
-			autofill_list.add_item(items[item_idx])
+			var idx: int = autofill_list.add_item(items[item_idx])
+			autofill_list.set_item_metadata(idx, items[item_idx])
 			if item_limit <= count:
 				break
 

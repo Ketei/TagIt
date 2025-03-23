@@ -21,6 +21,10 @@ const TOOLS: Array[Dictionary] = [
 		"scene": preload("res://scenes/tools/tag_fetcher.tscn"),
 		"name": "Tag Fetcher"
 	},
+	{
+		"scene": preload("res://scenes/tools/wizard_character.tscn"),
+		"name": "Wizard Characters"
+	},
 ]
 
 const MessageConfirmationDialog = preload("res://scenes/dialogs/message_confirmation_dialog.gd")
