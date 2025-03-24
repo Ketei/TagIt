@@ -295,7 +295,18 @@ const BODY_TYPES: Array[Dictionary] = [
 		"name": "Ears",
 		"tag": "ears",
 		"include_standalone": false,
-		"exclude_values": [0]},
+		"exclude_values": [0],
+		"properties": [
+			{
+				"name": "Inner colors",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Monotone,Two Tones,Multicolored,N/A",
+				"tags": ["monotone inner ear", "two tone inner ear", "multicolored inner ear", ""],
+				"value": 0
+				
+			}
+		]
+	},
 	{
 		"name": "Eyes",
 		"tag": "eyes",
@@ -364,7 +375,8 @@ const BODY_TYPES: Array[Dictionary] = [
 				"name": "Finger nails",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Nails,Claws,Hoofs,N/A",
-				"tags": ["fingernails", "finger claws", "hooved fingers", ""]
+				"tags": ["fingernails", "finger claws", "hooved fingers", ""],
+				"value": 1
 			}
 		]},
 	{
@@ -377,6 +389,13 @@ const BODY_TYPES: Array[Dictionary] = [
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Straight horn,Curved horn,Forked horn,Spiral horn,N/A",
 				"tags": ["staigth horn", "curved horn", "forked horn", "spiral horn", ""],
+				"value": 0
+			},
+			{
+				"name": "Horn texture",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "N/A,Ridged,Smooth",
+				"tags": ["", "ridged horn", "smooth horn"],
 				"value": 0
 			},
 			{
@@ -460,6 +479,11 @@ const BODY_TYPES: Array[Dictionary] = [
 		]
 	},
 	{
+		"name": "Markings",
+		"tag": "markings",
+		"include_standalone": true,
+	},
+	{
 		"name": "Nipples",
 		"tag": "nipples",
 		"include_standalone": true,
@@ -527,6 +551,82 @@ const BODY_TYPES: Array[Dictionary] = [
 			},
 		]},
 	{
+		"name": "Sheath",
+		"tag": "sheath",
+		"include_standalone": true,
+		"exclude_values": [0],
+		"properties": [
+			{
+				"name": "Size",
+				"text": "Small,Average,Big,Huge,Hyper",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"tags": ["small sheath", "", "big sheath", "huge sheath", "hyper sheath"],
+				"value": 1
+			}
+		]
+	},
+	{
+		"name": "Tail",
+		"tag": "tail",
+		"include_standalone": true,
+		"properties": [
+			{
+				"name": "Type",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Furry,Scaly,Feathers,Fish,N/A",
+				"tags": ["furry tail", "scaly tail", "tail feathers", "fish tail", ""],
+				"value": 0
+			},
+			{
+				"name": "Size",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Small,Average,Big,Huge,Hyper",
+				"tags": ["small tail", "", "big tail", "huge tail", "hyper tail"],
+				"value": 1
+			},
+			{
+				"name": "Length",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Short,Average,Long",
+				"tags": ["short tail", "", "long tail"],
+				"value": 1
+			},
+			{
+				"name": "Shape",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "N/A,Scut,Nub,Forked",
+				"tags": ["", "scut tail", "nub tail", "forked tail"],
+				"value": 0
+			},
+			{
+				"name": "Form",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "N/A,Curved,Curled,Crooked,Erect,Wavy",
+				"tags": ["", "curved tail", "curled tail", "crooked tail", "erect tail", "wavy tail"],
+				"value": 0
+			},
+		]
+	},
+	{
+		"name": "Tongue",
+		"tag": "tongue",
+		"include_standalone": true,
+		"propeties": [
+			{
+				"name": "Shape",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Regular,Forked,Tappering,Segmented,Ribbed",
+				"tags": ["", "forked tongue", "tappering tongue", "segmented tongue", "ribbed tongue"],
+			},
+		]
+	},
+	{
+		"name": "Tuft",
+		"tag": "tuft",
+		"include_standalone": true,
+		"exclude_values": [0]
+	},
+	{
 		"name": "Vagina",
 		"tag": "pussy",
 		"include_standalone": true,
@@ -561,61 +661,6 @@ const BODY_TYPES: Array[Dictionary] = [
 			}]
 	},
 	{
-		"name": "Sheath",
-		"tag": "sheath",
-		"include_standalone": true,
-		"exclude_values": [0],
-		"properties": [
-			{
-				"name": "Size",
-				"text": "Small,Average,Big,Huge,Hyper",
-				"mode": TreeItem.CELL_MODE_RANGE,
-				"tags": ["small sheath", "", "big sheath", "huge sheath", "hyper sheath"],
-				"value": 1
-			}
-		]
-	},
-	{
-		"name": "Tail",
-		"tag": "tail",
-		"include_standalone": true,
-		"properties": [
-			{
-				"name": "Size",
-				"mode": TreeItem.CELL_MODE_RANGE,
-				"text": "Small,Average,Big,Huge,Hyper",
-				"tags": ["small tail", "", "big tail", "huge tail", "hyper tail"],
-				"value": 1
-			},
-			{
-				"name": "Type",
-				"mode": TreeItem.CELL_MODE_RANGE,
-				"text": "Furry,Scaly,Feathers,Fish,N/A",
-				"tags": ["furry tail", "scaly tail", "tail feathers", "fish tail", ""],
-				"value": 0
-			},
-			{
-				"name": "Shape",
-				"mode": TreeItem.CELL_MODE_RANGE,
-				"text": "N/A,Forked,Scut",
-				"tags": ["", "forked tail", "scut tail"],
-				"value": 0
-			},
-			{
-				"name": "Form",
-				"mode": TreeItem.CELL_MODE_RANGE,
-				"text": "N/A,Curved,Curled,Crooked,Erect,Wavy",
-				"tags": ["", "curved tail", "curled tail", "crooked tail", "erect tail", "wavy tail"],
-				"value": 0
-			}
-		]
-	},
-	{
-		"name": "Tuft",
-		"tag": "tuft",
-		"include_standalone": true,
-		"exclude_values": [0]},
-	{
 		"name": "Wings",
 		"tag": "wings",
 		"include_standalone": true}
@@ -641,10 +686,11 @@ var current_character: int = -1:
 		gender_lore_opt_btn.disabled = not valid_character
 		age_opt_btn.disabled = not valid_character
 		lore_age_opt_btn.disabled = not valid_character
+		apply_character_btn.disabled = not valid_character
 		body_texture_tree.get_root().collapsed = not valid_character
 		clothing_tree.get_root().collapsed = not valid_character
 		body_traits.get_root().collapsed = not valid_character
-		apply_character_btn.disabled = not valid_character
+		
 var current_page: int = 0:
 	set(new_current):
 		current_page = new_current
