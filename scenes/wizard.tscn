@@ -1016,7 +1016,7 @@ hide_root = true
 [node name="CharDataSmoothScroll" type="ScrollContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 3.0
+size_flags_stretch_ratio = 4.0
 follow_focus = true
 script = ExtResource("34_e8ccm")
 speed = 700.0
@@ -1027,18 +1027,23 @@ drag_with_touch = false
 allow_overdragging = false
 
 [node name="ScrollPanel" type="PanelContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll"]
-custom_minimum_size = Vector2(0, 712)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
 mouse_filter = 1
 
-[node name="Wizard" type="Control" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel"]
+[node name="DataContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel"]
 layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Wizard" type="Control" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
 mouse_filter = 1
 
-[node name="CharacterField" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard"]
+[node name="CharacterField" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1049,28 +1054,27 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 3.0
-metadata/_edit_group_ = true
 
-[node name="HSeparator4" type="HSeparator" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField"]
+[node name="HSeparator4" type="HSeparator" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField"]
 layout_mode = 2
 mouse_filter = 1
 theme_override_constants/separation = 8
 
-[node name="BodyContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField"]
+[node name="BodyContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField"]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="BodyContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/BodyContainer"]
+[node name="BodyContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/BodyContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/BodyContainer/BodyContainer"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/BodyContainer/BodyContainer"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 mouse_filter = 1
 text = "Body Type"
 
-[node name="BodyOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/BodyContainer/BodyContainer"]
+[node name="BodyOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/BodyContainer/BodyContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1080,17 +1084,17 @@ mouse_filter = 1
 disabled = true
 text_overrun_behavior = 3
 
-[node name="SpeciesBox" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/BodyContainer"]
+[node name="SpeciesBox" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/BodyContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/BodyContainer/SpeciesBox"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/BodyContainer/SpeciesBox"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 mouse_filter = 1
 text = "Species"
 
-[node name="SpeciesLnEdt" type="LineEdit" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/BodyContainer/SpeciesBox"]
+[node name="SpeciesLnEdt" type="LineEdit" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/BodyContainer/SpeciesBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 focus_next = NodePath("../../../AgeGenderContainer/HBoxContainer/GenderContainer/GenderOptBtn")
@@ -1100,29 +1104,29 @@ placeholder_text = "No Species"
 editable = false
 caret_blink = true
 
-[node name="HSeparator" type="HSeparator" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField"]
+[node name="HSeparator" type="HSeparator" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField"]
 layout_mode = 2
 mouse_filter = 1
 theme_override_constants/separation = 8
 
-[node name="AgeGenderContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField"]
+[node name="AgeGenderContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/AgeGenderContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer"]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="GenderContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/AgeGenderContainer/HBoxContainer"]
+[node name="GenderContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/AgeGenderContainer/HBoxContainer/GenderContainer"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/HBoxContainer/GenderContainer"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 mouse_filter = 1
 text = "Apparent Gender"
 
-[node name="GenderOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/AgeGenderContainer/HBoxContainer/GenderContainer"]
+[node name="GenderOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/HBoxContainer/GenderContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1132,17 +1136,17 @@ mouse_filter = 1
 disabled = true
 text_overrun_behavior = 3
 
-[node name="GenderLoreContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/AgeGenderContainer/HBoxContainer"]
+[node name="GenderLoreContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/AgeGenderContainer/HBoxContainer/GenderLoreContainer"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/HBoxContainer/GenderLoreContainer"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 mouse_filter = 1
 text = "Lore Gender"
 
-[node name="GenderLoreOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/AgeGenderContainer/HBoxContainer/GenderLoreContainer"]
+[node name="GenderLoreOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/HBoxContainer/GenderLoreContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1152,21 +1156,21 @@ mouse_filter = 1
 disabled = true
 text_overrun_behavior = 3
 
-[node name="AgeMainContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/AgeGenderContainer"]
+[node name="AgeMainContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer"]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="AgeContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/AgeGenderContainer/AgeMainContainer"]
+[node name="AgeContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/AgeMainContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/AgeGenderContainer/AgeMainContainer/AgeContainer"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/AgeMainContainer/AgeContainer"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 mouse_filter = 1
 text = "Apparent Age"
 
-[node name="AgeOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/AgeGenderContainer/AgeMainContainer/AgeContainer"]
+[node name="AgeOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/AgeMainContainer/AgeContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1176,17 +1180,17 @@ mouse_filter = 1
 disabled = true
 text_overrun_behavior = 3
 
-[node name="LoreAgeContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/AgeGenderContainer/AgeMainContainer"]
+[node name="LoreAgeContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/AgeMainContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/AgeGenderContainer/AgeMainContainer/LoreAgeContainer"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/AgeMainContainer/LoreAgeContainer"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 mouse_filter = 1
 text = "Lore Age"
 
-[node name="LoreAgeOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/AgeGenderContainer/AgeMainContainer/LoreAgeContainer"]
+[node name="LoreAgeOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/AgeMainContainer/LoreAgeContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1196,64 +1200,33 @@ mouse_filter = 1
 disabled = true
 text_overrun_behavior = 3
 
-[node name="HSeparator2" type="HSeparator" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField"]
+[node name="HSeparator2" type="HSeparator" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField"]
 layout_mode = 2
 mouse_filter = 1
 theme_override_constants/separation = 8
 
-[node name="BodyTextureTree" type="Tree" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField"]
+[node name="BodyTextureTree" type="Tree" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField"]
 custom_minimum_size = Vector2(0, 260)
 layout_mode = 2
 size_flags_vertical = 3
-focus_next = NodePath("../Others/ClothingTree")
+focus_next = NodePath("../../../Others/ClothingTree")
 focus_previous = NodePath("../AgeGenderContainer/AgeMainContainer/LoreAgeContainer/LoreAgeOptBtn")
 mouse_filter = 1
 mouse_force_pass_scroll_events = false
 theme = ExtResource("7_slw3q")
+theme_override_constants/draw_relationship_lines = 1
+theme_override_constants/h_separation = 16
 theme_override_styles/focus = SubResource("StyleBoxFlat_vtu6n")
 columns = 2
 column_titles_visible = true
-hide_folding = true
 hide_root = true
 
-[node name="HSeparator3" type="HSeparator" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField"]
+[node name="HSeparator3" type="HSeparator" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField"]
 layout_mode = 2
 mouse_filter = 1
 theme_override_constants/separation = 8
 
-[node name="Others" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="ClothingTree" type="Tree" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/Others"]
-custom_minimum_size = Vector2(0, 260)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-focus_next = NodePath("../BodyTraits")
-focus_previous = NodePath("../../BodyTextureTree")
-mouse_filter = 1
-mouse_force_pass_scroll_events = false
-theme = ExtResource("7_slw3q")
-theme_override_styles/focus = SubResource("StyleBoxFlat_vtu6n")
-column_titles_visible = true
-hide_root = true
-
-[node name="BodyTraits" type="Tree" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/CharacterField/Others"]
-custom_minimum_size = Vector2(0, 260)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-focus_next = NodePath("../../../../../../../../../MarginContainer/NavigationContainer/NextButton")
-focus_previous = NodePath("../ClothingTree")
-mouse_filter = 1
-mouse_force_pass_scroll_events = false
-theme = ExtResource("7_slw3q")
-theme_override_styles/focus = SubResource("StyleBoxFlat_vtu6n")
-column_titles_visible = true
-hide_root = true
-
-[node name="NameContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard"]
+[node name="NameContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 1
 anchors_preset = 10
@@ -1262,22 +1235,22 @@ offset_bottom = 32.0
 grow_horizontal = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/NameContainer"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/NameContainer"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 mouse_filter = 1
 text = "Character Tag"
 
-[node name="CharacterTagLnEdt" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/NameContainer" instance=ExtResource("37_5wkjy")]
+[node name="CharacterTagLnEdt" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/NameContainer" instance=ExtResource("37_5wkjy")]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
-focus_neighbor_left = NodePath("../../../../../ChracterTree/CharactersTree")
+focus_neighbor_left = NodePath("../../../../../../ChracterTree/CharactersTree")
 focus_neighbor_top = NodePath(".")
 focus_neighbor_right = NodePath("../ApplyCharacterBtn")
 focus_neighbor_bottom = NodePath("../../CharacterField/BodyContainer/BodyContainer/BodyOptBtn")
 focus_next = NodePath("../ApplyCharacterBtn")
-focus_previous = NodePath("../../../../../ChracterTree/CharactersTree")
+focus_previous = NodePath("../../../../../../ChracterTree/CharactersTree")
 mouse_filter = 1
 placeholder_text = "Unknown Character"
 editable = false
@@ -1285,7 +1258,7 @@ replace_on_item_select = true
 use_timer = true
 close_on_focus_lost = true
 
-[node name="ApplyCharacterBtn" type="Button" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/Wizard/NameContainer"]
+[node name="ApplyCharacterBtn" type="Button" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/NameContainer"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 tooltip_text = "Apply character settings"
@@ -1300,6 +1273,41 @@ disabled = true
 icon = ExtResource("39_askru")
 icon_alignment = 1
 expand_icon = true
+
+[node name="Others" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ClothingTree" type="Tree" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Others"]
+custom_minimum_size = Vector2(0, 260)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+focus_next = NodePath("../BodyTraits")
+focus_previous = NodePath("../../Wizard/CharacterField/BodyTextureTree")
+mouse_filter = 1
+mouse_force_pass_scroll_events = false
+theme = ExtResource("7_slw3q")
+theme_override_constants/draw_relationship_lines = 1
+theme_override_constants/h_separation = 16
+theme_override_styles/focus = SubResource("StyleBoxFlat_vtu6n")
+column_titles_visible = true
+hide_root = true
+
+[node name="BodyTraits" type="Tree" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Others"]
+custom_minimum_size = Vector2(0, 260)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+focus_next = NodePath("../../../../../../../../MarginContainer/NavigationContainer/NextButton")
+focus_previous = NodePath("../ClothingTree")
+mouse_filter = 1
+mouse_force_pass_scroll_events = false
+theme = ExtResource("7_slw3q")
+theme_override_styles/focus = SubResource("StyleBoxFlat_vtu6n")
+column_titles_visible = true
+hide_root = true
 
 [node name="MarginContainer" type="MarginContainer" parent="MainPanel/MainContainer"]
 layout_mode = 2

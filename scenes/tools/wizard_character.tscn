@@ -210,7 +210,7 @@ size_flags_vertical = 3
 [node name="Label" type="Label" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA/ColorsContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
-text = "Body Colors"
+text = "Properties"
 vertical_alignment = 2
 
 [node name="BodyTextureTree" type="Tree" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA/ColorsContainer"]
@@ -218,9 +218,9 @@ custom_minimum_size = Vector2(0, 260)
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("2_bb6yr")
+theme_override_constants/h_separation = 16
 columns = 2
 column_titles_visible = true
-hide_folding = true
 hide_root = true
 
 [node name="DataContainerB" type="VBoxContainer" parent="MainPanel/MainContainer/DataPanel/MainDataContainer"]
@@ -256,7 +256,7 @@ size_flags_vertical = 3
 [node name="Label" type="Label" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerB/TraitsContainer"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
-text = "Body Traits"
+text = "Traits"
 vertical_alignment = 2
 
 [node name="TraitsTree" type="Tree" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerB/TraitsContainer"]

@@ -34,9 +34,9 @@ func get_character(character_index: int) -> WizardCharacter:
 	new_character.age = data["age"]
 	new_character.age_lore = data["age_lore"]
 	
-	new_character.body_colors = data["colors"].duplicate()
+	new_character.properties = data["colors"].duplicate()
 	new_character.apparel = data["apparel"].duplicate()
-	new_character.body_traits = data["traits"].duplicate()
+	new_character.traits = data["traits"].duplicate()
 	
 	return new_character
 
@@ -51,9 +51,9 @@ func set_character(character_data: WizardCharacter, character_index: int = -1) -
 		"gender_lore": character_data.gender_lore,
 		"age": character_data.age,
 		"age_lore": character_data.age_lore,
-		"colors": character_data.body_colors.duplicate(),
+		"colors": character_data.properties.duplicate(),
 		"apparel": character_data.apparel.duplicate(),
-		"traits": character_data.body_traits.duplicate()}
+		"traits": character_data.traits.duplicate()}
 	
 	if character_index < 0:
 		characters.append(data)
@@ -82,6 +82,6 @@ class WizardCharacter extends RefCounted:
 	var age_lore: int = 0
 	var gender: int = 0
 	var gender_lore: int = 0
-	var body_colors: Dictionary = {}
+	var properties: Dictionary = {}
 	var apparel: Dictionary = {}
-	var body_traits: Dictionary = {}
+	var traits: Dictionary = {}

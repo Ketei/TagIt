@@ -59,7 +59,7 @@ func _ready() -> void:
 	clothing_tree.set_column_title(0, "Apparel Item")
 	traits_tree.set_column_title(0, "Visible Body Trait")
 	body_texture_tree.set_column_title(0, "Body Part")
-	body_texture_tree.set_column_title(1, "Colours")
+	body_texture_tree.set_column_title(1, "Property")
 	
 	data_store = TagItStorage.get_storage()
 	
@@ -97,16 +97,58 @@ func _ready() -> void:
 		new_trait.set_text(0, body_trait["title"])
 		new_trait.set_editable(0, true)
 	
-	for bod_name in TagItWizard.BODY_TYPES:
+	idx = -1
+	for bod_name:Dictionary in TagItWizard.BODY_TYPES:
+		idx += 1
 		var new_bod: TreeItem = body_texture_tree.get_root().create_child()
 		new_bod.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
-		new_bod.set_cell_mode(1, TreeItem.CELL_MODE_RANGE)
 		
-		new_bod.set_text(0, bod_name)
-		new_bod.set_text(1, "1 Color,2 Colors,3+ Colors")
+		new_bod.disable_folding = true
+		
+		new_bod.set_text(0, bod_name["name"])
 		
 		new_bod.set_editable(0, true)
-		new_bod.set_editable(1, true)
+		new_bod.set_selectable(1, false)
+		
+		if not bod_name.has("use_colors") or bod_name["use_colors"]:
+			var color_child: TreeItem = new_bod.create_child()
+			color_child.set_cell_mode(0, TreeItem.CELL_MODE_STRING)
+			color_child.set_cell_mode(1, TreeItem.CELL_MODE_RANGE)
+			color_child.set_text(0, "Colors")
+			color_child.set_text(1, "1 Color,2 Colors,3+ Colors")
+			color_child.set_editable(1, true)
+			color_child.set_metadata(0, {"index": -1})
+		
+		var prop_idx: int = -1
+		if bod_name.has("properties"):
+			for property in bod_name["properties"]:
+				prop_idx += 1
+				var new_prop: TreeItem = new_bod.create_child()
+				new_prop.set_cell_mode(0, TreeItem.CELL_MODE_STRING)
+				new_prop.set_cell_mode(1, property["mode"])
+				
+				new_prop.set_editable(1, true)
+				
+				new_prop.set_text(0, property["name"])
+				new_prop.set_metadata(0, {"index": prop_idx})
+				
+				match property["mode"]:
+					TreeItem.CELL_MODE_RANGE:
+						new_prop.set_text(1, property["text"])
+						new_prop.set_range(
+								1,
+								property["value"] if property.has("value") else 0)
+					TreeItem.CELL_MODE_CHECK:
+						new_prop.set_text(1, property["text"])
+						new_prop.set_checked(
+							1,
+							property["value"] if property.has("value") else false)
+		
+		new_bod.set_metadata(
+				0,
+				{
+					"index": idx,
+					"tag": bod_name["tag"]})
 	
 	idx = -1
 	for wear_item in TagItWizard.CLOTHING:
@@ -145,6 +187,7 @@ func _ready() -> void:
 	lore_age_opt_btn.item_selected.connect(_on_something_changed)
 	species_ln_edt.text_changed.connect(_on_something_changed)
 	body_texture_tree.item_edited.connect(_on_something_changed)
+	body_texture_tree.item_edited.connect(_on_body_setting_edited)
 	traits_tree.item_edited.connect(_on_something_changed)
 
 
@@ -159,6 +202,14 @@ func _input(event: InputEvent) -> void:
 				current_selected = null
 			something_changed.emit()
 			get_viewport().set_input_as_handled()
+
+
+func _on_body_setting_edited() -> void:
+	var edited: TreeItem = body_texture_tree.get_edited()
+	if edited.get_parent() != body_texture_tree.get_root():
+		return
+	edited.disable_folding = not edited.is_checked(0)
+	edited.collapsed = edited.disable_folding
 
 
 func _on_something_changed(_arg: Variant = null) -> void:
@@ -199,16 +250,37 @@ func clear_traits() -> void:
 		trait_item.set_checked(0, false)
 
 
-func clear_colors() -> void:
-	for color in body_texture_tree.get_root().get_children():
-		color.set_checked(0, false)
-		color.set_range(1, 0)
+func clear_body_settings() -> void:
+	for setting in body_texture_tree.get_root().get_children():
+		setting.set_checked(0, false)
+		for property in setting.get_children():
+			if property.get_metadata(0)["index"] == -1:
+				property.set_range(1, 0)
+			else:
+				match property.get_cell_mode(1):
+					TreeItem.CELL_MODE_CHECK:
+						if TagItWizard.BODY_TYPES[setting.get_metadata(0)["index"]]["properties"][property.get_metadata(0)["index"]].has("value"):
+							property.set_checked(
+							1,
+							TagItWizard.BODY_TYPES[setting.get_metadata(0)["index"]]["properties"][property.get_metadata(0)["index"]]["value"])
+						else:
+							property.set_checked(1, false)
+						
+					TreeItem.CELL_MODE_RANGE:
+						if TagItWizard.BODY_TYPES[setting.get_metadata(0)["index"]]["properties"][property.get_metadata(0)["index"]].has("value"):
+							property.set_range(
+								1,
+								TagItWizard.BODY_TYPES[setting.get_metadata(0)["index"]]["properties"][property.get_metadata(0)["index"]]["value"])
+						else:
+							property.set_range(1, 0)
+		setting.collapsed = true
+		setting.disable_folding = true
 
 
 func clear_fields() -> void:
 	clear_clothing()
 	clear_traits()
-	clear_colors()
+	clear_body_settings()
 	char_label.text = ""
 	species_ln_edt.text = ""
 	body_opt_btn.select(0)
@@ -245,16 +317,30 @@ func load_character(index: int) -> void:
 	age_opt_btn.select(data.age)
 	lore_age_opt_btn.select(data.age_lore)
 	
-	for body_color in body_texture_tree.get_root().get_children():
-		if data.body_colors.has(body_color.get_text(0)):
-			body_color.set_checked(0, data.body_colors[body_color.get_text(0)]["enabled"])
-			body_color.set_range(1, data.body_colors[body_color.get_text(0)]["value"])
+	clear_body_settings()
+	for target in body_texture_tree.get_root().get_children():
+		if data.properties.has(target.get_metadata(0)["tag"]):
+			var prop_data: Dictionary = data.properties[target.get_metadata(0)["tag"]]
+			target.set_checked(0, prop_data["use"])
+			if prop_data["use"]:
+				target.disable_folding = false
+
+			var max_prop: int = prop_data["properties"].size()
+			for prop_idx in range(target.get_child_count()):
+				if max_prop < prop_idx:
+					break
+				var prop: TreeItem = target.get_child(prop_idx)
+				match prop.get_cell_mode(1):
+					TreeItem.CELL_MODE_RANGE:
+						prop.set_range(1, prop_data["properties"][prop_idx]["value"])
+					TreeItem.CELL_MODE_CHECK:
+						prop.set_checked(1, prop_data["properties"][prop_idx]["value"])
 	
 	for trait_enabled in traits_tree.get_root().get_children():
-		if data.body_traits.has(trait_enabled.get_text(0)):
+		if data.traits.has(trait_enabled.get_text(0)):
 			trait_enabled.set_checked(
 					0,
-					data.body_traits[trait_enabled.get_text(0)])
+					data.traits[trait_enabled.get_text(0)])
 	
 	for apparel_item in clothing_tree.get_root().get_children():
 		if not data.apparel.has(apparel_item.get_text(0)):
@@ -281,12 +367,27 @@ func get_names() -> PackedStringArray:
 
 
 func save_character():
-	var body_colors: Dictionary = {}
+	var properties: Dictionary = {}
 	
-	for color in body_texture_tree.get_root().get_children():
-		body_colors[color.get_text(0)] = {
-				"enabled": color.is_checked(0),
-				"value": int(color.get_range(1))}
+	for prop in body_texture_tree.get_root().get_children():
+		var setting: Dictionary = {
+			"use": prop.is_checked(0),
+			"index": prop.get_metadata(0)["index"],
+			"properties": Array([], TYPE_DICTIONARY, &"", null)}
+		
+		for property_item in prop.get_children():
+			var property: Dictionary = {
+				"mode": property_item.get_cell_mode(1),
+				"index": property_item.get_metadata(0)["index"]}
+			
+			match property_item.get_cell_mode(1):
+				TreeItem.CELL_MODE_RANGE:
+					property["value"] = property_item.get_range(1)
+				TreeItem.CELL_MODE_CHECK:
+					property["value"] = property_item.is_checked(1)
+			setting["properties"].append(property)
+		
+		properties[prop.get_metadata(0)["tag"]] = setting
 	
 	var used_clothings: Dictionary = {}
 	
@@ -312,8 +413,8 @@ func save_character():
 	new_sheet.age = age_opt_btn.selected
 	new_sheet.age_lore = lore_age_opt_btn.selected
 	new_sheet.apparel = used_clothings
-	new_sheet.body_colors = body_colors
-	new_sheet.body_traits = body_traits
+	new_sheet.properties = properties
+	new_sheet.traits = body_traits
 	
 	data_store.set_character(new_sheet, current_selected.get_metadata(0))
 	
