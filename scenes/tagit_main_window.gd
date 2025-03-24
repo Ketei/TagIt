@@ -487,6 +487,7 @@ func _notification(what):
 						current_title,
 						"",
 						project_image.texture,
+						current_project,
 						0)
 					extra_saver.create_queued_cards()
 					await extra_saver.cards_displayed
@@ -1037,6 +1038,7 @@ func instantiate_save_selector() -> void:
 		current_title,
 		"",
 		project_image.texture,
+		current_project,
 		0)
 	selector.create_queued_cards()
 	await selector.cards_displayed
@@ -1056,7 +1058,8 @@ func instance_project_loader_selector() -> void:
 	await selector.intro_finished
 	var saves := TagItProjectResource.get_projects()
 	
-	for project in saves.projects:
+	for project_idx in range(saves.projects.size()):
+		var project: Dictionary = saves.projects[project_idx]
 		var texture: ImageTexture = null
 		if not project["image_path"].is_empty():
 			var img := Image.load_from_file(TagItProjectResource.get_thumbnails_path() + project["image_path"])
@@ -1064,7 +1067,8 @@ func instance_project_loader_selector() -> void:
 		selector.queue_card(
 			project["name"],
 			"",
-			texture)
+			texture,
+			project_idx)
 	if selector.has_queued_cards():
 		selector.create_queued_cards()
 		await selector.cards_displayed
@@ -1305,7 +1309,9 @@ func on_selector_project_saved(title: String) -> void:
 	
 	save_alt_list(current_alt)
 	
-	for idx in range(generate_version_opt_btn.item_count):
+	# We skip index 0 since that is the main list. There is always at least
+	# 1 item in generate_version_opt_btn.
+	for idx in range(1, generate_version_opt_btn.item_count):
 		alts.append({
 			"name": generate_version_opt_btn.get_item_text(idx),
 			"list": alt_lists[idx + 1].duplicate()})
@@ -1370,6 +1376,8 @@ func on_selector_project_selected(project_idx: int) -> void:
 		alt_select_container.visible = true
 	
 	for alt_list_dict in projects.projects[project_idx]["alt_lists"]:
+		if alt_list_dict["list"] == null:
+			continue
 		alt_opt_btn.add_item(alt_list_dict["name"])
 		generate_version_opt_btn.add_item(alt_list_dict["name"])
 		alt_lists.append(alt_list_dict["list"])
