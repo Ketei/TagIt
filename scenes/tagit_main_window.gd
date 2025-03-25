@@ -860,8 +860,15 @@ func _sort_tree_category(a: TreeItem, b: TreeItem) -> bool:
 
 
 func add_suggestion(suggestion: String) -> void:
-	if not _suggestion_blacklist.has(suggestion) and not tagger_suggestion_tree.has_suggestion(suggestion):
+	if not _suggestion_blacklist.has(suggestion) and not tagger_suggestion_tree.has_suggestion(suggestion) and not is_tag_on_list(suggestion):
 		tagger_suggestion_tree.add_suggestion(suggestion)
+
+
+func is_tag_on_list(tag: String) -> bool:
+	var on_main: bool = tags_tree.has_tag(tag) if alt_opt_btn.selected == 0 else alt_lists[0].has(tag)
+	var is_used: bool = on_main if alt_opt_btn.selected == 0 else tags_tree.has_tag(tag)
+	
+	return on_main or is_used
 
 
 func add_group(group_id: int, group_title: String, group_items: Dictionary) -> void:
