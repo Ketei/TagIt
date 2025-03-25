@@ -59,7 +59,7 @@ var selector: Control = null:
 var alt_lists: Array[Array] = []
 var current_alt: int = 0
 
-var current_project: int = -1
+var current_project_uuid: String = ""
 var current_title: String = ""
 
 var hydrus_connected: bool = false:
@@ -440,7 +440,7 @@ func _notification(what):
 			save_confirmation.show()
 			var result: int = await save_confirmation.dialog_finished
 			if result == 0: # Save selected. Show Saving and wait for dialog
-				if -1 < current_project:
+				if not current_project_uuid.is_empty():
 					save_alt_list(current_alt)
 					var alts: Array[Dictionary] = []
 					for idx in range(generate_version_opt_btn.item_count):
@@ -449,7 +449,7 @@ func _notification(what):
 							"list": alt_lists[idx + 1].duplicate()})
 					
 					var projects := TagItProjectResource.get_projects()
-					var image_path: String = projects.projects[current_project]["image_path"]
+					var image_path: String = projects.get_project_image_path(current_project_uuid)
 					
 					if project_image.texture == null and not image_path.is_empty():
 						OS.move_to_trash(TagItProjectResource.get_thumbnails_path() + image_path)
@@ -458,7 +458,7 @@ func _notification(what):
 						project_image.texture.get_image().save_jpg(TagItProjectResource.get_thumbnails_path() + image_path)
 					
 					projects.overwrite_project(
-							current_project,
+							current_project_uuid,
 							current_title,
 							alt_lists[0],
 							tagger_suggestion_tree.get_all_suggestions_text(),
@@ -487,7 +487,7 @@ func _notification(what):
 						current_title,
 						"",
 						project_image.texture,
-						current_project,
+						current_project_uuid,
 						0)
 					extra_saver.create_queued_cards()
 					await extra_saver.cards_displayed
@@ -517,7 +517,6 @@ func _notification(what):
 								image_path,
 								alts,
 								custom_order_list.duplicate())
-						
 						projects.save()
 					else:# Save was cancelled
 						extra_saver.play_outro()
@@ -992,13 +991,13 @@ func clear_group_suggestions() -> void:
 func save_current_project_indexed() -> void:
 	save_alt_list(current_alt)
 	var alts: Array[Dictionary] = []
-	for idx in range(generate_version_opt_btn.item_count):
+	for idx in range(1, generate_version_opt_btn.item_count):
 		alts.append({
 			"name": generate_version_opt_btn.get_item_text(idx),
-			"list": alt_lists[idx + 1].duplicate()})
+			"list": alt_lists[idx].duplicate()})
 	
 	var projects := TagItProjectResource.get_projects()
-	var image_path: String = projects.projects[current_project]["image_path"]
+	var image_path: String = projects.get_project_image_path(current_project_uuid)
 	
 	if project_image.texture == null and not image_path.is_empty():
 		OS.move_to_trash(TagItProjectResource.get_thumbnails_path() + image_path)
@@ -1007,8 +1006,8 @@ func save_current_project_indexed() -> void:
 		project_image.texture.get_image().save_webp(TagItProjectResource.get_thumbnails_path() + image_path)
 	
 	projects.overwrite_project(
-			current_project,
-			projects.projects[current_project]["name"],
+			current_project_uuid,
+			projects.get_project_title(current_project_uuid),
 			alt_lists[0],
 			tagger_suggestion_tree.get_all_suggestions_text(),
 			groups_suggestions_tree.get_all_groups(),
@@ -1038,7 +1037,7 @@ func instantiate_save_selector() -> void:
 		current_title,
 		"",
 		project_image.texture,
-		current_project,
+		current_project_uuid,
 		0)
 	selector.create_queued_cards()
 	await selector.cards_displayed
@@ -1068,7 +1067,7 @@ func instance_project_loader_selector() -> void:
 			project["name"],
 			"",
 			texture,
-			project_idx)
+			project["_uuid"])
 	if selector.has_queued_cards():
 		selector.create_queued_cards()
 		await selector.cards_displayed
@@ -1145,7 +1144,7 @@ func on_menu_button_id_selected(id: int) -> void:
 				save_confirmation.show()
 				var result: int = await save_confirmation.dialog_finished
 				if result == 0: # Save selected. Show Saving and wait for dialog
-					if -1 < current_project:
+					if not current_project_uuid.is_empty():
 						save_current_project_indexed()
 					else:
 						if selector != null:
@@ -1171,7 +1170,7 @@ func on_menu_button_id_selected(id: int) -> void:
 			if _block_events:
 				return
 			
-			if -1 < current_project:
+			if not current_project_uuid.is_empty():
 				save_current_project_indexed()
 			else:
 				if selector != null:
@@ -1276,8 +1275,9 @@ func on_new_blacklist() -> void:
 
 func new_list() -> void:
 	current_title = ""
-	current_project = -1
+	current_project_uuid = ""
 	_suggestion_blacklist.clear()
+	_group_blacklist.clear()
 	clear_all_tagger()
 	_save_required = false
 
@@ -1309,12 +1309,10 @@ func on_selector_project_saved(title: String) -> void:
 	
 	save_alt_list(current_alt)
 	
-	# We skip index 0 since that is the main list. There is always at least
-	# 1 item in generate_version_opt_btn.
 	for idx in range(1, generate_version_opt_btn.item_count):
 		alts.append({
 			"name": generate_version_opt_btn.get_item_text(idx),
-			"list": alt_lists[idx + 1].duplicate()})
+			"list": alt_lists[idx].duplicate()})
 	
 	var image_path: String = ""
 	
@@ -1322,7 +1320,7 @@ func on_selector_project_saved(title: String) -> void:
 		image_path = Strings.random_string64() + ".webp"
 		project_image.texture.get_image().save_webp(TagItProjectResource.get_thumbnails_path() + image_path)
 		
-	current_project = projects.create_project(
+	current_project_uuid = projects.create_project(
 			title,
 			alt_lists[0],
 			tagger_suggestion_tree.get_all_suggestions_text(),
@@ -1341,48 +1339,50 @@ func on_selector_project_saved(title: String) -> void:
 	selector.visible = false
 	selector.queue_free()
 	selector = null
+	_saving = false
 
 
-func on_selector_project_selected(project_idx: int) -> void:
+func on_selector_project_selected(project_uuid: String) -> void:
 	selector.set_emit_signals(false)
 	var request_suggestions: bool = SingletonManager.TagIt.settings.request_suggestions
 	SingletonManager.TagIt.settings.request_suggestions = false
 	
 	var projects := TagItProjectResource.get_projects()
+	var data: Dictionary = projects.get_project_data(project_uuid)
 	clear_all_tagger()
 	
-	for tag in projects.projects[project_idx]["tags"]:
+	for tag in data["tags"]:
 		add_tag(tag)
 	
-	for suggestion in projects.projects[project_idx]["suggestions"]:
+	for suggestion in data["suggestions"]:
 		if SingletonManager.TagIt.has_tag(suggestion):
-			#var id: int = SingletonManager.TagIt.get_tag_id(suggestion)
 			if not tagger_suggestion_tree.has_suggestion(suggestion):
 				tagger_suggestion_tree.add_suggestion(suggestion)
 		else:
 			tagger_suggestion_tree.add_suggestion(suggestion)
 	
-	var groups := SingletonManager.TagIt.get_groups_and_tags(projects.projects[project_idx]["groups"])
+	var groups := SingletonManager.TagIt.get_groups_and_tags(data["groups"])
 	
 	for group_id in groups:
 		add_group(group_id, groups[group_id]["group_name"], groups[group_id]["tags"])
 	
-	if not projects.projects[project_idx]["image_path"].is_empty() and FileAccess.file_exists(TagItProjectResource.get_thumbnails_path() + projects.projects[project_idx]["image_path"]):
-		var img := Image.load_from_file(TagItProjectResource.get_thumbnails_path() + projects.projects[project_idx]["image_path"])
+	if not data["image_path"].is_empty() and FileAccess.file_exists(TagItProjectResource.get_thumbnails_path() + data["image_path"]):
+		var img := Image.load_from_file(TagItProjectResource.get_thumbnails_path() + data["image_path"])
 		project_image.texture = ImageTexture.create_from_image(img)
 	
-	if not projects.projects[project_idx]["alt_lists"].is_empty():
+	if not data["alt_lists"].is_empty():
 		list_version_container.visible = true
 		alt_select_container.visible = true
 	
-	for alt_list_dict in projects.projects[project_idx]["alt_lists"]:
+	for alt_list_dict in data["alt_lists"]:
 		if alt_list_dict["list"] == null:
 			continue
 		alt_opt_btn.add_item(alt_list_dict["name"])
 		generate_version_opt_btn.add_item(alt_list_dict["name"])
 		alt_lists.append(alt_list_dict["list"])
+		tags_tree.add_alt_list(alt_list_dict["name"])
 	
-	custom_order_list = projects.projects[project_idx]["custom_priorities"].duplicate() if projects.projects[project_idx].has("custom_priorities") else {}
+	custom_order_list = data["custom_priorities"].duplicate() if data.has("custom_priorities") else {}
 	
 	if prio_list_node != null:
 		prio_list_node.priority_tags = custom_order_list
@@ -1393,18 +1393,18 @@ func on_selector_project_selected(project_idx: int) -> void:
 	selector.visible = false
 	selector.queue_free()
 	selector = null
-	current_project = project_idx
-	current_title = projects.projects[project_idx]["name"]
+	current_project_uuid = project_uuid
+	current_title = data["name"]
 	_save_required = false
 	SingletonManager.TagIt.settings.request_suggestions = request_suggestions
 
 
-func on_selector_project_deleted(project_idx: int) -> void:
+func on_selector_project_deleted(project_uuid: String) -> void:
 	var projects := TagItProjectResource.get_projects()
-	projects.delete_project(project_idx)
+	projects.delete_project(project_uuid)
 	projects.save()
-	if current_project == project_idx:
-		current_project = -1
+	if current_project_uuid == project_uuid:
+		current_project_uuid = ""
 		_save_required = true
 
 
@@ -1416,6 +1416,8 @@ func on_selector_close_pressed(is_save: bool = false) -> void:
 	selector.visible = false
 	selector.queue_free()
 	selector = null
+	print("Is saving: ", is_save)
+	print("_save status ", _saving)
 	if is_save:
 		_saving = false
 
@@ -1438,15 +1440,14 @@ func on_searcher_close_pressed(instance: Control) -> void:
 	instance.visible = false
 	instance.queue_free()
 	search_tag_btn.disabled = false
-	
 
 
-func on_selector_template_selected(template_idx: int) -> void:
+func on_selector_template_selected(template_uuid: String) -> void:
 	selector.set_emit_signals(false)
 	var request_suggestions: bool = SingletonManager.TagIt.settings.request_suggestions
 	SingletonManager.TagIt.settings.request_suggestions = false
 	var templates := TemplateResource.get_templates()
-	var template_data: = templates.get_template(template_idx)
+	var template_data: = templates.get_template(template_uuid)
 	
 	for tag in template_data["tags"]:
 		add_tag(tag)
@@ -1468,11 +1469,11 @@ func on_selector_template_selected(template_idx: int) -> void:
 	SingletonManager.TagIt.settings.request_suggestions = request_suggestions
 
 
-func on_selector_template_erased(template_idx: int) -> void:
-	tools_panel.on_template_deleted(template_idx)
+func on_selector_template_erased(template_uuid: String) -> void:
+	tools_panel.on_template_deleted(template_uuid)
 	var templates := TemplateResource.get_templates()
-	templates.delete_template_thumbnail(template_idx)
-	templates.erase_template(template_idx)
+	templates.delete_template_thumbnail(template_uuid)
+	templates.erase_template(template_uuid)
 	templates.save()
 
 

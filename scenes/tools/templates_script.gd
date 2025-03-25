@@ -4,10 +4,10 @@ extends TagItTool
 const MessageConfirmationDialog = preload("res://scenes/dialogs/message_confirmation_dialog.gd")
 
 var template_resource: TemplateResource = null
-var current_template: int = -1:
+var current_template: TreeItem = null:
 	set(new_current):
 		current_template = new_current
-		var valid_id: bool = 0 <= new_current
+		var valid_id: bool = current_template != null
 		add_tag_ln_edt.editable = valid_id
 		template_title.editable = valid_id
 		description_txt_edt.editable = valid_id
@@ -16,10 +16,10 @@ var current_template: int = -1:
 		set_groups_editable(valid_id)
 		if not valid_id:
 			template_edited = false
-var template_index: int = -1
+#var template_index: int = -1
 var template_edited: bool = false:
 	set(is_edited):
-		if template_edited and current_template < 0:
+		if template_edited and current_template.is_empty():
 			template_edited = false
 		else:
 			template_edited = is_edited
@@ -56,6 +56,7 @@ func _ready() -> void:
 	for template in template_resource.templates:
 		var new_template: TreeItem = template_tree.get_root().create_child()
 		new_template.set_text(0, template["title"])
+		new_template.set_metadata(0, template["_uuid"])
 	
 	var groups: Dictionary = SingletonManager.TagIt.get_tag_groups()
 	
@@ -112,10 +113,10 @@ func _input(_event: InputEvent) -> void:
 				confirmation.show()
 				var response: bool = await confirmation.dialog_finished
 				if response:
-					var current_idx: int = current.get_index()
-					template_resource.delete_template_thumbnail(current_idx)
-					template_resource.erase_template(current_idx)
-					on_template_deleted(current_idx)
+					var uuid: String = current.get_metadata(0)
+					template_resource.delete_template_thumbnail(uuid)
+					template_resource.erase_template(uuid)
+					on_template_deleted(uuid)
 					template_resource.save()
 				confirmation.queue_free()
 			get_viewport().set_input_as_handled()
@@ -126,7 +127,7 @@ func _sort_groups_array(a: Array, b: Array) -> bool:
 
 
 func _on_title_changed(text: String) -> void:
-	template_tree.get_root().get_child(current_template).set_text(0, text.strip_edges())
+	current_template.set_text(0, text.strip_edges())
 	_on_field_edited()
 
 
@@ -163,11 +164,11 @@ func _on_group_edited() -> void:
 
 func _on_template_item_selected() -> void:
 	var item: TreeItem = template_tree.get_selected()
-	if template_edited:
-		save_current_template(current_template)
-	current_template = item.get_index()
+	if template_edited and current_template != null:
+		save_current_template()
+	current_template = item
 	clear_fields()
-	load_template(current_template)
+	load_template(current_template.get_metadata(0))
 	clear_thumbnail.disabled = thumbnail_container.texture == null
 	template_edited = false
 
@@ -247,7 +248,7 @@ func on_new_template_pressed() -> void:
 
 
 func create_template(template_name: String = "New Template") -> void:
-	template_resource.new_template(
+	var uuid: String = template_resource.new_template(
 			template_name,
 			"",
 			Array([], TYPE_STRING, &"", null),
@@ -256,20 +257,25 @@ func create_template(template_name: String = "New Template") -> void:
 	
 	var new_template: TreeItem = template_tree.get_root().create_child()
 	new_template.set_text(0, "New Template")
+	new_template.set_metadata(0, uuid)
 
 
-func on_template_deleted(deleted_index: int) -> void:
-	if template_resource.is_stashed(deleted_index):
-		template_resource.drop_stashed(deleted_index)
+func on_template_deleted(deleted_uuid: String) -> void:
+	if template_resource.is_stashed(deleted_uuid):
+		template_resource.drop_stashed(deleted_uuid)
 	
-	if deleted_index == current_template:
+	if current_template != null and deleted_uuid == current_template.get_metadata(0):
 		template_title.text = ""
 		description_txt_edt.clear()
 		clear_thumbnail.disabled = true
 		clear_fields()
-		current_template = -1
-	
-	template_tree.get_root().get_child(deleted_index).free()
+		current_template.free()
+		current_template = null
+	else:
+		for template in template_tree.get_root().get_children():
+			if template.get_metadata(0) == deleted_uuid:
+				template.free()
+				break
 
 
 func clear_fields() -> void:
@@ -281,16 +287,16 @@ func clear_fields() -> void:
 	thumbnail_container.texture = null
 
 
-func load_template(template_idx: int) -> void:
+func load_template(template_uuid: String) -> void:
 	var template_dict: Dictionary = {}
 	
-	if template_resource.is_stashed(template_idx):
-		template_dict = template_resource.get_stash(template_idx)
+	if template_resource.is_stashed(template_uuid):
+		template_dict = template_resource.get_stash(template_uuid)
 		if template_dict["thumbnail"] != null:
 			var text := ImageTexture.create_from_image(template_dict["thumbnail"])
 			thumbnail_container.texture = text
 	else:
-		template_dict = template_resource.get_template(template_idx)
+		template_dict = template_resource.get_template(template_uuid)
 		if not template_dict["thumbnail"].is_empty() and FileAccess.file_exists(TemplateResource.get_thumbnail_path() + template_dict["thumbnail"]):
 			var img := Image.load_from_file(TemplateResource.get_thumbnail_path() + template_dict["thumbnail"])
 			var text := ImageTexture.create_from_image(img)
@@ -298,7 +304,6 @@ func load_template(template_idx: int) -> void:
 	
 	template_title.text = template_dict["title"]
 	description_txt_edt.text = template_dict["description"]
-	template_index = template_idx
 	
 	for tag in template_dict["tags"]:
 		var tax_exists: bool = false
@@ -316,7 +321,7 @@ func load_template(template_idx: int) -> void:
 				break
 
 
-func save_current_template(search_idx: int) -> void:
+func save_current_template() -> void:
 	var tags: Array[String] = []
 	var groups: Array[int] = []
 	
@@ -328,7 +333,7 @@ func save_current_template(search_idx: int) -> void:
 			groups.append(group.get_metadata(0))
 	
 	template_resource.stash_template(
-		search_idx,
+		current_template.get_metadata(0),
 		template_title.text.strip_edges(),
 		description_txt_edt.text.strip_edges(),
 		tags,
@@ -402,44 +407,41 @@ func insert_tree_group_sorted(item_text: String, item_id: int) -> void:
 
 
 func on_save_pressed() -> void:
-	if current_template != -1:
-		save_current_template(current_template)
+	if current_template != null:
+		save_current_template()
 	
 	if template_edited:
 		template_edited = false
 	
-	var stash_keys: Array = template_resource.template_stash.keys()
-	stash_keys.sort()
-	
-	for stash_key in template_resource.template_stash.keys():
-		var thumbnail_path: String = template_resource.templates[stash_key]["thumbnail"]
+	for stash_template in template_resource.template_stash:
+		var thumbnail_path: String = stash_template["thumbnail"]
 		
-		if template_resource.template_stash[stash_key]["thumbnail"] != null and thumbnail_path.is_empty():
+		if stash_template["thumbnail"] != null and thumbnail_path.is_empty():
 			thumbnail_path = Strings.random_string64()
 			
 			while FileAccess.file_exists("user://templates/thumbnails/" + thumbnail_path + ".webp"):
 				thumbnail_path = Strings.random_string64()
 				
 			thumbnail_path += ".webp"
-			template_resource.template_stash[stash_key]["thumbnail"].save_webp(TemplateResource.get_thumbnail_path() + thumbnail_path)
+			stash_template["thumbnail"].save_webp(TemplateResource.get_thumbnail_path() + thumbnail_path)
 		
-		elif template_resource.template_stash[stash_key]["thumbnail"] == null and not thumbnail_path.is_empty():
+		elif stash_template["thumbnail"] == null and not thumbnail_path.is_empty():
 			if FileAccess.file_exists(TemplateResource.get_thumbnail_path() + thumbnail_path):
 				OS.move_to_trash(TemplateResource.get_thumbnail_path() + thumbnail_path)
 			thumbnail_path = ""
 		
-		elif not thumbnail_path.is_empty() and template_resource.template_stash[stash_key]["thumbnail"] != null:
+		elif not thumbnail_path.is_empty() and stash_template["thumbnail"] != null:
 			if thumbnail_path.get_extension() == "jpg":
 				OS.move_to_trash(TemplateResource.get_thumbnail_path() + thumbnail_path)
 				thumbnail_path = thumbnail_path.trim_suffix(".jpg") + ".webp"
-			template_resource.template_stash[stash_key]["thumbnail"].save_webp(TemplateResource.get_thumbnail_path() + thumbnail_path)
+			stash_template["thumbnail"].save_webp(TemplateResource.get_thumbnail_path() + thumbnail_path)
 		
 		template_resource.overwrite_template(
-			stash_key,
-			template_resource.template_stash[stash_key]["title"],
-			template_resource.template_stash[stash_key]["description"],
-			template_resource.template_stash[stash_key]["tags"],
-			template_resource.template_stash[stash_key]["groups"],
+			stash_template["_uuid"],
+			stash_template["title"],
+			stash_template["description"],
+			stash_template["tags"],
+			stash_template["groups"],
 			thumbnail_path)
 	
 	template_resource.save()

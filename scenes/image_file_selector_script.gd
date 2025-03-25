@@ -1,8 +1,8 @@
 extends PanelContainer
 
 signal close_pressed
-signal card_selected(card_index: int)
-signal card_deleted(card_index: int)
+signal card_selected(card_uuid: String)
+signal card_deleted(card_uuid: String)
 signal card_saved(card_title: String)
 signal intro_finished
 signal outro_finished
@@ -85,7 +85,7 @@ func create_cards(card_data: Array[Dictionary]) -> void:
 		new_card.title = card_dict["title"]
 		new_card.description = card_dict["description"]
 		new_card.image = card_dict["image"]
-		new_card.project_idx = card_dict["project"] 
+		new_card.project_uuid = card_dict["project"] 
 		new_card.show_description = use_descriptions
 		new_card.editable = editable_cards
 		new_card.use_save = use_save
@@ -106,7 +106,7 @@ func operation_grouping(title: String, success: bool):
 	save_finished.emit(success, title)
 
 
-func queue_card(title: String, description: String, image: Texture2D, project_idx: int, grab_focus_field: int = -1) -> void:
+func queue_card(title: String, description: String, image: Texture2D, project_uuid: String, grab_focus_field: int = -1) -> void:
 	var new_card := CARD_CONTAINER.instantiate()
 	new_card.title = title
 	new_card.description = description
@@ -114,7 +114,7 @@ func queue_card(title: String, description: String, image: Texture2D, project_id
 	new_card.show_description = use_descriptions
 	new_card.editable = editable_cards
 	new_card.use_save = use_save
-	new_card.project_idx = project_idx
+	new_card.project_uuid = project_uuid
 	new_card.grab_focus_field = grab_focus_field
 	new_card.card_selected.connect(on_card_selected.bind(new_card))
 	new_card.card_confirmed.connect(on_card_confirmed.bind(new_card))
@@ -211,17 +211,17 @@ func on_card_selected(card: Control) -> void:
 
 func on_card_confirmed(card: Control) -> void:
 	if _allow_signals:
-		card_selected.emit(card.project_idx)
+		card_selected.emit(card.project_uuid)
 
 
 func on_card_deleted(card: Control) -> void:
-	var acrd_idx: int = card.project_idx
+	var card_uuid: String = card.project_uuid
 	container.drop_card(card)
 	container.reorder_children()
 	focused_child = null
 	if _allow_signals:
-		card_deleted.emit(acrd_idx)
+		card_deleted.emit(card_uuid)
 
 
-func create_card_dictionary(title: String, description: String, image: Texture2D, project_idx: int, grab_focus_field: int = -1) -> Dictionary:
-	return {"title": title, "description": description, "image": image, "grab_focus_field": grab_focus_field, "project": project_idx}
+func create_card_dictionary(title: String, description: String, image: Texture2D, project_uuid: int, grab_focus_field: int = -1) -> Dictionary:
+	return {"title": title, "description": description, "image": image, "grab_focus_field": grab_focus_field, "project": project_uuid}

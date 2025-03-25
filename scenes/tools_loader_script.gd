@@ -54,9 +54,9 @@ func _ready() -> void:
 	save_button.pressed.connect(on_save_pressed)
 
 
-func on_template_deleted(template_idx: int) -> void:
+func on_template_deleted(template_uuid: String) -> void:
 	if tool_scene != null and tool_scene.TOOL_ID == "templates":
-		tool_scene.on_template_deleted(template_idx)
+		tool_scene.on_template_deleted(template_uuid)
 
 
 func on_tool_selected(idx: int) -> void:

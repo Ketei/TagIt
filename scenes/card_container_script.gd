@@ -34,7 +34,7 @@ var show_description: bool = true:
 var editable: bool = false
 var use_save: bool = false
 var grab_focus_field: int = -1
-var project_idx: int = -1
+var project_uuid: String = ""
 
 
 @onready var edit_title_line_edit: LineEdit = $MenuCard/MainMargin/MainContainer/TitlePanel/TitleMargin/EditTitleLineEdit
