@@ -1,0 +1,269 @@
+[gd_scene load_steps=7 format=3 uid="uid://dmdfmfx7y0a80"]
+
+[ext_resource type="Script" path="res://scenes/tools/wizard_character_script.gd" id="1_ieuc1"]
+[ext_resource type="Theme" uid="uid://u13wuypqagrc" path="res://style/table_theme.tres" id="2_bb6yr"]
+[ext_resource type="Texture2D" uid="uid://dqktobxl3bnuc" path="res://icons/add_character_icon.svg" id="2_iia1s"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_x4610"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rarw3"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_8xcs8"]
+font_size = 25
+font_color = Color(0.558473, 0.857107, 0.952501, 1)
+
+[node name="WizardCharacterCreator" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ieuc1")
+
+[node name="MainPanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_x4610")
+
+[node name="MainContainer" type="HBoxContainer" parent="MainPanel"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="CharactersContainer" type="VBoxContainer" parent="MainPanel/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HeaderContainer" type="HBoxContainer" parent="MainPanel/MainContainer/CharactersContainer"]
+layout_mode = 2
+
+[node name="CharacterSearchLnEdt" type="LineEdit" parent="MainPanel/MainContainer/CharactersContainer/HeaderContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Search Character"
+
+[node name="NewCharacterButton" type="Button" parent="MainPanel/MainContainer/CharactersContainer/HeaderContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "Create Character"
+icon = ExtResource("2_iia1s")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="CharacterTree" type="Tree" parent="MainPanel/MainContainer/CharactersContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+hide_folding = true
+hide_root = true
+
+[node name="DataPanel" type="PanelContainer" parent="MainPanel/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 4.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_rarw3")
+
+[node name="MainDataContainer" type="HBoxContainer" parent="MainPanel/MainContainer/DataPanel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="DataContainerA" type="VBoxContainer" parent="MainPanel/MainContainer/DataPanel/MainDataContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+theme_override_constants/separation = 10
+
+[node name="CharacterContainer" type="HBoxContainer" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+
+[node name="CharLabel" type="Label" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA/CharacterContainer"]
+custom_minimum_size = Vector2(390, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+label_settings = SubResource("LabelSettings_8xcs8")
+horizontal_alignment = 1
+text_overrun_behavior = 3
+
+[node name="BodyMainContainer" type="HBoxContainer" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+
+[node name="BodyContainer" type="HBoxContainer" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA/BodyMainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA/BodyMainContainer/BodyContainer"]
+custom_minimum_size = Vector2(115, 0)
+layout_mode = 2
+text = "Body Type"
+
+[node name="BodyOptBtn" type="OptionButton" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA/BodyMainContainer/BodyContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "What body type the character has."
+disabled = true
+text_overrun_behavior = 3
+
+[node name="SpeciesContainer" type="HBoxContainer" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA/BodyMainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA/BodyMainContainer/SpeciesContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Species"
+
+[node name="SpeciesLnEdt" type="LineEdit" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA/BodyMainContainer/SpeciesContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "No Species"
+editable = false
+
+[node name="GenderContainer" type="HBoxContainer" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+
+[node name="VisibleGContainer" type="HBoxContainer" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA/GenderContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA/GenderContainer/VisibleGContainer"]
+custom_minimum_size = Vector2(115, 0)
+layout_mode = 2
+text = "Visible Gender"
+
+[node name="GenderOptBtn" type="OptionButton" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA/GenderContainer/VisibleGContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "What gender the character APPEARS to be."
+disabled = true
+text_overrun_behavior = 3
+
+[node name="LoreGContainer" type="HBoxContainer" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA/GenderContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA/GenderContainer/LoreGContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Lore Gender"
+
+[node name="LoreGenderOpt" type="OptionButton" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA/GenderContainer/LoreGContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "If the character's gender is DIFFERENT
+from the one it appears to be."
+disabled = true
+text_overrun_behavior = 3
+
+[node name="AgeContainer" type="HBoxContainer" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+
+[node name="VisibleContainer" type="HBoxContainer" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA/AgeContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA/AgeContainer/VisibleContainer"]
+custom_minimum_size = Vector2(115, 0)
+layout_mode = 2
+text = "Visible Age"
+
+[node name="AgeOptBtn" type="OptionButton" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA/AgeContainer/VisibleContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "What age the character APPEARS to be."
+disabled = true
+text_overrun_behavior = 3
+
+[node name="LoreContainer" type="HBoxContainer" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA/AgeContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA/AgeContainer/LoreContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Lore Age"
+
+[node name="LoreAgeOptBtn" type="OptionButton" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA/AgeContainer/LoreContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "If the character's age is DIFFERENT
+from the one it appears to be."
+disabled = true
+text_overrun_behavior = 3
+
+[node name="ColorsContainer" type="VBoxContainer" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA/ColorsContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text = "Properties"
+vertical_alignment = 2
+
+[node name="BodyTextureTree" type="Tree" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA/ColorsContainer"]
+custom_minimum_size = Vector2(0, 260)
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("2_bb6yr")
+theme_override_constants/h_separation = 16
+columns = 2
+column_titles_visible = true
+hide_root = true
+
+[node name="DataContainerB" type="VBoxContainer" parent="MainPanel/MainContainer/DataPanel/MainDataContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="ClothingContainer" type="VBoxContainer" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerB"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerB/ClothingContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text = "Clothing"
+vertical_alignment = 2
+
+[node name="ClothingTree" type="Tree" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerB/ClothingContainer"]
+custom_minimum_size = Vector2(0, 260)
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("2_bb6yr")
+theme_override_constants/h_separation = 16
+column_titles_visible = true
+hide_root = true
+
+[node name="TraitsContainer" type="VBoxContainer" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerB"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerB/TraitsContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text = "Traits"
+vertical_alignment = 2
+
+[node name="TraitsTree" type="Tree" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerB/TraitsContainer"]
+custom_minimum_size = Vector2(0, 260)
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("2_bb6yr")
+column_titles_visible = true
+hide_folding = true
+hide_root = true

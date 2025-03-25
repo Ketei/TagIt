@@ -195,32 +195,14 @@ static func append_uniques_asc(array_to_append: Variant, items: Variant) -> void
 
 
 static func substract_array(target_array: Array, substract_items: Array) -> void:
-	var item_indexes: Array[int] = []
-	var skip_count: int = 0
-	var MAX_ITEMS: int = target_array.size()
-	
 	if target_array.is_empty():
 		return
-	
 	for item in substract_items:
 		var item_idx: int = target_array.find(item)
 		if item_idx != -1:
-			item_indexes.append(item_idx)
-		else:
-			skip_count += 1
-		
-		# Check every 100 items to see if we can keep removing items, if we
-		# already removed all possible ones, then stop iterating.
-		if 256 <= skip_count:
-			if MAX_ITEMS <= item_indexes.size():
+			target_array.remove_at(item_idx)
+			if target_array.is_empty():
 				break
-			else:
-				skip_count = 0
-	
-	item_indexes.sort_custom(sort_custom_desc)
-	
-	for target_idx in item_indexes:
-		target_array.remove_at(target_idx)
 
 
 ### [param a_ref_only] will make it so that we only check what items a has
@@ -241,11 +223,9 @@ static func clean_tag_array(array: Variant) -> void:
 	if typeof(array) != TYPE_ARRAY and typeof(array) != TYPE_PACKED_STRING_ARRAY:
 		return
 	
-	var idx: int = -1
-	for item in array:
-		idx += 1
-		if typeof(item) == TYPE_STRING:
-			array[idx] = array[idx].strip_edges().replace("_", " ").to_lower()
+	for item_idx in range(array.size()):
+		if typeof(array[item_idx]) == TYPE_STRING:
+			array[item_idx] = array[item_idx].strip_edges().replace("_", " ").to_lower()
 
 
 static func remove_all(array: Variant, remove_what: Variant) -> void:

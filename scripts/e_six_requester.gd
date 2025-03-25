@@ -115,7 +115,8 @@ func search_suggestions(for_tag: String) -> void:
 			JobTypes.SUGGESTION)
 
 
-func _get_full_data(tag: String) -> Dictionary:
+func _get_full_data(raw_tag: String) -> Dictionary:
+	var tag: String = raw_tag.replace(" ", "_")
 	if not full_job_timer.is_stopped():
 		await full_job_timer.timeout
 	

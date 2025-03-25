@@ -1,3 +1,4 @@
+class_name TagItWizard
 extends Control
 
 
@@ -8,8 +9,135 @@ const SINGLE_COLOR_BODY: String = "monotone"
 const TWO_COLOR_BODY: String = "two tone"
 const THREE_PLUS_COLOR_BODY: String = "multicolored"
 
+const ARRAY_EMPTY: Array = []
 const BIN_ICON = preload("res://icons/bin_icon.svg")
 const CLOTHING: Array[Dictionary] = [
+	{
+		"section": "Armwear",
+		"tag": "armwear",
+		"only_tag": "armwear only",
+		"options": [
+			"Arm warmers",
+			"Bridal gauntlets",
+			"Detached sleeves",
+			"Elbow gloves",
+			"Elbow gloves",
+			"Fishnet armwear",
+			"Wrist warmers"],
+		"score": 10
+	},
+	{
+		"section": "Bottomwear",
+		"tag": "bottomwear",
+		"only_tag": "bottomwear only",
+		"options": [
+			"Loincloth",
+			"Pants",
+			"Shorts",
+			"Skirt",],
+		"score": 150
+	},
+	{
+		"section": "Collar",
+		"tag": "collar",
+		"only_tag": "collar only",
+		"options": [
+			"Chain collar",
+			"Frilly collar",
+			"Leather collar",
+			"Metal collar",
+			"Shock collar",
+			"Spiked collar",
+			"Studded collar",
+		],
+		"score": 0
+	},
+	{
+		"section": "Diaper",
+		"tag": "diaper",
+		"only_tag": "diaper only",
+		"options": [
+			"Abuniverse",
+			"Cloth diaper",
+			"Prilly diaper",
+			"Pull-ups (diaper)",
+		],
+		"score": 10
+	},
+	{
+		"section": "Eyewear",
+		"tag": "eyewear",
+		"only_tag": "eyewear only",
+		"options": [
+			"Blinders",
+			"Blindfold",
+			"Eye patch",
+			"Glasses",
+			"Goggles",
+			"Monocle",
+			"Shutter shades",
+			"Sunglasses",
+			"Visor",
+		],
+		"score": 0
+	},
+	{
+		"section": "Footwear",
+		"tag": "footwear",
+		"only_tag": "footwear only",
+		"options": [
+			"Boots",
+			"Crocs",
+			"Fishnet footwear",
+			"Foot wraps",
+			"High heels",
+			"Mary janes",
+			"Sandals",
+			"Slippers",
+			"Sneakers",
+			"Socks",],
+		"score": 10
+	},
+	{
+		"section": "Handwear",
+		"tag": "handwear",
+		"only_tag": "handwear only",
+		"options":[
+			"Boxing gloves",
+			"Fishnet handwear",
+			"Gloves",
+			"Mittens",
+			"Oven mitts",],
+		"score": 10
+	},
+	{
+		"section": "Headwear",
+		"tag": "headwear",
+		"only_tag": "headwear only",
+		"options": [
+			"Hat",
+			"Hat feather",
+			"Headkerchief",
+			"Headscarf",
+			"Hood",],
+		"score": 10
+	},
+	{
+		"section": "Legwear",
+		"tag": "Legwear",
+		"only_tag": "legwear only",
+		"options": [
+			"Fishnet legwear",
+			"Knee highs",
+			"Leggings",
+			"Leg warmers",
+			"Leg wraps",
+			"Pantyhose",
+			"Stockings",
+			"Tights",
+			"Thigh highs",],
+		"score": 10
+	},
 	{
 		"section": "Topwear",
 		"tag": "topwear",
@@ -38,147 +166,508 @@ const CLOTHING: Array[Dictionary] = [
 			"Thong",],
 		"score": 50
 	},
-	{
-		"section": "Bottomwear",
-		"tag": "bottomwear",
-		"only_tag": "bottomwear only",
-		"options": [
-			"Loincloth",
-			"Pants",
-			"Shorts",
-			"Skirt",],
-		"score": 150
-	},
-	{
-		"section": "Legwear",
-		"tag": "Legwear",
-		"only_tag": "legwear only",
-		"options": [
-			"Fishnet legwear",
-			"Knee highs",
-			"Leggings",
-			"Leg warmers",
-			"Leg wraps",
-			"Pantyhose",
-			"Stockings",
-			"Tights",
-			"Thigh highs",],
-		"score": 10
-	},
-	{
-		"section": "Armwear",
-		"tag": "armwear",
-		"only_tag": "armwear only",
-		"options": [
-			"Arm warmers",
-			"Bridal gauntlets",
-			"Detached sleeves",
-			"Elbow gloves",
-			"Elbow gloves",
-			"Fishnet armwear",
-			"Wrist warmers"],
-		"score": 10
-	},
-	{
-		"section": "Handwear",
-		"tag": "handwear",
-		"only_tag": "handwear only",
-		"options":[
-			"Boxing gloves",
-			"Fishnet handwear",
-			"Gloves",
-			"Mittens",
-			"Oven mitts",],
-		"score": 10
-	},
-	{
-		"section": "Footwear",
-		"tag": "footwear",
-		"only_tag": "footwear only",
-		"options": [
-			"Boots",
-			"Crocs",
-			"Fishnet footwear",
-			"Foot wraps",
-			"High heels",
-			"Mary janes",
-			"Sandals",
-			"Slippers",
-			"Sneakers",
-			"Socks",],
-		"score": 10
-	},
-	{
-		"section": "Headwear",
-		"tag": "headwear",
-		"only_tag": "headwear only",
-		"options": [
-			"Hat",
-			"Hat feather",
-			"Headkerchief",
-			"Headscarf",
-			"Hood",],
-		"score": 10
-	},
-	{
-		"section": "Collar",
-		"tag": "collar",
-		"only_tag": "collar only",
-		"options": [
-			"Chain collar",
-			"Frilly collar",
-			"Leather collar",
-			"Metal collar",
-			"Shock collar",
-			"Spiked collar",
-			"Studded collar",
-		],
-		"score": 0
-	},
-	{
-		"section": "Eyewear",
-		"tag": "eyewear",
-		"only_tag": "eyewear only",
-		"options": [
-			"Blinders",
-			"Blindfold",
-			"Eye patch",
-			"Glasses",
-			"Goggles",
-			"Monocle",
-			"Shutter shades",
-			"Sunglasses",
-			"Visor",
-		],
-		"score": 0
-	},
-	{
-		"section": "Diaper",
-		"tag": "diaper",
-		"only_tag": "diaper only",
-		"options": [
-			"Abuniverse",
-			"Cloth diaper",
-			"Prilly diaper",
-			"Pull-ups (diaper)",
-		],
-		"score": 10
-	}]
+	]
 const BODY_TRAITS: Array[Dictionary] = [
-	{"title": "Hair", "tag": "hair"},
-	{"title": "Horns", "tag": "horn"},
-	{"title": "Different colored eyes", "tag": "heterochromia"},
-	{"title": "Breasts", "tag": "breasts"},
-	{"title": "Wings", "tag": "wings"},
-	{"title": "Finger Claws", "tag": "finger claws"},
-	{"title": "Tail", "tag": "tail"},
-	{"title": "Penis", "tag": "penis"},
-	{"title": "Vagina", "tag": "pussy"},
-	{"title": "Anus", "tag": "anus"},
-	{"title": "Paws", "tag": "paws"},
-	{"title": "Pawpads", "tag": "pawpads"},
-	{"title": "Toe Claws", "tag": "toe claws"}]
+	{"title": "Slit", "tag": "genital slit"},
+	{"title": "Aroused", "tag": "aroused"},
+	{"title": "Blushing", "tag": "blush"},
+	{"title": "Speaking", "tag": "dialog"},
+	{"title": "Bound", "tag": "bound"},
+	{"title": "Sweating", "tag": "sweat"},
+	]
+const GENDERS: PackedStringArray = [
+	"Male",
+	"Female",
+	"Ambiguous Gender",
+	"Andromorph",
+	"Gynomorph",
+	"Hermaphrodite",
+	"Male Hermaphrodite"]
+const AGES: PackedStringArray = [
+	"Baby",
+	"Toddler",
+	"Child",
+	"Adolescent",
+	"Adult",
+	"Mature",
+	"Elderly"]
+const BODIES: PackedStringArray = [
+	"Anthro",
+	"Semi-Anthro",
+	"Semi-Feral",
+	"Feral",
+	"Human",
+	"Humanoid",
+	"Taur"]
+const BODY_TYPES: Array[Dictionary] = [
+	{
+		"name": "Fur",
+		"tag": "fur",
+		"include_standalone": true,
+		"properties": [{
+			"name": "Length",
+			"mode": TreeItem.CELL_MODE_RANGE,
+			"text": "short fur,average length,long fur",
+			"tags": ["short fur", "", "long fur"],
+			"value": 1
+		},
+		]},
+	{
+		"name": "Scales",
+		"tag": "scales",
+		"include_standalone": true},
+	{
+		"name": "Feathers",
+		"tag": "feathers",
+		"include_standalone": true},
+	{
+		"name": "Wool",
+		"tag": "wool",
+		"include_standalone": true},
+	{
+		"name": "Skin",
+		"tag": "skin",
+		"include_standalone": true},
+	{
+		"name": "Exoskeleton",
+		"tag": "exoskeleton",
+		"include_standalone": true},
+	{
+		"name": "Anus",
+		"tag": "anus",
+		"include_standalone": true,
+		"properties": [
+			{
+				"name": "Size",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Small,Average,Big,Huge,Hyper",
+				"tags": ["small anus", "", "big anus", "huge anus", "hyper anus"],
+				"value": 1
+			},{
+				"name": "Anatomically correct",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Is correct",
+				"tags": ["", "anatomically correct anus"]
+			},{
+				"name": "Puffy/Donut",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Is puffy",
+				"tags": ["", "puffy anus"]
+			},
+		]},
+	{
+		"name": "Balls",
+		"tag": "balls",
+		"include_standalone": true,
+		"properties": [
+			{
+				"name": "Size",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Small,Average,Big,Huge,Hyper",
+				"tags": ["small balls", "", "big balls", "huge balls", "hyper balls"],
+				"value": 1
+			}
+		]},
+	{
+		"name": "Breasts",
+		"tag": "breasts",
+		"include_standalone": true,
+		"properties":[
+			{
+				"name": "Size",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Flat,Small,Average,Big,Huge,Hyper",
+				"tags": ["flat chested", "small breasts", "medium breasts", "big breasts", "huge breasts", "hyper breasts"],
+				"value": 2
+			}
+		]
+	},
+	{
+		"name": "Beak",
+		"tag": "beak",
+		"include_standalone": true},
+	{
+		"name": "Claws",
+		"tag": "claws",
+		"include_standalone": true,
+		"exclude_values": [0]},
+	{
+		"name": "Ears",
+		"tag": "ears",
+		"include_standalone": false,
+		"exclude_values": [0],
+		"properties": [
+			{
+				"name": "Inner colors",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Monotone,Two Tones,Multicolored,N/A",
+				"tags": ["monotone inner ear", "two tone inner ear", "multicolored inner ear", ""],
+				"value": 0
+				
+			}
+		]
+	},
+	{
+		"name": "Eyes",
+		"tag": "eyes",
+		"include_standalone": false,
+		"exclude_values": [0],
+		"properties": [
+			{
+				"name": "Heterochromia",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Has Heterochromia",
+				"tags": ["", "heterochromia"]
+			},
+			{
+				"name": "Pupils",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Regular,Slit,Horizontal,Heart,Star,No pupils",
+				"tags": ["", "slit pupils", "horizontal pupils", "heart pupils", "no pupils"],
+				"value": 0
+			},
+			{
+				"name": "Sclera",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Black,Blue,Brown,Cyan,Green,Grey,Orange,Pink,Purple,Red,White,Yellow",
+				"tags": ["black sclera", "blue sclera", "brown sclera", "cyan sclera", "green sclera", "grey sclera", "orange sclera", "pink sclera", "purple sclera", "red sclera", "", "yellow sclera"],
+				"value": 10
+			}
+		]},
+	{
+		"name": "Feet",
+		"tag": "feet",
+		"include_standalone": true,
+		"properties": [
+			{
+				"name": "Type",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Plantigrade,Digitigrade,Unguligrade,Hooved Plantigrade,Featureless",
+				"tags": ["plantigrade", "digitigrade", "unguligrade", "hooved plantigrade", "featureless feet"],
+				"value": 1
+			}
+		]},
+	{
+		"name": "Hair",
+		"tag": "hair",
+		"include_standalone": true,
+		"properties":[
+			{
+				"name": "Length",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Short (Above neck),Long (Bellow neck),N/A",
+				"tags": ["short hair", "long hair"]
+			}
+		]},
+	{
+		"name": "Hands",
+		"tag": "hands",
+		"include_standalone": false,
+		"properties": [
+			{
+				"name": "Finger count (per hand)",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "No fingers,1 finger,2 fingers,3 fingers,4 fingers,5 fingers,6 fingers,7 fingers,8 fingers,9 fingers,10 fingers,N/A",
+				"tags": ["featureless hands", "1 finger", "2 fingers", "3 fingers", "4 fingers", "5 fingers", "6 fingers", "7 fingers", "8 fingers", "9 fingers", "10 fingers", ""],
+				"value": 5
+			},
+			{
+				"name": "Finger nails",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Nails,Claws,Hoofs,N/A",
+				"tags": ["fingernails", "finger claws", "hooved fingers", ""],
+				"value": 1
+			}
+		]},
+	{
+		"name": "Horns",
+		"tag": "horn",
+		"include_standalone": true,
+		"properties": [
+			{
+				"name": "Horn shape",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Straight horn,Curved horn,Forked horn,Spiral horn,N/A",
+				"tags": ["staigth horn", "curved horn", "forked horn", "spiral horn", ""],
+				"value": 0
+			},
+			{
+				"name": "Horn texture",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "N/A,Ridged,Smooth",
+				"tags": ["", "ridged horn", "smooth horn"],
+				"value": 0
+			},
+			{
+				"name": "Horn Length",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Short horn,Long horn,N/A",
+				"tags": ["short horn", "long horn", ""],
+				"value": 1
+			},
+			{
+				"name": "Head Horn",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Has Horn",
+				"tags": ["", "head horn"]
+			},{
+				"name": "Arm Horn",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Has Horn",
+				"tags": ["", "arm horn"]
+			},
+			{
+				"name": "Back Horn",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Has Horn",
+				"tags": ["", "back horn"]
+			},{
+				"name": "Chest Horn",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Has Horn",
+				"tags": ["", "chest horn"]
+			},{
+				"name": "Chin Horn",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Has Horn",
+				"tags": ["", "chin horn"]
+			},{
+				"name": "Ear Horn",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Has Horn",
+				"tags": ["", "ear horn"]
+			},{
+				"name": "Floating Horn",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Has Horn",
+				"tags": ["", "floating horn"]
+			},{
+				"name": "Jaw Horn",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Has Horn",
+				"tags": ["", "jaw horn"]
+			},{
+				"name": "Nose Horn",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Has Horn",
+				"tags": ["", "nose horn"]
+			},{
+				"name": "Shoulder Horn",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Has Horn",
+				"tags": ["", "head horn"]
+			},
+			
+		]},
+	{
+		"name": "Knot",
+		"tag": "knot",
+		"include_standalone": true,
+		"properties": [
+			{
+				"name": "Knot size",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Small,Regular,Big,Huge,Hyper",
+				"tags": ["small knot", "", "big knot", "huge knot", "hyper knot"],
+				"value": 1
+			},{
+				"name": "Multi knot",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Has multiple",
+				"tags": ["", "multi knot"]
+			},
+		]
+	},
+	{
+		"name": "Markings",
+		"tag": "markings",
+		"include_standalone": true,
+	},
+	{
+		"name": "Nipples",
+		"tag": "nipples",
+		"include_standalone": true,
+		"properties": [
+			{
+				"name": "Nipple Size",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Small,Average,Big,Huge,Hyper",
+				"tags": ["small nipples", "", "big nipples", "huge nipples", "hyper nipples"],
+				"value": 1
+			},{
+				"name": "Areola Size",
+				"mode":TreeItem.CELL_MODE_RANGE,
+				"text": "Small,Average,Big,Huge,Hyper",
+				"tags": ["small areola", "", "big areola", "huge areola", "hyper areola"],
+				"value": 1
+			},{
+				"name": "Multi-nipple (+2)",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Multiple Nipples",
+				"tags": ["", "multi nipple"]
+			}
+		]
+	},
+	{
+		"name": "Paws",
+		"tag": "paws",
+		"include_standalone": true,
+		"exclude_values": [0]},
+	{
+		"name": "Pawpads",
+		"tag": "pawpads",
+		"include_standalone": true,
+		"exclude_values": [0]},
+	{
+		"name": "Penis",
+		"tag": "penis",
+		"include_standalone": true,
+		"properties": [
+			{
+				"name": "Type",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Animal,Prehensile,Humanoid,Hybrid,Mechanical,Unusual,N/A",
+				"tags": ["animal penis", "prehensile penis", "humanoid penis", "hybrid penis", "mechanical penis", "unusual penis", ""]
+			},
+			{
+				"name": "Size",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Micro,Small,Average,Big,Huge,Hyper",
+				"tags": ["micropenis", "small penis", "", "big penis", "huge penis", "hyper penis"],
+				"value": 2
+			},
+			{
+				"name": "Erection",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Flaccid (Visible),Half-erect,Erect",
+				"tags": ["flaccid", "hald-erect", "erection"],
+				"value": 2
+			},
+			{
+				"name": "Anatomically correct",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Is correct",
+				"tags": ["", "anatomically correct penis"]
+			},
+		]},
+	{
+		"name": "Sheath",
+		"tag": "sheath",
+		"include_standalone": true,
+		"exclude_values": [0],
+		"properties": [
+			{
+				"name": "Size",
+				"text": "Small,Average,Big,Huge,Hyper",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"tags": ["small sheath", "", "big sheath", "huge sheath", "hyper sheath"],
+				"value": 1
+			}
+		]
+	},
+	{
+		"name": "Tail",
+		"tag": "tail",
+		"include_standalone": true,
+		"properties": [
+			{
+				"name": "Type",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Furry,Scaly,Feathers,Fish,N/A",
+				"tags": ["furry tail", "scaly tail", "tail feathers", "fish tail", ""],
+				"value": 0
+			},
+			{
+				"name": "Size",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Small,Average,Big,Huge,Hyper",
+				"tags": ["small tail", "", "big tail", "huge tail", "hyper tail"],
+				"value": 1
+			},
+			{
+				"name": "Length",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Short,Average,Long",
+				"tags": ["short tail", "", "long tail"],
+				"value": 1
+			},
+			{
+				"name": "Shape",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "N/A,Scut,Nub,Forked",
+				"tags": ["", "scut tail", "nub tail", "forked tail"],
+				"value": 0
+			},
+			{
+				"name": "Form",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "N/A,Curved,Curled,Crooked,Erect,Wavy",
+				"tags": ["", "curved tail", "curled tail", "crooked tail", "erect tail", "wavy tail"],
+				"value": 0
+			},
+		]
+	},
+	{
+		"name": "Tongue",
+		"tag": "tongue",
+		"include_standalone": true,
+		"propeties": [
+			{
+				"name": "Shape",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Regular,Forked,Tappering,Segmented,Ribbed",
+				"tags": ["", "forked tongue", "tappering tongue", "segmented tongue", "ribbed tongue"],
+			},
+		]
+	},
+	{
+		"name": "Tuft",
+		"tag": "tuft",
+		"include_standalone": true,
+		"exclude_values": [0]
+	},
+	{
+		"name": "Vagina",
+		"tag": "pussy",
+		"include_standalone": true,
+		"exclude_values": [0],
+		"properties": [
+			{
+				"name": "Type",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Animal,Humanoid,Hybrid,Mechanical,Unusual,N/A",
+				"tags": ["animal pussy", "humanoid pussy", "hybrid pussy", "mechanical pussy", "unusual pussy", ""],
+				"value": 1
+			},
+			{
+				"name": "Size",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Small,Average,Big,Hyper",
+				"tags": ["small pussy", "", "big pussy", "hyper pussy"],
+				"value": 1
+			},
+			{
+				"name": "Shape",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Innie,Average,Outie",
+				"tags": ["innie pussy", "", "long_labia"],
+				"value": 0
+			},
+			{
+				"name": "Anatomically correct",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Is correct",
+				"tags": ["", "anatomically correct pussy"]
+			}]
+	},
+	{
+		"name": "Wings",
+		"tag": "wings",
+		"include_standalone": true}
+	]
 
+
+var storage: TagItStorage = TagItStorage.get_storage()
 var characters: Array[Dictionary] = []
 var sections: PackedStringArray = [
 	"Image Meta",
@@ -189,8 +678,19 @@ var sections: PackedStringArray = [
 var current_character: int = -1:
 	set(new_current):
 		current_character = new_current
-		character_blocked.visible = current_character == -1
-		character_field.modulate = Color(1, 1, 1, 0.392) if current_character == -1 else Color.WHITE
+		var valid_character: bool = 0 <= new_current
+		character_tag_ln_edt.editable = valid_character
+		species_ln_edt.editable = valid_character
+		body_opt_btn.disabled = not valid_character
+		gender_opt_btn.disabled = not valid_character
+		gender_lore_opt_btn.disabled = not valid_character
+		age_opt_btn.disabled = not valid_character
+		lore_age_opt_btn.disabled = not valid_character
+		apply_character_btn.disabled = not valid_character
+		body_texture_tree.get_root().collapsed = not valid_character
+		clothing_tree.get_root().collapsed = not valid_character
+		body_traits.get_root().collapsed = not valid_character
+		
 var current_page: int = 0:
 	set(new_current):
 		current_page = new_current
@@ -210,21 +710,19 @@ var current_project_size: Vector2 = Vector2(310, 34)
 
 @onready var main_panel: PanelContainer = $MainPanel/MainContainer/MainPanel
 
-@onready var character_field: VBoxContainer = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField
-@onready var character_blocked: Control = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterBlocked
+@onready var character_field: VBoxContainer = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField
 
+@onready var body_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/BodyContainer/BodyContainer/BodyOptBtn
+@onready var species_ln_edt: LineEdit = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/BodyContainer/SpeciesBox/SpeciesLnEdt
+@onready var gender_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/HBoxContainer/GenderContainer/GenderOptBtn
+@onready var gender_lore_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/HBoxContainer/GenderLoreContainer/GenderLoreOptBtn
+@onready var age_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/AgeMainContainer/AgeContainer/AgeOptBtn
+@onready var lore_age_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/AgeMainContainer/LoreAgeContainer/LoreAgeOptBtn
+@onready var body_texture_tree: Tree = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/BodyTextureTree
+@onready var clothing_tree: Tree = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Others/ClothingTree
+@onready var body_traits: Tree = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Others/BodyTraits
+@onready var character_tag_ln_edt: LineEdit = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/NameContainer/CharacterTagLnEdt
 
-@onready var body_texture_tree: Tree = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/BodyTextureTree
-@onready var age_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/AgeMainContainer/AgeContainer/AgeOptBtn
-@onready var lore_age_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/AgeMainContainer/LoreAgeContainer/LoreAgeOptBtn
-@onready var gender_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/HBoxContainer/GenderContainer/GenderOptBtn
-@onready var gender_lore_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/AgeGenderContainer/HBoxContainer/GenderLoreContainer/GenderLoreOptBtn
-@onready var body_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/BodyContainer/BodyContainer/BodyOptBtn
-@onready var characters_tree: Tree = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/ChracterTree/CharactersTree
-@onready var character_tag_ln_edt: LineEdit = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/NameContainer/CharacterTagLnEdt
-@onready var species_ln_edt: LineEdit = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/BodyContainer/SpeciesBox/SpeciesLnEdt
-#@onready var clothing_a: HBoxContainer = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/ScrollPanel/CharacterField/ClothingContainer/ClothingA
-#@onready var clothing_b: HBoxContainer = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/ScrollPanel/CharacterField/ClothingContainer/ClothingB
 @onready var new_char_btn: Button = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/ChracterTree/Header/NewCharBtn
 
 @onready var pairing_checkbox_container: VBoxContainer = $MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer
@@ -249,8 +747,6 @@ var current_project_size: Vector2 = Vector2(310, 34)
 @onready var location_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/LocationContainer/LocationOptBtn
 @onready var sexing: HBoxContainer = $MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer/Sexing
 @onready var grouping: HBoxContainer = $MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer/Grouping
-@onready var clothing_tree: Tree = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/Others/ClothingTree
-@onready var body_traits: Tree = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/CharacterField/Others/BodyTraits
 
 @onready var image_panel: PanelContainer = $ProjectTextureContainer/MainPanel/MainContainer/ImagePanel
 
@@ -258,6 +754,8 @@ var current_project_size: Vector2 = Vector2(310, 34)
 @onready var minimize_image_btn: Button = $ProjectTextureContainer/MainPanel/MainContainer/HeaderContainer/MinimizeImageBtn
 
 @onready var close_wizard_btn: Button = $MainPanel/MainContainer/TitleLabel/CloseWizardBtn
+@onready var characters_tree: Tree = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/ChracterTree/CharactersTree
+@onready var apply_character_btn: Button = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/NameContainer/ApplyCharacterBtn
 
 # --- Images ---
 @onready var day: TextureRect = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Day
@@ -292,8 +790,8 @@ func _ready() -> void:
 	
 	clothing_tree.set_column_title(0, "Apparel Item")
 	body_traits.set_column_title(0, "Visible Body Trait")
-	body_texture_tree.set_column_title(0, "Body Part")
-	body_texture_tree.set_column_title(1, "Colours")
+	body_texture_tree.set_column_title(0, "Body Property")
+	body_texture_tree.set_column_title(1, "Setting")
 	
 	body_texture_tree.set_column_expand_ratio(0, 2)
 	body_texture_tree.set_column_expand_ratio(1, 3)
@@ -316,7 +814,9 @@ func _ready() -> void:
 	
 	media_type_opt_btn.get_popup().max_size.y = 200
 	
-	character_blocked.visible = true
+	body_texture_tree.get_root().collapsed = true
+	clothing_tree.get_root().collapsed = true
+	body_traits.get_root().collapsed = true
 	
 	var idx: int = -1
 	for wear_item in CLOTHING:
@@ -346,7 +846,7 @@ func _ready() -> void:
 	next_button.pressed.connect(on_next_pressed)
 	previous_button.pressed.connect(on_previous_pressed)
 	new_char_btn.pressed.connect(create_character)
-	characters_tree.item_selected.connect(_on_character_selected)
+	characters_tree.item_selected.connect(_on_character_selected, ConnectFlags.CONNECT_DEFERRED)
 	character_tag_ln_edt.text_changed.connect(on_character_tag_changed)
 	add_pairing_btn.pressed.connect(on_add_pairing_pressed)
 	clear_pairings_btn.pressed.connect(clear_pairings)
@@ -363,8 +863,67 @@ func _ready() -> void:
 	minimize_image_btn.pressed.connect(on_minimize_button_pressed)
 	close_wizard_btn.pressed.connect(_on_close_wizard_pressed)
 	body_texture_tree.focus_exited.connect(_on_character_item_tree_focus_lost.bind(body_texture_tree))
+	body_texture_tree.item_edited.connect(_on_body_setting_edited)
 	clothing_tree.focus_exited.connect(_on_character_item_tree_focus_lost.bind(clothing_tree))
 	body_traits.focus_exited.connect(_on_character_item_tree_focus_lost.bind(body_traits))
+	character_tag_ln_edt.text_submitted.connect(_on_character_text_submitted)
+	character_tag_ln_edt.timer_finished.connect(_on_autofil_timer_finished)
+	character_tag_ln_edt.text_selected.connect(_on_text_selected)
+	apply_character_btn.pressed.connect(_on_character_name_focus_lost)
+
+
+func _on_body_setting_edited() -> void:
+	var edited: TreeItem = body_texture_tree.get_edited()
+	if edited.get_parent() != body_texture_tree.get_root():
+		return
+	edited.disable_folding = not edited.is_checked(0)
+	edited.collapsed = edited.disable_folding
+
+
+func _on_autofil_timer_finished() -> void:
+	var clean_tag: String = character_tag_ln_edt.text.strip_edges().to_lower()
+	if clean_tag.is_empty():
+		return
+	var results: Array[String] = []
+	for item in storage.characters:
+		if item["tag"].begins_with(clean_tag):
+			results.append(item["tag"])
+	if results.is_empty():
+		return
+	character_tag_ln_edt.add_items(results)
+	character_tag_ln_edt.show_items()
+
+
+func _on_text_selected(new_text: String) -> void:
+	on_character_tag_changed(new_text)
+	_on_character_name_focus_lost()
+
+
+func clear_body_settings() -> void:
+	for setting in body_texture_tree.get_root().get_children():
+		setting.set_checked(0, false)
+		for property in setting.get_children():
+			if property.get_metadata(0)["index"] == -1:
+				property.set_range(1, 0)
+			else:
+				match property.get_cell_mode(1):
+					TreeItem.CELL_MODE_CHECK:
+						if BODY_TYPES[setting.get_metadata(0)["index"]]["properties"][property.get_metadata(0)["index"]].has("value"):
+							property.set_checked(
+							1,
+							BODY_TYPES[setting.get_metadata(0)["index"]]["properties"][property.get_metadata(0)["index"]]["value"])
+						else:
+							property.set_checked(1, false)
+						
+					TreeItem.CELL_MODE_RANGE:
+						if BODY_TYPES[setting.get_metadata(0)["index"]]["properties"][property.get_metadata(0)["index"]].has("value"):
+							property.set_range(
+								1,
+								BODY_TYPES[setting.get_metadata(0)["index"]]["properties"][property.get_metadata(0)["index"]]["value"])
+						else:
+							property.set_range(1, 0)
+		setting.collapsed = true
+		setting.disable_folding = true
 
 
 func focus_main() -> void:
@@ -386,6 +945,72 @@ func _on_cloth_item_edited() -> void:
 		edited.collapsed = true
 	elif not edited.disable_folding and edited.collapsed:
 		edited.collapsed = false
+
+
+func _on_character_text_submitted(_text: String) -> void:
+	_on_character_name_focus_lost()
+
+
+func _on_character_name_focus_lost() -> void:
+	var idx: int = -1
+	var character_text: String = character_tag_ln_edt.text.strip_edges().to_lower()
+	for character in storage.characters:
+		idx += 1
+		if character["tag"] == character_text:
+			apply_character(idx)
+			break
+
+
+func apply_character(character_index: int) -> void:
+	var data := storage.get_character(character_index)
+	
+	species_ln_edt.text = data.species
+	
+	body_opt_btn.select(data.body_type)
+	gender_opt_btn.select(data.gender)
+	gender_lore_opt_btn.select(data.gender_lore)
+	age_opt_btn.select(data.age)
+	lore_age_opt_btn.select(data.age_lore)
+	
+	for target in body_texture_tree.get_root().get_children():
+		if data.properties.has(target.get_metadata(0)["tag"]):
+			var prop_data: Dictionary = data.properties[target.get_metadata(0)["tag"]]
+			target.set_checked(0, prop_data["use"])
+			if prop_data["use"]:
+				target.disable_folding = false
+
+			var max_prop: int = prop_data["properties"].size()
+			for prop_idx in range(target.get_child_count()):
+				if max_prop < prop_idx:
+					break
+				var prop: TreeItem = target.get_child(prop_idx)
+				match prop.get_cell_mode(1):
+					TreeItem.CELL_MODE_RANGE:
+						prop.set_range(1, prop_data["properties"][prop_idx]["value"])
+					TreeItem.CELL_MODE_CHECK:
+						prop.set_checked(1, prop_data["properties"][prop_idx]["value"])
+	
+	for trait_enabled in body_traits.get_root().get_children():
+		if data.traits.has(trait_enabled.get_text(0)):
+			trait_enabled.set_checked(
+					0,
+					data.traits[trait_enabled.get_text(0)])
+	
+	for apparel_item in clothing_tree.get_root().get_children():
+		if not data.apparel.has(apparel_item.get_text(0)):
+			continue
+		apparel_item.set_checked(
+				0,
+				data.apparel[apparel_item.get_text(0)]["active"])
+		for specific in apparel_item.get_children():
+			if data.apparel[apparel_item.get_text(0)]["subtypes"].has(specific.get_text(0)):
+				specific.set_checked(
+						0,
+						data.apparel[apparel_item.get_text(0)]["subtypes"][specific.get_text(0)])
+		
+		apparel_item.disable_folding = not data.apparel[apparel_item.get_text(0)]["active"]
+		if not apparel_item.collapsed and not data.apparel[apparel_item.get_text(0)]["active"]:
+			apparel_item.collapsed = true
 
 
 func set_project_texture(new_texture: Texture2D) -> void:
@@ -438,9 +1063,6 @@ func on_colored_toggled(is_toggled: bool) -> void:
 					background.texture = preload("res://textures/wizard/pattern.jpg")
 				6:
 					background.texture = preload("res://textures/wizard/textured.jpg")
-		
-		
-		
 		
 		if daytime_opt_btn.selected == 1:
 			if colored_check_box.button_pressed:
@@ -564,7 +1186,7 @@ func create_character(default_name: String = "") -> void:
 		"lore_gender": 0,
 		"age": 4,
 		"lore_age": 0,
-		"bodies": Array([0, 0, 0, 0, 0, 0, 0], TYPE_INT, &"", null),
+		"bodies": {},
 		"clothing": clothing_array,
 		"traits": trait_bools})
 	
@@ -654,17 +1276,26 @@ func on_bg_type_selected(bg_type: int) -> void:
 
 
 func save_character() -> void:
-	var body_textures: Array[int] = []
+	var body_textures: Array[Dictionary] = []
 	
 	for item in body_texture_tree.get_root().get_children():
-		var value: int = 0
+		var setting: Dictionary = {
+			"use": item.is_checked(0),
+			"index": item.get_metadata(0)["index"],
+			"properties": Array([], TYPE_DICTIONARY, &"", null)}
 		
-		if item.is_checked(0):
-			value += 4
-		
-		value += int(item.get_range(1))
-		
-		body_textures.append(value)
+		for property_item in item.get_children():
+			var property: Dictionary = {
+				"mode": property_item.get_cell_mode(1),
+				"index": property_item.get_metadata(0)["index"]}
+			
+			match property_item.get_cell_mode(1):
+				TreeItem.CELL_MODE_RANGE:
+					property["value"] = int(property_item.get_range(1))
+				TreeItem.CELL_MODE_CHECK:
+					property["value"] = property_item.is_checked(1)
+			setting["properties"].append(property)
+		body_textures.append(setting)
 	
 	var new_clothing: Array[Dictionary] = []
 	
@@ -718,13 +1349,26 @@ func _on_character_selected() -> void:
 	var body_idx: int = -1
 	var body_root: TreeItem = body_texture_tree.get_root()
 	
+	clear_body_settings()
 	for body_texture in dict["bodies"]:
 		body_idx += 1
-		
 		var target: TreeItem = body_root.get_child(body_idx)
 		
-		target.set_checked(0, (body_texture & 4) == 4)
-		target.set_range(1, body_texture & 3)
+		target.set_checked(0, body_texture["use"])
+		
+		if body_texture["use"]:
+			target.disable_folding = false
+		
+		var sub_prop: int = -1
+		for property in body_texture["properties"]:
+			sub_prop += 1
+			var prop: TreeItem = target.get_child(sub_prop)
+			
+			match prop.get_cell_mode(1):
+				TreeItem.CELL_MODE_RANGE:
+					prop.set_range(1, property["value"])
+				TreeItem.CELL_MODE_CHECK:
+					prop.set_checked(1, property["value"])
 	
 	var check_idx: int = -1
 	
@@ -828,7 +1472,7 @@ func generate_tags() -> Array[String]:
 		var clothing_score: int = 0
 		
 		if character["name"].is_empty():
-			character_tags.append("unknown character")
+			character_tags.append("character request")
 		else:
 			character_tags.append(character["name"])
 		
@@ -873,20 +1517,35 @@ func generate_tags() -> Array[String]:
 		if only_wear and last_wear != -1:
 			character_tags.append(CLOTHING[last_wear]["only_tag"])
 		
-		var body_idx: int = -1
-		for body in character["bodies"]:
-			body_idx += 1
-			if (body & 4) == 4: # Body is checked
-				var body_tag: String = body_texture_tree.get_root().get_child(body_idx).get_text(0)
-				character_tags.append(body_tag)
-			
-				match body & 3:
-					0:
-						character_tags.append(str(SINGLE_COLOR_BODY, " ", body_tag))
-					1:
-						character_tags.append(str(TWO_COLOR_BODY, " ", body_tag))
-					2:
-						character_tags.append(str(THREE_PLUS_COLOR_BODY, " ", body_tag))
+		for body:Dictionary in character["bodies"]:
+			if body["use"]:
+				var body_tag: String = BODY_TYPES[body["index"]]["tag"]
+				if BODY_TYPES[body["index"]]["include_standalone"]:
+					character_tags.append(body_tag)
+				
+				for property in body["properties"]:
+					match property["index"]:
+						-1:
+							match property["value"] & 3:
+								0:
+									if not BODY_TYPES[body["index"]].has("exclude_values") or not BODY_TYPES[body["index"]]["exclude_values"].has(0):
+										character_tags.append(str(SINGLE_COLOR_BODY, " ", body_tag))
+								1:
+									if not BODY_TYPES[body["index"]].has("exclude_values") or not BODY_TYPES[body["index"]]["exclude_values"].has(1):
+										character_tags.append(str(TWO_COLOR_BODY, " ", body_tag))
+								2:
+									if not BODY_TYPES[body["index"]].has("exclude_values") or not BODY_TYPES[body["index"]]["exclude_values"].has(2):
+										character_tags.append(str(THREE_PLUS_COLOR_BODY, " ", body_tag))
+						_:
+							match property["mode"]:
+								TreeItem.CELL_MODE_RANGE:
+									var prop_tag: String = BODY_TYPES[body["index"]]["properties"][property["index"]]["tags"][property["value"]]
+									if not prop_tag.is_empty():
+										character_tags.append(prop_tag)
+								TreeItem.CELL_MODE_CHECK:
+									var prop_tag: String = BODY_TYPES[body["index"]]["properties"][property["index"]]["tags"][int(property["value"])]
+									if not prop_tag.is_empty():
+										character_tags.append(prop_tag)
 		
 		var trait_idx: int = -1
 		for bod_trait in character["traits"]:
@@ -909,22 +1568,65 @@ func generate_tags() -> Array[String]:
 
 
 func add_tree_bodies() -> void:
-	const BODY_TYPES: PackedStringArray = ["Fur", "Scales", "Feathers", "Wool", "Skin", "Body", "Exoskeleton"]
-	
-	for bod_name in BODY_TYPES:
+	var idx: int = -1
+	for bod_name:Dictionary in BODY_TYPES:
+		idx += 1
 		var new_bod: TreeItem = body_texture_tree.get_root().create_child()
 		new_bod.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
-		new_bod.set_cell_mode(1, TreeItem.CELL_MODE_RANGE)
 		
-		new_bod.set_text(0, bod_name)
-		new_bod.set_text(1, "1 Color,2 Colors,3+ Colors")
+		new_bod.disable_folding = true
+		
+		new_bod.set_text(0, bod_name["name"])
 		
 		new_bod.set_editable(0, true)
-		new_bod.set_editable(1, true)
+		new_bod.set_selectable(1, false)
+		
+		if not bod_name.has("use_colors") or bod_name["use_colors"]:
+			var color_child: TreeItem = new_bod.create_child()
+			color_child.set_cell_mode(0, TreeItem.CELL_MODE_STRING)
+			color_child.set_cell_mode(1, TreeItem.CELL_MODE_RANGE)
+			color_child.set_text(0, "Colors")
+			color_child.set_text(1, "1 Color,2 Colors,3+ Colors")
+			color_child.set_editable(1, true)
+			color_child.set_metadata(0, {"index": -1})
+		
+		var prop_idx: int = -1
+		if bod_name.has("properties"):
+			for property in bod_name["properties"]:
+				prop_idx += 1
+				var new_prop: TreeItem = new_bod.create_child()
+				new_prop.set_cell_mode(0, TreeItem.CELL_MODE_STRING)
+				new_prop.set_cell_mode(1, property["mode"])
+				
+				new_prop.set_editable(1, true)
+				
+				new_prop.set_text(0, property["name"])
+				new_prop.set_metadata(0, {"index": prop_idx})
+				
+				match property["mode"]:
+					TreeItem.CELL_MODE_RANGE:
+						new_prop.set_text(1, property["text"])
+						new_prop.set_range(
+								1,
+								property["value"] if property.has("value") else 0)
+					TreeItem.CELL_MODE_CHECK:
+						new_prop.set_text(1, property["text"])
+						new_prop.set_checked(
+							1,
+							property["value"] if property.has("value") else false)
+		
+		new_bod.set_metadata(
+				0,
+				{
+					"index": idx,
+					"tag": bod_name["tag"],
+					"include_standalone": bod_name["include_standalone"],
+					"exclude_values": bod_name["exclude_values"] if bod_name.has("exclude_values") else []})
+		
+		
 
 
 func add_body_types(to: OptionButton, select: int = 0) -> void:
-	const BODIES: PackedStringArray = ["Anthro", "Semi-Anthro", "Semi-Feral", "Feral", "Human", "Humanoid", "Taur"]
 	const TAGS: Array[Array] = [["anthro"], ["anthro", "semi-anthro"], ["feral", "semi-anthro"], ["feral"], ["human"], ["humanoid"], ["taur"]]
 	
 	#var idx: int = -1
@@ -936,7 +1638,7 @@ func add_body_types(to: OptionButton, select: int = 0) -> void:
 
 
 func add_ages(to: OptionButton, include_na: bool = false, select: int = 4) -> void:
-	const AGES: PackedStringArray = ["Baby", "Toddler", "Child", "Adolescent", "Adult", "Mature", "Elderly"]
+	#const AGES: PackedStringArray = ["Baby", "Toddler", "Child", "Adolescent", "Adult", "Mature", "Elderly"]
 	const TAGS: PackedStringArray = ["baby", "toddler", "child", "adolescent", "", "", "elderly"]
 	var item_idx: int = -1
 	
@@ -954,7 +1656,7 @@ func add_ages(to: OptionButton, include_na: bool = false, select: int = 4) -> vo
 
 
 func add_genders(to: OptionButton, include_na: bool = false, select: int = 0) -> void:
-	const GENDERS: PackedStringArray = ["Male", "Female", "Ambiguous Gender", "Andromorph", "Gynomorph", "Hermaphrodite", "Male Hermaphrodite"]
+	#const GENDERS: PackedStringArray = ["Male", "Female", "Ambiguous Gender", "Andromorph", "Gynomorph", "Hermaphrodite", "Male Hermaphrodite"]
 	const ICONS: Array[Resource] = [
 		preload("res://icons/male_icon.svg"),
 		preload("res://icons/female_icon.svg"),

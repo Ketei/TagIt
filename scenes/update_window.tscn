@@ -92,19 +92,18 @@ text = "[font_size=20][b][color=SKY_BLUE]New[/color][/b][/font_size]
 Created a \"What's new\" window to inform of important updates and new features.
 
 Improved keyboard navigation in some windows:
-[ul] Wizard field navigation using the Tab key.
- Advanced Search; Navigation with Tab key.
- Tab Navigation (Ctrl+Tab/Ctrl+Shift+Tab)
- Generate tag list (CTRL+G) while on the Tagger tab.[/ul]
-
-Some popups will now focus their main item when first appearing.
+[ul] [b]New tool: Wizard Characters[/b]. Create characters and autofill them on the wizard by selecting it from the dropdown, pressing enter after writing or pushing the button next to the character tag field.[/ul]
 
 [font_size=20][b][color=SKY_BLUE]Changed[/color][/b][/font_size]
-[ul]Card selector bg is now darker & better looking card search[/ul]
+[ul] Autofill popups should close on focus lost.
+ Heavily populated the wizard with new options.[/ul]
 
 [font_size=20][b][color=SKY_BLUE]Fixes[/color][/b][/font_size]
-[ul]
-Fixed the wizard not adding clothing status for characters
-Fixed wizard not adding the \"* only\" tags.
-Fixed not being able to suggest 2 or more groups on a tag.
-[/ul]"
+[ul] Fixed an issue saving alt lists. They should now generate and save correctly.
+ Changed how saving/loading/deleting is handled to prevent wrongly applying an action on a projects.
+ Fixed tagger suggesting tags that are already used or on the common list (Main List)
+ Fixed the tag fetcher not correctly fetching tag data from e621
+ Blacklists should now save/load correctly per project.
+ Loading a project will not search for suggestions again
+ Fixed alt lists not clearing from right-click menu on new/load list.[/ul]
+"

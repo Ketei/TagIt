@@ -129,13 +129,24 @@ func _on_fetch_pressed() -> void:
 		fetch_item.set_metadata(1, QueueStatus.DOWNLOADING)
 		log_label.append_text("Fetching tag: \"" + fetch_item.get_metadata(0) + "\"\n")
 		var data: Dictionary = await SingletonManager.eSixAPI.fetch_tag_data(fetch_item.get_metadata(0))
-		Arrays.clean_tag_array(data["aliases"])
-		Arrays.clean_tag_array(data["parents"])
-		Arrays.clean_tag_array(data["suggestions"])
 		
-		Arrays.remove_all(data["aliases"], fetch_item.get_metadata(0))
-		Arrays.remove_all(data["parents"], fetch_item.get_metadata(0))
-		Arrays.remove_all(data["suggestions"], fetch_item.get_metadata(0))
+		var aliases: Array = data["aliases"]
+		var parents: Array = data["parents"]
+		var suggestions: Array = data["suggestions"]
+		
+		Arrays.clean_tag_array(aliases)
+		Arrays.clean_tag_array(parents)
+		Arrays.clean_tag_array(suggestions)
+		
+		Arrays.remove_all(parents, fetch_item.get_metadata(0))
+		Arrays.remove_all(aliases, fetch_item.get_metadata(0))
+		Arrays.remove_all(suggestions, fetch_item.get_metadata(0))
+		
+		Arrays.substract_array(suggestions, parents)
+		
+		data["aliases"] = PackedStringArray(aliases)
+		data["parents"] = PackedStringArray(parents)
+		data["suggestions"] = PackedStringArray(suggestions)
 		
 		log_label.append_text("\"" + fetch_item.get_metadata(0) + "\" fetched (Ready to store in DB)\n")
 		fetched_tags[fetch_item.get_metadata(0)] = data
@@ -204,6 +215,7 @@ func on_save_pressed() -> void:
 		SingletonManager.TagIt.add_suggestions(
 				tag_id,
 				fetched_tags[tag]["suggestions"])
+		
 		SingletonManager.TagIt.add_aliases(
 				fetched_tags[tag]["aliases"],
 				tag)

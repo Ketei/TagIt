@@ -20,7 +20,9 @@ signal website_deleted(site_id: int)
 const DATABASE_PATH: String = "user://tag_database.db"
 const SEARCH_WILDCARD: String = "*"
 const DB_VERSION: int = 3
-const TAGIT_VERSION_ARRAY: Array[int] = [3,3,5]
+const PROJECTS_VERSION: int = 2
+const TEMPLATES_VERSION: int = 2
+const TAGIT_VERSION_ARRAY: Array[int] = [3, 3, 6]
 const MAX_PARENT_RECURSION: int = 100
 const IMAGE_LIMITS: Vector2i = Vector2i(1000, 1000)
 const LEV_DISTANCE: float = 0.75
@@ -197,6 +199,13 @@ func _ready() -> void:
 			AND NOT EXISTS (SELECT 1 FROM suggestions WHERE suggestions.suggestion_id = tags.id);"
 		)
 	
+	if settings.projects_version < PROJECTS_VERSION:
+		update_projects(settings.projects_version)
+		settings.projects_version = PROJECTS_VERSION
+	if settings.templates_version < TEMPLATES_VERSION:
+		update_templates(settings.templates_version)
+		settings.templates_version = TEMPLATES_VERSION
+	
 	var data_tags: Array[String] = []
 	tag_database.query("SELECT tags.id, tags.name, tags.is_valid, IIF(data.tag_id IS NULL, 0, 1) AS has_data FROM tags LEFT JOIN data ON data.tag_id = tags.id;")
 	for dict in tag_database.query_result:
@@ -239,6 +248,33 @@ func _get_icon_data(id: int) -> Dictionary: # Maybe integrate up
 	return {
 		"name": db_data[0]["name"] if db_data[0]["name"] != null else "",
 		"texture": ImageTexture.create_from_image(icon_image)}
+
+
+func update_projects(from_version: int) -> void:
+	var projects: TagItProjectResource = TagItProjectResource.get_projects()
+	var current_version: int = from_version
+	if current_version == 1:
+		for project in projects.projects:
+			project["_uuid"] = projects.get_new_project_uuid()
+			if not project.has("blacklist_groups"):
+				project["blacklist_groups"] = PackedInt64Array()
+			if not project.has("blacklist_tags"):
+				project["blacklist_tags"] = PackedStringArray()
+			if 1 < project["alt_lists"].size(): # Wrong alt list naming
+				for project_idx in range(project["alt_lists"].size() - 1):
+					project["alt_lists"][project_idx]["name"] = project["alt_lists"][project_idx + 1]["name"]
+		current_version += 1
+	projects.save()
+
+
+func update_templates(from_version: int) -> void:
+	var templates: TemplateResource = TemplateResource.get_templates()
+	var current_version: int = from_version
+	if current_version == 1:
+		for template in templates.templates:
+			template["_uuid"] = templates.get_new_template_uuid()
+		current_version += 1
+	templates.save()
 
 
 # Incrementally applies updates to the table structure

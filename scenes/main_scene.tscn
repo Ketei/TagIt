@@ -339,6 +339,7 @@ size_flags_horizontal = 3
 placeholder_text = "Add Tag"
 caret_blink = true
 list_direction = 1
+close_on_focus_lost = true
 
 [node name="SuggestionContainer" type="VSplitContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer"]
 layout_mode = 2
@@ -669,6 +670,7 @@ placeholder_text = "Search Wiki"
 caret_blink = true
 list_direction = 1
 replace_on_item_select = true
+close_on_focus_lost = true
 
 [node name="SearchBtn" type="Button" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/SearchContainer"]
 custom_minimum_size = Vector2(32, 32)
