@@ -104,5 +104,6 @@ Improved keyboard navigation in some windows:
  Fixed tagger suggesting tags that are already used or on the common list (Main List)
  Fixed the tag fetcher not correctly fetching tag data from e621
  Blacklists should now save/load correctly per project.
- Loading a project will not search for suggestions again.[/ul]
+ Loading a project will not search for suggestions again
+ Fixed alt lists not clearing from right-click menu on new/load list.[/ul]
 "
