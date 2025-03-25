@@ -99,4 +99,6 @@ Improved keyboard navigation in some windows:
  Changed character traits on wizard.[/ul]
 
 [font_size=20][b][color=SKY_BLUE]Fixes[/color][/b][/font_size]
+[ul] Fixed an issue saving alt lists. They should now generate and save correctly.
+ Changed how saving/loading/deleting is handled to prevent wrongly applying an action on a project.[/ul]
 "
