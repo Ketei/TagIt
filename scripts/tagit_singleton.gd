@@ -22,7 +22,7 @@ const SEARCH_WILDCARD: String = "*"
 const DB_VERSION: int = 3
 const PROJECTS_VERSION: int = 2
 const TEMPLATES_VERSION: int = 2
-const TAGIT_VERSION_ARRAY: Array[int] = [3, 3, 6]
+const TAGIT_VERSION_ARRAY: Array[int] = [3, 3, 7]
 const MAX_PARENT_RECURSION: int = 100
 const IMAGE_LIMITS: Vector2i = Vector2i(1000, 1000)
 const LEV_DISTANCE: float = 0.75
@@ -260,7 +260,7 @@ func update_projects(from_version: int) -> void:
 				project["blacklist_groups"] = PackedInt64Array()
 			if not project.has("blacklist_tags"):
 				project["blacklist_tags"] = PackedStringArray()
-			if 1 < project["alt_lists"].size(): # Wrong alt list naming
+			if 1 < project["alt_lists"].size() and project["alt_lists"][-1]["list"] == null: # Wrong alt list naming
 				for project_idx in range(project["alt_lists"].size() - 1):
 					project["alt_lists"][project_idx]["name"] = project["alt_lists"][project_idx + 1]["name"]
 		current_version += 1
