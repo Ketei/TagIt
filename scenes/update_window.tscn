@@ -96,9 +96,9 @@ Improved keyboard navigation in some windows:
 
 [font_size=20][b][color=SKY_BLUE]Changed[/color][/b][/font_size]
 [ul] Autofill popups should close on focus lost.
- Changed character traits on wizard.[/ul]
+ Heavily populated the wizard with new options.[/ul]
 
 [font_size=20][b][color=SKY_BLUE]Fixes[/color][/b][/font_size]
 [ul] Fixed an issue saving alt lists. They should now generate and save correctly.
- Changed how saving/loading/deleting is handled to prevent wrongly applying an action on a project.[/ul]
+ Changed how saving/loading/deleting is handled to prevent wrongly applying an action on a projects.[/ul]
 "
