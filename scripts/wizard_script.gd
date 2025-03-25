@@ -299,7 +299,7 @@ const BODY_TYPES: Array[Dictionary] = [
 		"properties": [
 			{
 				"name": "Inner colors",
-				"mode": TreeItem.CELL_MODE_CHECK,
+				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Monotone,Two Tones,Multicolored,N/A",
 				"tags": ["monotone inner ear", "two tone inner ear", "multicolored inner ear", ""],
 				"value": 0
@@ -1472,7 +1472,7 @@ func generate_tags() -> Array[String]:
 		var clothing_score: int = 0
 		
 		if character["name"].is_empty():
-			character_tags.append("unknown character")
+			character_tags.append("character request")
 		else:
 			character_tags.append(character["name"])
 		
