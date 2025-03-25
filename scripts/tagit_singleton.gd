@@ -256,6 +256,9 @@ func update_projects(from_version: int) -> void:
 	if current_version == 1:
 		for project in projects.projects:
 			project["_uuid"] = projects.get_new_project_uuid()
+			if 1 < project["alt_lists"].size(): # Wrong alt list naming
+				for project_idx in range(project["alt_lists"].size() - 1):
+					project["alt_lists"][project_idx]["name"] = project["alt_lists"][project_idx + 1]["name"]
 		current_version += 1
 	projects.save()
 
