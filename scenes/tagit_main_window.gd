@@ -1304,6 +1304,9 @@ func clear_all_tagger() -> void:
 	for alt in range(1, alt_opt_btn.item_count):
 		alt_opt_btn.remove_item(alt)
 		generate_version_opt_btn.remove_item(alt)
+	alt_opt_btn.select(0)
+	generate_version_opt_btn.select(0)
+	tags_tree.clear_popup_alts()
 	delete_alt_list_btn.disabled = true
 	tags_label.clear()
 	alt_lists.clear()
@@ -1365,6 +1368,8 @@ func on_selector_project_selected(project_uuid: String) -> void:
 	var projects := TagItProjectResource.get_projects()
 	var data: Dictionary = projects.get_project_data(project_uuid)
 	clear_all_tagger()
+	_suggestion_blacklist.clear()
+	_group_blacklist.clear()
 	
 	var groups := SingletonManager.TagIt.get_groups_and_tags(data["groups"])
 	var all_groups := SingletonManager.TagIt.get_tag_groups()
@@ -1381,9 +1386,7 @@ func on_selector_project_selected(project_uuid: String) -> void:
 		alt_select_container.visible = true
 	
 	custom_order_list = data["custom_priorities"].duplicate() if data.has("custom_priorities") else {}
-	_suggestion_blacklist.clear()
 	_suggestion_blacklist.append_array(data["blacklist_tags"])
-	_group_blacklist.clear()
 	for blacklist_group in data["blacklist_groups"]:
 		if all_groups.has(blacklist_group):
 			_group_blacklist.append(blacklist_group)

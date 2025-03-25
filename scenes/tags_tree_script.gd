@@ -185,6 +185,13 @@ func add_alt_list(alt_list_name: String) -> void:
 	alt_list_submenu.add_item(alt_list_name)
 
 
+func clear_popup_alts() -> void:
+	for alt in range(2, alt_list_submenu.item_count):
+		alt_list_submenu.remove_item(alt)
+	_current_alt = 0
+	alt_list_submenu.set_item_disabled(1, true)
+
+
 func _on_tags_moved(result: bool, indexes: Array[int]) -> void:
 	if result:
 		indexes.sort_custom(Arrays.sort_custom_desc)
