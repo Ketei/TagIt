@@ -465,7 +465,9 @@ func _notification(what):
 							groups_suggestions_tree.get_all_groups(),
 							image_path,
 							alts,
-							custom_order_list.duplicate())
+							custom_order_list.duplicate(),
+							_suggestion_blacklist.duplicate(),
+							_group_blacklist.duplicate())
 					projects.save()
 				else:
 					_saving = true
@@ -516,7 +518,9 @@ func _notification(what):
 								groups_suggestions_tree.get_all_groups(),
 								image_path,
 								alts,
-								custom_order_list.duplicate())
+								custom_order_list.duplicate(),
+								_suggestion_blacklist,
+								_group_blacklist)
 						projects.save()
 					else:# Save was cancelled
 						extra_saver.play_outro()
@@ -1020,7 +1024,9 @@ func save_current_project_indexed() -> void:
 			groups_suggestions_tree.get_all_groups(),
 			image_path,
 			alts,
-			custom_order_list.duplicate())
+			custom_order_list.duplicate(),
+			_suggestion_blacklist.duplicate(),
+			_group_blacklist.duplicate())
 	projects.save()
 	_save_required = false
 
@@ -1334,7 +1340,9 @@ func on_selector_project_saved(title: String) -> void:
 			groups_suggestions_tree.get_all_groups(),
 			image_path,
 			alts,
-			custom_order_list.duplicate())
+			custom_order_list.duplicate(),
+			_suggestion_blacklist.duplicate(),
+			_group_blacklist.duplicate())
 	
 	projects.save()
 	
@@ -1358,17 +1366,8 @@ func on_selector_project_selected(project_uuid: String) -> void:
 	var data: Dictionary = projects.get_project_data(project_uuid)
 	clear_all_tagger()
 	
-	for tag in data["tags"]:
-		add_tag(tag)
-	
-	for suggestion in data["suggestions"]:
-		if SingletonManager.TagIt.has_tag(suggestion):
-			if not tagger_suggestion_tree.has_suggestion(suggestion):
-				tagger_suggestion_tree.add_suggestion(suggestion)
-		else:
-			tagger_suggestion_tree.add_suggestion(suggestion)
-	
 	var groups := SingletonManager.TagIt.get_groups_and_tags(data["groups"])
+	var all_groups := SingletonManager.TagIt.get_tag_groups()
 	
 	for group_id in groups:
 		add_group(group_id, groups[group_id]["group_name"], groups[group_id]["tags"])
@@ -1381,6 +1380,24 @@ func on_selector_project_selected(project_uuid: String) -> void:
 		list_version_container.visible = true
 		alt_select_container.visible = true
 	
+	custom_order_list = data["custom_priorities"].duplicate() if data.has("custom_priorities") else {}
+	_suggestion_blacklist.clear()
+	_suggestion_blacklist.append_array(data["blacklist_tags"])
+	_group_blacklist.clear()
+	for blacklist_group in data["blacklist_groups"]:
+		if all_groups.has(blacklist_group):
+			_group_blacklist.append(blacklist_group)
+	
+	for tag in data["tags"]:
+		add_tag(tag, false, true)
+	
+	for suggestion in data["suggestions"]:
+		if SingletonManager.TagIt.has_tag(suggestion):
+			if not tagger_suggestion_tree.has_suggestion(suggestion):
+				tagger_suggestion_tree.add_suggestion(suggestion)
+		else:
+			tagger_suggestion_tree.add_suggestion(suggestion)
+	
 	for alt_list_dict in data["alt_lists"]:
 		if alt_list_dict["list"] == null:
 			continue
@@ -1389,7 +1406,6 @@ func on_selector_project_selected(project_uuid: String) -> void:
 		alt_lists.append(alt_list_dict["list"])
 		tags_tree.add_alt_list(alt_list_dict["name"])
 	
-	custom_order_list = data["custom_priorities"].duplicate() if data.has("custom_priorities") else {}
 	
 	if prio_list_node != null:
 		prio_list_node.priority_tags = custom_order_list

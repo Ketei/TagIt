@@ -256,6 +256,10 @@ func update_projects(from_version: int) -> void:
 	if current_version == 1:
 		for project in projects.projects:
 			project["_uuid"] = projects.get_new_project_uuid()
+			if not project.has("blacklist_groups"):
+				project["blacklist_groups"] = PackedInt64Array()
+			if not project.has("blacklist_tags"):
+				project["blacklist_tags"] = PackedStringArray()
 			if 1 < project["alt_lists"].size(): # Wrong alt list naming
 				for project_idx in range(project["alt_lists"].size() - 1):
 					project["alt_lists"][project_idx]["name"] = project["alt_lists"][project_idx + 1]["name"]

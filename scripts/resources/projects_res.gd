@@ -28,7 +28,7 @@ static func get_projects() -> TagItProjectResource:
 	return TagItProjectResource.new()
 
 
-func create_project(p_name: String, tags: Array[String], suggestions: Array[String], groups: Array[int], image_path: String, alt_lists: Array[Dictionary], custom_priorities: Dictionary) -> String:
+func create_project(p_name: String, tags: Array[String], suggestions: Array[String], groups: Array[int], image_path: String, alt_lists: Array[Dictionary], custom_priorities: Dictionary, blacklist: PackedStringArray, group_blacklist: PackedInt64Array) -> String:
 	var project_uuid: String = get_new_project_uuid()
 	projects.append({
 		"_uuid": project_uuid,
@@ -38,7 +38,9 @@ func create_project(p_name: String, tags: Array[String], suggestions: Array[Stri
 		"groups": groups,
 		"image_path": image_path,
 		"alt_lists": alt_lists,
-		"custom_priorities": custom_priorities})
+		"custom_priorities": custom_priorities,
+		"blacklist_tags": blacklist,
+		"blacklist_groups": group_blacklist})
 	return project_uuid
 
 
@@ -63,7 +65,7 @@ func get_project_tags(uuid: String) -> Array[String]:
 	return Array([], TYPE_STRING, &"", null)
 
 
-func overwrite_project(project_uuid: String, p_name: String, tags: Array[String], suggestions: Array[String], groups: Array[int], image_path: String, alt_lists: Array[Dictionary], custom_priorities: Dictionary) -> void:
+func overwrite_project(project_uuid: String, p_name: String, tags: Array[String], suggestions: Array[String], groups: Array[int], image_path: String, alt_lists: Array[Dictionary], custom_priorities: Dictionary, suggestion_blacklist: PackedStringArray, group_blacklist: PackedInt64Array) -> void:
 	for project in projects:
 		if not project["_uuid"] == project_uuid:
 			continue
@@ -74,6 +76,8 @@ func overwrite_project(project_uuid: String, p_name: String, tags: Array[String]
 		project["image_path"] = image_path
 		project["alt_lists"] = alt_lists
 		project["custom_priorities"] = custom_priorities
+		project["blacklist_tags"] = suggestion_blacklist
+		project["blacklist_groups"] = group_blacklist
 		break
 
 

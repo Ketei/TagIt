@@ -102,5 +102,7 @@ Improved keyboard navigation in some windows:
 [ul] Fixed an issue saving alt lists. They should now generate and save correctly.
  Changed how saving/loading/deleting is handled to prevent wrongly applying an action on a projects.
  Fixed tagger suggesting tags that are already used or on the common list (Main List)
- Fixed the tag fetcher not correctly fetching tag data from e621[/ul]
+ Fixed the tag fetcher not correctly fetching tag data from e621
+ Blacklists should now save/load correctly per project.
+ Loading a project will not search for suggestions again.[/ul]
 "
