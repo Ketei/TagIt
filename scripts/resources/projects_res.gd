@@ -28,9 +28,10 @@ static func get_projects() -> TagItProjectResource:
 	return TagItProjectResource.new()
 
 
-func create_project(p_name: String, tags: Array[String], suggestions: Array[String], groups: Array[int], image_path: String, alt_lists: Array[Dictionary], custom_priorities: Dictionary) -> int:
-	var project_index: int = projects.size()
+func create_project(p_name: String, tags: Array[String], suggestions: Array[String], groups: Array[int], image_path: String, alt_lists: Array[Dictionary], custom_priorities: Dictionary) -> String:
+	var project_uuid: String = get_new_project_uuid()
 	projects.append({
+		"_uuid": project_uuid,
 		"name": p_name,
 		"tags": tags,
 		"suggestions": suggestions,
@@ -38,26 +39,84 @@ func create_project(p_name: String, tags: Array[String], suggestions: Array[Stri
 		"image_path": image_path,
 		"alt_lists": alt_lists,
 		"custom_priorities": custom_priorities})
-	return project_index
+	return project_uuid
 
 
-func overwrite_project(project_idx: int,p_name: String, tags: Array[String], suggestions: Array[String], groups: Array[int], image_path: String, alt_lists: Array[Dictionary], custom_priorities: Dictionary) -> void:
-	projects[project_idx] = {
-		"name": p_name,
-		"tags": tags,
-		"suggestions": suggestions,
-		"groups": groups,
-		"image_path": image_path,
-		"alt_lists": alt_lists,
-		"custom_priorities": custom_priorities}
+func get_project_data(uuid: String) -> Dictionary:
+	for project in projects:
+		if project["_uuid"] == uuid:
+			return project
+	return {}
 
 
-func delete_project(project_idx: int) -> void:
-	if not projects[project_idx]["image_path"].is_empty():
-		var thumbnail_path: String = get_thumbnails_path() + projects[project_idx]["image_path"]
-		if FileAccess.file_exists(thumbnail_path):
-			OS.move_to_trash(thumbnail_path)
-	projects.remove_at(project_idx)
+func get_project_suggestions(uuid: String) -> Array[String]:
+	for project in projects:
+		if project["_uuid"] == uuid:
+			return project["suggestions"]
+	return Array([], TYPE_STRING, &"", null)
+
+
+func get_project_tags(uuid: String) -> Array[String]:
+	for project in projects:
+		if project["_uuid"] == uuid:
+			return project["tags"]
+	return Array([], TYPE_STRING, &"", null)
+
+
+func overwrite_project(project_uuid: String, p_name: String, tags: Array[String], suggestions: Array[String], groups: Array[int], image_path: String, alt_lists: Array[Dictionary], custom_priorities: Dictionary) -> void:
+	for project in projects:
+		if not project["_uuid"] == project_uuid:
+			continue
+		project["name"] = p_name
+		project["tags"] = tags
+		project["suggestions"] = suggestions
+		project["groups"] = groups
+		project["image_path"] = image_path
+		project["alt_lists"] = alt_lists
+		project["custom_priorities"] = custom_priorities
+		break
+
+
+func get_new_project_uuid() -> String:
+	var uuid: String = Strings.random_string64()
+
+	while is_uuid_used(uuid):
+		uuid = Strings.random_string64()
+	
+	return uuid
+
+
+func get_project_image_path(uuid: String) -> String:
+	for project in projects:
+		if project["_uuid"] == uuid:
+			return project["image_path"]
+	return ""
+
+
+func get_project_title(uuid: String) -> String:
+	for project in projects:
+		if project["_uuid"] == uuid:
+			return project["name"]
+	return ""
+
+
+func is_uuid_used(uuid: String) -> bool:
+	for project in projects:
+		if project.has("_uuid") and project["_uuid"] == uuid:
+			return true
+	return false
+
+
+func delete_project(project_uuid: String) -> void:
+	for project_idx in range(projects.size()):
+		if projects[project_idx]["_uuid"] != project_uuid:
+			continue
+		if not projects[project_idx]["image_path"].is_empty():
+			var thumbnail_path: String = get_thumbnails_path() + projects[project_idx]["image_path"]
+			if FileAccess.file_exists(thumbnail_path):
+				OS.move_to_trash(thumbnail_path)
+		projects.remove_at(project_idx)
+		break
 
 
 func save() -> void:
