@@ -1,0 +1,227 @@
+[gd_scene load_steps=15 format=3 uid="uid://dkjhh7s4wlwij"]
+
+[ext_resource type="Script" path="res://scenes/projects_container_vertical.gd" id="1_5qys5"]
+[ext_resource type="Script" path="res://addons/SmoothScroll/SmoothScrollContainer.gd" id="2_a8wpt"]
+[ext_resource type="Script" path="res://addons/SmoothScroll/scroll_damper/expo_scroll_damper.gd" id="3_x2n7q"]
+[ext_resource type="Texture2D" uid="uid://vypb46ut3fil" path="res://icons/x_icon.svg" id="5_jclmn"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rxfwt"]
+bg_color = Color(0.1729, 0.181165, 0.19, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.505344, 0.505344, 0.505344, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="Gradient" id="Gradient_xkht6"]
+offsets = PackedFloat32Array(0, 0.025, 0.975, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 0.784314, 0, 0, 0, 0.784314, 0, 0, 0, 0)
+metadata/_snap_enabled = true
+metadata/_snap_count = 20
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_jn2pv"]
+gradient = SubResource("Gradient_xkht6")
+fill_from = Vector2(1, 0)
+fill_to = Vector2(0, 0)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ipan3"]
+texture = SubResource("GradientTexture2D_jn2pv")
+
+[sub_resource type="Resource" id="Resource_8ueq1"]
+script = ExtResource("3_x2n7q")
+friction = 4.0
+minimum_velocity = 0.4
+rebound_strength = 7.0
+
+[sub_resource type="Resource" id="Resource_hhosr"]
+script = ExtResource("3_x2n7q")
+friction = 4.0
+minimum_velocity = 0.4
+rebound_strength = 7.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wonnl"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.180392, 0.180392, 0.180392, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3596, 0.54694, 0.58, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_japs3"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.180392, 0.180392, 0.180392, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_po480"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.099986, 0.099986, 0.099986, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.3705, 0.608075, 0.65, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="Theme" id="Theme_q0iom"]
+Button/styles/hover = SubResource("StyleBoxFlat_wonnl")
+Button/styles/normal = SubResource("StyleBoxFlat_japs3")
+Button/styles/pressed = SubResource("StyleBoxFlat_po480")
+
+[node name="ProjectsContainer" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_5qys5")
+
+[node name="DimLight" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.588235)
+
+[node name="ProjectsContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CenterContainer" type="VBoxContainer" parent="ProjectsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="SearchPanel" type="PanelContainer" parent="ProjectsContainer/CenterContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_rxfwt")
+
+[node name="SearchLnEdt" type="LineEdit" parent="ProjectsContainer/CenterContainer/SearchPanel"]
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
+focus_neighbor_left = NodePath(".")
+focus_neighbor_top = NodePath(".")
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath(".")
+focus_next = NodePath(".")
+focus_previous = NodePath(".")
+placeholder_text = "Search Card"
+alignment = 1
+flat = true
+
+[node name="MainPanel" type="PanelContainer" parent="ProjectsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_ipan3")
+
+[node name="MainMargin" type="MarginContainer" parent="ProjectsContainer/MainPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 4.0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 40
+
+[node name="MainContainer" type="VBoxContainer" parent="ProjectsContainer/MainPanel/MainMargin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="CardsScroll" type="ScrollContainer" parent="ProjectsContainer/MainPanel/MainMargin/MainContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+follow_focus = true
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 0
+script = ExtResource("2_a8wpt")
+wheel_scroll_damper = SubResource("Resource_8ueq1")
+dragging_scroll_damper = SubResource("Resource_hhosr")
+drag_with_mouse = false
+drag_with_touch = false
+allow_vertical_scroll = false
+allow_overdragging = false
+
+[node name="CardsMargin" type="MarginContainer" parent="ProjectsContainer/MainPanel/MainMargin/MainContainer/CardsScroll"]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 0
+
+[node name="CardsContainer" type="VBoxContainer" parent="ProjectsContainer/MainPanel/MainMargin/MainContainer/CardsScroll/CardsMargin"]
+layout_mode = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="ProjectsContainer/MainPanel/MainMargin/MainContainer/CardsScroll/CardsMargin"]
+visible = false
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="ProjectsContainer/MainPanel/MainMargin/MainContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 150
+theme_override_constants/margin_right = 150
+
+[node name="ButtonsContainer" type="HBoxContainer" parent="ProjectsContainer/MainPanel/MainMargin/MainContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="CancelButton" type="Button" parent="ProjectsContainer/MainPanel/MainMargin/MainContainer/MarginContainer/ButtonsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_previous = NodePath("../SaveButton")
+theme = SubResource("Theme_q0iom")
+text = "Cancel"
+
+[node name="SaveButton" type="Button" parent="ProjectsContainer/MainPanel/MainMargin/MainContainer/MarginContainer/ButtonsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+focus_next = NodePath("../CancelButton")
+theme = SubResource("Theme_q0iom")
+text = "Save"
+
+[node name="HeaderContainer" type="HBoxContainer" parent="ProjectsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="CloseButton" type="Button" parent="ProjectsContainer/HeaderContainer"]
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+icon = ExtResource("5_jclmn")
+icon_alignment = 1
+expand_icon = true
