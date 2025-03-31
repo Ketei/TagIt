@@ -65,8 +65,6 @@ func _ready() -> void:
 	else:
 		desc_label.visible = false
 	
-	save_button.visible = use_save
-	cancel_button.visible = use_save
 	card_select_button.visible = not use_save
 	
 	title_label.text = title
@@ -88,8 +86,8 @@ func _ready() -> void:
 	card_select_button.pressed.connect(_on_card_selected)
 	$MenuCard/PanelContainer/MarginContainer/ButtonsContaintainer/SelectButton.pressed.connect(_on_card_confirmed)
 	$MenuCard/PanelContainer/MarginContainer/ButtonsContaintainer/DeleteButton.pressed.connect(_on_card_deleted)
-	save_button.pressed.connect(_on_card_saved)
-	cancel_button.pressed.connect(_on_card_cancelled)
+	#save_button.pressed.connect(_on_card_saved)
+	#cancel_button.pressed.connect(_on_card_cancelled)
 
 
 func _on_card_selected() -> void:
@@ -101,7 +99,7 @@ func _on_card_confirmed() -> void:
 
 
 func _on_card_deleted() -> void:
-	card_deleted.emit(self)
+	card_deleted.emit(get_parent())
 
 
 func _on_card_cancelled() -> void:

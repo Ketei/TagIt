@@ -1,6 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://bobo2j4hl2ck3"]
+[gd_scene load_steps=3 format=3 uid="uid://bobo2j4hl2ck3"]
 
 [ext_resource type="Script" path="res://scenes/full_card_container_script.gd" id="1_8x8an"]
+[ext_resource type="PackedScene" uid="uid://ueqfate2vd1b" path="res://scenes/card_container.tscn" id="2_ufokr"]
 
 [node name="FullCardContainer" type="Container"]
 script = ExtResource("1_8x8an")
+
+[node name="CardContainer" parent="." instance=ExtResource("2_ufokr")]
+layout_mode = 2

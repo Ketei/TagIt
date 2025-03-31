@@ -22,14 +22,14 @@ var group_save_enabled: bool = false
 var focused_child: Control = null
 var use_descriptions: bool = true
 var _allow_signals: bool = true
-@onready var container: Container = $VBoxContainer/PanelContainer/MarginContainer/SmoothScrollContainer/CenterContainer/Container
 @onready var margin: MarginContainer = $VBoxContainer/PanelContainer/MarginContainer
 @onready var black: PanelContainer = $VBoxContainer/PanelContainer
 @onready var close_button: Button = $VBoxContainer/HBoxContainer/CloseButton
 @onready var search_ln_edt: LineEdit = $VBoxContainer/CenterContainer/SearchPanel/SearchLnEdt
 @onready var dim_light: ColorRect = $DimLight
 @onready var search_panel: PanelContainer = $VBoxContainer/CenterContainer/SearchPanel
-@onready var scroller: SmoothScrollContainer = $VBoxContainer/PanelContainer/MarginContainer/SmoothScrollContainer
+@onready var container: Container = $VBoxContainer/PanelContainer/MarginContainer/ContentContainer/SmoothScrollContainer/CenterContainer/Container
+@onready var scroller: SmoothScrollContainer = $VBoxContainer/PanelContainer/MarginContainer/ContentContainer/SmoothScrollContainer
 
 
 

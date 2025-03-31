@@ -121,8 +121,8 @@ func _on_card_saved(title: String) -> void:
 	card_saved.emit(title)
 
 
-func _on_card_deleted(card: ProjectCard) -> void:
-	var card_uuid: String = card.project_uuid
+func _on_card_deleted(card: CardContainer) -> void:
+	var card_uuid: String = card.card.project_uuid
 	card.queue_free()
 	if _allow_signals:
 		card_deleted.emit(card_uuid)

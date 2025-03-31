@@ -13,7 +13,8 @@ metadata/_snap_count = 20
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_jn2pv"]
 gradient = SubResource("Gradient_xkht6")
-fill_to = Vector2(0, 1)
+fill_from = Vector2(1, 0)
+fill_to = Vector2(0, 0)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ipan3"]
 texture = SubResource("GradientTexture2D_jn2pv")
