@@ -59,6 +59,9 @@ func _input(_event: InputEvent) -> void:
 		if group_save_enabled:
 			save_finished.emit(false, "")
 		get_viewport().set_input_as_handled()
+	elif Input.is_action_just_pressed(&"ui_focus_next") and not search_ln_edt.has_focus():
+		search_ln_edt.grab_focus()
+		get_viewport().set_input_as_handled()
 
 
 func _on_search_text_submitted(new_text: String) -> void:
@@ -73,6 +76,10 @@ func _on_close_pressed() -> void:
 	close_pressed.emit()
 	if group_save_enabled:
 		save_finished.emit(false, "")
+
+
+func focus_main() -> void:
+	search_ln_edt.grab_focus()
 
 
 func add_project(title: String, description: String, image: Texture2D, project_uuid: String, grab_focus_field: int = -1) -> void:

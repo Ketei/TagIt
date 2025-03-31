@@ -163,6 +163,7 @@ wrap_mode = 1
 
 [node name="CardSelectButton" type="Button" parent="MenuCard"]
 layout_mode = 2
+focus_mode = 0
 theme_override_styles/focus = SubResource("StyleBoxFlat_28kti")
 flat = true
 

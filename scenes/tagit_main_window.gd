@@ -1124,6 +1124,7 @@ func instance_project_loader_selector() -> void:
 	selector.dim_background = true
 	selector.allow_card_signals = false
 	add_child(selector)
+	selector.focus_main()
 	selector.set_emit_signals(false)
 	selector.card_selected.connect(on_selector_project_selected)
 	selector.close_pressed.connect(on_selector_close_pressed)
@@ -1174,6 +1175,7 @@ func instance_preset_selector() -> void:
 	selector = PROJECTS_CONTAINER.instantiate()
 	selector.dim_background = true
 	add_child(selector)
+	selector.focus_main()
 	selector.set_emit_signals(false)
 	selector.card_selected.connect(on_selector_template_selected)
 	selector.close_pressed.connect(on_selector_close_pressed)

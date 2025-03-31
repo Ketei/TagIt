@@ -140,6 +140,12 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_rxfwt")
 [node name="SearchLnEdt" type="LineEdit" parent="ProjectsContainer/CenterContainer/SearchPanel"]
 custom_minimum_size = Vector2(350, 0)
 layout_mode = 2
+focus_neighbor_left = NodePath(".")
+focus_neighbor_top = NodePath(".")
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath(".")
+focus_next = NodePath(".")
+focus_previous = NodePath(".")
 placeholder_text = "Search Card"
 alignment = 1
 flat = true
