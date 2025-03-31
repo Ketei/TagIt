@@ -89,21 +89,16 @@ layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
 text = "[font_size=20][b][color=SKY_BLUE]New[/color][/b][/font_size]
-Created a \"What's new\" window to inform of important updates and new features.
-
-Improved keyboard navigation in some windows:
-[ul] [b]New tool: Wizard Characters[/b]. Create characters and autofill them on the wizard by selecting it from the dropdown, pressing enter after writing or pushing the button next to the character tag field.[/ul]
+[ul] Project title will now be displayed on the window title. When unsaved a \"*\" will appear next to the name.
+ While on the Tagger tab, you can now drop an image to load it into the project (jpg/png/webp)
+ New shortcut to open/focus tag search on Tagger window (CTRL + F)
+ Tag Fetch tool has a new button to import some or all the tags from your tag list.[/ul]
 
 [font_size=20][b][color=SKY_BLUE]Changed[/color][/b][/font_size]
-[ul] Autofill popups should close on focus lost.
- Heavily populated the wizard with new options.[/ul]
+[ul] Double-clicking on a tag on the tag searcher will add it to the current list.
+ Changed the project loader appearance. No more animations but the project's scale with the window now.
+ Wizard: \"ambiguous gender (lore)\" changed to \"nonbinary (lore)\"[/ul]
 
 [font_size=20][b][color=SKY_BLUE]Fixes[/color][/b][/font_size]
-[ul] Fixed an issue saving alt lists. They should now generate and save correctly.
- Changed how saving/loading/deleting is handled to prevent wrongly applying an action on a projects.
- Fixed tagger suggesting tags that are already used or on the common list (Main List)
- Fixed the tag fetcher not correctly fetching tag data from e621
- Blacklists should now save/load correctly per project.
- Loading a project will not search for suggestions again
- Fixed alt lists not clearing from right-click menu on new/load list.[/ul]
+[ul] Fixed Wizard character's not being created on pressing the \"Ok\" button.[/ul]
 "
