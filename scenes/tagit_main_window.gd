@@ -447,6 +447,7 @@ func _input(event: InputEvent) -> void:
 					on_search_all_tags_pressed()
 				else:
 					tag_search_node.focus_main()
+				get_viewport().set_input_as_handled()
 
 
 func _on_files_dropped(files: PackedStringArray) -> void:
