@@ -4,10 +4,10 @@ signal close_pressed
 signal card_selected(card_uuid: String)
 signal card_deleted(card_uuid: String)
 signal card_saved(card_title: String)
+signal save_finished(success: bool, title: String)
 signal intro_finished
 signal outro_finished
 signal cards_displayed
-signal save_finished(success: bool, title: String)
 
 const CARD_CONTAINER = preload("res://scenes/card_container.tscn")
 @export_range(0.05, 1.0, 0.01, "or_greater") var section_in_time: float = 1.0

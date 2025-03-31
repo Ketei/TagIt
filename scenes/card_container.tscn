@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://ueqfate2vd1b"]
+[gd_scene load_steps=12 format=3 uid="uid://ueqfate2vd1b"]
 
 [ext_resource type="Script" path="res://scenes/card_container_script.gd" id="1_twnfc"]
 [ext_resource type="Texture2D" uid="uid://wjx754svcd1w" path="res://card_gradient.tres" id="1_yvdt5"]
@@ -16,18 +16,38 @@ corner_radius_bottom_left = 5
 shadow_color = Color(0.625597, 0.625597, 0.625597, 0.6)
 shadow_size = 10
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_28kti"]
+draw_center = false
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k5bv8"]
 bg_color = Color(0, 0, 0, 0.392157)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rkcsq"]
+bg_color = Color(0.0558, 0.11169, 0.18, 0.784314)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.285113, 0.410765, 0.554697, 0.784314)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wbdxc"]
-bg_color = Color(0.366508, 0.394677, 0.446898, 1)
+bg_color = Color(0.0558, 0.11169, 0.18, 0.784314)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3atdk"]
-bg_color = Color(0.185873, 0.20218, 0.2348, 1)
+bg_color = Color(0.0558, 0.11169, 0.18, 0.784314)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.3575, 0.5525, 0.65, 0.862745)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -35,11 +55,12 @@ corner_radius_bottom_left = 8
 
 [sub_resource type="Theme" id="Theme_gt3bb"]
 Button/colors/font_color = Color(1, 1, 1, 1)
-Button/styles/hover = SubResource("StyleBoxFlat_wbdxc")
+Button/styles/hover = SubResource("StyleBoxFlat_rkcsq")
 Button/styles/normal = SubResource("StyleBoxFlat_wbdxc")
 Button/styles/pressed = SubResource("StyleBoxFlat_3atdk")
 
 [node name="CardContainer" type="VBoxContainer"]
+custom_minimum_size = Vector2(350, 480)
 offset_right = 350.0
 offset_bottom = 480.0
 alignment = 2
@@ -48,6 +69,7 @@ script = ExtResource("1_twnfc")
 [node name="MenuCard" type="PanelContainer" parent="."]
 custom_minimum_size = Vector2(350, 480)
 layout_mode = 2
+size_flags_vertical = 3
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxTexture_6gdsv")
 
@@ -141,7 +163,7 @@ wrap_mode = 1
 
 [node name="CardSelectButton" type="Button" parent="MenuCard"]
 layout_mode = 2
-focus_mode = 0
+theme_override_styles/focus = SubResource("StyleBoxFlat_28kti")
 flat = true
 
 [node name="PanelContainer" type="PanelContainer" parent="MenuCard"]
@@ -151,15 +173,16 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_k5bv8")
 
 [node name="MarginContainer" type="MarginContainer" parent="MenuCard/PanelContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_right = 10
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
 
 [node name="ButtonsContaintainer" type="VBoxContainer" parent="MenuCard/PanelContainer/MarginContainer"]
 layout_mode = 2
+theme_override_constants/separation = 50
 alignment = 1
 
 [node name="SelectButton" type="Button" parent="MenuCard/PanelContainer/MarginContainer/ButtonsContaintainer"]
-custom_minimum_size = Vector2(0, 32)
+custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
 focus_neighbor_left = NodePath(".")
 focus_neighbor_top = NodePath("../DeleteButton")
@@ -170,10 +193,11 @@ focus_previous = NodePath("../DeleteButton")
 focus_mode = 0
 mouse_filter = 1
 theme = SubResource("Theme_gt3bb")
-text = "Select"
+disabled = true
+text = "Load"
 
 [node name="DeleteButton" type="Button" parent="MenuCard/PanelContainer/MarginContainer/ButtonsContaintainer"]
-custom_minimum_size = Vector2(0, 32)
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 focus_neighbor_left = NodePath(".")
 focus_neighbor_top = NodePath("../SelectButton")
@@ -184,6 +208,7 @@ focus_previous = NodePath("../SelectButton")
 focus_mode = 0
 mouse_filter = 1
 theme = SubResource("Theme_gt3bb")
+disabled = true
 text = "Delete"
 
 [node name="SaveButton" type="Button" parent="."]

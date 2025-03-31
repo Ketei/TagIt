@@ -14,12 +14,12 @@ colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 0.784314, 0, 0, 0, 0.784314, 0, 0
 metadata/_snap_enabled = true
 metadata/_snap_count = 20
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_jn2pv"]
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_n3pvx"]
 gradient = SubResource("Gradient_ua7cw")
 fill_to = Vector2(0, 1)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ypm85"]
-texture = SubResource("GradientTexture2D_jn2pv")
+texture = SubResource("GradientTexture2D_n3pvx")
 
 [sub_resource type="Resource" id="Resource_6kbpa"]
 script = ExtResource("2_03jnl")
