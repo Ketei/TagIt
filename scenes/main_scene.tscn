@@ -915,7 +915,6 @@ grow_vertical = 0
 starting_position = Vector2(-166, 32)
 
 [node name="TagEditContainer" type="VBoxContainer" parent="MainContainer/TagsPanel/TagsMargin"]
-visible = false
 layout_mode = 2
 script = ExtResource("8_aldxp")
 
