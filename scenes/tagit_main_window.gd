@@ -15,7 +15,8 @@ const COLOR_PICKER_DIALOG = preload("res://scenes/dialogs/color_picker_dialog.ts
 const NEW_ALIAS_CONFIRM_DIALOG = preload("res://scenes/dialogs/new_alias_confirm_dialog.tscn")
 #const IMAGE_FILE_SELECTOR = preload("res://scenes/image_file_selector.tscn")
 const PROJECTS_CONTAINER = preload("res://scenes/projects_container.tscn")
-const VERTICAL_CARD_CONTAINER = preload("res://scenes/vertical_card_container.tscn")
+#const VERTICAL_CARD_CONTAINER = preload("res://scenes/vertical_card_container.tscn")
+const PROJECTS_CONTAINER_VERTICAL = preload("res://scenes/projects_container_vertical.tscn")
 const SUGGENSTION_BLACKLIST = preload("res://scenes/suggenstion_blacklist.tscn")
 const TEXT_LOADER = preload("res://scenes/text_loader.tscn")
 const ALL_TAGS_PANEL = preload("res://scenes/all_tags_panel.tscn")
@@ -101,7 +102,7 @@ var sort_submenu: PopupMenu = null
 # ----- Tagger -----
 @onready var tagger_site_opt_btn: OptionButton = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/BtnCotnainer/SiteOptBtn
 @onready var generate_list_btn: Button = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/BtnCotnainer/GenerateBtn
-@onready var project_image: TextureRect = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/ImageContainer/PanelContainer/ProjectImage
+@onready var project_image: TextureRect = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/ImageContainer/PanelContainer/ScrollZoomView/ProjectImage
 @onready var open_img_btn: Button = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/ImageContainer/BtnCtnr/OpenImgBtn
 @onready var clear_img_btn: Button = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/ImageContainer/BtnCtnr/ClearImgBtn
 @onready var tags_label: RichTextLabel = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/TagsPanel/TagsContainer/TextPanel/TextMargin/TagsLabel
@@ -125,6 +126,8 @@ var sort_submenu: PopupMenu = null
 @onready var help_button: MenuButton = $MainContainer/MenuMargin/MenuContainer/MenuButtonCont/HelpButton
 @onready var change_prio_btn: Button = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/TagsPanel/TagsContainer/ButtonsContainer/ChangePrioBtn
 @onready var main_tagger_popup: RightClickPopupMenu = $MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer/CurrentTagsContainer/TagsTree/MainTaggerPopup
+@onready var reset_view_button: Button = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/ImageContainer/BtnCtnr/ResetViewButton
+@onready var scroll_zoom_view: ScrollZoomView = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/ImageContainer/PanelContainer/ScrollZoomView
 
 # ----------------
 # ----- Tag Review -----
@@ -332,6 +335,7 @@ func _ready() -> void:
 	tags_tree.search_in_wiki_pressed.connect(_on_search_in_wiki_pressed)
 	tags_tree.tags_changed.connect(_list_changed)
 	groups_suggestions_tree.groups_deleted.connect(_on_groups_deleted)
+	reset_view_button.pressed.connect(_on_reset_view_pressed)
 	# --- Edit Tag ---
 	all_tags_search_ln_edt.text_submitted.connect(on_search_text_submitted)
 	new_tag_btn.pressed.connect(on_new_tag_pressed)
@@ -449,16 +453,23 @@ func _on_files_dropped(files: PackedStringArray) -> void:
 	if 1 < files.size() or tab_bar.current_tab != 0:
 		return
 	
-	var file_extension: String = files[0].get_extension()
+	const compatible_formats: PackedStringArray = [
+		"jpg",
+		"jpeg",
+		"png",
+		"webp"]
 	
-	if file_extension != "jpg" and file_extension != "png" and file_extension != "webp":
+	var file_extension: String = files[0].get_extension()
+	if not compatible_formats.has(file_extension):
 		return
 	
+	_on_reset_view_pressed()
 	var image := Image.load_from_file(files[0])
 	SingletonManager.TagIt.resize_image(image)
 	var texture := ImageTexture.create_from_image(image)
 	project_image.texture = texture
 	clear_img_btn.disabled = false
+	reset_view_button.disabled = false
 	_list_changed()
 
 
@@ -523,7 +534,7 @@ func _notification(what):
 					if process_in:
 						selector.set_process_input(false)
 					
-					var extra_saver := VERTICAL_CARD_CONTAINER.instantiate()
+					var extra_saver := PROJECTS_CONTAINER_VERTICAL.instantiate()
 					extra_saver.group_save_enabled = true
 					extra_saver.use_descriptions = false
 					extra_saver.editable_cards = true
@@ -531,16 +542,14 @@ func _notification(what):
 					extra_saver.use_save = true
 					extra_saver.dim_background = true
 					add_child(extra_saver)
-					extra_saver.play_intro()
-					await extra_saver.intro_finished
-					extra_saver.queue_card(
+					extra_saver.add_project(
 						current_title,
 						"",
 						project_image.texture,
 						current_project_uuid,
 						0)
-					extra_saver.create_queued_cards()
-					await extra_saver.cards_displayed
+					extra_saver.play_intro()
+					await extra_saver.intro_finished
 					extra_saver.set_emit_signals(true)
 					var save_result: Array = await extra_saver.save_finished
 					extra_saver.set_emit_signals(false)
@@ -609,6 +618,10 @@ func _notification(what):
 func _list_changed() -> void:
 	if not _save_required:
 		set_save_required(true)
+
+
+func _on_reset_view_pressed() -> void:
+	scroll_zoom_view.reset_zoom()
 
 
 func _on_suggestions_dropped(suggestions: Array[String], can_blacklist: bool) -> void:
@@ -1093,7 +1106,7 @@ func save_current_project_indexed() -> void:
 
 func instantiate_save_selector() -> void:
 	_saving = true
-	selector = VERTICAL_CARD_CONTAINER.instantiate()
+	selector = PROJECTS_CONTAINER_VERTICAL.instantiate()
 	selector.use_descriptions = false
 	selector.editable_cards = true
 	selector.use_search = false
@@ -1104,17 +1117,16 @@ func instantiate_save_selector() -> void:
 	selector.close_pressed.connect(on_selector_close_pressed.bind(true))
 	add_child(selector)
 	selector.set_emit_signals(false)
-	selector.play_intro()
-	await selector.intro_finished
-	selector.queue_card(
+	selector.add_project(
 		current_title,
 		"",
 		project_image.texture,
 		current_project_uuid,
 		0)
-	selector.create_queued_cards()
-	await selector.cards_displayed
+	selector.play_intro()
+	await selector.intro_finished
 	selector.set_emit_signals(true)
+	selector.focus_title()
 
 
 func instance_project_loader_selector() -> void:
@@ -1363,6 +1375,7 @@ func clear_all_tagger() -> void:
 	clear_group_suggestions()
 	project_image.texture = null
 	clear_img_btn.disabled = true
+	reset_view_button.disabled = true
 	for alt in range(1, alt_opt_btn.item_count):
 		alt_opt_btn.remove_item(alt)
 		generate_version_opt_btn.remove_item(alt)
@@ -2472,7 +2485,7 @@ func on_log_created(msg: String) -> void:
 func on_select_image_pressed() -> void:
 	var image_selector := FileDialog.new()
 	add_child(image_selector)
-	image_selector.add_filter("*.jpg,*.png,*.wepb", "Images")
+	image_selector.add_filter("*.jpg,*.jpeg,*.png,*.wepb", "Images")
 	image_selector.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	image_selector.access = FileDialog.ACCESS_FILESYSTEM
 	image_selector.use_native_dialog = true
@@ -2482,11 +2495,13 @@ func on_select_image_pressed() -> void:
 
 
 func on_image_selected(path: String, dialog: FileDialog) -> void:
+	_on_reset_view_pressed()
 	var image := Image.load_from_file(path)
 	SingletonManager.TagIt.resize_image(image)
 	var texture := ImageTexture.create_from_image(image)
 	project_image.texture = texture
 	clear_img_btn.disabled = false
+	reset_view_button.disabled = false
 	dialog.queue_free()
 	_list_changed()
 
@@ -2498,6 +2513,7 @@ func on_cancelled(dialog: FileDialog) -> void:
 func on_clear_image_pressed() -> void:
 	project_image.texture = null
 	clear_img_btn.disabled = true
+	reset_view_button.disabled = true
 	_list_changed()
 
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=66 format=3 uid="uid://eaxngd263vbi"]
+[gd_scene load_steps=67 format=3 uid="uid://eaxngd263vbi"]
 
 [ext_resource type="Script" path="res://scenes/tagit_main_window.gd" id="1_3rneb"]
 [ext_resource type="Theme" uid="uid://btyk3fvjow2xx" path="res://style/generic_theme.tres" id="1_heejv"]
@@ -39,6 +39,7 @@
 [ext_resource type="PackedScene" uid="uid://djrqboi0xp74" path="res://scenes/autofill_line_edit.tscn" id="18_btkx1"]
 [ext_resource type="Texture2D" uid="uid://d2yy7bx5hatb8" path="res://icons/esix_icon.svg" id="23_cbccr"]
 [ext_resource type="Texture2D" uid="uid://b5axapqy7h8js" path="res://icons/refresh_icon.svg" id="24_npyuf"]
+[ext_resource type="Texture2D" uid="uid://dmjor0d4lqveu" path="res://icons/reset_icon.svg" id="25_b2bis"]
 [ext_resource type="Script" path="res://scenes/wiki_images_scrcontainer.gd" id="25_c3eal"]
 [ext_resource type="Script" path="res://scenes/tag_search_container.gd" id="25_l1y5q"]
 [ext_resource type="Theme" uid="uid://u13wuypqagrc" path="res://style/table_theme.tres" id="26_8xsa4"]
@@ -379,11 +380,18 @@ size_flags_vertical = 3
 size_flags_stretch_ratio = 4.0
 
 [node name="PanelContainer" type="PanelContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/ImageContainer"]
+clip_contents = true
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
 
-[node name="ProjectImage" type="TextureRect" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/ImageContainer/PanelContainer"]
+[node name="ScrollZoomView" type="MarginContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/ImageContainer/PanelContainer"]
+layout_mode = 2
+script = ExtResource("29_vpytr")
+pan_button = 1
+zoom_range = Vector2(1, 6)
+
+[node name="ProjectImage" type="TextureRect" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/ImageContainer/PanelContainer/ScrollZoomView"]
 custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 size_flags_vertical = 3
@@ -394,6 +402,14 @@ stretch_mode = 5
 [node name="BtnCtnr" type="HBoxContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/ImageContainer"]
 layout_mode = 2
 alignment = 2
+
+[node name="ResetViewButton" type="Button" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/ImageContainer/BtnCtnr"]
+layout_mode = 2
+size_flags_horizontal = 2
+tooltip_text = "Reset Image View"
+icon = ExtResource("25_b2bis")
+flat = true
+icon_alignment = 1
 
 [node name="OpenImgBtn" type="Button" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/ImageContainer/BtnCtnr"]
 custom_minimum_size = Vector2(32, 32)
