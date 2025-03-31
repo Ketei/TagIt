@@ -122,6 +122,10 @@ func focus_card_button() -> void:
 	card_select_button.grab_focus()
 
 
+func set_focus_enabled(focus_enabled: bool) -> void:
+	card_select_button.focus_mode = Control.FOCUS_ALL if focus_enabled else Control.FOCUS_NONE
+
+
 func select_title_text() -> void:
 	edit_title_line_edit.grab_focus()
 	edit_title_line_edit.caret_column = edit_title_line_edit.text.length()

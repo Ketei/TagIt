@@ -135,8 +135,11 @@ func _on_card_confirmed(card: ProjectCard) -> void:
 
 func _on_card_selected(card: ProjectCard) -> void:
 	if selected_card != null:
+		selected_card.set_focus_enabled(false)
 		selected_card.hide_buttons(focus_time)
 	selected_card = card
+	selected_card.set_focus_enabled(true)
+	selected_card.focus_card_button()
 	card.show_buttons(focus_time)
 	
 
