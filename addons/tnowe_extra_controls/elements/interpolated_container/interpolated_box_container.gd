@@ -19,17 +19,11 @@ extends InterpolatedContainer
 ## If total child size exceeds this node's size, change child positions to fit inside this node. Otherwise, change this node's minimum size.
 @export var compact_if_overflow := true:
 	set(v):
-		print("Compact if overflow: ", v)
 		compact_if_overflow = v
 		queue_sort()
 ## Enable reordering by using the mouse pointer.
 
 var _separation := 0.0
-var _cached_minimum_size := Vector2()
-
-
-func _get_minimum_size() -> Vector2:
-	return _cached_minimum_size
 
 
 func _sort_children():
@@ -58,21 +52,16 @@ func _sort_children():
 			if cur_child.size_flags_horizontal & SIZE_EXPAND != 0:
 				cur_row_expand_count += 1
 
+
 	cur_row_length -= _separation
 	var result_size := Vector2(size.x, cur_row_length) if vertical else Vector2(cur_row_length, size.y)
 	_fit_children_row(result_size, cur_row_expand_count)
 
 	if compact_if_overflow:
-		_cached_minimum_size = Vector2(widest_child, 0.0) if vertical else Vector2(0.0, widest_child)
+		cached_minimum_size = Vector2(widest_child, 0.0) if vertical else Vector2(0.0, widest_child)
 
 	else:
-		_cached_minimum_size = Vector2(widest_child, cur_row_length) if vertical else Vector2(cur_row_length, widest_child)
-
-	# Directly update custom_minimum_size and force layout update
-	custom_minimum_size = _cached_minimum_size
-	queue_sort()
-	queue_redraw()
-	force_update_transform()
+		cached_minimum_size = Vector2(widest_child, cur_row_length) if vertical else Vector2(cur_row_length, widest_child)
 
 
 func _fit_children_row(row_size : Vector2, expand_node_count : int):
@@ -99,7 +88,6 @@ func _fit_children_row(row_size : Vector2, expand_node_count : int):
 			compact_factor = (size.y - last_child_length) / (row_size.y - last_child_length)
 			cur_offset = 0.0
 			expand_node_count = 0
-			print("Vertical compact factor: ", compact_factor)
 
 	else:
 		if row_size.x > size.x:
@@ -107,10 +95,6 @@ func _fit_children_row(row_size : Vector2, expand_node_count : int):
 			compact_factor = (size.x - last_child_length) / (row_size.x - last_child_length)
 			cur_offset = 0.0
 			expand_node_count = 0
-			print("Horizontal compact factor: ", compact_factor)
-
-	print("Container Size: ", size)
-	print("Row size: ", row_size)
 
 	for child in get_children(true):
 		if !(child is Control && child.visible):
@@ -128,20 +112,16 @@ func _fit_children_row(row_size : Vector2, expand_node_count : int):
 			if expand_node_count != 0 && cur_child.size_flags_horizontal & SIZE_EXPAND != 0:
 				cur_child_width += (size.x - row_size.x) / expand_node_count
 
-		print("Child width: ", cur_child_width)
-		print("Current Offset: ", cur_offset)
-
 		if _dragging_node == child:
+			# Consider its size for other children, but don't move the dragged child.
 			cur_offset += cur_child_width + _separation
 			continue
 
 		if vertical:
 			fit_interpolated(child, Rect2(0.0, cur_offset * compact_factor, row_size.x, cur_child_width))
-			print("Vertical Rect2: ", Rect2(0.0, cur_offset * compact_factor, row_size.x, cur_child_width))
 
 		else:
 			fit_interpolated(child, Rect2(cur_offset * compact_factor, 0.0, cur_child_width, row_size.y))
-			print("Horizontal Rect2: ", Rect2(cur_offset * compact_factor, 0.0, cur_child_width, row_size.y))
 
 		cur_offset += cur_child_width + _separation
 

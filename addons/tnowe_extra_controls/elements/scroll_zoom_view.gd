@@ -31,7 +31,8 @@ extends MarginContainer
 @export var zoom_amount := 1.0:
 	set(v):
 		zoom_amount = v
-		set_process(true)
+		if not _direct_set:
+			set_process(true)
 ## The current panning position, relative to this node's origin.
 @export var scroll_offset := Vector2():
 	set(v):
@@ -39,7 +40,7 @@ extends MarginContainer
 		if !is_inside_tree(): await ready
 		get_child(0, true).position = v
 
-
+var _direct_set: bool = false
 var _input_dragging := false
 var _input_drag_start := Vector2()
 var _input_drag_can_move := false
@@ -92,3 +93,11 @@ func _gui_input(event : InputEvent):
 
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			zoom_amount = maxf(zoom_amount / (1.0 + (zoom_step - 1.0) * event.factor), zoom_range.x)
+
+
+func reset_zoom() -> void:
+	_direct_set = true
+	_zoom_visible = 1.0
+	zoom_amount = 1.0
+	scroll_offset = Vector2.ZERO
+	_direct_set = false
