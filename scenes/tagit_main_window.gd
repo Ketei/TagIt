@@ -1443,6 +1443,7 @@ func on_selector_project_selected(project_uuid: String) -> void:
 	
 	var projects := TagItProjectResource.get_projects()
 	var data: Dictionary = projects.get_project_data(project_uuid)
+	var uses_image: bool = false
 	clear_all_tagger()
 	_suggestion_blacklist.clear()
 	_group_blacklist.clear()
@@ -1456,6 +1457,7 @@ func on_selector_project_selected(project_uuid: String) -> void:
 	if not data["image_path"].is_empty() and FileAccess.file_exists(TagItProjectResource.get_thumbnails_path() + data["image_path"]):
 		var img := Image.load_from_file(TagItProjectResource.get_thumbnails_path() + data["image_path"])
 		project_image.texture = ImageTexture.create_from_image(img)
+		uses_image = true
 	
 	if not data["alt_lists"].is_empty():
 		list_version_container.visible = true
@@ -1493,6 +1495,8 @@ func on_selector_project_selected(project_uuid: String) -> void:
 	set_save_required(false, false)
 	current_project_uuid = project_uuid
 	current_title = data["name"]
+	clear_img_btn.disabled = not uses_image
+	reset_view_button.disabled = not uses_image
 	
 	selector.play_outro()
 	await selector.outro_finished

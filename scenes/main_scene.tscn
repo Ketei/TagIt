@@ -407,6 +407,7 @@ alignment = 2
 layout_mode = 2
 size_flags_horizontal = 2
 tooltip_text = "Reset Image View"
+disabled = true
 icon = ExtResource("25_b2bis")
 flat = true
 icon_alignment = 1

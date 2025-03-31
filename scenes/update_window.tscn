@@ -102,5 +102,6 @@ text = "[font_size=20][b][color=SKY_BLUE]New[/color][/b][/font_size]
 
 [font_size=20][b][color=SKY_BLUE]Fixes[/color][/b][/font_size]
 [ul] Fixed Wizard character's not being created on pressing the \"Ok\" button.
- Project image selector now also display jpeg files.[/ul]
+ Project image selector now also display jpeg files.
+ Fixed project image buttons not behaving as expected.[/ul]
 "
