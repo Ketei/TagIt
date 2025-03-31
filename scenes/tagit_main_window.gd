@@ -446,7 +446,7 @@ func _input(event: InputEvent) -> void:
 				if tag_search_node == null:
 					on_search_all_tags_pressed()
 				else:
-					tag_search_node.focus_main()
+					tag_search_node.focus_main(true)
 				get_viewport().set_input_as_handled()
 
 

@@ -40,8 +40,11 @@ func _ready() -> void:
 	tags_tree.item_activated.connect(on_add_selected_pressed)
 
 
-func focus_main() -> void:
+func focus_main(select_all: bool = false) -> void:
 	search_tag_ln_edt.grab_focus()
+	search_tag_ln_edt.caret_column = search_tag_ln_edt.text.length()
+	if select_all:
+		search_tag_ln_edt.select_all()
 
 
 func on_tags_marked(tags: Array[String]) -> void:
