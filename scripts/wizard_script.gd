@@ -355,7 +355,7 @@ const BODY_TYPES: Array[Dictionary] = [
 			{
 				"name": "Length",
 				"mode": TreeItem.CELL_MODE_RANGE,
-				"text": "Short (Above neck),Long (Bellow neck),N/A",
+				"text": "Short (Above neck),Long (Below neck),N/A",
 				"tags": ["short hair", "long hair"]
 			}
 		]},
@@ -1492,8 +1492,11 @@ func generate_tags() -> Array[String]:
 		if not age_lore.is_empty:
 			character_tags.append(age_lore)
 		if character["lore_gender"] != 0:
-			character_tags.append(
-				gender_lore_opt_btn.get_item_text(character["lore_gender"]) + " (lore)")
+			if character["lore_gender"] == 3:
+				character_tags.append("nonbinary (lore)")
+			else:
+				character_tags.append(
+					gender_lore_opt_btn.get_item_text(character["lore_gender"]) + " (lore)")
 		
 		var only_wear: bool = true
 		var last_wear: int = -1
