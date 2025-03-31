@@ -2,6 +2,7 @@ extends TagItTool
 
 
 signal fetch_finished
+signal tag_list_requested
 
 enum QueueStatus {
 	QUEUED,
@@ -10,6 +11,7 @@ enum QueueStatus {
 	FETCHED,
 	ON_DATABASE
 }
+const FETCHER_CONFIRMATION_DIALOG = preload("res://scenes/dialogs/fetcher_confirmation_dialog.tscn")
 
 var fetched_tags: Dictionary = {}
 var cancel_fetch: bool = false
@@ -22,6 +24,7 @@ var fetching: bool = false
 @onready var cancel_fetch_btn: Button = $QueueContainer/FetchContainer/CancelFetchBtn
 @onready var fetch_progress: ProgressBar = $QueueContainer/FetchContainer/FetchProgress
 @onready var clear_queue_btn: Button = $QueueContainer/HeaderContainer/ClearQueueBtn
+@onready var import_current_btn: Button = $QueueContainer/HeaderContainer/ImportCurrentBtn
 
 
 
@@ -44,6 +47,7 @@ func _ready() -> void:
 	fetch_tags_btn.pressed.connect(_on_fetch_pressed)
 	cancel_fetch_btn.pressed.connect(_on_cancel_fetch_pressed)
 	clear_queue_btn.pressed.connect(_on_clear_queue_pressed)
+	import_current_btn.pressed.connect(_on_import_current_pressed)
 
 
 func _input(_event: InputEvent) -> void:
@@ -198,6 +202,21 @@ func queue_status_string(status: QueueStatus) -> String:
 			return "On Database"
 		_:
 			return "Unknown"
+
+
+func _on_import_current_pressed() -> void:
+	tag_list_requested.emit()
+
+
+func load_tags(tags: Array[String]) -> void:
+	var new_list := FETCHER_CONFIRMATION_DIALOG.instantiate()
+	add_child(new_list)
+	new_list.load_tags(tags)
+	new_list.show()
+	var selected_tags: Array[String] = await new_list.tags_selected
+	for tag in selected_tags:
+		_on_queue_submitted(tag)
+	new_list.queue_free()
 
 
 func on_save_pressed() -> void:

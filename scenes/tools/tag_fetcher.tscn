@@ -23,11 +23,16 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="QueueContainer/HeaderContainer"]
 layout_mode = 2
+size_flags_horizontal = 2
 text = "Queue"
+
+[node name="ImportCurrentBtn" type="Button" parent="QueueContainer/HeaderContainer"]
+layout_mode = 2
+text = "Import from Project"
 
 [node name="ClearQueueBtn" type="Button" parent="QueueContainer/HeaderContainer"]
 layout_mode = 2
-size_flags_horizontal = 10
+size_flags_horizontal = 8
 text = "Clear Queue"
 
 [node name="QueueTree" type="Tree" parent="QueueContainer"]

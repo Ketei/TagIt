@@ -1,5 +1,8 @@
 extends PanelContainer
 
+
+signal tags_requested
+
 const TOOLS: Array[Dictionary] = [
 	{
 		"scene": preload("res://scenes/tools/aliaser.tscn"),
@@ -77,6 +80,8 @@ func on_tool_selected(idx: int) -> void:
 			return
 	
 	if tool_scene != null:
+		if tool_scene.tool_id == "tag_fetch":
+			tool_scene.tag_list_requested.disconnect(fetch_tags_requested)
 		tool_scene.something_changed.disconnect(_on_tool_something_changed)
 		tool_scene.disable_save.disconnect(_on_tool_set_save.bind(false))
 		tool_scene.enable_save.disconnect(_on_tool_set_save.bind(true))
@@ -96,6 +101,8 @@ func on_tool_selected(idx: int) -> void:
 	tool_scene.enable_save.connect(_on_tool_set_save.bind(true))
 	tool_scene.disable_switch.connect(_on_tool_set_switch.bind(false))
 	tool_scene.enable_switch.connect(_on_tool_set_switch.bind(true))
+	if tool_scene.tool_id == "tag_fetch":
+		tool_scene.tag_list_requested.connect(fetch_tags_requested)
 	
 	if save_button.disabled:
 		save_button.tooltip_text = "Tool doesn't require saving"
@@ -104,6 +111,15 @@ func on_tool_selected(idx: int) -> void:
 	
 	current_tool_idx = idx
 	warn_unsaved = false
+
+
+func fetch_tags_requested() -> void:
+	tags_requested.emit()
+
+
+func submit_tags(tags: Array[String]) -> void:
+	if tool_scene != null and tool_scene.tool_id == "tag_fetch":
+		tool_scene.load_tags(tags)
 
 
 func _on_tool_something_changed() -> void:

@@ -1,9 +1,10 @@
+class_name ProjectCard
 extends VBoxContainer
 
 
-signal card_selected
-signal card_confirmed
-signal card_deleted
+signal card_selected(node: Control)
+signal card_confirmed(node: Control)
+signal card_deleted(node: Control)
 signal card_saved(title: String)
 signal card_cancelled
 
@@ -35,7 +36,8 @@ var editable: bool = false
 var use_save: bool = false
 var grab_focus_field: int = -1
 var project_uuid: String = ""
-
+#var _allow_signals: bool = true
+var buttons_enabled: bool = true: set = set_action_button_disabled
 
 @onready var edit_title_line_edit: LineEdit = $MenuCard/MainMargin/MainContainer/TitlePanel/TitleMargin/EditTitleLineEdit
 @onready var desc_edit_text_edit: TextEdit = $MenuCard/MainMargin/MainContainer/DescEditTextEdit
@@ -49,6 +51,8 @@ var project_uuid: String = ""
 @onready var card_select_button: Button = $MenuCard/CardSelectButton
 @onready var cancel_button: Button = $CancelButton
 
+@onready var select_button: Button = $MenuCard/PanelContainer/MarginContainer/ButtonsContaintainer/SelectButton
+@onready var delete_button: Button = $MenuCard/PanelContainer/MarginContainer/ButtonsContaintainer/DeleteButton
 
 
 func _ready() -> void:
@@ -61,8 +65,6 @@ func _ready() -> void:
 	else:
 		desc_label.visible = false
 	
-	save_button.visible = use_save
-	cancel_button.visible = use_save
 	card_select_button.visible = not use_save
 	
 	title_label.text = title
@@ -81,11 +83,45 @@ func _ready() -> void:
 	if use_save:
 		edit_title_line_edit.text_submitted.connect(on_save_text_submitted)
 	
-	card_select_button.pressed.connect(card_selected.emit)
-	$MenuCard/PanelContainer/MarginContainer/ButtonsContaintainer/SelectButton.pressed.connect(card_confirmed.emit)
-	$MenuCard/PanelContainer/MarginContainer/ButtonsContaintainer/DeleteButton.pressed.connect(card_deleted.emit)
-	save_button.pressed.connect(on_card_saved)
-	cancel_button.pressed.connect(card_cancelled.emit)
+	card_select_button.pressed.connect(_on_card_selected)
+	$MenuCard/PanelContainer/MarginContainer/ButtonsContaintainer/SelectButton.pressed.connect(_on_card_confirmed)
+	$MenuCard/PanelContainer/MarginContainer/ButtonsContaintainer/DeleteButton.pressed.connect(_on_card_deleted)
+	#save_button.pressed.connect(_on_card_saved)
+	#cancel_button.pressed.connect(_on_card_cancelled)
+
+
+func _on_card_selected() -> void:
+	card_selected.emit(self)
+
+
+func _on_card_confirmed() -> void:
+	card_confirmed.emit(self)
+
+
+func _on_card_deleted() -> void:
+	card_deleted.emit(get_parent())
+
+
+func _on_card_cancelled() -> void:
+	card_cancelled.emit()
+
+
+func set_action_button_disabled(enabled: bool) -> void:
+	buttons_enabled = enabled
+	select_button.disabled = not enabled
+	delete_button.disabled = not enabled
+
+
+func has_button_focus() -> bool:
+	return card_select_button.has_focus()
+
+
+func focus_card_button() -> void:
+	card_select_button.grab_focus()
+
+
+func set_focus_enabled(focus_enabled: bool) -> void:
+	card_select_button.focus_mode = Control.FOCUS_ALL if focus_enabled else Control.FOCUS_NONE
 
 
 func select_title_text() -> void:
@@ -104,35 +140,29 @@ func on_save_text_submitted(submitted_text: String) -> void:
 	card_saved.emit(submitted_text.strip_edges())
 
 
-func on_card_saved() -> void:
+func _on_card_saved() -> void:
 	card_saved.emit(edit_title_line_edit.text.strip_edges())
 
 
 func show_buttons(time: float) -> void:
-	#if _animating_buttons:
-		#return
-	#_animating_buttons = true
-	buttons_containtainer.visible = true
+	buttons_enabled = true
 	glow_container.visible = true
 	glow_container.modulate = Color.TRANSPARENT
-	buttons_containtainer.modulate = Color.TRANSPARENT
 	var display: Tween = create_tween()
+	buttons_containtainer.visible = true
+	buttons_containtainer.modulate = Color.TRANSPARENT
 	display.tween_property(buttons_containtainer, ^"modulate", Color.WHITE, maxf(0.05, time))
 	display.parallel().tween_property(glow_container, ^"modulate", Color.WHITE, maxf(0.05, time))
-	#_animating_buttons = false
 
 
 func hide_buttons(time: float) -> void:
-	#if _animating_buttons:
-		#return
-	#_animating_buttons = true
+	buttons_enabled = false
 	var display: Tween = create_tween()
 	display.tween_property(buttons_containtainer, ^"modulate", Color.TRANSPARENT, maxf(0.05, time))
 	display.parallel().tween_property(glow_container, ^"modulate", Color.TRANSPARENT, maxf(0.05, time))
 	await display.finished
 	buttons_containtainer.visible = false
 	glow_container.visible = false
-	#_animating_buttons = false
 
 
 func scale_card(time: float, new_scale: float) -> void:

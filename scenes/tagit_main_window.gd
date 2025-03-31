@@ -13,8 +13,10 @@ const SET_DESC_DIALOG = preload("res://scenes/dialogs/set_desc_dialog.tscn")
 const SET_DESC_CATEGORY_DIALOG = preload("res://scenes/dialogs/set_desc_category_dialog.tscn")
 const COLOR_PICKER_DIALOG = preload("res://scenes/dialogs/color_picker_dialog.tscn")
 const NEW_ALIAS_CONFIRM_DIALOG = preload("res://scenes/dialogs/new_alias_confirm_dialog.tscn")
-const IMAGE_FILE_SELECTOR = preload("res://scenes/image_file_selector.tscn")
-const VERTICAL_CARD_CONTAINER = preload("res://scenes/vertical_card_container.tscn")
+#const IMAGE_FILE_SELECTOR = preload("res://scenes/image_file_selector.tscn")
+const PROJECTS_CONTAINER = preload("res://scenes/projects_container.tscn")
+#const VERTICAL_CARD_CONTAINER = preload("res://scenes/vertical_card_container.tscn")
+const PROJECTS_CONTAINER_VERTICAL = preload("res://scenes/projects_container_vertical.tscn")
 const SUGGENSTION_BLACKLIST = preload("res://scenes/suggenstion_blacklist.tscn")
 const TEXT_LOADER = preload("res://scenes/text_loader.tscn")
 const ALL_TAGS_PANEL = preload("res://scenes/all_tags_panel.tscn")
@@ -56,6 +58,10 @@ var selector: Control = null:
 		_block_events = selector != null
 		menu_button.set_disable_shortcuts(selector != null)
 		help_button.set_disable_shortcuts(selector != null)
+var tag_search_node: Control = null:
+	set(new_searcher):
+		tag_search_node = new_searcher
+		search_tag_btn.disabled = new_searcher != null
 var alt_lists: Array[Array] = []
 var current_alt: int = 0
 
@@ -96,7 +102,7 @@ var sort_submenu: PopupMenu = null
 # ----- Tagger -----
 @onready var tagger_site_opt_btn: OptionButton = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/BtnCotnainer/SiteOptBtn
 @onready var generate_list_btn: Button = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/BtnCotnainer/GenerateBtn
-@onready var project_image: TextureRect = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/ImageContainer/PanelContainer/ProjectImage
+@onready var project_image: TextureRect = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/ImageContainer/PanelContainer/ScrollZoomView/ProjectImage
 @onready var open_img_btn: Button = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/ImageContainer/BtnCtnr/OpenImgBtn
 @onready var clear_img_btn: Button = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/ImageContainer/BtnCtnr/ClearImgBtn
 @onready var tags_label: RichTextLabel = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/TagsPanel/TagsContainer/TextPanel/TextMargin/TagsLabel
@@ -120,6 +126,8 @@ var sort_submenu: PopupMenu = null
 @onready var help_button: MenuButton = $MainContainer/MenuMargin/MenuContainer/MenuButtonCont/HelpButton
 @onready var change_prio_btn: Button = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/TagsPanel/TagsContainer/ButtonsContainer/ChangePrioBtn
 @onready var main_tagger_popup: RightClickPopupMenu = $MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer/CurrentTagsContainer/TagsTree/MainTaggerPopup
+@onready var reset_view_button: Button = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/ImageContainer/BtnCtnr/ResetViewButton
+@onready var scroll_zoom_view: ScrollZoomView = $MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/ImageContainer/PanelContainer/ScrollZoomView
 
 # ----------------
 # ----- Tag Review -----
@@ -198,7 +206,9 @@ var sort_submenu: PopupMenu = null
 
 
 func _ready() -> void:
-	get_window().min_size = Vector2i(1280, 720)
+	var window := get_window()
+	window.title = "TagIt - New Project"
+	window.min_size = Vector2i(1280, 720)
 	hide_all_sections()
 	tab_bar.current_tab = 0
 	on_tab_changed(0)
@@ -293,6 +303,8 @@ func _ready() -> void:
 	$MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer.size.x = SingletonManager.TagIt.settings.tag_container_width
 	tagger_suggestion_tree.size.y = SingletonManager.TagIt.settings.suggestions_height
 	
+	# --- Window ---
+	get_viewport().files_dropped.connect(_on_files_dropped)
 	# --- Tagger ---
 	tags_tree.suggestions_dropped.connect(_on_suggestions_dropped)
 	open_img_btn.pressed.connect(on_select_image_pressed)
@@ -305,7 +317,7 @@ func _ready() -> void:
 	alt_opt_btn.item_selected.connect(on_alt_list_selected)
 	delete_alt_list_btn.pressed.connect(on_delete_list_pressed)
 	tab_bar.tab_changed.connect(on_tab_changed)
-	add_tag_ln_edt.text_submitted.connect(add_tag)
+	add_tag_ln_edt.text_submitted.connect(on_tag_text_submitted)
 	tagger_suggestion_tree.suggestions_activated.connect(on_suggestions_activated)
 	groups_suggestions_tree.suggestions_activated.connect(on_suggestions_activated)
 	open_project_btn.pressed.connect(on_menu_button_id_selected.bind(2))
@@ -323,6 +335,7 @@ func _ready() -> void:
 	tags_tree.search_in_wiki_pressed.connect(_on_search_in_wiki_pressed)
 	tags_tree.tags_changed.connect(_list_changed)
 	groups_suggestions_tree.groups_deleted.connect(_on_groups_deleted)
+	reset_view_button.pressed.connect(_on_reset_view_pressed)
 	# --- Edit Tag ---
 	all_tags_search_ln_edt.text_submitted.connect(on_search_text_submitted)
 	new_tag_btn.pressed.connect(on_new_tag_pressed)
@@ -344,6 +357,8 @@ func _ready() -> void:
 	wiki_esix_search_btn.pressed.connect(on_esix_wiki_search)
 	wiki_search_ln_edt.timer_finished.connect(on_wiki_timer_timeout)
 	wiki_search_btn.pressed.connect(on_wiki_search_button_pressed)
+	# --- Tools ---
+	tools_panel.tags_requested.connect(_on_tool_tag_requested)
 	# --- Settings ---
 	settings_load_img_chk_btn.toggled.connect(on_api_toggle_changed)
 	settings_expand_api_btn.pressed.connect(on_expand_api_pressed)
@@ -414,8 +429,8 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if not _block_events and event is InputEventKey:
-		if not event.is_echo() and Input.is_key_pressed(KEY_CTRL):
+	if not _block_events and event is InputEventKey and not event.is_echo():
+		if Input.is_key_pressed(KEY_CTRL):
 			if event.is_action_pressed(&"ui_focus_next"):
 				if not tab_bar.has_focus():
 					tab_bar.grab_focus()
@@ -427,6 +442,51 @@ func _input(event: InputEvent) -> void:
 			elif tab_bar.current_tab == 0 and Input.is_key_pressed(KEY_G):
 				generate_tag_list()
 				get_viewport().set_input_as_handled()
+			elif tab_bar.current_tab == 0 and Input.is_key_pressed(KEY_F):
+				if tag_search_node == null:
+					on_search_all_tags_pressed()
+				else:
+					tag_search_node.focus_main(true)
+				get_viewport().set_input_as_handled()
+
+
+func _on_files_dropped(files: PackedStringArray) -> void:
+	if 1 < files.size() or tab_bar.current_tab != 0:
+		return
+	
+	const compatible_formats: PackedStringArray = [
+		"jpg",
+		"jpeg",
+		"png",
+		"webp"]
+	
+	var file_extension: String = files[0].get_extension()
+	if not compatible_formats.has(file_extension):
+		return
+	
+	_on_reset_view_pressed()
+	var image := Image.load_from_file(files[0])
+	SingletonManager.TagIt.resize_image(image)
+	var texture := ImageTexture.create_from_image(image)
+	project_image.texture = texture
+	clear_img_btn.disabled = false
+	reset_view_button.disabled = false
+	_list_changed()
+
+
+func _on_tool_tag_requested() -> void:
+	var tags: Array[String] = []
+	
+	for list_index in range(alt_lists.size()):
+		if list_index == current_alt:
+			var new_tags: Array[String] = []
+			for tag in tags_tree.get_root().get_children():
+				new_tags.append(tag.get_text(0))
+			Arrays.append_uniques(tags, new_tags)
+		else:
+			Arrays.append_uniques(tags, alt_lists[list_index])
+	
+	tools_panel.submit_tags(tags)
 
 
 func _notification(what):
@@ -475,7 +535,7 @@ func _notification(what):
 					if process_in:
 						selector.set_process_input(false)
 					
-					var extra_saver := VERTICAL_CARD_CONTAINER.instantiate()
+					var extra_saver := PROJECTS_CONTAINER_VERTICAL.instantiate()
 					extra_saver.group_save_enabled = true
 					extra_saver.use_descriptions = false
 					extra_saver.editable_cards = true
@@ -483,16 +543,14 @@ func _notification(what):
 					extra_saver.use_save = true
 					extra_saver.dim_background = true
 					add_child(extra_saver)
-					extra_saver.play_intro()
-					await extra_saver.intro_finished
-					extra_saver.queue_card(
+					extra_saver.add_project(
 						current_title,
 						"",
 						project_image.texture,
 						current_project_uuid,
 						0)
-					extra_saver.create_queued_cards()
-					await extra_saver.cards_displayed
+					extra_saver.play_intro()
+					await extra_saver.intro_finished
 					extra_saver.set_emit_signals(true)
 					var save_result: Array = await extra_saver.save_finished
 					extra_saver.set_emit_signals(false)
@@ -560,7 +618,11 @@ func _notification(what):
 
 func _list_changed() -> void:
 	if not _save_required:
-		_save_required = true
+		set_save_required(true)
+
+
+func _on_reset_view_pressed() -> void:
+	scroll_zoom_view.reset_zoom()
 
 
 func _on_suggestions_dropped(suggestions: Array[String], can_blacklist: bool) -> void:
@@ -590,6 +652,18 @@ func _on_sort_submenu_id_selected(id: int) -> void:
 
 func _on_news_closed() -> void:
 	_block_events = false
+
+
+func set_save_required(is_required: bool, suffix_change: bool = true) -> void:
+	_save_required = is_required
+	if suffix_change:
+		var window := get_window()
+		if is_required:
+			if not window.title.ends_with("*"):
+				window.title += "*"
+		else:
+			if window.title.ends_with("*"):
+				window.title = window.title.trim_suffix("*")
 
 
 func on_import_button_id_pressed(id: int) -> void:
@@ -908,6 +982,7 @@ func _on_create_alt_list_pressed() -> void:
 	if result:
 		alt_opt_btn.select(alt_opt_btn.item_count - 1)
 		on_alt_list_selected(alt_opt_btn.item_count - 1)
+		_list_changed()
 
 
 func create_alt_list(tags: Array[String] = []) -> bool:
@@ -926,7 +1001,6 @@ func create_alt_list(tags: Array[String] = []) -> bool:
 			alt_select_container.visible = true
 			list_version_container.visible = true
 		tags_tree.add_alt_list(result[1])
-		_list_changed()
 	name_list.queue_free()
 	return result[0]
 
@@ -1028,12 +1102,12 @@ func save_current_project_indexed() -> void:
 			_suggestion_blacklist.duplicate(),
 			_group_blacklist.duplicate())
 	projects.save()
-	_save_required = false
+	set_save_required(false)
 
 
 func instantiate_save_selector() -> void:
 	_saving = true
-	selector = VERTICAL_CARD_CONTAINER.instantiate()
+	selector = PROJECTS_CONTAINER_VERTICAL.instantiate()
 	selector.use_descriptions = false
 	selector.editable_cards = true
 	selector.use_search = false
@@ -1044,31 +1118,30 @@ func instantiate_save_selector() -> void:
 	selector.close_pressed.connect(on_selector_close_pressed.bind(true))
 	add_child(selector)
 	selector.set_emit_signals(false)
-	selector.play_intro()
-	await selector.intro_finished
-	selector.queue_card(
+	selector.add_project(
 		current_title,
 		"",
 		project_image.texture,
 		current_project_uuid,
 		0)
-	selector.create_queued_cards()
-	await selector.cards_displayed
+	selector.play_intro()
+	await selector.intro_finished
 	selector.set_emit_signals(true)
+	selector.focus_title()
 
 
 func instance_project_loader_selector() -> void:
-	selector = IMAGE_FILE_SELECTOR.instantiate()
+	var saves := TagItProjectResource.get_projects()
+	selector = PROJECTS_CONTAINER.instantiate()
 	selector.use_descriptions = false
 	selector.dim_background = true
+	selector.allow_card_signals = false
 	add_child(selector)
+	selector.focus_main()
 	selector.set_emit_signals(false)
 	selector.card_selected.connect(on_selector_project_selected)
 	selector.close_pressed.connect(on_selector_close_pressed)
 	selector.card_deleted.connect(on_selector_project_deleted)
-	selector.play_intro()
-	await selector.intro_finished
-	var saves := TagItProjectResource.get_projects()
 	
 	for project_idx in range(saves.projects.size()):
 		var project: Dictionary = saves.projects[project_idx]
@@ -1076,14 +1149,15 @@ func instance_project_loader_selector() -> void:
 		if not project["image_path"].is_empty():
 			var img := Image.load_from_file(TagItProjectResource.get_thumbnails_path() + project["image_path"])
 			texture = ImageTexture.create_from_image(img)
-		selector.queue_card(
+		selector.add_project(
 			project["name"],
 			"",
 			texture,
 			project["_uuid"])
-	if selector.has_queued_cards():
-		selector.create_queued_cards()
-		await selector.cards_displayed
+	selector.play_intro()
+	
+	await selector.intro_finished
+	
 	selector.set_emit_signals(true)
 
 
@@ -1110,30 +1184,30 @@ func on_split_tags(tags: PackedStringArray) -> void:
 
 
 func instance_preset_selector() -> void:
-	selector = IMAGE_FILE_SELECTOR.instantiate()
+	var templates := TemplateResource.get_templates()
+	selector = PROJECTS_CONTAINER.instantiate()
 	selector.dim_background = true
 	add_child(selector)
+	selector.focus_main()
 	selector.set_emit_signals(false)
 	selector.card_selected.connect(on_selector_template_selected)
 	selector.close_pressed.connect(on_selector_close_pressed)
 	selector.card_deleted.connect(on_selector_template_erased)
-	selector.play_intro()
-	await selector.intro_finished
-	
-	var templates := TemplateResource.get_templates()
 	
 	for template in templates.templates:
 		var texture: ImageTexture = null
 		if not template["thumbnail"].is_empty():
 			var img := Image.load_from_file(TemplateResource.get_thumbnail_path() + template["thumbnail"])
 			texture = ImageTexture.create_from_image(img)
-		selector.queue_card(
+		
+		selector.add_project(
 				template["title"],
 				template["description"],
-				texture)
-	if selector.has_queued_cards():
-		selector.create_queued_cards()
-		await selector.cards_displayed
+				texture,
+				template["_uuid"])
+	
+	selector.play_intro()
+	await selector.intro_finished
 	selector.set_emit_signals(true)
 
 
@@ -1292,7 +1366,8 @@ func new_list() -> void:
 	_suggestion_blacklist.clear()
 	_group_blacklist.clear()
 	clear_all_tagger()
-	_save_required = false
+	set_save_required(false, false)
+	get_window().title = "TagIt - New Project"
 
 
 func clear_all_tagger() -> void:
@@ -1301,6 +1376,7 @@ func clear_all_tagger() -> void:
 	clear_group_suggestions()
 	project_image.texture = null
 	clear_img_btn.disabled = true
+	reset_view_button.disabled = true
 	for alt in range(1, alt_opt_btn.item_count):
 		alt_opt_btn.remove_item(alt)
 		generate_version_opt_btn.remove_item(alt)
@@ -1350,8 +1426,8 @@ func on_selector_project_saved(title: String) -> void:
 	projects.save()
 	
 	current_title = title
-	_save_required = false
-	selector.stop_queued_cards()
+	set_save_required(false, false)
+	get_window().title = "TagIt - " + title
 	selector.play_outro()
 	await selector.outro_finished
 	selector.visible = false
@@ -1413,15 +1489,16 @@ func on_selector_project_selected(project_uuid: String) -> void:
 	if prio_list_node != null:
 		prio_list_node.priority_tags = custom_order_list
 	
-	selector.stop_queued_cards()
+	get_window().title = "TagIt - " + data["name"]
+	set_save_required(false, false)
+	current_project_uuid = project_uuid
+	current_title = data["name"]
+	
 	selector.play_outro()
 	await selector.outro_finished
 	selector.visible = false
 	selector.queue_free()
 	selector = null
-	current_project_uuid = project_uuid
-	current_title = data["name"]
-	_save_required = false
 	SingletonManager.TagIt.settings.request_suggestions = request_suggestions
 
 
@@ -1431,41 +1508,41 @@ func on_selector_project_deleted(project_uuid: String) -> void:
 	projects.save()
 	if current_project_uuid == project_uuid:
 		current_project_uuid = ""
-		_save_required = true
+		set_save_required(true)
 
 
 func on_selector_close_pressed(is_save: bool = false) -> void:
 	selector.set_emit_signals(false)
-	selector.stop_queued_cards()
 	selector.play_outro()
 	await selector.outro_finished
 	selector.visible = false
 	selector.queue_free()
 	selector = null
-	print("Is saving: ", is_save)
-	print("_save status ", _saving)
 	if is_save:
 		_saving = false
 
 
 func on_search_all_tags_pressed() -> void:
-	var searcher := ALL_TAGS_PANEL.instantiate()
-	searcher.tags_selected.connect(on_search_tags_added)
-	searcher.panel_close_pressed.connect(on_searcher_close_pressed.bind(searcher))
-	tagger_container.add_child(searcher)
-	searcher.focus_main()
-	search_tag_btn.disabled = true
+	if tag_search_node != null:
+		return
+	tag_search_node = ALL_TAGS_PANEL.instantiate()
+	tag_search_node.tags_selected.connect(on_search_tags_added)
+	tag_search_node.panel_close_pressed.connect(on_searcher_close_pressed)
+	tagger_container.add_child(tag_search_node)
+	tag_search_node.focus_main()
 
 
 func on_search_tags_added(tags: PackedStringArray) -> void:
 	for tag in tags:
 		add_tag(tag)
+	if not tags.is_empty():
+		_list_changed()
 
 
-func on_searcher_close_pressed(instance: Control) -> void:
-	instance.visible = false
-	instance.queue_free()
-	search_tag_btn.disabled = false
+func on_searcher_close_pressed() -> void:
+	tag_search_node.visible = false
+	tag_search_node.queue_free()
+	tag_search_node = null
 
 
 func on_selector_template_selected(template_uuid: String) -> void:
@@ -1486,7 +1563,6 @@ func on_selector_template_selected(template_uuid: String) -> void:
 				groups_per_tag[group_id]["group_name"],
 				groups_per_tag[group_id]["tags"])
 	
-	selector.stop_queued_cards()
 	selector.play_outro()
 	await selector.outro_finished
 	selector.visible = false
@@ -1690,7 +1766,10 @@ func _on_search_in_wiki_pressed(tag: String) -> void:
 	if wiki_search_ln_edt.editable:
 		tab_bar.current_tab = 1
 		on_wiki_searched(tag)
-	
+
+
+func open_esix_wiki() -> void:
+	pass
 
 
 func on_wiki_image_loaded(full_image: SpriteFrames, animated: bool) -> void:
@@ -2017,6 +2096,11 @@ func on_set_category_color(id: int, initial: String) -> void:
 	color_dialog.queue_free()
 
 
+func on_tag_text_submitted(tag: String) -> void:
+	add_tag(tag)
+	_list_changed()
+
+
 func add_tag(tag_name: String, clean_suggestions: bool = true, skip_suggestions: bool = false) -> void:
 	var clean_tag: String = tag_name.strip_edges().to_lower()
 	add_tag_ln_edt.clear_no_signal()
@@ -2085,8 +2169,6 @@ func add_tag(tag_name: String, clean_suggestions: bool = true, skip_suggestions:
 	
 	if target_tree != null:
 		tags_tree.scroll_to_item(target_tree, false)
-	
-	_list_changed()
 
 
 func on_esix_api_suggestions_found(for_tag: String, suggestions: Array[String]) -> void:
@@ -2404,7 +2486,7 @@ func on_log_created(msg: String) -> void:
 func on_select_image_pressed() -> void:
 	var image_selector := FileDialog.new()
 	add_child(image_selector)
-	image_selector.add_filter("*.jpg,*.png,*.wepb", "Images")
+	image_selector.add_filter("*.jpg,*.jpeg,*.png,*.wepb", "Images")
 	image_selector.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	image_selector.access = FileDialog.ACCESS_FILESYSTEM
 	image_selector.use_native_dialog = true
@@ -2414,11 +2496,13 @@ func on_select_image_pressed() -> void:
 
 
 func on_image_selected(path: String, dialog: FileDialog) -> void:
+	_on_reset_view_pressed()
 	var image := Image.load_from_file(path)
 	SingletonManager.TagIt.resize_image(image)
 	var texture := ImageTexture.create_from_image(image)
 	project_image.texture = texture
 	clear_img_btn.disabled = false
+	reset_view_button.disabled = false
 	dialog.queue_free()
 	_list_changed()
 
@@ -2430,6 +2514,7 @@ func on_cancelled(dialog: FileDialog) -> void:
 func on_clear_image_pressed() -> void:
 	project_image.texture = null
 	clear_img_btn.disabled = true
+	reset_view_button.disabled = true
 	_list_changed()
 
 

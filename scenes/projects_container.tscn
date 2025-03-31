@@ -1,0 +1,152 @@
+[gd_scene load_steps=11 format=3 uid="uid://c7gilainn2jy6"]
+
+[ext_resource type="Script" path="res://scenes/projects_container_script.gd" id="1_o7j0d"]
+[ext_resource type="Texture2D" uid="uid://vypb46ut3fil" path="res://icons/x_icon.svg" id="2_2yqau"]
+[ext_resource type="Script" path="res://addons/SmoothScroll/SmoothScrollContainer.gd" id="3_uaq4b"]
+[ext_resource type="Script" path="res://addons/SmoothScroll/scroll_damper/expo_scroll_damper.gd" id="4_16xl2"]
+
+[sub_resource type="Gradient" id="Gradient_xkht6"]
+offsets = PackedFloat32Array(0, 0.025, 0.975, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 0.784314, 0, 0, 0, 0.784314, 0, 0, 0, 0)
+metadata/_snap_enabled = true
+metadata/_snap_count = 20
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_jn2pv"]
+gradient = SubResource("Gradient_xkht6")
+fill_from = Vector2(1, 0)
+fill_to = Vector2(0, 0)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ipan3"]
+texture = SubResource("GradientTexture2D_jn2pv")
+
+[sub_resource type="Resource" id="Resource_8ueq1"]
+script = ExtResource("4_16xl2")
+friction = 4.0
+minimum_velocity = 0.4
+rebound_strength = 7.0
+
+[sub_resource type="Resource" id="Resource_hhosr"]
+script = ExtResource("4_16xl2")
+friction = 4.0
+minimum_velocity = 0.4
+rebound_strength = 7.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rxfwt"]
+bg_color = Color(0.1729, 0.181165, 0.19, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.505344, 0.505344, 0.505344, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="ProjectsContainer" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_o7j0d")
+
+[node name="DimLight" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.588235)
+
+[node name="ProjectsContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HeaderContainer" type="HBoxContainer" parent="ProjectsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 2
+
+[node name="CloseButton" type="Button" parent="ProjectsContainer/HeaderContainer"]
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+icon = ExtResource("2_2yqau")
+icon_alignment = 1
+expand_icon = true
+
+[node name="MainPanel" type="PanelContainer" parent="ProjectsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 10.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_ipan3")
+
+[node name="MainMargin" type="MarginContainer" parent="ProjectsContainer/MainPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 4.0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 40
+
+[node name="CardsScroll" type="ScrollContainer" parent="ProjectsContainer/MainPanel/MainMargin"]
+layout_mode = 2
+follow_focus = true
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 0
+script = ExtResource("3_uaq4b")
+wheel_scroll_damper = SubResource("Resource_8ueq1")
+dragging_scroll_damper = SubResource("Resource_hhosr")
+drag_with_mouse = false
+drag_with_touch = false
+allow_vertical_scroll = false
+allow_overdragging = false
+
+[node name="CardsMargin" type="MarginContainer" parent="ProjectsContainer/MainPanel/MainMargin/CardsScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="CardsContainer" type="HBoxContainer" parent="ProjectsContainer/MainPanel/MainMargin/CardsScroll/CardsMargin"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="ProjectsContainer/MainPanel/MainMargin/CardsScroll/CardsMargin"]
+visible = false
+layout_mode = 2
+
+[node name="CenterContainer" type="VBoxContainer" parent="ProjectsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SearchPanel" type="PanelContainer" parent="ProjectsContainer/CenterContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_rxfwt")
+
+[node name="SearchLnEdt" type="LineEdit" parent="ProjectsContainer/CenterContainer/SearchPanel"]
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
+focus_neighbor_left = NodePath(".")
+focus_neighbor_top = NodePath(".")
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath(".")
+focus_next = NodePath(".")
+focus_previous = NodePath(".")
+placeholder_text = "Search Card"
+alignment = 1
+flat = true

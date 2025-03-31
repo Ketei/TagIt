@@ -19,6 +19,9 @@ func _ready() -> void:
 	get_ok_button().disabled = true
 	new_line.text_changed.connect(_on_text_changed)
 	new_line.text_submitted.connect(_on_text_submitted)
+	
+	confirmed.connect(_on_confirmed)
+	canceled.connect(_on_canceled)
 
 
 func _on_text_changed(new_text: String) -> void:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://rgvqc1l3ww5r"]
+[gd_scene load_steps=18 format=3 uid="uid://rgvqc1l3ww5r"]
 
 [ext_resource type="Script" path="res://scenes/image_file_selector_script.gd" id="1_ut31b"]
 [ext_resource type="Texture2D" uid="uid://vypb46ut3fil" path="res://icons/x_icon.svg" id="2_gpbge"]
@@ -44,6 +44,54 @@ script = ExtResource("4_ug70o")
 friction = 4.0
 minimum_velocity = 0.4
 rebound_strength = 7.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v0slp"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.180392, 0.180392, 0.180392, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3596, 0.54694, 0.58, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0aqn8"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.180392, 0.180392, 0.180392, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v5h1r"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.099986, 0.099986, 0.099986, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.3705, 0.608075, 0.65, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="Theme" id="Theme_b3p4h"]
+Button/styles/hover = SubResource("StyleBoxFlat_v0slp")
+Button/styles/normal = SubResource("StyleBoxFlat_0aqn8")
+Button/styles/pressed = SubResource("StyleBoxFlat_v5h1r")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_edt32"]
 
@@ -102,8 +150,12 @@ theme_override_constants/margin_top = 40
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 40
 
-[node name="SmoothScrollContainer" type="ScrollContainer" parent="VBoxContainer/PanelContainer/MarginContainer"]
+[node name="ContentContainer" type="VBoxContainer" parent="VBoxContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
+
+[node name="SmoothScrollContainer" type="ScrollContainer" parent="VBoxContainer/PanelContainer/MarginContainer/ContentContainer"]
+layout_mode = 2
+size_flags_vertical = 3
 horizontal_scroll_mode = 3
 script = ExtResource("3_q4uio")
 wheel_scroll_damper = SubResource("Resource_6kbpa")
@@ -113,12 +165,12 @@ drag_with_touch = false
 allow_vertical_scroll = false
 allow_overdragging = false
 
-[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer/PanelContainer/MarginContainer/SmoothScrollContainer"]
+[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer/PanelContainer/MarginContainer/ContentContainer/SmoothScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Container" type="Container" parent="VBoxContainer/PanelContainer/MarginContainer/SmoothScrollContainer/CenterContainer"]
+[node name="Container" type="Container" parent="VBoxContainer/PanelContainer/MarginContainer/ContentContainer/SmoothScrollContainer/CenterContainer"]
 layout_mode = 2
 script = ExtResource("5_5kwsr")
 enter_direction = 3
@@ -129,6 +181,27 @@ animate_limit = 20
 focus_scale = 1.0
 focus_time = 0.25
 drop_time = 1.25
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/PanelContainer/MarginContainer/ContentContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 150
+theme_override_constants/margin_right = 150
+
+[node name="ButtonsContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/MarginContainer/ContentContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="CancelButton" type="Button" parent="VBoxContainer/PanelContainer/MarginContainer/ContentContainer/MarginContainer/ButtonsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = SubResource("Theme_b3p4h")
+text = "Cancel"
+
+[node name="SaveButton" type="Button" parent="VBoxContainer/PanelContainer/MarginContainer/ContentContainer/MarginContainer/ButtonsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+theme = SubResource("Theme_b3p4h")
+text = "Save"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2

@@ -4,10 +4,10 @@ signal close_pressed
 signal card_selected(card_uuid: String)
 signal card_deleted(card_uuid: String)
 signal card_saved(card_title: String)
+signal save_finished(success: bool, title: String)
 signal intro_finished
 signal outro_finished
 signal cards_displayed
-signal save_finished(success: bool, title: String)
 
 const CARD_CONTAINER = preload("res://scenes/card_container.tscn")
 @export_range(0.05, 1.0, 0.01, "or_greater") var section_in_time: float = 1.0
@@ -22,14 +22,14 @@ var group_save_enabled: bool = false
 var focused_child: Control = null
 var use_descriptions: bool = true
 var _allow_signals: bool = true
-@onready var container: Container = $VBoxContainer/PanelContainer/MarginContainer/SmoothScrollContainer/CenterContainer/Container
 @onready var margin: MarginContainer = $VBoxContainer/PanelContainer/MarginContainer
 @onready var black: PanelContainer = $VBoxContainer/PanelContainer
 @onready var close_button: Button = $VBoxContainer/HBoxContainer/CloseButton
 @onready var search_ln_edt: LineEdit = $VBoxContainer/CenterContainer/SearchPanel/SearchLnEdt
 @onready var dim_light: ColorRect = $DimLight
 @onready var search_panel: PanelContainer = $VBoxContainer/CenterContainer/SearchPanel
-@onready var scroller: SmoothScrollContainer = $VBoxContainer/PanelContainer/MarginContainer/SmoothScrollContainer
+@onready var container: Container = $VBoxContainer/PanelContainer/MarginContainer/ContentContainer/SmoothScrollContainer/CenterContainer/Container
+@onready var scroller: SmoothScrollContainer = $VBoxContainer/PanelContainer/MarginContainer/ContentContainer/SmoothScrollContainer
 
 
 

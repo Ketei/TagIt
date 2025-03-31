@@ -73,6 +73,9 @@ enum ItemAlignment {
 ## Expression to execute on the node after insertion succeeds. Same parameters as [member drag_insert_condition].
 @export var drag_insert_call_on_success := ""
 
+## Stores this node's minimum size, calculated from child positions. Must be set from [method _sort_children].
+var cached_minimum_size := Vector2()
+
 static var _all_boxes : Array[InterpolatedContainer] = []
 
 var _drag_insert_condition_exp : Expression
@@ -85,13 +88,17 @@ var _interp_progress_factor := 0.0
 var _skip_next_reorder := false
 var _affected_by_multi_selection : MultiSelection
 
+
+func _get_minimum_size() -> Vector2:
+	return cached_minimum_size
+
 ## Override to define the behaviour for dragging a node via drag-and-drop rearrangement. [br]
 ## Should emit [signal order_changed] if the node's index was successfully changed.
 func _insert_child_at_position(child : Control):
 	pass
 
 ## Override to define positions of all child nodes. [br]
-## Must change [member custom_minimum_size] to trigger sorting for parent container. [br]
+## Must change [member cached_minimum_size] to update own size for parent containers. [br]
 ## Must call [method fit_interpolated] on each child to set their position.
 func _sort_children():
 	pass
@@ -112,7 +119,7 @@ func fit_interpolated(child : Control, rect : Rect2):
 ## Reorder children by a comparator function, similar to [method Array.sort_custom]. [br]
 ## Not to be confused with [method _sort_children], which is a method you must override in a script to define child positions and sizes when the container updates.
 func sort_children_by_expression(expr : Callable):
-	var children := get_children()
+	var children := get_children(true)
 	children.sort_custom(expr)
 	for i in children.size():
 		if children[i].get_index() != i:
@@ -134,7 +141,7 @@ func _process(delta : float):
 	_skip_next_reorder = false
 	_interp_progress_factor += 1.0 / move_time * delta
 	var progress_eased := ease(_interp_progress_factor, easing_factor)
-	var children := get_children()
+	var children := get_children(true)
 	var dragged_node_pos := _dragging_node.global_position if _dragging_node != null else Vector2.ZERO
 	for i in children.size():
 		if !children[i] is Control:
@@ -201,7 +208,7 @@ func _ready():
 	set_process_input(false)
 	child_entered_tree.connect(_on_child_entered_tree)
 	child_exiting_tree.connect(_on_child_exiting_tree)
-	for x in get_children():
+	for x in get_children(true):
 		_on_child_entered_tree(x)
 
 
@@ -221,7 +228,7 @@ func _notification(what : int):
 			# Prevents animation from not playing. _skip_next_reorder is reset next _process()
 			return
 
-		var child_count := get_child_count()
+		var child_count := get_child_count(true)
 		_children_xforms_start.resize(child_count)
 		_children_sizes_start.resize(child_count)
 		_children_xforms_end.resize(child_count)
@@ -237,7 +244,7 @@ func _insert_child_in_other(child : Control, mouse_global_position : Vector2):
 		if !x.allow_drag_insert || !Rect2(Vector2.ZERO, x.size).has_point(x.get_global_transform().affine_inverse() * mouse_global_position):
 			continue
 
-		if x.drag_max_count > -1 && x.get_child_count() >= x.drag_max_count:
+		if x.drag_max_count > -1 && x.get_child_count(true) >= x.drag_max_count:
 			continue
 
 		if x._drag_insert_condition_exp != null && x._drag_insert_condition_exp.execute([self, x], child) != true:

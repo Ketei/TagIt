@@ -22,6 +22,7 @@ func _ready() -> void:
 	alt_list_submenu.add_item("* Common List *")
 	
 	main_tagger_popup.add_item("Wiki", 0)
+	
 	alt_list_submenu.set_item_disabled(1, true)
 	main_tagger_popup.add_submenu_node_item("Move to List", alt_list_submenu, 1)
 	main_tagger_popup.add_item("Remove", 2)
@@ -110,7 +111,11 @@ func _on_item_mouse_selected(_mouse_position: Vector2, mouse_button_index: int) 
 	if mouse_button_index != MOUSE_BUTTON_RIGHT:
 		return
 	var selected: Array[String] = get_selected_tags()
-	main_tagger_popup.set_item_disabled(0, !( selected.size() == 1 and SingletonManager.TagIt.has_tag_data(selected[0]) ))
+	main_tagger_popup.set_item_disabled(0, selected.size() < 1)
+	
+	var on_wiki: bool = SingletonManager.TagIt.has_tag_data(selected[0]) if not selected.is_empty() else false
+	main_tagger_popup.set_item_metadata(0, not on_wiki)
+	
 	main_tagger_popup.show_in_bounds(get_global_mouse_position())
 
 
@@ -126,7 +131,8 @@ func _on_alt_list_switched(list_idx: int) -> void:
 
 func _on_main_popup_id_pressed(id: int) -> void:
 	if id == 0:
-		search_in_wiki_pressed.emit(get_selected().get_text(0))
+		search_in_wiki_pressed.emit(
+				get_selected().get_text(0))
 	elif id == 2:
 		var to_delete: TreeItem = get_next_selected(null)
 		while to_delete != null:
