@@ -37,6 +37,7 @@ func _ready() -> void:
 	SingletonManager.eSixAPI.tag_search_results_found.connect(on_api_tag_responded)
 	close_button.pressed.connect(panel_close_pressed.emit)
 	tags_tree.tags_marked.connect(on_tags_marked)
+	tags_tree.item_activated.connect(on_add_selected_pressed)
 
 
 func focus_main() -> void:
