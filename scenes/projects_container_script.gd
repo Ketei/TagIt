@@ -41,8 +41,6 @@ var allow_card_signals: bool = true
 
 
 func _ready() -> void:
-	get_window().min_size = Vector2i(1280, 720)
-	
 	_allow_signals = false
 	close_button.visible = false
 	main_margin.visible = false
