@@ -26,24 +26,25 @@ func on_resized():
 	if use_vertical:
 		var max_height: float = get_parent().get_parent().size.y
 		var target_width: float = target_size.x - (margin * 2)
-		var new_height: float = floorf(target_width * base_size.y / base_size.x)
-		if max_height < new_height:
-			target_width = max_height * target_width / new_height
-			new_height = max_height
+		var new_scale: float = target_width / base_size.x
+		
+		if max_height < (base_size.y * new_scale):
+			new_scale = max_height / base_size.y
+			target_width = base_size.x * new_scale
 		
 		var target_pos: float = (target_size.x - target_width) / 2.0
 		
-		child.size = Vector2(target_width, new_height)
+		child.scale = Vector2(new_scale, new_scale)
 		child.position = Vector2(target_pos, 0)
-		size = Vector2(target_width, new_height)
+		size = Vector2(target_width, base_size.y * new_scale)
 	else:
 		var target_height: float = target_size.y - (margin * 2)
 		var target_pos: float = (target_size.y - target_height) / 2.0
-		var new_width: float = floorf(target_height * base_size.x / base_size.y)
-	
-		child.size = Vector2(new_width, target_height)
+		var new_scale: float = target_height * 1.0 / base_size.y
+		
+		child.scale = Vector2(new_scale, new_scale)
 		child.position = Vector2(0, target_pos)
-		custom_minimum_size = Vector2(new_width, 0)
+		custom_minimum_size = Vector2(base_size.x * new_scale, 0)
 
 
 func focus_card() -> void:
