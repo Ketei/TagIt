@@ -21,8 +21,8 @@ const DATABASE_PATH: String = "user://tag_database.db"
 const SEARCH_WILDCARD: String = "*"
 const DB_VERSION: int = 3
 const PROJECTS_VERSION: int = 2
-const TEMPLATES_VERSION: int = 2
-const TAGIT_VERSION_ARRAY: Array[int] = [3, 3, 9]
+const TEMPLATES_VERSION: int = 3
+const TAGIT_VERSION_ARRAY: Array[int] = [3, 3, 10]
 const MAX_PARENT_RECURSION: int = 100
 const IMAGE_LIMITS: Vector2i = Vector2i(1000, 1000)
 const LEV_DISTANCE: float = 0.75
@@ -274,6 +274,18 @@ func update_templates(from_version: int) -> void:
 		for template in templates.templates:
 			template["_uuid"] = templates.get_new_template_uuid()
 		current_version += 1
+	if current_version == 2: # jpg -> webp
+		var template_folder: String = TemplateResource.get_thumbnail_path()
+		for template in templates.templates:
+			if not template["thumbnail"].is_empty() and template["thumbnail"].get_extension() == "jpg":
+				if FileAccess.file_exists(template_folder + template["thumbnail"]):
+					var new_file: String = template["thumbnail"].get_basename() + ".webp"
+					var img := Image.load_from_file(template_folder + template["thumbnail"])
+					OS.move_to_trash(template_folder + template["thumbnail"])
+					img.save_webp(template_folder + new_file)
+					template["thumbnail"] = new_file
+				else:
+					template["thumbnail"] = ""
 	templates.save()
 
 

@@ -111,9 +111,9 @@ func _on_item_mouse_selected(_mouse_position: Vector2, mouse_button_index: int) 
 	if mouse_button_index != MOUSE_BUTTON_RIGHT:
 		return
 	var selected: Array[String] = get_selected_tags()
-	main_tagger_popup.set_item_disabled(0, selected.size() < 1)
+	var on_wiki: bool = SingletonManager.TagIt.has_tag_data(selected[0]) if not selected.is_empty() and selected.size() == 1 else false
 	
-	var on_wiki: bool = SingletonManager.TagIt.has_tag_data(selected[0]) if not selected.is_empty() else false
+	main_tagger_popup.set_item_disabled(0, not on_wiki)
 	main_tagger_popup.set_item_metadata(0, not on_wiki)
 	
 	main_tagger_popup.show_in_bounds(get_global_mouse_position())

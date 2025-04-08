@@ -640,6 +640,7 @@ func _on_blacklist_used_suggestions_toggled(enabled: bool) -> void:
 func _on_groups_deleted(new_groups: PackedInt64Array) -> void:
 	if SingletonManager.TagIt.settings.blacklist_removed:
 		Arrays.append_uniques(_group_blacklist, new_groups)
+		_list_changed()
 
 
 func _on_sort_submenu_id_selected(id: int) -> void:
@@ -1354,10 +1355,10 @@ func on_blacklist_cancelled() -> void:
 
 
 func on_new_blacklist() -> void:
-	#_suggestion_blacklist = new_blacklist
 	selector.visible = false
 	selector.queue_free()
 	selector = null
+	_list_changed()
 
 
 func new_list() -> void:
@@ -1567,6 +1568,7 @@ func on_selector_template_selected(template_uuid: String) -> void:
 				groups_per_tag[group_id]["group_name"],
 				groups_per_tag[group_id]["tags"])
 	
+	_list_changed()
 	selector.play_outro()
 	await selector.outro_finished
 	selector.visible = false
@@ -1769,6 +1771,7 @@ func on_wiki_thumbnail_pressed(thumbnail_id: int, img_idx: int) -> void:
 func _on_search_in_wiki_pressed(tag: String) -> void:
 	if wiki_search_ln_edt.editable:
 		tab_bar.current_tab = 1
+		wiki_search_ln_edt.text = tag
 		on_wiki_searched(tag)
 
 
@@ -2353,10 +2356,14 @@ func hide_all_sections() -> void:
 
 
 func on_tab_changed(tab:int) -> void:
+
 	hide_all_sections()
+	
 	match tab:
 		0:
 			tagger_container.visible = true
+			if project_image.texture != null: # Restoring position/scale
+				scroll_zoom_view.set_process(true)
 		1:
 			wiki_panel.visible = true
 		2:
@@ -2378,11 +2385,13 @@ func on_suggestions_activated(suggestions: Array[String], tree: Tree) -> void:
 func blacklist_tags(tags: Array[String]) -> void:
 	if SingletonManager.TagIt.settings.blacklist_removed:
 		Arrays.append_uniques(_suggestion_blacklist, tags)
+		_list_changed()
 
 
 func blacklist_tag(tag: String) -> void:
 	if not _suggestion_blacklist.has(tag):
 		_suggestion_blacklist.append(tag)
+		_list_changed()
 
 
 func generate_icon_range() -> void:
