@@ -116,5 +116,12 @@ func get_stash(stash_uuid: String) -> Dictionary:
 	return template_stash[stash_uuid]
 
 
+func get_template_thumbnail_path(uuid: String) -> String:
+	for template in templates:
+		if template["_uuid"] == uuid:
+			return template["thumbnail"]
+	return ""
+
+
 func save() -> void:
 	ResourceSaver.save(self, get_file_path())

@@ -19,7 +19,7 @@ var current_template: TreeItem = null:
 #var template_index: int = -1
 var template_edited: bool = false:
 	set(is_edited):
-		if template_edited and current_template.is_empty():
+		if template_edited and current_template == null:
 			template_edited = false
 		else:
 			template_edited = is_edited
@@ -413,35 +413,33 @@ func on_save_pressed() -> void:
 	if template_edited:
 		template_edited = false
 	
-	for stash_template in template_resource.template_stash:
-		var thumbnail_path: String = stash_template["thumbnail"]
+	for stash_uuid in template_resource.template_stash:
+		var stash_data: Dictionary = template_resource.get_stash(stash_uuid)
+		var thumbnail_path: String = template_resource.get_template_thumbnail_path(stash_uuid)
+		var thumbnails_folder: String = TemplateResource.get_thumbnail_path()
 		
-		if stash_template["thumbnail"] != null and thumbnail_path.is_empty():
+		if stash_data["thumbnail"] != null and thumbnail_path.is_empty():
 			thumbnail_path = Strings.random_string64()
-			
-			while FileAccess.file_exists("user://templates/thumbnails/" + thumbnail_path + ".webp"):
+			while FileAccess.file_exists(thumbnails_folder + thumbnail_path + ".webp"):
 				thumbnail_path = Strings.random_string64()
 				
 			thumbnail_path += ".webp"
-			stash_template["thumbnail"].save_webp(TemplateResource.get_thumbnail_path() + thumbnail_path)
+			stash_data["thumbnail"].save_webp(thumbnails_folder + thumbnail_path)
 		
-		elif stash_template["thumbnail"] == null and not thumbnail_path.is_empty():
-			if FileAccess.file_exists(TemplateResource.get_thumbnail_path() + thumbnail_path):
-				OS.move_to_trash(TemplateResource.get_thumbnail_path() + thumbnail_path)
+		elif stash_data["thumbnail"] == null and not thumbnail_path.is_empty():
+			if FileAccess.file_exists(thumbnails_folder + thumbnail_path):
+				OS.move_to_trash(thumbnails_folder + thumbnail_path)
 			thumbnail_path = ""
 		
-		elif not thumbnail_path.is_empty() and stash_template["thumbnail"] != null:
-			if thumbnail_path.get_extension() == "jpg":
-				OS.move_to_trash(TemplateResource.get_thumbnail_path() + thumbnail_path)
-				thumbnail_path = thumbnail_path.trim_suffix(".jpg") + ".webp"
-			stash_template["thumbnail"].save_webp(TemplateResource.get_thumbnail_path() + thumbnail_path)
+		elif not thumbnail_path.is_empty() and stash_data["thumbnail"] != null:
+			stash_data["thumbnail"].save_webp(TemplateResource.get_thumbnail_path() + thumbnail_path)
 		
 		template_resource.overwrite_template(
-			stash_template["_uuid"],
-			stash_template["title"],
-			stash_template["description"],
-			stash_template["tags"],
-			stash_template["groups"],
+			stash_data["_uuid"],
+			stash_data["title"],
+			stash_data["description"],
+			stash_data["tags"],
+			stash_data["groups"],
 			thumbnail_path)
 	
 	template_resource.save()
