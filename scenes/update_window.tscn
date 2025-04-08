@@ -91,7 +91,8 @@ bbcode_enabled = true
 text = "[font_size=20][b][color=SKY_BLUE]Changed[/color][/b][/font_size]
 [ul] Project cards now scale instead of resize to keep visual consistency.
  Opening a tag in the Wiki now also fills in the text field.
- Pressing 'esc' will now close the \"about\" window.[/ul]
+ Pressing 'esc' will now close the \"about\" window.
+ Loading a template counts as changing the project.[/ul]
 
 [font_size=20][b][color=SKY_BLUE]Fixes[/color][/b][/font_size]
 [ul] Fixed the right-click wiki button being disabled for existing tags and enabled for non-existing tags.

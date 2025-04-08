@@ -1568,6 +1568,7 @@ func on_selector_template_selected(template_uuid: String) -> void:
 				groups_per_tag[group_id]["group_name"],
 				groups_per_tag[group_id]["tags"])
 	
+	_list_changed()
 	selector.play_outro()
 	await selector.outro_finished
 	selector.visible = false
