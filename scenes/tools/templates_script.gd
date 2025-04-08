@@ -413,10 +413,11 @@ func on_save_pressed() -> void:
 	if template_edited:
 		template_edited = false
 	
+	var thumbnails_folder: String = TemplateResource.get_thumbnail_path()
+	
 	for stash_uuid in template_resource.template_stash:
 		var stash_data: Dictionary = template_resource.get_stash(stash_uuid)
 		var thumbnail_path: String = template_resource.get_template_thumbnail_path(stash_uuid)
-		var thumbnails_folder: String = TemplateResource.get_thumbnail_path()
 		
 		if stash_data["thumbnail"] != null and thumbnail_path.is_empty():
 			thumbnail_path = Strings.random_string64()
@@ -432,7 +433,7 @@ func on_save_pressed() -> void:
 			thumbnail_path = ""
 		
 		elif not thumbnail_path.is_empty() and stash_data["thumbnail"] != null:
-			stash_data["thumbnail"].save_webp(TemplateResource.get_thumbnail_path() + thumbnail_path)
+			stash_data["thumbnail"].save_webp(thumbnails_folder + thumbnail_path)
 		
 		template_resource.overwrite_template(
 			stash_data["_uuid"],
