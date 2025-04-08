@@ -329,7 +329,7 @@ layout_mode = 2
 [node name="SearchTagBtn" type="Button" parent="MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer/CurrentTagsContainer/BarItems"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-tooltip_text = "Search Tags"
+tooltip_text = "Search Tags (Ctrl + F)"
 icon = ExtResource("7_cq671")
 icon_alignment = 1
 expand_icon = true
