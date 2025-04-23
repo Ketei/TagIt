@@ -138,14 +138,18 @@ func _on_save_pressed() -> void:
 	if not _allow_signals:
 		return
 	var container: CardContainer = cards_container.get_child(0)
-	card_saved.emit(
-			container.card.edit_title_line_edit.text.strip_edges())
+	var title: String = container.card.edit_title_line_edit.text.strip_edges()
+	card_saved.emit(title)
+	if group_save_enabled:
+			save_finished.emit(true, title)
 
 
 func _on_cancel_pressed() -> void:
 	if not _allow_signals:
 		return
 	close_pressed.emit()
+	if group_save_enabled:
+		save_finished.emit(false, "")
 
 
 func _on_card_deleted(card: CardContainer) -> void:
