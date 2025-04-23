@@ -51,6 +51,8 @@ var _suggestion_blacklist: PackedStringArray = []
 var _group_blacklist: PackedInt64Array = []
 var _close_signaled: bool = false
 var _cleanup_timeout: bool = false
+var _allow_generate: bool = true
+var _sorting_displayed: bool = false
 
 var selector: Control = null:
 	set(new_selector):
@@ -214,8 +216,11 @@ func _ready() -> void:
 	on_tab_changed(0)
 	
 	sort_submenu = PopupMenu.new()
-	sort_submenu.add_item("Alphabetically")
-	sort_submenu.add_item("Category")
+	sort_submenu.add_item("Alphabetically", 0)
+	sort_submenu.add_item("Category", 1)
+	sort_submenu.add_item("Custom", 2)
+	sort_submenu.add_separator("", 100)
+	sort_submenu.add_item("- Configure Custom Sort -", 3)
 	sort_submenu.id_pressed.connect(_on_sort_submenu_id_selected)
 	menu_button.get_popup().set_item_submenu_node(7, sort_submenu)
 	
@@ -270,7 +275,7 @@ func _ready() -> void:
 	menu_popup.set_item_shortcut(4, load("res://shortcuts/open_list_shortcut.tres"))
 	menu_popup.set_item_shortcut(10, load("res://shortcuts/add_template.tres"))
 	menu_popup.set_item_shortcut(11, load("res://shortcuts/import_from_text_shortcut.tres"))
-	menu_popup.set_item_shortcut(13, load("res://shortcuts/quit_shortcut.tres"))
+	menu_popup.set_item_shortcut(14, load("res://shortcuts/quit_shortcut.tres"))
 	
 	help_button.get_popup().set_item_shortcut(0, load("res://shortcuts/about_shortcut.tres"))
 	
@@ -439,7 +444,7 @@ func _input(event: InputEvent) -> void:
 				else:
 					tab_bar.current_tab = posmod(tab_bar.current_tab + 1, 5)
 				get_viewport().set_input_as_handled()
-			elif tab_bar.current_tab == 0 and Input.is_key_pressed(KEY_G):
+			elif tab_bar.current_tab == 0 and Input.is_key_pressed(KEY_G) and _allow_generate:
 				generate_tag_list()
 				get_viewport().set_input_as_handled()
 			elif tab_bar.current_tab == 0 and Input.is_key_pressed(KEY_F):
@@ -559,10 +564,11 @@ func _notification(what):
 						var alts: Array[Dictionary] = []
 						
 						save_alt_list(current_alt)
-						for idx in range(generate_version_opt_btn.item_count):
+						
+						for idx in range(1, generate_version_opt_btn.item_count):
 							alts.append({
 								"name": generate_version_opt_btn.get_item_text(idx),
-								"list": alt_lists[idx + 1].duplicate()})
+								"list": alt_lists[idx].duplicate()})
 						
 						var image_path: String = ""
 						if project_image.texture != null:
@@ -649,6 +655,125 @@ func _on_sort_submenu_id_selected(id: int) -> void:
 			sort_tags_alphabetical()
 		1:
 			sort_tags_category()
+		2: # Sort custom
+			sort_tags_custom()
+		3: # Setup sort custom
+			show_custom_sorting_window()
+
+
+func show_custom_sorting_window() -> void:
+	if _sorting_displayed:
+		return
+	
+	_sorting_displayed = true
+	_allow_generate = false
+	var new_sorting := preload("res://scenes/custom_sort_window.tscn").instantiate()
+	tagger_container.add_child(new_sorting)
+	new_sorting.set_custom_sorting(SingletonManager.TagIt.settings.custom_sorting)
+	var result: Array = await new_sorting.custom_sort_finished
+	if result[0]:
+		SingletonManager.TagIt.settings.custom_sorting = result[1]
+	new_sorting.queue_free()
+	_allow_generate = true
+	_sorting_displayed = false
+
+
+func sort_tags_custom() -> void:
+	if _sorting_displayed:
+		return
+	if SingletonManager.TagIt.settings.custom_sorting.is_empty():
+		return
+	
+	var groups: Array[Array] = []
+	var tags: Array[TreeItem] = tags_tree.get_root().get_children()
+	
+	for group in SingletonManager.TagIt.settings.custom_sorting:
+		var new_group: Array[TreeItem] = []
+		
+		for tag in tags:
+			if group["group_ids"].has(tag.get_metadata(0)["category"]):
+				new_group.append(tag)
+		
+		if group["sorting"] == DataManager.SortingType.ALPHABETICAL:
+			new_group.sort_custom(_sort_tag_groups_custom_alphabetical)
+		else:
+			
+			var tag_names: Dictionary = {}
+			var tag_id_to_names: Dictionary = {}# id: {tag, priority}
+			var id_tags: Array[int] = []
+			
+			for tag in new_group:
+				tag_names[tag.get_text(0)] = {"tree": tag, "priority": 0}
+			
+			# tag_name: TagId
+			var valid_ids: Dictionary = SingletonManager.TagIt.get_tags_ids(
+					Array(tag_names.keys(), TYPE_STRING, &"", null))
+			
+			for tag in tag_names:
+				if valid_ids.has(tag):
+					tag_id_to_names[valid_ids[tag]] = {"tag": tag, "priority": 0}
+					id_tags.append(valid_ids[tag])
+			
+			# priority:[ids]
+			var sorted_ids: Dictionary = SingletonManager.TagIt.sort_tag_ids_by_priority(id_tags)
+			
+			for priority in sorted_ids:
+				for tag_id in sorted_ids[priority]:
+					tag_id_to_names[tag_id]["priority"] = priority
+			
+			for ideed_tag in tag_id_to_names:
+				tag_names[ tag_id_to_names[ideed_tag]["tag"] ]["priority"] = tag_id_to_names[ideed_tag]["priority"]
+			
+			var groupings: Array[Dictionary] = []
+			
+			for tag_name in tag_names:
+				var group_dict: Dictionary = {
+					"tree": tag_names[tag_name]["tree"],
+					"priority": tag_names[tag_name]["priority"]}
+				groupings.append(group_dict)
+			
+			groupings.sort_custom(_sort_tag_groups_custom_priority)
+			
+			var new_order: Array[TreeItem] = []
+			
+			for group_dict in groupings:
+				new_order.append(group_dict["tree"])
+			
+			new_group = new_order
+			
+		Arrays.substract_array(tags, new_group)
+		groups.append(new_group)
+	
+	var last_tag: TreeItem = null
+	
+	for group in groups:
+		if group.is_empty():
+			continue
+		last_tag = group.pop_front()
+		break
+	
+	if last_tag == null:
+		return
+		
+	last_tag.move_before(tags_tree.get_root().get_first_child())
+	
+	for group in groups: # For array in array
+		for tag: TreeItem in group: # for
+			tag.move_after(last_tag)
+			last_tag = tag
+	
+	for remaining_tag in tags:
+		remaining_tag.move_after(last_tag)
+		last_tag = remaining_tag
+
+
+
+func _sort_tag_groups_custom_alphabetical(item_a: TreeItem, item_b: TreeItem) -> bool:
+	return item_a.get_text(0).naturalnocasecmp_to(item_b.get_text(0)) < 0
+
+
+func _sort_tag_groups_custom_priority(group_a: Dictionary, group_b: Dictionary) -> bool:
+	return group_a["priority"] < group_b["priority"]
 
 
 func _on_news_closed() -> void:
@@ -911,6 +1036,8 @@ func on_wiki_timer_timeout() -> void:
 
 
 func sort_tags_alphabetical() -> void:
+	if _sorting_displayed:
+		return
 	var children: Array[TreeItem] = tags_tree.get_root().get_children()
 	children.sort_custom(_sort_tree_alphabetical)
 	
@@ -921,6 +1048,8 @@ func sort_tags_alphabetical() -> void:
 
 
 func sort_tags_category() -> void:
+	if _sorting_displayed:
+		return
 	var children: Array[TreeItem] = tags_tree.get_root().get_children()
 	children.sort_custom(_sort_tree_category)
 	

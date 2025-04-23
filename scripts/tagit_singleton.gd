@@ -36,6 +36,11 @@ enum LogLevel {
 	ERROR,
 }
 
+enum SortingType {
+	ALPHABETICAL,
+	PRIORITY
+}
+
 var tag_database: SQLite = null
 var icons: Dictionary = {} # id: {name: string, texture: resource}
 var loaded_tags: Dictionary = {} # Loaded in memory as need quick access. name -> id
@@ -888,10 +893,10 @@ func get_tag_data_column(tag_id: int, column: String) -> Variant:
 
 func get_tag_data_columns(tag_id: int, columns:Array[String]) -> Dictionary:
 	var return_columns: Dictionary = {}
-	var data := tag_database.select_rows("data", "id = " + str(tag_id), columns)
+	var data := tag_database.select_rows("data", "tag_id = " + str(tag_id), columns)
 	
 	for column in data[0]:
-		columns[column] = data[0][column]
+		return_columns[column] = data[0][column]
 	
 	return return_columns
 
