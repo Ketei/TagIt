@@ -88,13 +88,10 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_1u7h1")
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
-text = "[font_size=20][b][color=SKY_BLUE]Changed[/color][/b][/font_size]
-[ul] Project cards now scale instead of resize to keep visual consistency.
- Opening a tag in the Wiki now also fills in the text field.
- Pressing 'esc' will now close the \"about\" window.
- Loading a template counts as changing the project.[/ul]
+text = "[font_size=20][b][color=SKY_BLUE]New[/color][/b][/font_size]
+[ul] New Custom Sort for the tag list. Be sure to set it up via menu -> Sort Tags -> Configure Custom Sort[/ul]
 
 [font_size=20][b][color=SKY_BLUE]Fixes[/color][/b][/font_size]
-[ul] Fixed the right-click wiki button being disabled for existing tags and enabled for non-existing tags.
- Fixed the templates not saving.[/ul]
+[ul] Fixed the Save/Cancel buttons not working on the save screen if toggling via closing TagIt.
+ Fixed the quit shortcut not working properly.[/ul]
 "
