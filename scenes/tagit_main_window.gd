@@ -686,9 +686,7 @@ func show_custom_sorting_window() -> void:
 
 
 func sort_tags_custom() -> void:
-	if _sorting_displayed:
-		return
-	if SingletonManager.TagIt.settings.custom_sorting.is_empty():
+	if _sorting_displayed or SingletonManager.TagIt.settings.custom_sorting.is_empty():
 		return
 	
 	var groups: Array[Array] = []
@@ -763,8 +761,8 @@ func sort_tags_custom() -> void:
 		
 	last_tag.move_before(tags_tree.get_root().get_first_child())
 	
-	for group in groups: # For array in array
-		for tag: TreeItem in group: # for
+	for group in groups:
+		for tag: TreeItem in group:
 			tag.move_after(last_tag)
 			last_tag = tag
 	
@@ -782,7 +780,7 @@ func _sort_tag_groups_custom_priority(group_a: Dictionary, group_b: Dictionary) 
 	if group_a["priority"] == group_b["priority"]:
 		return group_a["tree"].get_text(0).naturalnocasecmp_to(group_b["tree"].get_text(0)) < 0
 	else:
-		return group_b["priority"] <= group_a["priority"]
+		return group_b["priority"] < group_a["priority"]
 
 
 func _on_news_closed() -> void:
