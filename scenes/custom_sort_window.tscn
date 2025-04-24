@@ -1,0 +1,227 @@
+[gd_scene load_steps=9 format=3 uid="uid://bfbitp4tflorf"]
+
+[ext_resource type="Texture2D" uid="uid://dmjor0d4lqveu" path="res://icons/reset_icon.svg" id="1_3x73l"]
+[ext_resource type="Theme" uid="uid://u13wuypqagrc" path="res://style/table_theme.tres" id="1_8eobt"]
+[ext_resource type="Script" path="res://scenes/custom_sort_window_script.gd" id="1_c6enm"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q1bkn"]
+content_margin_left = 200.0
+content_margin_top = 10.0
+content_margin_right = 200.0
+content_margin_bottom = 10.0
+bg_color = Color(0, 0, 0, 0.392157)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f8485"]
+content_margin_left = 15.0
+content_margin_top = 10.0
+content_margin_right = 15.0
+content_margin_bottom = 10.0
+bg_color = Color(0.180392, 0.180392, 0.180392, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="GDScript" id="GDScript_umib8"]
+script/source = "extends Tree
+
+
+signal category_dropped(on_group: TreeItem, categories: Array[TreeItem], at_position: int)
+signal item_moved(item: TreeItem, target: TreeItem, at_position: int)
+
+
+func _get_drag_data(_at_position: Vector2) -> Variant:
+	var item: TreeItem = get_next_selected(null)
+	
+	if item == null:
+		return
+	
+	var tags_label := Label.new()
+	tags_label.text = str(\"    \", item.get_text(0))
+	
+	set_drag_preview(tags_label)
+	
+	return {
+		\"type\": \"sorting_group\",
+		\"item\": item}
+
+
+func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
+	if typeof(data) != TYPE_DICTIONARY or (data[\"type\"] != \"category_group\" and data[\"type\"] != \"sorting_group\"):
+		return false
+	
+	if get_root().get_child_count() == 0:
+		return false
+	
+	var target: TreeItem = get_item_at_position(at_position)
+	
+	if target == null:
+		return false
+	
+	match target.get_metadata(0)[\"type\"]:
+		0: # Root
+			if data[\"type\"] != \"sorting_group\" or data[\"item\"].get_metadata(0)[\"type\"] != 1:
+				drop_mode_flags = DROP_MODE_DISABLED
+				return false
+			drop_mode_flags = DROP_MODE_ON_ITEM
+		1: # Group
+			if data[\"type\"] == \"sorting_group\":
+				if data[\"item\"].get_metadata(0)[\"type\"] == 1: # Group on group
+					drop_mode_flags = DROP_MODE_INBETWEEN
+				else:
+					drop_mode_flags = DROP_MODE_ON_ITEM
+			else: # category_group
+				drop_mode_flags = DROP_MODE_ON_ITEM
+		2: # Category
+			if data[\"type\"] == \"sorting_group\":
+				if data[\"item\"].get_metadata(0)[\"type\"] != 2:
+					drop_mode_flags = DROP_MODE_DISABLED
+					return false
+			drop_mode_flags = DROP_MODE_INBETWEEN
+	
+	return true
+
+
+func _drop_data(at_position: Vector2, data: Variant) -> void:
+	var target: TreeItem = get_item_at_position(at_position)
+	
+	if data[\"type\"] == \"sorting_group\":
+		item_moved.emit(data[\"item\"], target, get_drop_section_at_position(at_position))
+	elif data[\"type\"] == \"category_group\":
+		category_dropped.emit(
+				target,
+				data[\"categories\"],
+				get_drop_section_at_position(at_position))
+"
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_iiv7b"]
+
+[sub_resource type="GDScript" id="GDScript_ticeo"]
+script/source = "extends Tree
+
+
+func _get_drag_data(_at_position: Vector2) -> Variant:
+	var groups: Array[TreeItem] = []
+	
+	var next_selected: TreeItem = get_next_selected(null)
+	
+	while next_selected != null:
+		groups.append(next_selected)
+		next_selected = get_next_selected(next_selected)
+	
+	var tags_label := Label.new()
+	var tag_count: int = groups.size()
+	tags_label.text = str(\"    \", tag_count, \" categor\")
+	if tag_count < 1:
+		tags_label.text += \"ies\"
+	else:
+		tags_label.text += \"y\"
+	set_drag_preview(tags_label)
+	return {
+		\"type\": \"category_group\",
+		\"categories\": groups}
+
+
+func remove_categories(category_ids: Array[int]) -> void:
+	for id in category_ids:
+		for child in get_root().get_children():
+			if child.get_metadata(0)[\"id\"] == id:
+				child.free()
+"
+
+[node name="CustomSortWindow" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_q1bkn")
+script = ExtResource("1_c6enm")
+
+[node name="MainPanel" type="PanelContainer" parent="."]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_f8485")
+
+[node name="MainContainer" type="HBoxContainer" parent="MainPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="SortContainer" type="VBoxContainer" parent="MainPanel/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="Label" type="Label" parent="MainPanel/MainContainer/SortContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+text = "Sorting"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ResetSortingBtn" type="Button" parent="MainPanel/MainContainer/SortContainer/Label"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -8.0
+offset_top = -4.0
+offset_bottom = 4.0
+grow_horizontal = 0
+grow_vertical = 2
+tooltip_text = "Reset Sorting"
+icon = ExtResource("1_3x73l")
+flat = true
+icon_alignment = 1
+
+[node name="SortingTree" type="Tree" parent="MainPanel/MainContainer/SortContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("1_8eobt")
+columns = 2
+column_titles_visible = true
+allow_reselect = true
+script = SubResource("GDScript_umib8")
+
+[node name="HSeparator" type="HSeparator" parent="MainPanel/MainContainer/SortContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+theme_override_styles/separator = SubResource("StyleBoxEmpty_iiv7b")
+
+[node name="CancelButton" type="Button" parent="MainPanel/MainContainer/SortContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Cancel"
+
+[node name="GroupsContainer" type="VBoxContainer" parent="MainPanel/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="Label" type="Label" parent="MainPanel/MainContainer/GroupsContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+text = "Categories"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GroupsTree" type="Tree" parent="MainPanel/MainContainer/GroupsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("1_8eobt")
+hide_root = true
+select_mode = 2
+script = SubResource("GDScript_ticeo")
+
+[node name="HSeparator" type="HSeparator" parent="MainPanel/MainContainer/GroupsContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+theme_override_styles/separator = SubResource("StyleBoxEmpty_iiv7b")
+
+[node name="SaveButton" type="Button" parent="MainPanel/MainContainer/GroupsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Save"

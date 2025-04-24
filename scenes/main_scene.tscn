@@ -731,7 +731,7 @@ popup/item_2/id = 2
 popup/item_3/text = "Huge"
 popup/item_3/id = 3
 
-[node name="Button" type="Button" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/ImageContainer/WikiDets"]
+[node name="ReloadImagesButton" type="Button" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/ImageContainer/WikiDets"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 tooltip_text = "Reload Images"

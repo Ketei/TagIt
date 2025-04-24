@@ -146,13 +146,13 @@ func _on_advanced_search(args: Dictionary) -> void:
 		arguments.append("data.category_id = " + str(args["category"]))
 	
 	if args["priority"]["use"]:
-		arguments.append("data.priority " + args["operator"] + " " + str(args["priority"]["priority"]))
+		arguments.append("data.priority " + args["priority"]["operator"] + " " + str(args["priority"]["priority"]))
 	
 	if 0 < args["group"]:
 		arguments.append("data.group_id = " + str(args["group"]))
 	
 	if 0 < args["valid"]:
-		arguments.append("data.is_valid = 1" if args["valid"] == 1 else "data.is_valid = 0")
+		arguments.append("tags.is_valid = 1" if args["valid"] == 1 else "tags.is_valid = 0")
 	
 	if not arguments.is_empty():
 		query += " WHERE " + arguments.pop_front()

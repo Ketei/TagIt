@@ -25,6 +25,7 @@ const SETTINGS_PATH: String = "user://tagit_settings.tres"
 @export var news_shown: Array[int] = [0,0,0]
 @export var projects_version: int = 1
 @export var templates_version: int = 1
+@export var custom_sorting: Array[Dictionary] = []
 
 
 static func get_settings() -> AppSettingsRes:

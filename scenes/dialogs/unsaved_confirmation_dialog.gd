@@ -10,8 +10,9 @@ func _ready() -> void:
 	add_child(label)
 	label.text = "You have unsaved changes."
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	size = Vector2(230, 90)
+	size = Vector2(270, 90)
 	initial_position = WINDOW_INITIAL_POSITION_CENTER_PRIMARY_SCREEN
+	ok_button_text = "    Save    "
 	add_button("Don't Save", true).pressed.connect(on_dont_save)
 	add_cancel_button("Cancel")
 	canceled.connect(on_cancelled)

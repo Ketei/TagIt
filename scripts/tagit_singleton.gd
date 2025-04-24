@@ -22,7 +22,7 @@ const SEARCH_WILDCARD: String = "*"
 const DB_VERSION: int = 3
 const PROJECTS_VERSION: int = 2
 const TEMPLATES_VERSION: int = 3
-const TAGIT_VERSION_ARRAY: Array[int] = [3, 3, 10]
+const TAGIT_VERSION_ARRAY: Array[int] = [3, 3, 11]
 const MAX_PARENT_RECURSION: int = 100
 const IMAGE_LIMITS: Vector2i = Vector2i(1000, 1000)
 const LEV_DISTANCE: float = 0.75
@@ -34,6 +34,11 @@ enum LogLevel {
 	INFO,
 	WARNING,
 	ERROR,
+}
+
+enum SortingType {
+	ALPHABETICAL,
+	PRIORITY
 }
 
 var tag_database: SQLite = null
@@ -888,10 +893,10 @@ func get_tag_data_column(tag_id: int, column: String) -> Variant:
 
 func get_tag_data_columns(tag_id: int, columns:Array[String]) -> Dictionary:
 	var return_columns: Dictionary = {}
-	var data := tag_database.select_rows("data", "id = " + str(tag_id), columns)
+	var data := tag_database.select_rows("data", "tag_id = " + str(tag_id), columns)
 	
 	for column in data[0]:
-		columns[column] = data[0][column]
+		return_columns[column] = data[0][column]
 	
 	return return_columns
 
@@ -1115,7 +1120,7 @@ func remove_hydrus_category_prefix(category_id: int) -> void:
 
 func get_hydrus_category_prefix(category_id: int) -> String:
 	var data := tag_database.select_rows("categories", "id = " + str(category_id), ["hydrus_prefix"])
-	if data.is_empty():
+	if data.is_empty() or data[0]["hydrus_prefix"] == null:
 		return ""
 	return data[0]["hydrus_prefix"]
 
@@ -1316,7 +1321,7 @@ func set_tags_valid(tag_ids: Array[int], is_valid: bool) -> void:
 				invalid_tags.remove_at(invalid_idx)
 		else:
 			Arrays.insert_sorted_asc(invalid_tags, tag)
-	print("Valid are: ", tag_ids)
+	
 	tags_validity_updated.emit(tag_ids.duplicate(), is_valid)
 
 
