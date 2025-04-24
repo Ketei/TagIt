@@ -93,5 +93,8 @@ text = "[font_size=20][b][color=SKY_BLUE]New[/color][/b][/font_size]
 
 [font_size=20][b][color=SKY_BLUE]Fixes[/color][/b][/font_size]
 [ul] Fixed the Save/Cancel buttons not working on the save screen if toggling via closing TagIt.
- Fixed the quit shortcut not working properly.[/ul]
+ Fixed the quit shortcut not working properly.
+ Fixed the tag search by priority not working.
+ Fixed the tag priority search only allowing values between 0 and 100.
+ Restored functionality to hydrus reload image button.[/ul]
 "
