@@ -86,6 +86,8 @@ focus_neighbor_right = NodePath("../PrioOptBtn")
 focus_neighbor_bottom = NodePath("../../GroupContainer/GroupOptBtn")
 focus_next = NodePath("../PrioOptBtn")
 focus_previous = NodePath("../../CatContainer/CategoryOptBtn")
+allow_greater = true
+allow_lesser = true
 editable = false
 
 [node name="PrioOptBtn" type="OptionButton" parent="MainContainer/PrioContainer"]

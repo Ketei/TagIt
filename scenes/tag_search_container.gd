@@ -146,7 +146,7 @@ func _on_advanced_search(args: Dictionary) -> void:
 		arguments.append("data.category_id = " + str(args["category"]))
 	
 	if args["priority"]["use"]:
-		arguments.append("data.priority " + args["operator"] + " " + str(args["priority"]["priority"]))
+		arguments.append("data.priority " + args["priority"]["operator"] + " " + str(args["priority"]["priority"]))
 	
 	if 0 < args["group"]:
 		arguments.append("data.group_id = " + str(args["group"]))
