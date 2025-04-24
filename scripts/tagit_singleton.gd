@@ -1120,7 +1120,7 @@ func remove_hydrus_category_prefix(category_id: int) -> void:
 
 func get_hydrus_category_prefix(category_id: int) -> String:
 	var data := tag_database.select_rows("categories", "id = " + str(category_id), ["hydrus_prefix"])
-	if data.is_empty():
+	if data.is_empty() or data[0]["hydrus_prefix"] == null:
 		return ""
 	return data[0]["hydrus_prefix"]
 
