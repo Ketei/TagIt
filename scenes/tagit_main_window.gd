@@ -53,6 +53,7 @@ var _close_signaled: bool = false
 var _cleanup_timeout: bool = false
 var _allow_generate: bool = true
 var _sorting_displayed: bool = false
+var _current_wiki_search: String = ""
 
 var selector: Control = null:
 	set(new_selector):
@@ -80,7 +81,11 @@ var hydrus_connected: bool = false:
 			settings_connection_status_txt_rect.texture = load("res://icons/disconnected_icon.svg")
 			settings_connection_status_txt_rect.modulate = Color(0.78, 0.139, 0.117)
 var loading_image: bool = false
-var loading_thumbnails: bool = false
+var loading_thumbnails: bool = false:
+	set(is_loading):
+		loading_thumbnails = is_loading
+		wiki_reload_images_button.disabled = is_loading
+		thumbnail_size_changer.disabled = is_loading
 
 var custom_order_list: Dictionary = {}
 var prio_list_node: Control = null
@@ -187,6 +192,7 @@ var sort_submenu: PopupMenu = null
 @onready var wiki_rtl: RichTextLabel = $MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/WikiScrollCtnr/WikiRTL
 @onready var wiki_search_ln_edt: LineEdit = $MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/SearchContainer/WikiSearchLnEdt
 @onready var wiki_search_btn: Button = $MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/SearchContainer/SearchBtn
+@onready var wiki_reload_images_button: Button = $MainContainer/WikiPanel/WikiMargin/WikiContainer/ImageContainer/WikiDets/ReloadImagesButton
 
 @onready var wiki_section_separator: HSeparator = $MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/SectionSeparator
 @onready var wiki_images_container: HFlowContainer = $MainContainer/WikiPanel/WikiMargin/WikiContainer/ImageContainer/ScrollContainer/ImagesContainer
@@ -362,6 +368,7 @@ func _ready() -> void:
 	wiki_esix_search_btn.pressed.connect(on_esix_wiki_search)
 	wiki_search_ln_edt.timer_finished.connect(on_wiki_timer_timeout)
 	wiki_search_btn.pressed.connect(on_wiki_search_button_pressed)
+	wiki_reload_images_button.pressed.connect(_on_reload_images_pressed)
 	# --- Tools ---
 	tools_panel.tags_requested.connect(_on_tool_tag_requested)
 	# --- Settings ---
@@ -697,7 +704,6 @@ func sort_tags_custom() -> void:
 		if group["sorting"] == DataManager.SortingType.ALPHABETICAL:
 			new_group.sort_custom(_sort_tag_groups_custom_alphabetical)
 		else:
-			
 			var tag_names: Dictionary = {}
 			var tag_id_to_names: Dictionary = {}# id: {tag, priority}
 			var id_tags: Array[int] = []
@@ -773,7 +779,10 @@ func _sort_tag_groups_custom_alphabetical(item_a: TreeItem, item_b: TreeItem) ->
 
 
 func _sort_tag_groups_custom_priority(group_a: Dictionary, group_b: Dictionary) -> bool:
-	return group_a["priority"] < group_b["priority"]
+	if group_a["priority"] == group_b["priority"]:
+		return group_a["tree"].get_text(0).naturalnocasecmp_to(group_b["tree"].get_text(0)) < 0
+	else:
+		return group_b["priority"] <= group_a["priority"]
 
 
 func _on_news_closed() -> void:
@@ -1913,6 +1922,19 @@ func on_wiki_image_loaded(full_image: SpriteFrames, animated: bool) -> void:
 	loading_image = false
 
 
+func _on_reload_images_pressed() -> void:
+	if not SingletonManager.TagIt.settings.load_wiki_images or not hydrus_connected:
+		return
+	wiki_search_ln_edt.editable = false
+	wiki_search_btn.disabled = true
+	
+	wiki_gallery.clear_gallery()
+	var files = await search_hydrus_files(
+			Array([_current_wiki_search], TYPE_STRING, &"", null),
+			SingletonManager.TagIt.settings.wiki_images)
+	get_thumbnails(files)
+
+
 func on_wiki_next_image(from: int) -> void:
 	var new_index: int = posmod(from + 1, wiki_images_container.get_child_count())
 	var image_id: int = wiki_images_container.get_child(new_index).get_meta(&"image_id", -1)
@@ -2048,7 +2070,14 @@ func request_hydrus_permissions(port: int) -> String:
 		"Requesting Hydrus access key.",
 		SingletonManager.TagIt.LogLevel.INFO)
 	
-	hydrus_requester.request(request_url)
+	var request_error := hydrus_requester.request(request_url)
+	
+	if request_error != OK:
+		SingletonManager.TagIt.log_message(
+			"HTTP response (Hydrus): " + "\nCouldn't create request. Error: " + str(request_error),
+			SingletonManager.TagIt.LogLevel.INFO)
+		return ""
+	
 	var client_response: Array = await hydrus_requester.request_completed
 	
 	SingletonManager.TagIt.log_message(
@@ -2101,6 +2130,7 @@ func on_wiki_search_button_pressed() -> void:
 
 func on_wiki_searched(search_text: String) -> void:
 	var wiki_search: String = search_text.strip_edges().to_lower()
+	_current_wiki_search = wiki_search
 	wiki_gallery.clear_gallery()
 	wiki_search_ln_edt.editable = false
 	wiki_search_btn.disabled = true
