@@ -152,7 +152,7 @@ func _on_advanced_search(args: Dictionary) -> void:
 		arguments.append("data.group_id = " + str(args["group"]))
 	
 	if 0 < args["valid"]:
-		arguments.append("data.is_valid = 1" if args["valid"] == 1 else "data.is_valid = 0")
+		arguments.append("tags.is_valid = 1" if args["valid"] == 1 else "tags.is_valid = 0")
 	
 	if not arguments.is_empty():
 		query += " WHERE " + arguments.pop_front()
