@@ -96,5 +96,6 @@ text = "[font_size=20][b][color=SKY_BLUE]New[/color][/b][/font_size]
  Fixed the quit shortcut not working properly.
  Fixed the tag search by priority not working.
  Fixed the tag priority search only allowing values between 0 and 100.
- Restored functionality to hydrus reload image button.[/ul]
+ Restored functionality to hydrus reload image button.
+ Fixed adv. search not finding results when looking specifically for valid/invalid tags.[/ul]
 "
