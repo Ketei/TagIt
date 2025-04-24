@@ -1321,7 +1321,7 @@ func set_tags_valid(tag_ids: Array[int], is_valid: bool) -> void:
 				invalid_tags.remove_at(invalid_idx)
 		else:
 			Arrays.insert_sorted_asc(invalid_tags, tag)
-	print("Valid are: ", tag_ids)
+	
 	tags_validity_updated.emit(tag_ids.duplicate(), is_valid)
 
 
