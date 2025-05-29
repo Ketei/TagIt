@@ -4,11 +4,11 @@ Tagit is software designed to help tagging image projects for booru upload (spec
 Version 3 is the final major version of TagIt (and last rewrite). It comes bundled with a few useful tools to make tagging easier.
 ## Installation
 ### Quick (Reccomended)
-Simply download the launcher script that is appropiate for your system and run it. It'll download and rename the required files where you've placed the script. Each time you run the script it'll check if there is an update required and automatically download it for you.
+Go to [Releases](https://github.com/Ketei/TagIt/releases/latest), download the file that is appropiate for your system and run it. It'll automatically install/update all required files in your system and run TagIt.
 > [!NOTE]
 > Running the executable instead of the launcher will also check for updates and let you decide if you want to update or not, but unlike the launcher it can't keep the executable or the plugins updated and can only patch for bugs.
 ### Manual
-The launcher gets the files from the next repo: [TagIt Launcher](https://github.com/Ketei/tagit-launcher/releases/latest).
+Compiled files: [Github Releases](https://github.com/Ketei/tagit-launcher/releases/latest).
 
 If you're on **Windows**, download: 
 - tagit.pck
@@ -34,6 +34,10 @@ Now just launch `tagit.exe` if on Windows or `tagit.x86_64` if on Linux.
 > [!CAUTION]
 > Not using the intended names could render the software unusable.
 
+## Uninstallation
+All files are downloaded and stored on your user data folder.
+On windows it should be `%localappdata%/tagit`
+
 ## Main differences with v2
 This version of TagIt:
 - Uses an actual database, instead of a bunch of loose files. Making loading times a LOT shorter.
@@ -44,3 +48,8 @@ This version of TagIt:
 - You can create as many alt lists for a project as you need.
 - You can finally add your own formatting through the application.
 - And a few more...
+
+## Launcher Source Code:
+Integrated updater: [TagIt](https://github.com/Ketei/tagit-launcher)
+
+Launcher: [TagIt Launcher](https://github.com/wulfre/tagit-launcher)
