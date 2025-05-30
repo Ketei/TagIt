@@ -14,6 +14,13 @@ func _ready() -> void:
 	set_column_custom_minimum_width(0, 16)
 	
 	button_clicked.connect(on_button_clicked)
+	SingletonManager.TagIt.icon_created.connect(_on_icon_created)
+
+
+func _on_icon_created(icon_id: int) -> void:
+	var icon_name: String = SingletonManager.TagIt.get_icon_name(icon_id)
+	var icon_image: Texture2D = SingletonManager.TagIt.get_icon_texture(icon_id)
+	add_icon(icon_id, icon_name, icon_image)
 
 
 func add_icon(icon_id: int, icon_name: String, icon_texture: Texture2D) -> void:

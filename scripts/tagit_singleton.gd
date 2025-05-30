@@ -16,13 +16,14 @@ signal tags_created(tag_names: Array[String])
 signal tags_validity_updated(tag_ids: Array[int], valid: bool)
 signal website_created(site_id: int, site_name: String)
 signal website_deleted(site_id: int)
+signal icon_created(icon_id: int)
 
 const DATABASE_PATH: String = "user://tag_database.db"
 const SEARCH_WILDCARD: String = "*"
 const DB_VERSION: int = 3
 const PROJECTS_VERSION: int = 2
 const TEMPLATES_VERSION: int = 3
-const TAGIT_VERSION_ARRAY: Array[int] = [3, 3, 11]
+const TAGIT_VERSION_ARRAY: Array[int] = [3, 4, 0]
 const MAX_PARENT_RECURSION: int = 100
 const IMAGE_LIMITS: Vector2i = Vector2i(1000, 1000)
 const LEV_DISTANCE: float = 0.75
@@ -1610,9 +1611,12 @@ func save_icon(icon_name: String, icon_image: Image) -> int:
 				"name": icon_name if not icon_name.is_empty() else null,
 				"image": icon_image.save_webp_to_buffer()})
 	
-	icons[tag_database.last_insert_rowid] = {"name": icon_name, "texture": null}
+	var id: int = tag_database.last_insert_rowid
 	
-	return tag_database.last_insert_rowid
+	icons[id] = {"name": icon_name, "texture": null}
+	icon_created.emit(id)
+	
+	return id
 
 
 func delete_icon(icon_id: int) -> void:

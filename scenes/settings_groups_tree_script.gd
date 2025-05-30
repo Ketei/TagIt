@@ -15,6 +15,11 @@ var root_tree: TreeItem = null
 func _ready() -> void:
 	root_tree = create_item()
 	button_clicked.connect(on_button_pressed)
+	SingletonManager.TagIt.group_created.connect(_on_group_created)
+
+
+func _on_group_created(group_id: int, group_name: String) -> void:
+	create_group(group_name, group_id)
 
 
 func create_group(group_name: String, group_id: int) -> void:

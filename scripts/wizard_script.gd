@@ -388,7 +388,7 @@ const BODY_TYPES: Array[Dictionary] = [
 				"name": "Horn shape",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Straight horn,Curved horn,Forked horn,Spiral horn,N/A",
-				"tags": ["staigth horn", "curved horn", "forked horn", "spiral horn", ""],
+				"tags": ["straight horn", "curved horn", "forked horn", "spiral horn", ""],
 				"value": 0
 			},
 			{
