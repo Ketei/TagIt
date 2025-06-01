@@ -2857,11 +2857,11 @@ func notify_import(multiple: bool = false, success: bool = true) -> void:
 
 func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 	var cats_data := SingletonManager.TagIt.get_categories()
-	var groups_data := SingletonManager.TagIt.get_tag_groups()
+	var groups_data := SingletonManager.TagIt.get_tag_groups() # id: Dict
 	
 	var all_icons: Dictionary = {} # name: -> ID
 	var all_cats: Dictionary = {}
-	var all_groups: Dictionary = {}
+	var all_groups: Dictionary = {} # name.to_lower() -> ID
 	
 	var json_icons: Dictionary = {} # idx -> ID
 	var json_cats: Dictionary = {}
@@ -2941,7 +2941,7 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 			continue
 		
 		group_id = SingletonManager.TagIt.create_tag_group(group_dict["name"], group_dict["description"])
-		all_groups[group_id] = {"name": group_dict["name"], "description": group_dict["description"]}
+		all_groups[group_dict["name"].to_lower()] = group_id #{"name": group_dict["name"], "description": group_dict["description"]}
 		json_groups[group_idx] = group_id
 	
 	var empty_tags: Dictionary = {}
@@ -3027,9 +3027,9 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 		var group_suggestions: Array[int] = []
 	
 		for group_text in tag["group_suggestions"]:
-			for _group_id in groups_data:
-				if Strings.nocasecmp_equal(group_text, groups_data[_group_id]["name"]):
-					group_suggestions.append(_group_id)
+			for group_name in all_groups:
+				if Strings.nocasecmp_equal(group_text, group_name):
+					group_suggestions.append(all_groups[group_name])
 					break
 		
 		if not tag["parents"].is_empty():
