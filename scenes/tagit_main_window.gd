@@ -489,7 +489,7 @@ func _on_files_dropped(files: PackedStringArray) -> void:
 func _on_tool_tag_requested() -> void:
 	var tags: Array[String] = []
 	
-	for list_index in range(alt_lists.size()):
+	for list_index in range(alt_lists.size() - 1):
 		if list_index == current_alt:
 			var new_tags: Array[String] = []
 			for tag in tags_tree.get_root().get_children():
@@ -1500,6 +1500,7 @@ func on_new_blacklist() -> void:
 func new_list() -> void:
 	current_title = ""
 	current_project_uuid = ""
+	current_alt = 0
 	_suggestion_blacklist.clear()
 	_group_blacklist.clear()
 	clear_all_tagger()
@@ -1514,7 +1515,7 @@ func clear_all_tagger() -> void:
 	project_image.texture = null
 	clear_img_btn.disabled = true
 	reset_view_button.disabled = true
-	for alt in range(1, alt_opt_btn.item_count):
+	for alt in range(alt_opt_btn.item_count -1, 0, -1):
 		alt_opt_btn.remove_item(alt)
 		generate_version_opt_btn.remove_item(alt)
 	alt_opt_btn.select(0)
@@ -1533,6 +1534,10 @@ func clear_all_tagger() -> void:
 
 func on_selector_project_saved(title: String) -> void:
 	selector.set_emit_signals(false)
+	if SingletonManager.TagIt.verbose:
+		SingletonManager.TagIt.log_silent(
+				"[TagIt] Saving project with UUID: " + current_project_uuid,
+				DataManager.LogLevel.INFO)
 	var projects := TagItProjectResource.get_projects()
 	var alts: Array[Dictionary] = []
 	
@@ -1575,6 +1580,10 @@ func on_selector_project_saved(title: String) -> void:
 
 func on_selector_project_selected(project_uuid: String) -> void:
 	selector.set_emit_signals(false)
+	if SingletonManager.TagIt.verbose:
+		SingletonManager.TagIt.log_silent(
+				"[TagIt] Opening project with UUID: " + project_uuid,
+				DataManager.LogLevel.INFO)
 	var request_suggestions: bool = SingletonManager.TagIt.settings.request_suggestions
 	SingletonManager.TagIt.settings.request_suggestions = false
 	
@@ -1644,6 +1653,10 @@ func on_selector_project_selected(project_uuid: String) -> void:
 
 
 func on_selector_project_deleted(project_uuid: String) -> void:
+	if SingletonManager.TagIt.verbose:
+		SingletonManager.TagIt.log_silent(
+				"[TagIt] Deleting project with UUID: " + project_uuid,
+				DataManager.LogLevel.INFO)
 	var projects := TagItProjectResource.get_projects()
 	projects.delete_project(project_uuid)
 	projects.save()
@@ -2133,7 +2146,8 @@ func on_wiki_searched(search_text: String) -> void:
 	wiki_search_ln_edt.editable = false
 	wiki_search_btn.disabled = true
 	
-	if SingletonManager.TagIt.has_tag(wiki_search) and SingletonManager.TagIt.has_data(SingletonManager.TagIt.get_tag_id(wiki_search)):
+	
+	if SingletonManager.TagIt.has_tag(wiki_search) and SingletonManager.TagIt.has_tag_data(wiki_search):
 		var tag_data := SingletonManager.TagIt.get_tag_data(SingletonManager.TagIt.get_tag_id(wiki_search))
 		wiki_title_lbl.text = Strings.title_case(tag_data["tag"])
 		wiki_rtl.text = tag_data["description"]
@@ -2157,6 +2171,8 @@ func on_wiki_searched(search_text: String) -> void:
 		wiki_section_separator.visible = wiki_parents_container.visible or wiki_aliases_container.visible
 		
 		if SingletonManager.TagIt.settings.load_wiki_images and hydrus_connected:
+			wiki_reload_images_button.disabled = true
+			thumbnail_size_changer.disabled = true
 			var files = await search_hydrus_files(
 					Array([wiki_search], TYPE_STRING, &"", null),
 					SingletonManager.TagIt.settings.wiki_images)
@@ -2336,7 +2352,7 @@ func add_tag(tag_name: String, clean_suggestions: bool = true, skip_suggestions:
 
 
 func on_esix_api_suggestions_found(for_tag: String, suggestions: Array[String]) -> void:
-	if for_tag.is_empty():
+	if for_tag.is_empty() or suggestions.is_empty():
 		return
 	
 	if tags_tree.has_tag(for_tag):
@@ -2762,7 +2778,7 @@ func json_tag_to_db(data: Dictionary, overwrite: bool = false) -> void:
 		group_id = SingletonManager.TagIt.create_tag_group(data["group"], data["group_desc"])
 		group_sugg_data[group_id] = {"name": data["group"], "description": data["group_desc"]}
 	
-	if SingletonManager.TagIt.has_tag(clean_name) and SingletonManager.TagIt.has_data(SingletonManager.TagIt.get_tag_id(clean_name)):
+	if SingletonManager.TagIt.has_tag(clean_name) and SingletonManager.TagIt.has_tag_data(clean_name):
 		if overwrite:
 			var tag_id: int = SingletonManager.TagIt.get_tag_id(clean_name)
 			SingletonManager.TagIt.update_tag_data(
@@ -2974,7 +2990,7 @@ func json_group_to_db(json_result: Dictionary, overwrite: bool = false) -> void:
 		var group_id: int = 0 if not json_groups.has(int(tag["group"])) else json_groups[int(tag["group"])]
 		var cat_id: int = 1 if not json_cats.has(int(tag["category"])) else json_cats[int(tag["category"])]
 		
-		if SingletonManager.TagIt.has_tag(clean_tag) and SingletonManager.TagIt.has_data(SingletonManager.TagIt.get_tag_id(clean_tag)):
+		if SingletonManager.TagIt.has_tag(clean_tag) and SingletonManager.TagIt.has_tag_data(clean_tag):
 			if overwrite:
 				var _tag_id: int = SingletonManager.TagIt.get_tag_id(clean_tag)
 				SingletonManager.TagIt.update_tag(_tag_id, {"is_valid": tag["is_valid"]})
