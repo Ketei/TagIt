@@ -88,11 +88,16 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_1u7h1")
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
-text = "[font_size=20][b][color=SKY_BLUE]Fixes[/color][/b][/font_size]
+text = "[font_size=20][b][color=SKY_BLUE]New[/color][/b][/font_size]
+[ul] Added more items to character properties in the wizard.[/ul]
+
+[font_size=20][b][color=SKY_BLUE]Fixes[/color][/b][/font_size]
 [ul] Fixed error when a tag request returned with no suggestions.
  Fixed alt-lists breaking when creating a new project.
  Fixed index error when importing tag from project to batch download tags.
- Fixed an error with TagIt believing you were on an alt list on new or just opened projects. [/ul]
+ Fixed an error with TagIt believing you were on an alt list on new or just opened projects.
+ Fixed an issue with the importer where it didn't assing group suggestions correctly to tags.
+ Fixed several typos on the wizard.[/ul]
 
 [font_size=20][b][color=SKY_BLUE]Changes[/color][/b][/font_size]
 [ul] Slightly improved tag import speed[/ul]"
