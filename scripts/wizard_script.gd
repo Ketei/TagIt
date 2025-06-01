@@ -59,7 +59,7 @@ const CLOTHING: Array[Dictionary] = [
 		"options": [
 			"Abuniverse",
 			"Cloth diaper",
-			"Prilly diaper",
+			"Frilly diaper",
 			"Pull-ups (diaper)",
 		],
 		"score": 10
@@ -171,7 +171,7 @@ const BODY_TRAITS: Array[Dictionary] = [
 	{"title": "Slit", "tag": "genital slit"},
 	{"title": "Aroused", "tag": "aroused"},
 	{"title": "Blushing", "tag": "blush"},
-	{"title": "Speaking", "tag": "dialog"},
+	{"title": "Speaking", "tag": "dialogue"},
 	{"title": "Bound", "tag": "bound"},
 	{"title": "Sweating", "tag": "sweat"},
 	]
@@ -210,16 +210,41 @@ const BODY_TYPES: Array[Dictionary] = [
 			"text": "short fur,average length,long fur",
 			"tags": ["short fur", "", "long fur"],
 			"value": 1
-		},
+			},
+			{
+				"name": "Markings",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Has markings",
+				"tags": ["", "fur markings"],
+				"tooltip": ["Fur markings"]
+			}
 		]},
 	{
 		"name": "Scales",
 		"tag": "scales",
-		"include_standalone": true},
+		"include_standalone": true,
+		"properties": [
+			{
+				"name": "Markings",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Has markings",
+				"tags": ["", "scale markings"],
+				"tooltip": ["Scale markings"]
+			}
+		]},
 	{
 		"name": "Feathers",
 		"tag": "feathers",
-		"include_standalone": true},
+		"include_standalone": true,
+		"properties": [
+			{
+				"name": "Markings",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Has markings",
+				"tags": ["", "feather markings"],
+				"tooltip": ["Feather markings"]
+			}
+		]},
 	{
 		"name": "Wool",
 		"tag": "wool",
@@ -231,7 +256,16 @@ const BODY_TYPES: Array[Dictionary] = [
 	{
 		"name": "Exoskeleton",
 		"tag": "exoskeleton",
-		"include_standalone": true},
+		"include_standalone": true,
+		"properties": [
+			{
+				"name": "Markings",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Has markings",
+				"tags": ["", "exoskeleton markings"],
+				"tooltip": ["Exoskeleton markings"]
+			}
+		]},
 	{
 		"name": "Anus",
 		"tag": "anus",
@@ -266,6 +300,27 @@ const BODY_TYPES: Array[Dictionary] = [
 				"text": "Small,Average,Big,Huge,Hyper",
 				"tags": ["small balls", "", "big balls", "huge balls", "hyper balls"],
 				"value": 1
+			},
+			{
+				"name": "Hang",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Tight,Normal,Saggy",
+				"tags": ["tight balls", "", "saggy balls"],
+				"tooltip": ["How low do the balls hang."]
+			},
+			{
+				"name": "Markings",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Has markings",
+				"tags": ["", "ball markings"],
+				"tooltip": ["Ball markings"]
+			},
+			{
+				"name": "Scrotal Raphe",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Has raphe",
+				"tags": ["", "ball markings"],
+				"tooltip": ["Fleshy seam or ridge of tissue running through the middle of the scrotum"]
 			}
 		]},
 	{
@@ -279,6 +334,19 @@ const BODY_TYPES: Array[Dictionary] = [
 				"text": "Flat,Small,Average,Big,Huge,Hyper",
 				"tags": ["flat chested", "small breasts", "medium breasts", "big breasts", "huge breasts", "hyper breasts"],
 				"value": 2
+			},
+			{
+				"name": "Markings",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Has markings",
+				"tags": ["", "breast markings"]
+			},
+			{
+				"name": "Featureless",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Are featureless",
+				"tags": ["", "featureless breasts"],
+				"tooltip": ["Breasts without nipples/areola"]
 			}
 		]
 	},
@@ -331,7 +399,8 @@ const BODY_TYPES: Array[Dictionary] = [
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Black,Blue,Brown,Cyan,Green,Grey,Orange,Pink,Purple,Red,White,Yellow",
 				"tags": ["black sclera", "blue sclera", "brown sclera", "cyan sclera", "green sclera", "grey sclera", "orange sclera", "pink sclera", "purple sclera", "red sclera", "", "yellow sclera"],
-				"value": 10
+				"value": 10,
+				"tooltip": ["The outer area of the eye (around the iris)."]
 			}
 		]},
 	{
@@ -471,6 +540,11 @@ const BODY_TYPES: Array[Dictionary] = [
 				"tags": ["small knot", "", "big knot", "huge knot", "hyper knot"],
 				"value": 1
 			},{
+				"name": "Veiny",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Is veiny",
+				"tags": ["", "veiny knot"]
+			},{
 				"name": "Multi knot",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Has multiple",
@@ -501,7 +575,7 @@ const BODY_TYPES: Array[Dictionary] = [
 				"tags": ["small areola", "", "big areola", "huge areola", "hyper areola"],
 				"value": 1
 			},{
-				"name": "Multi-nipple (+2)",
+				"name": "Multi-nipple (+3)",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Multiple Nipples",
 				"tags": ["", "multi nipple"]
@@ -540,8 +614,14 @@ const BODY_TYPES: Array[Dictionary] = [
 				"name": "Erection",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Flaccid (Visible),Half-erect,Erect",
-				"tags": ["flaccid", "hald-erect", "erection"],
+				"tags": ["flaccid", "half-erect", "erection"],
 				"value": 2
+			},
+			{
+				"name": "Veiny",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Is veiny",
+				"tags": ["", "veiny penis"]
 			},
 			{
 				"name": "Anatomically correct",
@@ -611,12 +691,12 @@ const BODY_TYPES: Array[Dictionary] = [
 		"name": "Tongue",
 		"tag": "tongue",
 		"include_standalone": true,
-		"propeties": [
+		"properties": [
 			{
 				"name": "Shape",
 				"mode": TreeItem.CELL_MODE_RANGE,
-				"text": "Regular,Forked,Tappering,Segmented,Ribbed",
-				"tags": ["", "forked tongue", "tappering tongue", "segmented tongue", "ribbed tongue"],
+				"text": "Regular,Forked,Tapering,Segmented,Ribbed",
+				"tags": ["", "forked tongue", "tapering tongue", "segmented tongue", "ribbed tongue"],
 			},
 		]
 	},
@@ -650,7 +730,7 @@ const BODY_TYPES: Array[Dictionary] = [
 				"name": "Shape",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Innie,Average,Outie",
-				"tags": ["innie pussy", "", "long_labia"],
+				"tags": ["innie pussy", "", "long labia"],
 				"value": 0
 			},
 			{
@@ -665,7 +745,6 @@ const BODY_TYPES: Array[Dictionary] = [
 		"tag": "wings",
 		"include_standalone": true}
 	]
-
 
 var storage: TagItStorage = TagItStorage.get_storage()
 var characters: Array[Dictionary] = []
@@ -1605,6 +1684,13 @@ func add_tree_bodies() -> void:
 				
 				new_prop.set_text(0, property["name"])
 				new_prop.set_metadata(0, {"index": prop_idx})
+				
+				if property.has("tooltip"):
+					var tips: int = property["tooltip"].size()
+					if 2 <= tips and not property["tooltip"][1].is_empty():
+						new_prop.set_tooltip_text(1, property["tooltip"][1])
+					if 1 <= tips and not property["tooltip"][0].is_empty():
+						new_prop.set_tooltip_text(0, property["tooltip"][0])
 				
 				match property["mode"]:
 					TreeItem.CELL_MODE_RANGE:
