@@ -23,7 +23,7 @@ const SEARCH_WILDCARD: String = "*"
 const DB_VERSION: int = 3
 const PROJECTS_VERSION: int = 2
 const TEMPLATES_VERSION: int = 3
-const TAGIT_VERSION_ARRAY: Array[int] = [3, 4, 0]
+const TAGIT_VERSION_ARRAY: Array[int] = [3, 4, 1]
 const MAX_PARENT_RECURSION: int = 100
 const IMAGE_LIMITS: Vector2i = Vector2i(1000, 1000)
 const LEV_DISTANCE: float = 0.75
@@ -51,6 +51,7 @@ var tag_search_data: PackedStringArray = []
 var settings: AppSettingsRes = null
 var _default_icon_color: Color = Color.WHITE
 var splash_node: CanvasLayer = null
+var verbose: bool = false
 
 
 # Needs to be run on main tagger load.
@@ -69,6 +70,9 @@ func _ready() -> void:
 		DirAccess.make_dir_absolute(TagItProjectResource.get_thumbnails_path())
 	
 	tag_database = SQLite.new()
+	if OS.is_stdout_verbose():
+		verbose = true
+		tag_database.verbosity_level = SQLite.VerbosityLevel.VERBOSE
 	tag_database.path = DATABASE_PATH
 	tag_database.foreign_keys = true
 	
@@ -105,14 +109,13 @@ func _ready() -> void:
 			"name": {"data_type": "text"},
 			"whitespace": {"data_type": "text", "not_null": true},
 			"separator": {"data_type": "text", "not_null": true}}
-		
-		var prefix_table: Dictionary = {
-			"prefix": {"data_type": "text", "primary_key": true, "not_null": true, "unique": true},
-			"format": {"data_type": "text", "default": null}}
-		
+
 		tag_database.create_table("tags", tags_table)
 		tag_database.create_table("icons", icons_table)
-		tag_database.create_table("prefixes", prefix_table)
+		tag_database.query( # prefixes
+				"CREATE TABLE prefixes (
+						prefix TEXT NOT NULL PRIMARY KEY UNIQUE,
+						format TEXT DEFAULT NULL);")
 		tag_database.query( # suggestions
 				"CREATE TABLE suggestions ( 
 					tag_id INTEGER NOT NULL, 
@@ -852,6 +855,13 @@ func create_tag(tag_name: String, tag_category: int, tag_desc: String, tag_group
 	tag_created.emit(tag_name, tag_id)
 
 
+func set_data_columns(columns: Dictionary) -> void:
+	# keys are tags, values are all column data from the data table.
+	tag_database.insert_rows("data", columns.values())
+	for tag in columns:
+		tag_search_data.insert(tag_search_data.bsearch(tag, false), tag)
+
+
 func create_empty_tag(tag_name: String) -> void:
 	var new_tag: Dictionary = {
 		"name": tag_name,
@@ -1271,9 +1281,7 @@ func has_data(tag_id: int) -> bool:
 
 
 func has_tag_data(tag: String) -> bool:
-	if not has_tag(tag):
-		return false
-	return has_data(get_tag_id(tag))
+	return Arrays.binary_search(tag_search_data, tag) != -1
 
 
 func has_tag(tag_name: String) -> bool: 
@@ -1745,7 +1753,7 @@ func log_message(message: String, log_level: LogLevel) -> void:
 	message_logged.emit(log_msg)
 
 
-func log_silent(message: String, log_level: LogLevel) -> void:
+func log_silent(message: String, log_level: LogLevel = LogLevel.INFO) -> void:
 	var log_msg: String = str("[", Time.get_time_string_from_system(), "]")
 	
 	match log_level:

@@ -345,6 +345,10 @@ func on_timer_timeout() -> void:
 	if not jobs.is_empty():
 		var req_url: Dictionary = jobs.pop_front()
 		SingletonManager.TagIt.log_message("[eSIx API] Making a request to e621", DataManager.LogLevel.INFO)
+		if SingletonManager.TagIt.verbose:
+			SingletonManager.TagIt.log_silent(
+				"[eSix API] URL request: " + req_url["url"] + ". Type: " + str(int(req_url["type"]))
+			)
 		requester.request(req_url["url"], get_headers())
 		var response: Array = await request_get
 		SingletonManager.TagIt.log_message("[eSix API] Response received", DataManager.LogLevel.INFO)
@@ -357,7 +361,9 @@ func on_timer_timeout() -> void:
 func process_response(response: Array, response_type: JobTypes) -> void:
 	if response_type == JobTypes.SUGGESTION:
 		if response.is_empty():
-			suggestions_found.emit("", [])
+			suggestions_found.emit(
+					"",
+					Array([], TYPE_STRING, &"", null))
 			return
 		var suggestion_array: Dictionary = parse_tag_strength(
 				response[0]["related_tags"])

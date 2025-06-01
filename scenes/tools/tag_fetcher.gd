@@ -220,14 +220,28 @@ func load_tags(tags: Array[String]) -> void:
 
 
 func on_save_pressed() -> void:
+	var new_tags: Dictionary = {}
 	for tag:String in fetched_tags:
-		SingletonManager.TagIt.create_tag(
-				tag,
-				1,
-				fetched_tags[tag]["wiki"],
-				0)
-		
-		var tag_id: int = SingletonManager.TagIt.get_tag_id(tag)
+		new_tags[tag] = {
+					"category_id": 1,
+					"description": null if fetched_tags[tag]["wiki"].is_empty() else fetched_tags[tag]["wiki"],
+					"priority": 0,
+					"group_id": null,
+					"tooltip": null
+				}
+	
+	# Batch-create tags
+	SingletonManager.TagIt.create_empty_tags(
+			Array(new_tags.keys(), TYPE_STRING, &"", null))
+	
+	# tag: id
+	var new_ids: Dictionary = SingletonManager.TagIt.get_tags_ids(
+			Array(new_tags.keys(), TYPE_STRING, &"", null))
+	
+	
+	for tag in new_ids:
+		var tag_id: int = new_ids[tag]
+		new_tags[tag]["tag_id"] = tag_id
 		SingletonManager.TagIt.add_parents(
 				tag_id,
 				fetched_tags[tag]["parents"])
@@ -238,6 +252,8 @@ func on_save_pressed() -> void:
 		SingletonManager.TagIt.add_aliases(
 				fetched_tags[tag]["aliases"],
 				tag)
+	
+	SingletonManager.TagIt.set_data_columns(new_tags)
 	
 	if not fetched_tags.is_empty():
 		for tag_tree in queue_tree.get_root().get_children():

@@ -192,7 +192,7 @@ func add_alt_list(alt_list_name: String) -> void:
 
 
 func clear_popup_alts() -> void:
-	for alt in range(2, alt_list_submenu.item_count):
+	for alt in range(alt_list_submenu.item_count - 1, 1, -1):
 		alt_list_submenu.remove_item(alt)
 	_current_alt = 0
 	alt_list_submenu.set_item_disabled(1, true)
