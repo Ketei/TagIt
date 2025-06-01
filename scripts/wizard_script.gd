@@ -540,15 +540,15 @@ const BODY_TYPES: Array[Dictionary] = [
 				"tags": ["small knot", "", "big knot", "huge knot", "hyper knot"],
 				"value": 1
 			},{
-				"name": "Veiny",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Is veiny",
-				"tags": ["", "veiny knot"]
-			},{
 				"name": "Multi knot",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Has multiple",
 				"tags": ["", "multi knot"]
+			},{
+				"name": "Veiny",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Is veiny",
+				"tags": ["", "veiny knot"]
 			},
 		]
 	},
@@ -579,6 +579,36 @@ const BODY_TYPES: Array[Dictionary] = [
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Multiple Nipples",
 				"tags": ["", "multi nipple"]
+			},{
+				"name": "Height",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Inverted,Average,Erect",
+				"tags": ["inverted nipples", "", "erect nipples"],
+				"value": 1,
+				"tooltip": [
+					"How far apart the nipple reaches from the breast",
+					"Inverted: When the nipple is retracted into the breast.\nErect: When the nipple is pointing outwards and is longer than normal for the character."]
+			},
+			{
+				"name": "Dip",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Has dip",
+				"tags": ["", "nipple dip"],
+				"tooltip": ["When the nipples have a gentle indentation or slit in them."]
+			},
+			{
+				"name": "Puffy Nipples",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Is puffy",
+				"tags": ["", "puffy nipples"],
+				"tooltip": ["When a nipple is more swollen than is common."]
+			},
+			{
+				"name": "Puffy Areola",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Is puffy",
+				"tags": ["", "puffy areola"],
+				"tooltip": ["When the areola is bulging more than is common."]
 			}
 		]
 	},
@@ -618,16 +648,16 @@ const BODY_TYPES: Array[Dictionary] = [
 				"value": 2
 			},
 			{
-				"name": "Veiny",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Is veiny",
-				"tags": ["", "veiny penis"]
-			},
-			{
 				"name": "Anatomically correct",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Is correct",
 				"tags": ["", "anatomically correct penis"]
+			},
+			{
+				"name": "Veiny",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Is veiny",
+				"tags": ["", "veiny penis"]
 			},
 		]},
 	{
@@ -1058,7 +1088,7 @@ func apply_character(character_index: int) -> void:
 			if prop_data["use"]:
 				target.disable_folding = false
 
-			var max_prop: int = prop_data["properties"].size()
+			var max_prop: int = prop_data["properties"].size() - 1
 			for prop_idx in range(target.get_child_count()):
 				if max_prop < prop_idx:
 					break
