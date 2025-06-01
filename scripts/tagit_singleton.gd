@@ -109,14 +109,13 @@ func _ready() -> void:
 			"name": {"data_type": "text"},
 			"whitespace": {"data_type": "text", "not_null": true},
 			"separator": {"data_type": "text", "not_null": true}}
-		
-		var prefix_table: Dictionary = {
-			"prefix": {"data_type": "text", "primary_key": true, "not_null": true, "unique": true},
-			"format": {"data_type": "text", "default": null}}
-		
+
 		tag_database.create_table("tags", tags_table)
 		tag_database.create_table("icons", icons_table)
-		tag_database.create_table("prefixes", prefix_table)
+		tag_database.query( # prefixes
+				"CREATE TABLE prefixes (
+						prefix TEXT NOT NULL PRIMARY KEY UNIQUE,
+						format TEXT DEFAULT NULL);")
 		tag_database.query( # suggestions
 				"CREATE TABLE suggestions ( 
 					tag_id INTEGER NOT NULL, 
