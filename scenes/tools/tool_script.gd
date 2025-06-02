@@ -18,5 +18,9 @@ var tool_description: String = "Create tag list templates."
 var requires_save: bool = false
 
 
+func input(_event: InputEvent) -> void:
+	pass
+
+
 func on_save_pressed() -> void:
 	pass

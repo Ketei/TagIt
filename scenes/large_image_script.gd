@@ -28,7 +28,7 @@ func _ready() -> void:
 	throbber_container.visible = false
 
 
-func _input(_event: InputEvent) -> void:
+func process_input(_event: InputEvent) -> void:
 	if texture_rect.is_visible_in_tree():
 		if Input.is_action_just_released(&"ui_cancel"):
 			if not throbber_container.visible:

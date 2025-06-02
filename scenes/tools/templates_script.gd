@@ -88,7 +88,7 @@ func _ready() -> void:
 	SingletonManager.TagIt.group_deleted.connect(_on_group_deleted)
 
 
-func _input(_event: InputEvent) -> void:
+func input(_event: InputEvent) -> void:
 	if Input.is_action_just_pressed(&"ui_text_delete"):
 		if tags_tree.has_focus():
 			var current: TreeItem = tags_tree.get_next_selected(null)

@@ -50,7 +50,7 @@ func _ready() -> void:
 	import_current_btn.pressed.connect(_on_import_current_pressed)
 
 
-func _input(_event: InputEvent) -> void:
+func input(_event: InputEvent) -> void:
 	if queue_tree.has_focus() and Input.is_action_just_pressed(&"ui_text_delete"):
 		var selected: TreeItem = queue_tree.get_selected()
 		if selected != null:
