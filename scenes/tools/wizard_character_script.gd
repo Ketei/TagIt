@@ -16,7 +16,6 @@ var current_selected: TreeItem = null:
 		lore_age_opt_btn.disabled = not unblocked
 var data_store: TagItStorage = null
 
-
 @onready var character_tree: Tree = $MainPanel/MainContainer/CharactersContainer/CharacterTree
 @onready var char_label: Label = $MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA/CharacterContainer/CharLabel
 @onready var species_ln_edt: LineEdit = $MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA/BodyMainContainer/SpeciesContainer/SpeciesLnEdt
@@ -191,7 +190,7 @@ func _ready() -> void:
 	traits_tree.item_edited.connect(_on_something_changed)
 
 
-func _input(event: InputEvent) -> void:
+func input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		if event.is_action(&"ui_text_delete") and character_tree.get_selected() != null and not event.is_echo():
 			var clear: bool = current_selected == character_tree.get_selected()
@@ -325,7 +324,7 @@ func load_character(index: int) -> void:
 			if prop_data["use"]:
 				target.disable_folding = false
 
-			var max_prop: int = prop_data["properties"].size()
+			var max_prop: int = prop_data["properties"].size() - 1
 			for prop_idx in range(target.get_child_count()):
 				if max_prop < prop_idx:
 					break

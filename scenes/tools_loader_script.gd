@@ -57,6 +57,12 @@ func _ready() -> void:
 	save_button.pressed.connect(on_save_pressed)
 
 
+func process_input(event: InputEvent) -> void:
+	if tool_scene == null:
+		return
+	tool_scene.input(event)
+
+
 func on_template_deleted(template_uuid: String) -> void:
 	if tool_scene != null and tool_scene.TOOL_ID == "templates":
 		tool_scene.on_template_deleted(template_uuid)
