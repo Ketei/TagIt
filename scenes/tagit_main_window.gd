@@ -459,15 +459,7 @@ func _input(event: InputEvent) -> void:
 		0: # Tags input
 			if event is InputEventKey and not event.is_echo():
 				if Input.is_key_pressed(KEY_CTRL):
-					if event.is_action_pressed(&"ui_focus_next"):
-						if not tab_bar.has_focus():
-							tab_bar.grab_focus()
-						if Input.is_key_pressed(KEY_SHIFT):
-							tab_bar.current_tab = posmod(tab_bar.current_tab - 1, 5)
-						else:
-							tab_bar.current_tab = posmod(tab_bar.current_tab + 1, 5)
-						get_viewport().set_input_as_handled()
-					elif tab_bar.current_tab == 0 and Input.is_key_pressed(KEY_G) and _allow_generate:
+					if tab_bar.current_tab == 0 and Input.is_key_pressed(KEY_G) and _allow_generate:
 						generate_tag_list()
 						get_viewport().set_input_as_handled()
 					elif tab_bar.current_tab == 0 and Input.is_key_pressed(KEY_F):
