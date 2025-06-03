@@ -2389,6 +2389,8 @@ func on_create_icon_pressed() -> void:
 		generate_icon_range()
 		settings_category_tree.icon_range = icon_range.size() - 1
 		settings_category_tree.icon_string = generate_icon_string()
+	new_icon_select.queue_free()
+
 
 func generate_icon_string() -> String:
 	return ",".join(SingletonManager.TagIt.get_icon_names())
