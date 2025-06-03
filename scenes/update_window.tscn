@@ -89,8 +89,7 @@ layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
 text = "[font_size=20][b][color=SKY_BLUE]Fixes[/color][/b][/font_size]
-[ul] Fixed an issue preventing changing the picture on existing projects.
- Fixed tabs listening for input when they shouldn't be.[/ul]
-
-[font_size=20][b][color=SKY_BLUE]Changed[/color][/b][/font_size]
-[ul] Added more tooltips to the wizard & wizard characters tool.[/ul]"
+[ul] Fixed an issue with the database that affected previously created tags not appearing and not being able to be registered.
+ Fixed an issue with the icons that appered twice when adding them.
+ Fixed an issue of TagIt not releasing from memory an object when adding icons.
+ Corrected the database holding to an unecessary table if you updated from an old version.[/ul]"

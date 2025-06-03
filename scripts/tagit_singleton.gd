@@ -20,10 +20,10 @@ signal icon_created(icon_id: int)
 
 const DATABASE_PATH: String = "user://tag_database.db"
 const SEARCH_WILDCARD: String = "*"
-const DB_VERSION: int = 3
+const DB_VERSION: int = 4
 const PROJECTS_VERSION: int = 2
 const TEMPLATES_VERSION: int = 3
-const TAGIT_VERSION_ARRAY: Array[int] = [3, 4, 2]
+const TAGIT_VERSION_ARRAY: Array[int] = [3, 5, 0]
 const MAX_PARENT_RECURSION: int = 100
 const IMAGE_LIMITS: Vector2i = Vector2i(1000, 1000)
 const LEV_DISTANCE: float = 0.75
@@ -327,7 +327,8 @@ func update_tables(current_version: int) -> void:
 					"id = " + str(h_prefix["category_id"]),
 					{"hydrus_prefix": h_prefix["prefix"]})
 			
-			tag_database.drop_table("hydrus_prefixes")
+		tag_database.drop_table("hydrus_prefixes")
+		
 		log_silent(
 				"Database updated from version 1 to version 2.",
 				DataManager.LogLevel.INFO)
@@ -370,6 +371,27 @@ func update_tables(current_version: int) -> void:
 					"Database updated from version 2 to version 3.",
 					DataManager.LogLevel.INFO)
 		update_version += 1
+	
+	# Changes in version 3 -> 4
+	# Remove unused table. Used wrong indentation in version 2, causing it to persist
+	# Remove duplicate tag entries caused by a bug in versions 3.4.0 and lower.
+	if update_version == 3:
+		tag_database.query(
+				"SELECT name FROM sqlite_master WHERE type='table' AND name='hydrus_prefixes';")
+		
+		if not tag_database.query_result.is_empty():
+			tag_database.drop_table("hydrus_prefixes")
+		
+		tag_database.query(
+			"DELETE FROM tags 
+			WHERE rowid NOT IN (
+				SELECT MIN(rowid) 
+				FROM tags 
+				GROUP BY name
+			);")
+		log_silent(
+				"Database updated from version 3 to version 4.",
+				DataManager.LogLevel.INFO)
 
 
 # Ensures that all required tables exist. Only checks for tables, not columns.
@@ -489,6 +511,14 @@ func verify_db_tables(tables: Array) -> void:
 
 func get_icon_name(icon_id: int) -> String:
 	return icons[icon_id]["name"]
+
+
+func get_icon_names() -> Array[String]:
+	var names: Array[String] = []
+	for icon_id in icons:
+		names.append(icons[icon_id]["name"])
+	return names
+	
 
 
 func get_category_icon_color(category_id: int) -> Color:
