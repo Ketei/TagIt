@@ -2393,7 +2393,10 @@ func on_create_icon_pressed() -> void:
 
 
 func generate_icon_string() -> String:
-	return ",".join(SingletonManager.TagIt.get_icon_names())
+	var icons: Array[String] = []
+	for icon_id in icon_range:
+		icons.append(SingletonManager.TagIt.get_icon_name(icon_id))
+	return ",".join(icons)
 
 
 func on_delete_icon(id: int) -> void:
