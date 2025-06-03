@@ -36,4 +36,6 @@ func reload_singletons() -> void:
 	if not eSixAPI.is_node_ready():
 		await eSixAPI.ready
 	
+	await get_tree().create_timer(0.1).timeout
+	
 	singletons_ready.emit()
