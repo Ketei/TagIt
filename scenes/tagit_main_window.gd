@@ -2385,20 +2385,13 @@ func on_create_icon_pressed() -> void:
 	new_icon_select.focus_first()
 	var response: Array = await new_icon_select.icon_finished
 	if response[0]:
-		var icon_id: int = SingletonManager.TagIt.save_icon(response[1], response[2])
+		SingletonManager.TagIt.save_icon(response[1], response[2])
 		generate_icon_range()
 		settings_category_tree.icon_range = icon_range.size() - 1
 		settings_category_tree.icon_string = generate_icon_string()
-		settings_icons_tree.add_icon(icon_id, response[1], SingletonManager.TagIt.get_icon_texture(icon_id))
-
 
 func generate_icon_string() -> String:
-	var icon_string: String = ""
-	for icon_id in icon_range:
-		icon_string += SingletonManager.TagIt.get_icon_name(icon_id) #SingletonManager.TagIt.icons[icon_id]["name"]
-		if icon_id != icon_range.back():
-			icon_string += ","
-	return icon_string
+	return ",".join(SingletonManager.TagIt.get_icon_names())
 
 
 func on_delete_icon(id: int) -> void:
