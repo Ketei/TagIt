@@ -23,7 +23,7 @@ const SEARCH_WILDCARD: String = "*"
 const DB_VERSION: int = 4
 const PROJECTS_VERSION: int = 2
 const TEMPLATES_VERSION: int = 3
-const TAGIT_VERSION_ARRAY: Array[int] = [3, 5, 0]
+const TAGIT_VERSION_ARRAY: Array[int] = [3, 5, 1]
 const MAX_PARENT_RECURSION: int = 100
 const IMAGE_LIMITS: Vector2i = Vector2i(1000, 1000)
 const LEV_DISTANCE: float = 0.75
@@ -623,6 +623,8 @@ func remove_all_group_suggestions(from_tag: int) -> void:
 
 
 func get_groups_and_tags(groups: Array[int]) -> Dictionary:
+	if groups.is_empty():
+		return {}
 	# group_id: group_name, tags:
 	var prompt_string: String = "(" + ", ".join(groups) + ")"
 	var all_dict: Dictionary = {}
