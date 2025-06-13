@@ -26,6 +26,7 @@ const SETTINGS_PATH: String = "user://tagit_settings.tres"
 @export var projects_version: int = 1
 @export var templates_version: int = 1
 @export var custom_sorting: Array[Dictionary] = []
+@export var backup_frequency: int = 5 # Time in minutes.
 
 
 static func get_settings() -> AppSettingsRes:

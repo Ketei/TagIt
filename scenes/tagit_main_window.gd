@@ -44,6 +44,7 @@ const HYDRUS_FILE_ENDPOINT: String = "get_files/file?file_id="
 
 var _saving: bool = false # Used if a save instance is on screen.
 var _save_required: bool = false
+var _backup_required: bool = false
 var _image_changed: bool = false
 var _block_events: bool = false:
 	set(is_blocking):
@@ -93,6 +94,8 @@ var loading_thumbnails: bool = false:
 var custom_order_list: Dictionary = {}
 var prio_list_node: Control = null
 var sort_submenu: PopupMenu = null
+
+var project_backup: AutoSave = null
 
 # ----- Windows -----
 @onready var tagger_container: PanelContainer = $MainContainer/TaggerContainer
@@ -182,6 +185,7 @@ var sort_submenu: PopupMenu = null
 @onready var settings_results_per_srch_spn_bx: SpinBox = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/ResultsPerSearchPanel/MainContainer/HBoxContainer/ResPerSrchSpnBx
 @onready var settings_clear_logs_btn: Button = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/LogsContainer/LogsHeader/ClearLogsBtn
 @onready var settings_blacklist_used_chk_btn: CheckButton = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/BlacklistUsedPanel/MainContainer/BlacklistUsedChkBtn
+@onready var settings_backup_freq_spn_bx: SpinBox = $MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/AutosavePanel/MainContainer/HBoxContainer/BackupFreqSpnBx
 
 # --------------------
 # ----- Wiki -----
@@ -209,6 +213,7 @@ var sort_submenu: PopupMenu = null
 # ----------------
 # ----- Backworkers -----
 @onready var hydrus_images: HydrusWorker = $HydrusNode
+@onready var backup_timer: Timer = $BackupTimer
 
 # -----------------------
 
@@ -244,7 +249,7 @@ func _ready() -> void:
 	wiki_parents_container.visible = false
 	wiki_aliases_container.visible = false
 	
-	alt_lists.append([])
+	alt_lists.append(Array([], TYPE_STRING, &"", null))
 	
 	generate_icon_range()
 	
@@ -316,6 +321,49 @@ func _ready() -> void:
 	on_thumbnail_size_changed(thumbnail_size_changer.selected)
 	$MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer.size.x = SingletonManager.TagIt.settings.tag_container_width
 	tagger_suggestion_tree.size.y = SingletonManager.TagIt.settings.suggestions_height
+	backup_timer.wait_time = maxf(60.0, float(SingletonManager.TagIt.settings.backup_frequency) * 60.0)
+	settings_backup_freq_spn_bx.value = SingletonManager.TagIt.settings.backup_frequency
+	
+	# Checking for autosaves
+	project_backup = AutoSave.get_autosave_file()
+	if not project_backup.exited_correctly:
+		var restore_groups:Dictionary = SingletonManager.TagIt.get_groups_and_tags(project_backup.groups)
+		alt_lists[0].assign(project_backup.main_list)
+		for main_tag in project_backup.main_list:
+			add_tag(main_tag, false, true)
+		for suggestion in project_backup.suggestions:
+			add_suggestion(suggestion)
+		for group in project_backup.groups:
+			if restore_groups.has(group):
+				add_group(
+						group,
+						restore_groups[group]["group_name"],
+						restore_groups[group]["tags"])
+		
+		if not project_backup.alt_lists.is_empty():
+			if not alt_select_container.visible:
+				alt_select_container.visible = true
+				list_version_container.visible = true
+			for alt:Dictionary in project_backup.alt_lists:
+				alt_opt_btn.add_item(alt["title"])
+				generate_version_opt_btn.add_item(alt["title"])
+				tags_tree.add_alt_list(alt["title"])
+				alt_lists.append(alt["tags"].duplicate())
+		
+		if not project_backup.project_uuid.is_empty():
+			var projects := TagItProjectResource.get_projects()
+			if projects.project_exists(project_backup.project_uuid):
+				var project := projects.get_project_data(project_backup.project_uuid)
+				current_project_uuid = project_backup.project_uuid
+				get_window().title = "TagIt - " + project["name"]
+				if not project["image_path"].is_empty() and FileAccess.file_exists(TagItProjectResource.get_thumbnails_path() + project["image_path"]):
+					var img := Image.load_from_file(TagItProjectResource.get_thumbnails_path() + project["image_path"])
+					if img != null:
+						project_image.texture = ImageTexture.create_from_image(img)
+						clear_img_btn.disabled = false
+						reset_view_button.disabled = false
+		
+		set_save_required(true)
 	
 	# --- Window ---
 	get_viewport().files_dropped.connect(_on_files_dropped)
@@ -403,6 +451,10 @@ func _ready() -> void:
 	settings_image_load_spn_bx.value_changed.connect(on_wiki_image_amount_changed)
 	settings_clear_logs_btn.pressed.connect(_on_clear_logs_pressed)
 	settings_blacklist_used_chk_btn.toggled.connect(_on_blacklist_used_suggestions_toggled)
+	settings_backup_freq_spn_bx.value_changed.connect(_on_backup_timer_changed)
+	# -- Others --
+	backup_timer.timeout.connect(_on_backup_timer_timeout)
+	
 	
 	SingletonManager.eSixAPI.suggestions_found.connect(on_esix_api_suggestions_found)
 	
@@ -412,6 +464,8 @@ func _ready() -> void:
 	SingletonManager.TagIt.message_logged.connect(on_log_created)
 	
 	SingletonManager.TagIt.hide_splash()
+	
+	project_backup.exited_correctly = false # Set just in case.
 	
 	if SingletonManager.TagIt.settings.news_shown < DataManager.TAGIT_VERSION_ARRAY:
 		_block_events = true
@@ -490,6 +544,18 @@ func _on_files_dropped(files: PackedStringArray) -> void:
 	
 	_on_reset_view_pressed()
 	var image := Image.load_from_file(files[0])
+	if image == null:
+		var accept_dialog: AcceptDialog = AcceptDialog.new()
+		accept_dialog.title = "Notice"
+		accept_dialog.dialog_text = "Image couldn't be loaded"
+		accept_dialog.size = Vector2(215.0, 90.0)
+		accept_dialog.initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_PRIMARY_SCREEN
+		accept_dialog.get_ok_button().custom_minimum_size.x = 90.0
+		accept_dialog.canceled.connect(accept_dialog.confirmed.emit)
+		accept_dialog.confirmed.connect(accept_dialog.queue_free)
+		add_child(accept_dialog)
+		accept_dialog.show()
+		return
 	SingletonManager.TagIt.resize_image(image)
 	var texture := ImageTexture.create_from_image(image)
 	project_image.texture = texture
@@ -519,6 +585,7 @@ func _notification(what):
 		if _save_required:
 			if _saving:
 				return
+			backup_timer.paused = true
 			var save_confirmation := preload("res://scenes/dialogs/unsaved_confirmation_dialog.gd").new()
 			add_child.call_deferred(save_confirmation)
 			await save_confirmation.ready
@@ -614,12 +681,16 @@ func _notification(what):
 						if selector != null:
 							selector.set_process_input(process_in)
 						_saving = false
+						backup_timer.paused = false
 						return
 			elif result == 2: # Cancel
 				save_confirmation.queue_free()
+				backup_timer.paused = false
 				return
-		_close_signaled = true
 		
+		_close_signaled = true
+		if not backup_timer.is_stopped():
+			backup_timer.stop()
 		# Signal the subthread to stop work
 		hydrus_images.signal_close.emit() 
 		
@@ -638,13 +709,63 @@ func _notification(what):
 					DataManager.LogLevel.INFO)
 		
 		hydrus_images.queue_free.call_deferred()
-		
+		project_backup.safe_exit()
 		SingletonManager.TagIt.quit_request() # Calls get_tree().quit()
+
+
+func _on_backup_timer_changed(new_value: int) -> void:
+	new_value = clampi(new_value, 0, 30)
+	if new_value <= 0:
+		if not backup_timer.is_stopped():
+			backup_timer.stop()
+	else:
+		backup_timer.wait_time = float(new_value) * 60.0
+		if _save_required:
+			if backup_timer.is_stopped():
+				backup_timer.start()
+			else:
+				if float(new_value) * 60.0 < backup_timer.time_left:
+					backup_timer.stop()
+					backup_timer.start()
+	
+	SingletonManager.TagIt.settings.backup_frequency = new_value
+
+
+func _on_backup_timer_timeout() -> void:
+	if not _backup_required:
+		return
+	
+	save_alt_list(current_alt)
+	var alts: Array[Dictionary] = []
+	var suggestions: Array[String] = []
+	var groups: Array[int] = []
+	for list in range(1, alt_opt_btn.item_count):
+		alts.append({
+			"title": alt_opt_btn.get_item_text(list),
+			"tags": alt_lists[list].duplicate()
+		})
+	
+	for sugg_item in tagger_suggestion_tree.get_root().get_children():
+		suggestions.append(sugg_item.get_text(0))
+	
+	for group in groups_suggestions_tree.get_root().get_children():
+		groups.append(group.get_metadata(0)["id"])
+	
+	project_backup.backup_data(
+			alt_lists[0].duplicate(),
+			alts,
+			suggestions,
+			groups,
+			current_project_uuid)
 
 
 func _list_changed() -> void:
 	if not _save_required:
 		set_save_required(true)
+	if not _backup_required:
+		_backup_required = true
+	if 0 < SingletonManager.TagIt.settings.backup_frequency and backup_timer.is_stopped():
+		backup_timer.start()
 
 
 func _on_reset_view_pressed() -> void:
@@ -1259,6 +1380,7 @@ func save_current_project_indexed() -> void:
 
 
 func instantiate_save_selector() -> void:
+	backup_timer.paused = true
 	_saving = true
 	selector = PROJECTS_CONTAINER_VERTICAL.instantiate()
 	selector.use_descriptions = false
@@ -1281,9 +1403,11 @@ func instantiate_save_selector() -> void:
 	await selector.intro_finished
 	selector.set_emit_signals(true)
 	selector.focus_title()
+	backup_timer.paused = false
 
 
 func instance_project_loader_selector() -> void:
+	backup_timer.paused = true
 	var saves := TagItProjectResource.get_projects()
 	selector = PROJECTS_CONTAINER.instantiate()
 	selector.use_descriptions = false
@@ -1312,6 +1436,7 @@ func instance_project_loader_selector() -> void:
 	await selector.intro_finished
 	
 	selector.set_emit_signals(true)
+	backup_timer.paused = false
 
 
 func instantiate_text_loader() -> void:
@@ -1380,6 +1505,7 @@ func on_menu_button_id_selected(id: int) -> void:
 			if _block_events:
 				return
 			if _save_required:
+				backup_timer.paused = true
 				var save_confirmation := preload("res://scenes/dialogs/unsaved_confirmation_dialog.gd").new()
 				add_child(save_confirmation)
 				save_confirmation.show()
@@ -1393,6 +1519,7 @@ func on_menu_button_id_selected(id: int) -> void:
 								"[ERROR] Loading tried to save but selector is in memory.",
 								SingletonManager.TagIt.LogLevel.ERROR)
 							save_confirmation.queue_free()
+							backup_timer.paused = false
 							return
 						
 						instantiate_save_selector()
@@ -1401,9 +1528,11 @@ func on_menu_button_id_selected(id: int) -> void:
 						
 						if _save_required: # Save was cancelled
 							save_confirmation.queue_free()
+							backup_timer.paused = false
 							return
 				elif result == 2: # Cancel
 					save_confirmation.queue_free()
+					backup_timer.paused = false
 					return
 				save_confirmation.queue_free()
 			new_list()
@@ -1522,7 +1651,10 @@ func new_list() -> void:
 	_group_blacklist.clear()
 	clear_all_tagger()
 	set_save_required(false, false)
+	_backup_required = false
 	get_window().title = "TagIt - New Project"
+	if not backup_timer.is_stopped():
+		backup_timer.stop()
 
 
 func clear_all_tagger() -> void:
@@ -2700,6 +2832,18 @@ func on_select_image_pressed() -> void:
 func on_image_selected(path: String, dialog: FileDialog) -> void:
 	_on_reset_view_pressed()
 	var image := Image.load_from_file(path)
+	if image == null:
+		var accept_dialog: AcceptDialog = AcceptDialog.new()
+		accept_dialog.title = "Notice"
+		accept_dialog.dialog_text = "Image couldn't be loaded"
+		accept_dialog.size = Vector2(215.0, 90.0)
+		accept_dialog.initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_PRIMARY_SCREEN
+		accept_dialog.get_ok_button().custom_minimum_size.x = 90.0
+		accept_dialog.canceled.connect(accept_dialog.confirmed.emit)
+		accept_dialog.confirmed.connect(accept_dialog.queue_free)
+		add_child(accept_dialog)
+		accept_dialog.show()
+		return
 	SingletonManager.TagIt.resize_image(image)
 	var texture := ImageTexture.create_from_image(image)
 	project_image.texture = texture
