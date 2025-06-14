@@ -88,7 +88,9 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_1u7h1")
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
-text = "[font_size=20][b][color=SKY_BLUE]Fixes[/color][/b][/font_size]
+text = "[font_size=20][b][color=SKY_BLUE]New[/color][/b][/font_size]
 [ul] Added a [b]safetly backup[/b] that will backup your tags [b]every 5 minutes (default)[/b] and restore them in case of a crash. You can [b]change the frequency[/b] on the [b]Settings[/b] tab or disable it by setting the time to 0 minutes.[/ul]
 [font_size=20][b][color=SKY_BLUE]Fixes[/color][/b][/font_size]
-[ul] Fixed a crash that happened when TagIt tried to open a \"bad\" image. Now it'll just not open it.[/ul]"
+[ul] Fixed a crash that happened when TagIt tried to open a \"bad\" image. Now it'll just not open it.[/ul]
+[font_size=20][b][color=SKY_BLUE]Changes[/color][/b][/font_size]
+[ul] TagIt should now grab focus after  you drop an image on it,[/ul]"
