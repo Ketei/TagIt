@@ -123,5 +123,12 @@ func delete_project(project_uuid: String) -> void:
 		break
 
 
+func project_exists(project_uuid: String) -> bool:
+	for project in projects:
+		if project.has("_uuid") and project["_uuid"] == project_uuid:
+			return true
+	return false
+
+
 func save() -> void:
 	ResourceSaver.save(self, get_resource_path())

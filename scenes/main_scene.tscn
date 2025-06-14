@@ -1507,6 +1507,35 @@ size_flags_stretch_ratio = 2.0
 text = "How many results will appear when searching on the Tags tab."
 label_settings = ExtResource("8_2hfj2")
 
+[node name="AutosavePanel" type="PanelContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer"]
+layout_mode = 2
+
+[node name="MainContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/AutosavePanel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/AutosavePanel/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/AutosavePanel/MainContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Backup frequency"
+
+[node name="BackupFreqSpnBx" type="SpinBox" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/AutosavePanel/MainContainer/HBoxContainer"]
+layout_mode = 2
+max_value = 60.0
+value = 5.0
+suffix = "min"
+
+[node name="AutofilLabel" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/AutosavePanel/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "How often (in minutes) the current list will be backed up. Set to 0 to disable."
+label_settings = ExtResource("8_2hfj2")
+
 [node name="ImagesPanel" type="PanelContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer"]
 layout_mode = 2
 
@@ -1893,3 +1922,6 @@ timeout = 10.0
 
 [node name="HydrusLargeImage" type="HTTPRequest" parent="."]
 timeout = 10.0
+
+[node name="BackupTimer" type="Timer" parent="."]
+wait_time = 300.0
