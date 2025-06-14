@@ -563,6 +563,7 @@ func _on_files_dropped(files: PackedStringArray) -> void:
 	reset_view_button.disabled = false
 	_image_changed = true
 	_list_changed()
+	get_window().grab_focus()
 
 
 func _on_tool_tag_requested() -> void:
