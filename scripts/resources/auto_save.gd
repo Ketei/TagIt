@@ -29,6 +29,7 @@ func safe_exit() -> void:
 	alt_lists.clear()
 	suggestions.clear()
 	groups.clear()
+	project_uuid = ""
 	ResourceSaver.save(
 			self,
 			ProjectSettings.globalize_path(FILE_PATH))
