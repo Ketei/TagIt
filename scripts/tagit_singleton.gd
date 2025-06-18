@@ -215,11 +215,9 @@ func _ready() -> void:
 	if settings.templates_version < TEMPLATES_VERSION:
 		update_templates(settings.templates_version)
 		settings.templates_version = TEMPLATES_VERSION
-	print(settings.storage_version)
-	print(STORAGE_VERSION)
-	if settings.storage_version < STORAGE_VERSION:
-		update_storage(settings.storage_version)
-		#settings.storage_version = STORAGE_VERSION
+	
+	if TagItStorage.get_storage_version() < STORAGE_VERSION:
+		update_storage()
 	
 	var data_tags: Array[String] = []
 	tag_database.query("SELECT tags.id, tags.name, tags.is_valid, IIF(data.tag_id IS NULL, 0, 1) AS has_data FROM tags LEFT JOIN data ON data.tag_id = tags.id;")
@@ -417,8 +415,9 @@ func update_tables(current_version: int) -> void:
 		update_version += 1
 
 
-func update_storage(current_version: int) -> void:
+func update_storage() -> void:
 	var storage_data: TagItStorage = TagItStorage.get_storage()
+	var current_version = storage_data.storage_version
 	if current_version == 1:
 		const BODY_TYPES: Array[Dictionary] = [
 			{
@@ -514,7 +513,11 @@ func update_storage(current_version: int) -> void:
 						else:
 							property_type["id"] = property["properties"][prop_idx]
 		current_version += 1
+	storage_data.storage_version = STORAGE_VERSION
 	storage_data.save()
+	log_message(
+			"[TagIt] Data storage updated to version " + str(STORAGE_VERSION),
+			LogLevel.INFO)
 
 
 # Ensures that all required tables exist. Only checks for tables, not columns.
