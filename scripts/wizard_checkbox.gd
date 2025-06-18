@@ -41,7 +41,7 @@ const PATTERNS: PackedStringArray = [
 	"rune",
 	"socks",
 	"spiral",
-	"spotteed",
+	"spotted",
 	"stockings",
 	"striped",
 	"toeless",
