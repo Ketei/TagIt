@@ -2115,12 +2115,16 @@ func on_media_type_selected(type: int) -> void:
 
 func id_to_tags(type: int, ids: Array[String], variant: String = "", suffix: bool = true) -> Array[String]:
 	var tags: Array[String] = []
+	const coloring_exceptions: Dictionary = {
+		"multicolored pussy": "multicolored vulva"}
 	
 	match type:
 		1:
+			const exceptions: Dictionary = {
+				"yellow hair": "blonde hair"}
 			for id in ids:
-				tags.append(
-						str(id, " ", variant) if suffix else str(variant, " ", id))
+				var tag: String = str(id, " ", variant) if suffix else str(variant, " ", id)
+				tags.append(exceptions[tag] if exceptions.has(tag) else tag)
 		2:
 			const markings_straight: Array[String] = [
 				"flame", "floral", "runes", "spiral", "spotted", "tribal"]
@@ -2140,4 +2144,16 @@ func id_to_tags(type: int, ids: Array[String], variant: String = "", suffix: boo
 				else:
 					tags.append(id)
 	
+	if not variant.is_empty():
+		var tag: String = ""
+		match ids.size():
+			0:
+				pass
+			1:
+				tag = "monotone " + variant
+			2:
+				tag = "two tone " + variant
+			_:
+				tag = "multicolored " + variant
+		tags.append(coloring_exceptions[tag] if coloring_exceptions.has(tag) else tag)
 	return tags
