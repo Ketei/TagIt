@@ -111,7 +111,7 @@ func queue_job(url: String, job_type: JobTypes) -> void:
 func search_suggestions(for_tag: String) -> void:
 	SingletonManager.TagIt.log_silent("[eSIx API] Queueing request for tag \"" + for_tag + "\"", DataManager.LogLevel.INFO)
 	queue_job(
-			get_tag_request_url(for_tag, "count", 1),
+			get_tag_request_url(for_tag.replace(" ", "_"), "count", 1),
 			JobTypes.SUGGESTION)
 
 
