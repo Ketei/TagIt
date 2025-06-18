@@ -2139,7 +2139,7 @@ func id_to_tags(type: int, ids: Array[String], variant: String = "", suffix: boo
 				tags.append(coloring_exceptions[tag] if coloring_exceptions.has(tag) else tag)
 		2:
 			const markings_straight: Array[String] = [
-				"flame", "floral", "runes", "spiral", "spotted", "tribal"]
+				"flame", "floral", "runes", "spiral", "spotted", "tribal", "striped"]
 			
 			for pattern in ids:
 				if pattern in markings_straight:
