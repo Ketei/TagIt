@@ -38,6 +38,15 @@ static func title_case(text: String) -> String:
 	return titled_string
 
 
+static func capitalize(text: String) -> String:
+	if text.is_empty():
+		return text
+	elif text.length() == 1:
+		return text.to_upper()
+	else:
+		return text[0].to_upper() + text.right(-1).to_lower()
+
+
 static func split_and_strip(what: String, delimeter: String, allow_empty: bool = false) -> Array[String]:
 	var pieces: Array[String] = []
 	for piece in what.split(delimeter, allow_empty):

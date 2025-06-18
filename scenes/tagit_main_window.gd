@@ -569,7 +569,7 @@ func _on_files_dropped(files: PackedStringArray) -> void:
 func _on_tool_tag_requested() -> void:
 	var tags: Array[String] = []
 	
-	for list_index in range(alt_lists.size() - 1):
+	for list_index in range(alt_lists.size()):
 		if list_index == current_alt:
 			var new_tags: Array[String] = []
 			for tag in tags_tree.get_root().get_children():
@@ -1237,6 +1237,7 @@ func on_wizard_finished(tags: Array[String]) -> void:
 	_block_events = false
 	selector.queue_free()
 	selector = null
+	_list_changed()
 
 
 func on_wizard_cancelled() -> void:

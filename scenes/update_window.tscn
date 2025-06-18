@@ -89,8 +89,10 @@ layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
 text = "[font_size=20][b][color=SKY_BLUE]New[/color][/b][/font_size]
-[ul] Added a [b]safetly backup[/b] that will backup your tags [b]every 5 minutes (default)[/b] and restore them in case of a crash. You can [b]change the frequency[/b] on the [b]Settings[/b] tab or disable it by setting the time to 0 minutes.[/ul]
+[ul] [b]Wizard[/b] has new sections & [b]updated colors section[/b] make sure to [b]update[/b] any [b]wizard characters[/b] that might use these new sections.[/ul]
 [font_size=20][b][color=SKY_BLUE]Fixes[/color][/b][/font_size]
-[ul] Fixed a crash that happened when TagIt tried to open a \"bad\" image. Now it'll just not open it.[/ul]
+[ul] Fixed issue that made TagIt believe it didn't have some registered tags, even though it did.
+ Fixed an issue that prevented importing tags from your project to the batch dowloader.
+ Fixed an issue with TagIt wrongly asking for suggestions to e621[/ul]
 [font_size=20][b][color=SKY_BLUE]Changes[/color][/b][/font_size]
-[ul] TagIt should now grab focus after  you drop an image on it,[/ul]"
+[ul] Successfully finishing using the Wizard will trigger a list update, requiring a save.[/ul]"

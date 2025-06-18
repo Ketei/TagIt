@@ -2,6 +2,7 @@ class_name TagItStorage
 extends Resource
 
 
+@export var storage_version: int = 1
 @export var characters: Array[Dictionary] = []
 
 
@@ -15,6 +16,10 @@ static func get_storage() -> TagItStorage:
 
 static func get_empty_character() -> WizardCharacter:
 	return WizardCharacter.new()
+
+
+static func get_storage_version() -> int:
+	return get_storage().storage_version
 
 
 func character_count() -> int:

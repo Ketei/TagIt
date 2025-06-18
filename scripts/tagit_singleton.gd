@@ -20,10 +20,11 @@ signal icon_created(icon_id: int)
 
 const DATABASE_PATH: String = "user://tag_database.db"
 const SEARCH_WILDCARD: String = "*"
-const DB_VERSION: int = 4
+const DB_VERSION: int = 5
 const PROJECTS_VERSION: int = 2
 const TEMPLATES_VERSION: int = 3
-const TAGIT_VERSION_ARRAY: Array[int] = [3, 5, 1]
+const STORAGE_VERSION: int = 2
+const TAGIT_VERSION_ARRAY: Array[int] = [3, 5, 2]
 const MAX_PARENT_RECURSION: int = 100
 const IMAGE_LIMITS: Vector2i = Vector2i(1000, 1000)
 const LEV_DISTANCE: float = 0.75
@@ -215,6 +216,9 @@ func _ready() -> void:
 		update_templates(settings.templates_version)
 		settings.templates_version = TEMPLATES_VERSION
 	
+	if TagItStorage.get_storage_version() < STORAGE_VERSION:
+		update_storage()
+	
 	var data_tags: Array[String] = []
 	tag_database.query("SELECT tags.id, tags.name, tags.is_valid, IIF(data.tag_id IS NULL, 0, 1) AS has_data FROM tags LEFT JOIN data ON data.tag_id = tags.id;")
 	for dict in tag_database.query_result:
@@ -233,12 +237,12 @@ func _ready() -> void:
 			"texture": null}
 	
 	invalid_tags.sort()
-	data_tags.sort_custom(Arrays.sort_custom_alphabetically_asc)
 	get_all_alias_names()
 	var all_tags: Array = loaded_tags.keys()
-	all_tags.sort_custom(Arrays.sort_custom_alphabetically_asc)
 	tag_search_array = PackedStringArray(all_tags)
 	tag_search_data = PackedStringArray(data_tags)
+	tag_search_data.sort()
+	tag_search_array.sort()
 
 
 # --- Icons ---
@@ -392,6 +396,128 @@ func update_tables(current_version: int) -> void:
 		log_silent(
 				"Database updated from version 3 to version 4.",
 				DataManager.LogLevel.INFO)
+		update_version += 1
+	
+	# Changes in version 4 -> 5
+	# Was using wrong sort algorythm, which caused duplicates again. So running
+	# cleaning once more.
+	if update_version == 4:
+		tag_database.query(
+			"DELETE FROM tags 
+			WHERE rowid NOT IN (
+				SELECT MIN(rowid) 
+				FROM tags 
+				GROUP BY name
+			);")
+		log_silent(
+				"Database updated from version 4 to version 5.",
+				DataManager.LogLevel.INFO)
+		update_version += 1
+
+
+func update_storage() -> void:
+	var storage_data: TagItStorage = TagItStorage.get_storage()
+	var current_version = storage_data.storage_version
+	if current_version == 1:
+		const BODY_TYPES: Array[Dictionary] = [
+			{
+				"id": "fur",
+				"properties": ["length", "markings"]
+			},
+			{
+				"id": "scales",
+				"properties": ["markings"]},
+			{
+				"id": "feathers",
+				"properties": ["markings"]},
+			{
+				"id": "exoskeleton",
+				"properties": ["markings"]},
+			{
+				"id": "anus",
+				"properties": ["size", "correct", "puffy"]},
+			{
+				"id": "balls",
+				"properties": ["size", "height", "markings", "seam"]},
+			{
+				"id": "breasts",
+				"properties":["size", "markings", "featureless"]
+			},
+			{
+				"id": "ears",
+				"properties": ["colors"]
+			},
+			{
+				"id": "eyes",
+				"properties": ["hetero", "pupils", "sclera"]},
+			{
+				"id": "feet",
+				"properties": ["type"]},
+			{
+				"id": "hair",
+				"properties":["length"]},
+			{
+				"id": "hands",
+				"properties": ["fing_count", "nail_type",]},
+			{
+				"id": "horn",
+				"properties": ["shape", "texture", "length", "head", "arm", "back", "chest", "chin", "ear", "floating", "jaw", "nose", "shoulder"]},
+			{
+				"id": "knot",
+				"properties": ["size", "multi", "vein"]
+			},
+			{
+				"id": "nipples",
+				"properties": ["size", "areola_size", "multi", "height", "dip", "puffy_nipple", "puffy_areola"]
+			},
+			{
+				"id": "penis",
+				"properties": ["type",  "size", "is_erect", "correct", "veiny"]},
+			{
+				"id": "sheath",
+				"properties": ["size"]
+			},
+			{
+				"id": "tail",
+				"properties": ["type", "size", "length", "shape", "form"]
+			},
+			{
+				"id": "tongue",
+				"properties": ["shape"]
+			},
+			{
+				"id": "pussy",
+				"properties": [ "type", "size", "shape", "correct"]
+			}]
+		
+		for character in storage_data.characters:
+			var target: Dictionary = character["colors"]
+			for prop_key in target:
+				if not target[prop_key].has("properties"):
+					continue
+				for subprop in target[prop_key]["properties"]:
+					if subprop["index"] == -1:
+						if typeof(subprop["value"]) != TYPE_ARRAY:
+							subprop["value"] = Array([], TYPE_STRING, &"", null)
+						break
+			
+			for property in BODY_TYPES:
+				if target.has(property["id"]):
+					var total: int = property["properties"].size() if property.has("properties") else 0
+					for property_type in target[property["id"]]["properties"]:
+						var prop_idx: int = property_type["index"]
+						if prop_idx == -1:
+							continue
+						elif total <= prop_idx:
+							break
+						else:
+							property_type["id"] = property["properties"][prop_idx]
+		current_version += 1
+	storage_data.storage_version = STORAGE_VERSION
+	storage_data.save()
+	log_message(
+			"[TagIt] Data storage updated to version " + str(STORAGE_VERSION),
+			LogLevel.INFO)
 
 
 # Ensures that all required tables exist. Only checks for tables, not columns.
