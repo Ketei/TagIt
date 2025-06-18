@@ -15,6 +15,7 @@ enum CheckTypes {
 const COLORS: Dictionary = {
 	"black": Color.BLACK,
 	"blue": Color.BLUE,
+	"brown": Color.BROWN,
 	"green": Color.GREEN,
 	"grey": Color.WEB_GRAY,
 	"orange": Color.DARK_ORANGE,
@@ -22,6 +23,7 @@ const COLORS: Dictionary = {
 	"purple": Color.MEDIUM_PURPLE,
 	"red": Color.RED,
 	"tan": Color.TAN,
+	"teal": Color.TEAL,
 	"white": Color.WHITE_SMOKE,
 	"yellow": Color.YELLOW}
 
@@ -203,9 +205,9 @@ func set_boxes_text(tag: String, prefix: bool) -> void:
 
 
 func show_box(at_position: Vector2) -> void:
-	if get_window().size.y < at_position.y + size.y:
-		at_position.y = get_window().size.y - size.y
 	position = at_position
+	if get_window().size.y < global_position.y + size.y:
+		position.y -= (global_position.y + size.y) - get_window().size.y
 	if not visible:
 		visible = true
 		set_process(true)
