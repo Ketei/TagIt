@@ -13,19 +13,19 @@ enum CheckTypes {
 }
 
 const COLORS: Dictionary = {
-	"black": Color.BLACK,
-	"blue": Color.BLUE,
-	"brown": Color.BROWN,
-	"green": Color.GREEN,
-	"grey": Color.WEB_GRAY,
-	"orange": Color.DARK_ORANGE,
-	"pink": Color.HOT_PINK,
-	"purple": Color.MEDIUM_PURPLE,
-	"red": Color.RED,
-	"tan": Color.TAN,
-	"teal": Color.TEAL,
-	"white": Color.WHITE_SMOKE,
-	"yellow": Color.YELLOW}
+	"black": Color(0.17, 0.17, 0.17),
+	"blue": Color(0.282, 0.467, 0.741),
+	"brown": Color(0.549, 0.341, 0.2),
+	"green": Color(0.376, 0.714, 0.416),
+	"grey": Color(0.55, 0.55, 0.55),
+	"orange": Color(0.96, 0.46, 0.217),
+	"pink": Color(0.969, 0.573, 0.663),
+	"purple": Color(0.502, 0.365, 0.702),
+	"red": Color(0.775, 0.234, 0.307),
+	"tan": Color(0.946, 0.655, 0.479),
+	"teal": Color(0.259, 0.877, 0.674),
+	"white": Color(0.85, 0.85, 0.85),
+	"yellow": Color(0.994, 0.763, 0.315)}
 
 const PATTERNS: PackedStringArray = [
 	"blaze",
