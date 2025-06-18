@@ -205,6 +205,7 @@ const BODY_TYPES: Array[Dictionary] = [
 		"tag": "fur",
 		"include_standalone": true,
 		"properties": [{
+			"id": "length",
 			"name": "Length",
 			"mode": TreeItem.CELL_MODE_RANGE,
 			"text": "short fur,average length,long fur",
@@ -212,6 +213,7 @@ const BODY_TYPES: Array[Dictionary] = [
 			"value": 1
 			},
 			{
+				"id": "markings",
 				"name": "Markings",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Has markings",
@@ -225,6 +227,7 @@ const BODY_TYPES: Array[Dictionary] = [
 		"include_standalone": true,
 		"properties": [
 			{
+				"id": "markings",
 				"name": "Markings",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Has markings",
@@ -238,6 +241,7 @@ const BODY_TYPES: Array[Dictionary] = [
 		"include_standalone": true,
 		"properties": [
 			{
+				"id": "markings",
 				"name": "Markings",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Has markings",
@@ -252,13 +256,15 @@ const BODY_TYPES: Array[Dictionary] = [
 	{
 		"name": "Skin",
 		"tag": "skin",
-		"include_standalone": true},
+		"include_standalone": false},
 	{
 		"name": "Exoskeleton",
 		"tag": "exoskeleton",
 		"include_standalone": true,
+		"tooltip": "External skeletons that supports and protect the creature.",
 		"properties": [
 			{
+				"id": "markings",
 				"name": "Markings",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Has markings",
@@ -272,17 +278,20 @@ const BODY_TYPES: Array[Dictionary] = [
 		"include_standalone": true,
 		"properties": [
 			{
+				"id": "size",
 				"name": "Size",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Small,Average,Big,Huge,Hyper",
 				"tags": ["small anus", "", "big anus", "huge anus", "hyper anus"],
 				"value": 1
 			},{
+				"id": "correct",
 				"name": "Anatomically correct",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Is correct",
 				"tags": ["", "anatomically correct anus"]
 			},{
+				"id": "puffy",
 				"name": "Puffy/Donut",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Is puffy",
@@ -295,6 +304,7 @@ const BODY_TYPES: Array[Dictionary] = [
 		"include_standalone": true,
 		"properties": [
 			{
+				"id": "size",
 				"name": "Size",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Small,Average,Big,Huge,Hyper",
@@ -302,6 +312,7 @@ const BODY_TYPES: Array[Dictionary] = [
 				"value": 1
 			},
 			{
+				"id": "height",
 				"name": "Hang",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Tight,Normal,Saggy",
@@ -309,6 +320,7 @@ const BODY_TYPES: Array[Dictionary] = [
 				"tooltip": ["How low do the balls hang."]
 			},
 			{
+				"id": "markings",
 				"name": "Markings",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Has markings",
@@ -316,6 +328,7 @@ const BODY_TYPES: Array[Dictionary] = [
 				"tooltip": ["Ball markings"]
 			},
 			{
+				"id": "seam",
 				"name": "Scrotal Raphe",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Has raphe",
@@ -327,8 +340,10 @@ const BODY_TYPES: Array[Dictionary] = [
 		"name": "Breasts",
 		"tag": "breasts",
 		"include_standalone": true,
+		"exclude_values": [0],
 		"properties":[
 			{
+				"id": "size",
 				"name": "Size",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Flat,Small,Average,Big,Huge,Hyper",
@@ -336,12 +351,14 @@ const BODY_TYPES: Array[Dictionary] = [
 				"value": 2
 			},
 			{
+				"id": "markings",
 				"name": "Markings",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Has markings",
 				"tags": ["", "breast markings"]
 			},
 			{
+				"id": "featureless",
 				"name": "Featureless",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Are featureless",
@@ -366,6 +383,7 @@ const BODY_TYPES: Array[Dictionary] = [
 		"exclude_values": [0],
 		"properties": [
 			{
+				"id": "colors",
 				"name": "Inner colors",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Monotone,Two Tones,Multicolored,N/A",
@@ -382,12 +400,14 @@ const BODY_TYPES: Array[Dictionary] = [
 		"exclude_values": [0],
 		"properties": [
 			{
+				"id": "hetero",
 				"name": "Heterochromia",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Has Heterochromia",
 				"tags": ["", "heterochromia"]
 			},
 			{
+				"id": "pupils",
 				"name": "Pupils",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Regular,Slit,Horizontal,Heart,Star,No pupils",
@@ -395,6 +415,7 @@ const BODY_TYPES: Array[Dictionary] = [
 				"value": 0
 			},
 			{
+				"id": "sclera",
 				"name": "Sclera",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Black,Blue,Brown,Cyan,Green,Grey,Orange,Pink,Purple,Red,White,Yellow",
@@ -409,6 +430,7 @@ const BODY_TYPES: Array[Dictionary] = [
 		"include_standalone": true,
 		"properties": [
 			{
+				"id": "type",
 				"name": "Type",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Plantigrade,Digitigrade,Unguligrade,Hooved Plantigrade,Featureless",
@@ -422,6 +444,7 @@ const BODY_TYPES: Array[Dictionary] = [
 		"include_standalone": true,
 		"properties":[
 			{
+				"id": "length",
 				"name": "Length",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Short (Above neck),Long (Below neck),N/A",
@@ -434,6 +457,7 @@ const BODY_TYPES: Array[Dictionary] = [
 		"include_standalone": false,
 		"properties": [
 			{
+				"id": "fing_count",
 				"name": "Finger count (per hand)",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "No fingers,1 finger,2 fingers,3 fingers,4 fingers,5 fingers,6 fingers,7 fingers,8 fingers,9 fingers,10 fingers,N/A",
@@ -441,6 +465,7 @@ const BODY_TYPES: Array[Dictionary] = [
 				"value": 5
 			},
 			{
+				"id": "nail_type",
 				"name": "Finger nails",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Nails,Claws,Hoofs,N/A",
@@ -454,6 +479,7 @@ const BODY_TYPES: Array[Dictionary] = [
 		"include_standalone": true,
 		"properties": [
 			{
+				"id": "shape",
 				"name": "Horn shape",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Straight horn,Curved horn,Forked horn,Spiral horn,N/A",
@@ -461,6 +487,7 @@ const BODY_TYPES: Array[Dictionary] = [
 				"value": 0
 			},
 			{
+				"id": "texture",
 				"name": "Horn texture",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "N/A,Ridged,Smooth",
@@ -468,6 +495,7 @@ const BODY_TYPES: Array[Dictionary] = [
 				"value": 0
 			},
 			{
+				"id": "length",
 				"name": "Horn Length",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Short horn,Long horn,N/A",
@@ -475,52 +503,62 @@ const BODY_TYPES: Array[Dictionary] = [
 				"value": 1
 			},
 			{
+				"id": "head",
 				"name": "Head Horn",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Has Horn",
 				"tags": ["", "head horn"]
 			},{
+				"id": "arm",
 				"name": "Arm Horn",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Has Horn",
 				"tags": ["", "arm horn"]
 			},
 			{
+				"id": "back",
 				"name": "Back Horn",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Has Horn",
 				"tags": ["", "back horn"]
 			},{
+				"id": "chest",
 				"name": "Chest Horn",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Has Horn",
 				"tags": ["", "chest horn"]
 			},{
+				"id": "chin",
 				"name": "Chin Horn",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Has Horn",
 				"tags": ["", "chin horn"]
 			},{
+				"id": "ear",
 				"name": "Ear Horn",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Has Horn",
 				"tags": ["", "ear horn"]
 			},{
+				"id": "floating",
 				"name": "Floating Horn",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Has Horn",
 				"tags": ["", "floating horn"]
 			},{
+				"id": "jaw",
 				"name": "Jaw Horn",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Has Horn",
 				"tags": ["", "jaw horn"]
 			},{
+				"id": "nose",
 				"name": "Nose Horn",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Has Horn",
 				"tags": ["", "nose horn"]
 			},{
+				"id": "shoulder",
 				"name": "Shoulder Horn",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Has Horn",
@@ -534,17 +572,20 @@ const BODY_TYPES: Array[Dictionary] = [
 		"include_standalone": true,
 		"properties": [
 			{
+				"id": "size",
 				"name": "Knot size",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Small,Regular,Big,Huge,Hyper",
 				"tags": ["small knot", "", "big knot", "huge knot", "hyper knot"],
 				"value": 1
 			},{
+				"id": "multi",
 				"name": "Multi knot",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Has multiple",
 				"tags": ["", "multi knot"]
 			},{
+				"id": "vein",
 				"name": "Veiny",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Is veiny",
@@ -553,33 +594,49 @@ const BODY_TYPES: Array[Dictionary] = [
 		]
 	},
 	{
-		"name": "Markings",
+		"name": "Marking",
 		"tag": "markings",
 		"include_standalone": true,
+		"use_checkboxes": 3,
+		"tooltip": "A unique, often non-repeating, shape.",
+		"properties": [
+			{
+				"id": "glowing",
+				"name": "Glowing",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Glows",
+				"tags": ["", "glowing markings"]
+			}
+		]
 	},
 	{
 		"name": "Nipples",
 		"tag": "nipples",
 		"include_standalone": true,
+		"exclude_values": [0],
 		"properties": [
 			{
+				"id": "size",
 				"name": "Nipple Size",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Small,Average,Big,Huge,Hyper",
 				"tags": ["small nipples", "", "big nipples", "huge nipples", "hyper nipples"],
 				"value": 1
 			},{
+				"id": "areola_size",
 				"name": "Areola Size",
 				"mode":TreeItem.CELL_MODE_RANGE,
 				"text": "Small,Average,Big,Huge,Hyper",
 				"tags": ["small areola", "", "big areola", "huge areola", "hyper areola"],
 				"value": 1
 			},{
+				"id": "multi",
 				"name": "Multi-nipple (+3)",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Multiple Nipples",
 				"tags": ["", "multi nipple"]
 			},{
+				"id": "height",
 				"name": "Height",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Inverted,Average,Erect",
@@ -590,6 +647,7 @@ const BODY_TYPES: Array[Dictionary] = [
 					"Inverted: When the nipple is retracted into the breast.\nErect: When the nipple is pointing outwards and is longer than normal for the character."]
 			},
 			{
+				"id": "dip",
 				"name": "Dip",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Has dip",
@@ -597,6 +655,7 @@ const BODY_TYPES: Array[Dictionary] = [
 				"tooltip": ["When the nipples have a gentle indentation or slit in them."]
 			},
 			{
+				"id": "puffy_nipple",
 				"name": "Puffy Nipples",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Is puffy",
@@ -604,6 +663,7 @@ const BODY_TYPES: Array[Dictionary] = [
 				"tooltip": ["When a nipple is more swollen than is common."]
 			},
 			{
+				"id": "puffy_areola",
 				"name": "Puffy Areola",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Is puffy",
@@ -623,17 +683,35 @@ const BODY_TYPES: Array[Dictionary] = [
 		"include_standalone": true,
 		"exclude_values": [0]},
 	{
+		"name": "Pattern",
+		"tag": "markings",
+		"include_standalone": true,
+		"use_checkboxes": 2,
+		"tooltip": "Marks or shapes on the body, often repeating.",
+		"properties": [
+			{
+				"id": "glowing",
+				"name": "Glowing",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Glows",
+				"tags": ["", "glowing markings"]
+			}
+		]
+	},
+	{
 		"name": "Penis",
 		"tag": "penis",
 		"include_standalone": true,
 		"properties": [
 			{
+				"id": "type",
 				"name": "Type",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Animal,Prehensile,Humanoid,Hybrid,Mechanical,Unusual,N/A",
 				"tags": ["animal penis", "prehensile penis", "humanoid penis", "hybrid penis", "mechanical penis", "unusual penis", ""]
 			},
 			{
+				"id": "size",
 				"name": "Size",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Micro,Small,Average,Big,Huge,Hyper",
@@ -641,6 +719,7 @@ const BODY_TYPES: Array[Dictionary] = [
 				"value": 2
 			},
 			{
+				"id": "is_erect",
 				"name": "Erection",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Flaccid (Visible),Half-erect,Erect",
@@ -648,12 +727,14 @@ const BODY_TYPES: Array[Dictionary] = [
 				"value": 2
 			},
 			{
+				"id": "correct",
 				"name": "Anatomically correct",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Is correct",
 				"tags": ["", "anatomically correct penis"]
 			},
 			{
+				"id": "veiny",
 				"name": "Veiny",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Is veiny",
@@ -667,6 +748,7 @@ const BODY_TYPES: Array[Dictionary] = [
 		"exclude_values": [0],
 		"properties": [
 			{
+				"id": "size",
 				"name": "Size",
 				"text": "Small,Average,Big,Huge,Hyper",
 				"mode": TreeItem.CELL_MODE_RANGE,
@@ -681,6 +763,7 @@ const BODY_TYPES: Array[Dictionary] = [
 		"include_standalone": true,
 		"properties": [
 			{
+				"id": "type",
 				"name": "Type",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Furry,Scaly,Feathers,Fish,N/A",
@@ -688,6 +771,7 @@ const BODY_TYPES: Array[Dictionary] = [
 				"value": 0
 			},
 			{
+				"id": "size",
 				"name": "Size",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Small,Average,Big,Huge,Hyper",
@@ -695,6 +779,7 @@ const BODY_TYPES: Array[Dictionary] = [
 				"value": 1
 			},
 			{
+				"id": "length",
 				"name": "Length",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Short,Average,Long",
@@ -702,6 +787,7 @@ const BODY_TYPES: Array[Dictionary] = [
 				"value": 1
 			},
 			{
+				"id": "shape",
 				"name": "Shape",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "N/A,Scut,Nub,Forked",
@@ -709,6 +795,7 @@ const BODY_TYPES: Array[Dictionary] = [
 				"value": 0
 			},
 			{
+				"id": "form",
 				"name": "Form",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "N/A,Curved,Curled,Crooked,Erect,Wavy",
@@ -718,11 +805,28 @@ const BODY_TYPES: Array[Dictionary] = [
 		]
 	},
 	{
+		"name": "Tattoo",
+		"tag": "tattoo",
+		"include_standalone": true,
+		"use_checkboxes": 4,
+		"properties": [
+			{
+				"id": "glowing",
+				"name": "Glowing",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Glows",
+				"tags": ["", "glowing tattoo"]
+			}
+		]
+	},
+	{
 		"name": "Tongue",
 		"tag": "tongue",
 		"include_standalone": true,
+		"exclude_values": [0],
 		"properties": [
 			{
+				"id": "shape",
 				"name": "Shape",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Regular,Forked,Tapering,Segmented,Ribbed",
@@ -743,6 +847,7 @@ const BODY_TYPES: Array[Dictionary] = [
 		"exclude_values": [0],
 		"properties": [
 			{
+				"id": "type",
 				"name": "Type",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Animal,Humanoid,Hybrid,Mechanical,Unusual,N/A",
@@ -750,6 +855,7 @@ const BODY_TYPES: Array[Dictionary] = [
 				"value": 1
 			},
 			{
+				"id": "size",
 				"name": "Size",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Small,Average,Big,Hyper",
@@ -757,6 +863,7 @@ const BODY_TYPES: Array[Dictionary] = [
 				"value": 1
 			},
 			{
+				"id": "shape",
 				"name": "Shape",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Innie,Average,Outie",
@@ -764,6 +871,14 @@ const BODY_TYPES: Array[Dictionary] = [
 				"value": 0
 			},
 			{
+				"id": "plump",
+				"name": "Plump Pussy",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Is plump",
+				"tags": ["", "plump labia"]
+			},
+			{
+				"id": "correct",
 				"name": "Anatomically correct",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Is correct",
@@ -799,7 +914,7 @@ var current_character: int = -1:
 		body_texture_tree.get_root().collapsed = not valid_character
 		clothing_tree.get_root().collapsed = not valid_character
 		body_traits.get_root().collapsed = not valid_character
-		
+var color_node: TreeItem = null
 var current_page: int = 0:
 	set(new_current):
 		current_page = new_current
@@ -865,6 +980,7 @@ var current_project_size: Vector2 = Vector2(310, 34)
 @onready var close_wizard_btn: Button = $MainPanel/MainContainer/TitleLabel/CloseWizardBtn
 @onready var characters_tree: Tree = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/ChracterTree/CharactersTree
 @onready var apply_character_btn: Button = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/NameContainer/ApplyCharacterBtn
+@onready var wizard_checkboxes: Control = $WizardCheckboxes
 
 # --- Images ---
 @onready var day: TextureRect = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Day
@@ -979,6 +1095,33 @@ func _ready() -> void:
 	character_tag_ln_edt.timer_finished.connect(_on_autofil_timer_finished)
 	character_tag_ln_edt.text_selected.connect(_on_text_selected)
 	apply_character_btn.pressed.connect(_on_character_name_focus_lost)
+	body_texture_tree.button_clicked.connect(_on_property_button_clicked)
+	
+	wizard_checkboxes.data_selected.connect(_on_data_changed.bind(true))
+	wizard_checkboxes.data_deselected.connect(_on_data_changed.bind(false))
+
+
+func _on_data_changed(data_type: int, key_selected: String, select: bool) -> void:
+	if color_node == null:
+		return
+	var items: Array[String] = color_node.get_metadata(1)["selected_ids"]
+	if select:
+		items.append(key_selected)
+	else:
+		items.erase(key_selected)
+	var type_text: String = ""
+	
+	match data_type:
+		1:
+			type_text = "color"
+		2:
+			type_text = "pattern"
+		3:
+			type_text = "marking"
+		4:
+			type_text = "tattoo"
+	
+	color_node.set_text(1, str(items.size(), " ", type_text, "" if items.size() == 1 else "s", " selected"))
 
 
 func _on_body_setting_edited() -> void:
@@ -1012,8 +1155,19 @@ func clear_body_settings() -> void:
 	for setting in body_texture_tree.get_root().get_children():
 		setting.set_checked(0, false)
 		for property in setting.get_children():
-			if property.get_metadata(0)["index"] == -1:
-				property.set_range(1, 0)
+			if property.get_metadata(0)["index"] < 0:
+				var type: String = ""
+				match property.get_metadata(0)["index"]:
+					-1:
+						"colors"
+					-2:
+						"patterns"
+					-3:
+						"markings"
+					-4:
+						"tattoos"
+				property.get_metadata(1)["selected_ids"].clear()
+				property.set_text(1, "0 " + type + " selected")
 			else:
 				match property.get_cell_mode(1):
 					TreeItem.CELL_MODE_CHECK:
@@ -1088,16 +1242,28 @@ func apply_character(character_index: int) -> void:
 			if prop_data["use"]:
 				target.disable_folding = false
 
-			var max_prop: int = prop_data["properties"].size() - 1
-			for prop_idx in range(target.get_child_count()):
-				if max_prop < prop_idx:
-					break
-				var prop: TreeItem = target.get_child(prop_idx)
-				match prop.get_cell_mode(1):
-					TreeItem.CELL_MODE_RANGE:
-						prop.set_range(1, prop_data["properties"][prop_idx]["value"])
-					TreeItem.CELL_MODE_CHECK:
-						prop.set_checked(1, prop_data["properties"][prop_idx]["value"])
+			for sub_prop in target.get_children():
+				if sub_prop.get_metadata(0)["index"] < 0:
+					for saved_prop in prop_data["properties"]:
+						if saved_prop["index"] != sub_prop.get_metadata(0)["index"]:
+							continue
+						var items: Array[String] = saved_prop["value"]
+						sub_prop.set_text(1, str(items.size(), " item " if items.size() == 1 else " items ", "selected"))
+						sub_prop.get_metadata(1)["selected_ids"].clear()
+						sub_prop.get_metadata(1)["selected_ids"].assign(items)
+						break
+				else:
+					for saved_prop in prop_data["properties"]:
+						if saved_prop["index"] < 0:
+							continue
+						if sub_prop.get_metadata(0)["id"] == saved_prop["id"]:
+							if sub_prop.get_cell_mode(1) == saved_prop["mode"]:
+								match sub_prop.get_cell_mode(1):
+									TreeItem.CELL_MODE_RANGE:
+										sub_prop.set_range(1, saved_prop["value"])
+									TreeItem.CELL_MODE_CHECK:
+										sub_prop.set_checked(1, saved_prop["value"])
+							break
 	
 	for trait_enabled in body_traits.get_root().get_children():
 		if data.traits.has(trait_enabled.get_text(0)):
@@ -1394,15 +1560,24 @@ func save_character() -> void:
 			"properties": Array([], TYPE_DICTIONARY, &"", null)}
 		
 		for property_item in item.get_children():
+			var idx: int = property_item.get_metadata(0)["index"]
 			var property: Dictionary = {
 				"mode": property_item.get_cell_mode(1),
-				"index": property_item.get_metadata(0)["index"]}
+				"index": idx}
 			
-			match property_item.get_cell_mode(1):
-				TreeItem.CELL_MODE_RANGE:
-					property["value"] = int(property_item.get_range(1))
-				TreeItem.CELL_MODE_CHECK:
-					property["value"] = property_item.is_checked(1)
+			if 0 <= idx:
+				property["id"] = property_item.get_metadata(0)["id"]
+			
+				match property_item.get_cell_mode(1):
+					TreeItem.CELL_MODE_RANGE:
+						property["value"] = property_item.get_range(1)
+					TreeItem.CELL_MODE_CHECK:
+						property["value"] = property_item.is_checked(1)
+			else:
+				property["value"] = property_item.get_metadata(1)["selected_ids"].duplicate()
+				
+				if idx == -1:
+					property["format"] = property_item.get_metadata(1)["format"]
 			setting["properties"].append(property)
 		body_textures.append(setting)
 	
@@ -1459,6 +1634,7 @@ func _on_character_selected() -> void:
 	var body_root: TreeItem = body_texture_tree.get_root()
 	
 	clear_body_settings()
+	
 	for body_texture in dict["bodies"]:
 		body_idx += 1
 		var target: TreeItem = body_root.get_child(body_idx)
@@ -1468,16 +1644,28 @@ func _on_character_selected() -> void:
 		if body_texture["use"]:
 			target.disable_folding = false
 		
-		var sub_prop: int = -1
-		for property in body_texture["properties"]:
-			sub_prop += 1
-			var prop: TreeItem = target.get_child(sub_prop)
-			
-			match prop.get_cell_mode(1):
-				TreeItem.CELL_MODE_RANGE:
-					prop.set_range(1, property["value"])
-				TreeItem.CELL_MODE_CHECK:
-					prop.set_checked(1, property["value"])
+		for prop_item in target.get_children():
+			if prop_item.get_metadata(0)["index"] < 0:
+				for prop_dict in body_texture["properties"]:
+					if prop_item.get_metadata(0)["index"] == prop_dict["index"]:
+						var items: Array[String] = prop_dict["value"]
+						prop_item.set_text(1, str(items.size(), " item " if items.size() == 1 else " items ", "selected"))
+						prop_item.get_metadata(1)["selected_ids"].clear()
+						prop_item.get_metadata(1)["selected_ids"].assign(items)
+						break
+			else:
+				var id: String = prop_item.get_metadata(0)["id"]
+				for prop_dict in body_texture["properties"]:
+					if prop_dict["index"] < 0:
+						continue
+					if prop_dict["id"] == id:
+						if prop_dict["mode"] == prop_item.get_cell_mode(1):
+							match prop_dict["mode"]:
+								TreeItem.CELL_MODE_RANGE:
+									prop_item.set_range(1, prop_dict["value"])
+								TreeItem.CELL_MODE_CHECK:
+									prop_item.set_checked(1, prop_dict["value"])
+							break
 	
 	var check_idx: int = -1
 	
@@ -1636,28 +1824,36 @@ func generate_tags() -> Array[String]:
 					character_tags.append(body_tag)
 				
 				for property in body["properties"]:
-					match property["index"]:
-						-1:
-							match property["value"] & 3:
-								0:
-									if not BODY_TYPES[body["index"]].has("exclude_values") or not BODY_TYPES[body["index"]]["exclude_values"].has(0):
-										character_tags.append(str(SINGLE_COLOR_BODY, " ", body_tag))
-								1:
-									if not BODY_TYPES[body["index"]].has("exclude_values") or not BODY_TYPES[body["index"]]["exclude_values"].has(1):
-										character_tags.append(str(TWO_COLOR_BODY, " ", body_tag))
-								2:
-									if not BODY_TYPES[body["index"]].has("exclude_values") or not BODY_TYPES[body["index"]]["exclude_values"].has(2):
-										character_tags.append(str(THREE_PLUS_COLOR_BODY, " ", body_tag))
-						_:
-							match property["mode"]:
-								TreeItem.CELL_MODE_RANGE:
-									var prop_tag: String = BODY_TYPES[body["index"]]["properties"][property["index"]]["tags"][property["value"]]
-									if not prop_tag.is_empty():
-										character_tags.append(prop_tag)
-								TreeItem.CELL_MODE_CHECK:
-									var prop_tag: String = BODY_TYPES[body["index"]]["properties"][property["index"]]["tags"][int(property["value"])]
-									if not prop_tag.is_empty():
-										character_tags.append(prop_tag)
+					if property["index"] < 0:
+						if not property["value"].is_empty():
+							character_tags.append_array(id_to_tags(
+									absi(property["index"]),
+									property["value"],
+									property["format"] if property.has("format") else ""))
+					else:
+						match property["mode"]:
+							TreeItem.CELL_MODE_RANGE:
+								var prop_tag: String = BODY_TYPES[body["index"]]["properties"][property["index"]]["tags"][property["value"]]
+								if not prop_tag.is_empty():
+									character_tags.append(prop_tag)
+							TreeItem.CELL_MODE_CHECK:
+								var prop_tag: String = BODY_TYPES[body["index"]]["properties"][property["index"]]["tags"][int(property["value"])]
+								if not prop_tag.is_empty():
+									character_tags.append(prop_tag)
+						
+					#match property["index"]:
+						#-1:
+							#match property["value"] & 3:
+								#0:
+									#if not BODY_TYPES[body["index"]].has("exclude_values") or not BODY_TYPES[body["index"]]["exclude_values"].has(0):
+										#character_tags.append(str(SINGLE_COLOR_BODY, " ", body_tag))
+								#1:
+									#if not BODY_TYPES[body["index"]].has("exclude_values") or not BODY_TYPES[body["index"]]["exclude_values"].has(1):
+										#character_tags.append(str(TWO_COLOR_BODY, " ", body_tag))
+								#2:
+									#if not BODY_TYPES[body["index"]].has("exclude_values") or not BODY_TYPES[body["index"]]["exclude_values"].has(2):
+										#character_tags.append(str(THREE_PLUS_COLOR_BODY, " ", body_tag))
+						#_:
 		
 		var trait_idx: int = -1
 		for bod_trait in character["traits"]:
@@ -1679,6 +1875,16 @@ func generate_tags() -> Array[String]:
 	return tags
 
 
+func _on_property_button_clicked(item: TreeItem, _column: int, id: int, _mouse_button_index: int) -> void:
+	if 0 < id:
+		wizard_checkboxes.set_mode(id)
+		wizard_checkboxes.set_boxes_text(item.get_parent().get_text(0).to_lower(), false)
+		wizard_checkboxes.uncheck_boxes()
+		wizard_checkboxes.set_boxes_checked(item.get_metadata(1)["selected_ids"], true)
+		wizard_checkboxes.show_box(get_local_mouse_position() - Vector2(20, 20))
+		color_node = item
+
+
 func add_tree_bodies() -> void:
 	var idx: int = -1
 	for bod_name:Dictionary in BODY_TYPES:
@@ -1693,14 +1899,46 @@ func add_tree_bodies() -> void:
 		new_bod.set_editable(0, true)
 		new_bod.set_selectable(1, false)
 		
+		if bod_name.has("tooltip") and not bod_name["tooltip"].is_empty():
+			new_bod.set_tooltip_text(0, bod_name["tooltip"])
+		
 		if not bod_name.has("use_colors") or bod_name["use_colors"]:
 			var color_child: TreeItem = new_bod.create_child()
 			color_child.set_cell_mode(0, TreeItem.CELL_MODE_STRING)
-			color_child.set_cell_mode(1, TreeItem.CELL_MODE_RANGE)
+			color_child.set_cell_mode(1, TreeItem.CELL_MODE_STRING)
 			color_child.set_text(0, "Colors")
-			color_child.set_text(1, "1 Color,2 Colors,3+ Colors")
-			color_child.set_editable(1, true)
+			color_child.set_text(1, "0 Colors Selected")
+			color_child.add_button(
+					1,
+					preload("res://icons/color_dropper.png"),
+					1,
+					false,
+					"Pick Colors")
 			color_child.set_metadata(0, {"index": -1})
+			color_child.set_metadata(1, {"selected_ids": Array([], TYPE_STRING, &"", null), "format": bod_name["tag"]})
+		
+		if bod_name.has("use_checkboxes") and 0 < bod_name["use_checkboxes"]:
+			var check_text: String = ""
+			match bod_name["use_checkboxes"]:
+				2:
+					check_text = "Patterns"
+				3:
+					check_text = "Markings"
+				4:
+					check_text = "Tattoos"
+			var pattern_child: TreeItem = new_bod.create_child()
+			pattern_child.set_cell_mode(0, TreeItem.CELL_MODE_STRING)
+			pattern_child.set_cell_mode(1, TreeItem.CELL_MODE_STRING)
+			pattern_child.set_text(0, check_text)
+			pattern_child.set_text(1, "0 " + check_text + " Selected")
+			pattern_child.add_button(
+					1,
+					preload("res://icons/item_list.png"),
+					bod_name["use_checkboxes"],
+					false,
+					"Pick " + check_text)
+			pattern_child.set_metadata(0, {"index": bod_name["use_checkboxes"] * -1})
+			pattern_child.set_metadata(1, {"selected_ids": Array([], TYPE_STRING, &"", null)})
 		
 		var prop_idx: int = -1
 		if bod_name.has("properties"):
@@ -1713,7 +1951,7 @@ func add_tree_bodies() -> void:
 				new_prop.set_editable(1, true)
 				
 				new_prop.set_text(0, property["name"])
-				new_prop.set_metadata(0, {"index": prop_idx})
+				new_prop.set_metadata(0, {"index": prop_idx, "id": property["id"]})
 				
 				if property.has("tooltip"):
 					var tips: int = property["tooltip"].size()
@@ -1741,8 +1979,6 @@ func add_tree_bodies() -> void:
 					"tag": bod_name["tag"],
 					"include_standalone": bod_name["include_standalone"],
 					"exclude_values": bod_name["exclude_values"] if bod_name.has("exclude_values") else []})
-		
-		
 
 
 func add_body_types(to: OptionButton, select: int = 0) -> void:
@@ -1875,3 +2111,33 @@ func on_media_type_selected(type: int) -> void:
 	for some in TYPES[type]:
 		media_type_opt_btn.add_item(some)
 	media_type_opt_btn.select(0)
+
+
+func id_to_tags(type: int, ids: Array[String], variant: String = "", suffix: bool = true) -> Array[String]:
+	var tags: Array[String] = []
+	
+	match type:
+		1:
+			for id in ids:
+				tags.append(
+						str(id, " ", variant) if suffix else str(variant, " ", id))
+		2:
+			const markings_straight: Array[String] = [
+				"flame", "floral", "runes", "spiral", "spotted", "tribal"]
+			
+			for pattern in ids:
+				if pattern in markings_straight:
+					tags.append(str(pattern, " markings"))
+				else:
+					tags.append(str(pattern, " (marking)"))
+		3:
+			for id in ids:
+				tags.append(id + " (marking)")
+		4: 
+			for id in ids:
+				if id != "tramp stamp":
+					tags.append(id + " tattoo")
+				else:
+					tags.append(id)
+	
+	return tags

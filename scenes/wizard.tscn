@@ -1,4 +1,4 @@
-[gd_scene load_steps=51 format=3 uid="uid://hpbimfahb425"]
+[gd_scene load_steps=55 format=3 uid="uid://hpbimfahb425"]
 
 [ext_resource type="Script" path="res://scripts/view_switcher_panel.gd" id="1_fvq4v"]
 [ext_resource type="Script" path="res://scripts/wizard_script.gd" id="1_whkki"]
@@ -43,6 +43,7 @@
 [ext_resource type="Texture2D" uid="uid://b4jcjpflhaxo1" path="res://icons/minimize_icon.svg" id="39_7v64x"]
 [ext_resource type="Texture2D" uid="uid://dlitnslc8nppw" path="res://icons/apply_character.svg" id="39_askru"]
 [ext_resource type="Script" path="res://addons/tnowe_extra_controls/elements/scroll_zoom_view.gd" id="40_t16j0"]
+[ext_resource type="Script" path="res://scripts/wizard_checkbox.gd" id="44_pti71"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t4osn"]
 bg_color = Color(0.2676, 0.264, 0.3, 1)
@@ -82,6 +83,30 @@ expand_margin_bottom = 10.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8v57s"]
 bg_color = Color(0.1, 0.1, 0.1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6ahlu"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+bg_color = Color(0.28, 0.28, 0.28, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.47682, 0.4698, 0.54, 1)
+
+[sub_resource type="Resource" id="Resource_4hs5g"]
+script = ExtResource("35_5nkt3")
+friction = 4.0
+minimum_velocity = 0.4
+rebound_strength = 7.0
+
+[sub_resource type="Resource" id="Resource_r3ktk"]
+script = ExtResource("35_5nkt3")
+friction = 4.0
+minimum_velocity = 0.4
+rebound_strength = 7.0
 
 [node name="WizardPanel" type="Control"]
 layout_mode = 3
@@ -1440,3 +1465,34 @@ script = ExtResource("40_t16j0")
 layout_mode = 2
 expand_mode = 1
 stretch_mode = 5
+
+[node name="WizardCheckboxes" type="Control" parent="."]
+visible = false
+anchors_preset = 0
+offset_right = 190.0
+offset_bottom = 189.0
+script = ExtResource("44_pti71")
+
+[node name="MainPanel" type="PanelContainer" parent="WizardCheckboxes"]
+layout_mode = 2
+offset_right = 190.0
+offset_bottom = 189.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_6ahlu")
+
+[node name="SmoothScrollContainer" type="ScrollContainer" parent="WizardCheckboxes/MainPanel"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+script = ExtResource("34_e8ccm")
+speed = 400.0
+wheel_scroll_damper = SubResource("Resource_4hs5g")
+dragging_scroll_damper = SubResource("Resource_r3ktk")
+drag_with_mouse = false
+drag_with_touch = false
+allow_horizontal_scroll = false
+allow_overdragging = false
+
+[node name="MainContainer" type="VBoxContainer" parent="WizardCheckboxes/MainPanel/SmoothScrollContainer"]
+layout_mode = 2

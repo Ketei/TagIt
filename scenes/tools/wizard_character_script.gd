@@ -15,6 +15,7 @@ var current_selected: TreeItem = null:
 		age_opt_btn.disabled = not unblocked
 		lore_age_opt_btn.disabled = not unblocked
 var data_store: TagItStorage = null
+var color_node: TreeItem = null
 
 @onready var character_tree: Tree = $MainPanel/MainContainer/CharactersContainer/CharacterTree
 @onready var char_label: Label = $MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA/CharacterContainer/CharLabel
@@ -32,6 +33,7 @@ var data_store: TagItStorage = null
 @onready var traits_tree: Tree = $MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerB/TraitsContainer/TraitsTree
 
 @onready var new_character_button: Button = $MainPanel/MainContainer/CharactersContainer/HeaderContainer/NewCharacterButton
+@onready var wizard_checkboxes: Control = $WizardCheckboxes
 
 
 func _init() -> void:
@@ -109,14 +111,46 @@ func _ready() -> void:
 		new_bod.set_editable(0, true)
 		new_bod.set_selectable(1, false)
 		
+		if bod_name.has("tooltip") and not bod_name["tooltip"].is_empty():
+			new_bod.set_tooltip_text(0, bod_name["tooltip"])
+		
 		if not bod_name.has("use_colors") or bod_name["use_colors"]:
 			var color_child: TreeItem = new_bod.create_child()
 			color_child.set_cell_mode(0, TreeItem.CELL_MODE_STRING)
-			color_child.set_cell_mode(1, TreeItem.CELL_MODE_RANGE)
+			color_child.set_cell_mode(1, TreeItem.CELL_MODE_STRING)
 			color_child.set_text(0, "Colors")
-			color_child.set_text(1, "1 Color,2 Colors,3+ Colors")
-			color_child.set_editable(1, true)
+			color_child.set_text(1, "0 Colors Selected")
+			color_child.add_button(
+					1,
+					preload("res://icons/color_dropper.png"),
+					1,
+					false,
+					"Pick Colors")
 			color_child.set_metadata(0, {"index": -1})
+			color_child.set_metadata(1, {"selected_ids": Array([], TYPE_STRING, &"", null), "format": bod_name["tag"]})
+		
+		if bod_name.has("use_checkboxes") and 0 < bod_name["use_checkboxes"]:
+			var check_text: String = ""
+			match bod_name["use_checkboxes"]:
+				2:
+					check_text = "Patterns"
+				3:
+					check_text = "Markings"
+				4:
+					check_text = "Tattoos"
+			var pattern_child: TreeItem = new_bod.create_child()
+			pattern_child.set_cell_mode(0, TreeItem.CELL_MODE_STRING)
+			pattern_child.set_cell_mode(1, TreeItem.CELL_MODE_STRING)
+			pattern_child.set_text(0, check_text)
+			pattern_child.set_text(1, "0 " + check_text + " Selected")
+			pattern_child.add_button(
+					1,
+					preload("res://icons/item_list.png"),
+					bod_name["use_checkboxes"],
+					false,
+					"Pick " + check_text)
+			pattern_child.set_metadata(0, {"index": bod_name["use_checkboxes"] * -1})
+			pattern_child.set_metadata(1, {"selected_ids": Array([], TYPE_STRING, &"", null)})
 		
 		var prop_idx: int = -1
 		if bod_name.has("properties"):
@@ -129,7 +163,7 @@ func _ready() -> void:
 				new_prop.set_editable(1, true)
 				
 				new_prop.set_text(0, property["name"])
-				new_prop.set_metadata(0, {"index": prop_idx})
+				new_prop.set_metadata(0, {"index": prop_idx, "id": property["id"]})
 				
 				match property["mode"]:
 					TreeItem.CELL_MODE_RANGE:
@@ -188,6 +222,44 @@ func _ready() -> void:
 	body_texture_tree.item_edited.connect(_on_something_changed)
 	body_texture_tree.item_edited.connect(_on_body_setting_edited)
 	traits_tree.item_edited.connect(_on_something_changed)
+	
+	body_texture_tree.button_clicked.connect(_on_property_button_clicked)
+	wizard_checkboxes.data_selected.connect(_on_data_changed.bind(true))
+	wizard_checkboxes.data_deselected.connect(_on_data_changed.bind(false))
+
+
+func _on_property_button_clicked(item: TreeItem, _column: int, id: int, _mouse_button_index: int) -> void:
+	if 0 < id:
+		wizard_checkboxes.set_mode(id)
+		wizard_checkboxes.set_boxes_text(item.get_parent().get_text(0).to_lower(), false)
+		wizard_checkboxes.uncheck_boxes()
+		wizard_checkboxes.set_boxes_checked(item.get_metadata(1)["selected_ids"], true)
+		wizard_checkboxes.show_box(get_local_mouse_position() - Vector2(20, 20))
+		color_node = item
+
+
+func _on_data_changed(data_type: int, key_selected: String, select: bool) -> void:
+	if color_node == null:
+		return
+	var items: Array[String] = color_node.get_metadata(1)["selected_ids"]
+	if select:
+		items.append(key_selected)
+	else:
+		items.erase(key_selected)
+	var type_text: String = ""
+	
+	match data_type:
+		1:
+			type_text = "color"
+		2:
+			type_text = "pattern"
+		3:
+			type_text = "marking"
+		4:
+			type_text = "tattoo"
+	
+	color_node.set_text(1, str(items.size(), " ", type_text, "" if items.size() == 1 else "s", " selected"))
+
 
 
 func input(event: InputEvent) -> void:
@@ -253,8 +325,19 @@ func clear_body_settings() -> void:
 	for setting in body_texture_tree.get_root().get_children():
 		setting.set_checked(0, false)
 		for property in setting.get_children():
-			if property.get_metadata(0)["index"] == -1:
-				property.set_range(1, 0)
+			if property.get_metadata(0)["index"] < 0:
+				var type: String = ""
+				match property.get_metadata(0)["index"]:
+					-1:
+						"colors"
+					-2:
+						"patterns"
+					-3:
+						"markings"
+					-4:
+						"tattoos"
+				property.get_metadata(1)["selected_ids"].clear()
+				property.set_text(1, "0 " + type + " selected")
 			else:
 				match property.get_cell_mode(1):
 					TreeItem.CELL_MODE_CHECK:
@@ -317,23 +400,36 @@ func load_character(index: int) -> void:
 	lore_age_opt_btn.select(data.age_lore)
 	
 	clear_body_settings()
+	
 	for target in body_texture_tree.get_root().get_children():
 		if data.properties.has(target.get_metadata(0)["tag"]):
 			var prop_data: Dictionary = data.properties[target.get_metadata(0)["tag"]]
 			target.set_checked(0, prop_data["use"])
 			if prop_data["use"]:
 				target.disable_folding = false
-
-			var max_prop: int = prop_data["properties"].size() - 1
-			for prop_idx in range(target.get_child_count()):
-				if max_prop < prop_idx:
-					break
-				var prop: TreeItem = target.get_child(prop_idx)
-				match prop.get_cell_mode(1):
-					TreeItem.CELL_MODE_RANGE:
-						prop.set_range(1, prop_data["properties"][prop_idx]["value"])
-					TreeItem.CELL_MODE_CHECK:
-						prop.set_checked(1, prop_data["properties"][prop_idx]["value"])
+			
+			for prop_item in target.get_children():
+				if prop_item.get_metadata(0)["index"] < 0:
+					for prop_dict in prop_data["properties"]:
+						if prop_item.get_metadata(0)["index"] == prop_dict["index"]:
+							var items: Array[String] = prop_dict["value"]
+							prop_item.set_text(1, str(items.size(), " item " if items.size() == 1 else " items ", "selected"))
+							prop_item.get_metadata(1)["selected_ids"].clear()
+							prop_item.get_metadata(1)["selected_ids"].assign(items)
+							break
+				else:
+					var id: String = prop_item.get_metadata(0)["id"]
+					for prop_dict in prop_data["properties"]:
+						if prop_dict["index"] < 0:
+							continue
+						if prop_dict["id"] == id:
+							if prop_dict["mode"] == prop_item.get_cell_mode(1):
+								match prop_dict["mode"]:
+									TreeItem.CELL_MODE_RANGE:
+										prop_item.set_range(1, prop_dict["value"])
+									TreeItem.CELL_MODE_CHECK:
+										prop_item.set_checked(1, prop_dict["value"])
+								break
 	
 	for trait_enabled in traits_tree.get_root().get_children():
 		if data.traits.has(trait_enabled.get_text(0)):
@@ -375,15 +471,21 @@ func save_character():
 			"properties": Array([], TYPE_DICTIONARY, &"", null)}
 		
 		for property_item in prop.get_children():
+			var idx: int = property_item.get_metadata(0)["index"]
 			var property: Dictionary = {
 				"mode": property_item.get_cell_mode(1),
-				"index": property_item.get_metadata(0)["index"]}
+				"index": idx}
 			
-			match property_item.get_cell_mode(1):
-				TreeItem.CELL_MODE_RANGE:
-					property["value"] = property_item.get_range(1)
-				TreeItem.CELL_MODE_CHECK:
-					property["value"] = property_item.is_checked(1)
+			if 0 <= idx:
+				property["id"] = property_item.get_metadata(0)["id"]
+			
+				match property_item.get_cell_mode(1):
+					TreeItem.CELL_MODE_RANGE:
+						property["value"] = property_item.get_range(1)
+					TreeItem.CELL_MODE_CHECK:
+						property["value"] = property_item.is_checked(1)
+			else:
+				property["value"] = property_item.get_metadata(1)["selected_ids"].duplicate()
 			setting["properties"].append(property)
 		
 		properties[prop.get_metadata(0)["tag"]] = setting
