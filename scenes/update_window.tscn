@@ -89,10 +89,8 @@ layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
 text = "[font_size=20][b][color=SKY_BLUE]New[/color][/b][/font_size]
-[ul] [b]Wizard[/b] has new sections & [b]updated colors section[/b] make sure to [b]update[/b] any [b]wizard characters[/b] that might use these new sections.[/ul]
+[ul] Wizard has some extra options for eyes.[/ul]
 [font_size=20][b][color=SKY_BLUE]Fixes[/color][/b][/font_size]
-[ul] Fixed issue that made TagIt believe it didn't have some registered tags, even though it did.
- Fixed an issue that prevented importing tags from your project to the batch dowloader.
- Fixed an issue with TagIt wrongly asking for suggestions to e621[/ul]
+[ul] Fixed the wizard including some invalid color-count tags.[/ul]
 [font_size=20][b][color=SKY_BLUE]Changes[/color][/b][/font_size]
-[ul] Successfully finishing using the Wizard will trigger a list update, requiring a save.[/ul]"
+[ul] Changed wizard \"pussy\" tags to \"vulva\" as per e621 B.U.R. #11431[/ul]"
