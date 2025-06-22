@@ -23,8 +23,8 @@ const SEARCH_WILDCARD: String = "*"
 const DB_VERSION: int = 5
 const PROJECTS_VERSION: int = 2
 const TEMPLATES_VERSION: int = 3
-const STORAGE_VERSION: int = 2
-const TAGIT_VERSION_ARRAY: Array[int] = [3, 5, 3]
+const STORAGE_VERSION: int = 3
+const TAGIT_VERSION_ARRAY: Array[int] = [3, 5, 4]
 const MAX_PARENT_RECURSION: int = 100
 const IMAGE_LIMITS: Vector2i = Vector2i(1000, 1000)
 const LEV_DISTANCE: float = 0.75
@@ -513,10 +513,33 @@ func update_storage() -> void:
 						else:
 							property_type["id"] = property["properties"][prop_idx]
 		current_version += 1
+		log_message(
+			"[TagIt] Data storage upgraded to version " + str(current_version),
+			LogLevel.INFO)
+	
+	if current_version == 2:
+		for character in storage_data.characters:
+			if character["colors"].has("pussy"):
+				character["colors"]["vulva"] = character["colors"]["pussy"]
+				character["colors"].erase("pussy")
+				if character["colors"]["vulva"].has("properties"):
+					for property in character["colors"]["vulva"]["properties"]:
+						if property["index"] < 0:
+							continue
+						if property["id"] == "shape":
+							property["id"] = "innie"
+							property["mode"] = TreeItem.CELL_MODE_CHECK
+							property["value"] = property["value"] == 0
+							break
+		current_version += 1
+		log_message(
+			"[TagIt] Data storage upgraded to version " + str(current_version),
+			LogLevel.INFO)
+	
 	storage_data.storage_version = STORAGE_VERSION
 	storage_data.save()
 	log_message(
-			"[TagIt] Data storage updated to version " + str(STORAGE_VERSION),
+			"[TagIt] Data storage has been updated to the latest version",
 			LogLevel.INFO)
 
 
