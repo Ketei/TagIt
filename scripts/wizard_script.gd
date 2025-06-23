@@ -477,14 +477,6 @@ const BODY_TYPES: Array[Dictionary] = [
 		"tag": "hands",
 		"include_standalone": false,
 		"properties": [
-			#{
-				#"id": "fing_count",
-				#"name": "Finger count (per hand)",
-				#"mode": TreeItem.CELL_MODE_RANGE,
-				#"text": "No fingers,1 finger,2 fingers,3 fingers,4 fingers,5 fingers,6 fingers,7 fingers,8 fingers,9 fingers,10 fingers,N/A",
-				#"tags": ["featureless hands", "1 finger", "2 fingers", "3 fingers", "4 fingers", "5 fingers", "6 fingers", "7 fingers", "8 fingers", "9 fingers", "10 fingers", ""],
-				#"value": 5
-			#},
 			{
 				"id": "finger_count",
 				"name": "Finger count (Per hand)",
@@ -1031,9 +1023,6 @@ var current_project_size: Vector2 = Vector2(310, 34)
 @onready var project_texture_container: Draggable = $ProjectTextureContainer
 # ---------------
 
-#@onready var angle_container_start: Button = $MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow/AngleContainer
-#@onready var angle_container_end: Button = $MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow/AngleContainer17
-
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -1523,29 +1512,16 @@ func clear_character() -> void:
 	age_opt_btn.select(4)
 	lore_age_opt_btn.select(0)
 	
-	#for item in body_texture_tree.get_root().get_children():
-		#if item.is_checked(0):
-			#item.set_checked(0, false)
-		#item.set_range(1, 0)
 	body_texture_tree.get_root().call_recursive(&"set_checked", 0, false)
 	body_texture_tree.get_root().call_recursive(&"set_range", 1, 0)
 	clothing_tree.get_root().call_recursive(&"set_checked", 0, false)
 	body_traits.get_root().call_recursive(&"set_checked", 0, false)
-	#var a:TreeItem = a.set_checked()
-	#for check in clothing_a.get_children():
-		#if check.button_pressed:
-			#check.button_pressed = false
-	
-	#for check in clothing_b.get_children():
-		#if check.button_pressed:
-			#check.button_pressed = false
 
 
 func on_bg_type_selected(bg_type: int) -> void:
 	sky_rect.visible = bg_type == 0
 	solid_rect.visible = bg_type == 4
 	
-	#if bg_type != 0:
 	match bg_type:
 		0:
 			background.texture = null
@@ -1885,21 +1861,7 @@ func generate_tags() -> Array[String]:
 								var prop_tag: String = BODY_TYPES[body["index"]]["properties"][property["index"]]["tags"][int(property["value"])]
 								if not prop_tag.is_empty():
 									character_tags.append(prop_tag)
-						
-					#match property["index"]:
-						#-1:
-							#match property["value"] & 3:
-								#0:
-									#if not BODY_TYPES[body["index"]].has("exclude_values") or not BODY_TYPES[body["index"]]["exclude_values"].has(0):
-										#character_tags.append(str(SINGLE_COLOR_BODY, " ", body_tag))
-								#1:
-									#if not BODY_TYPES[body["index"]].has("exclude_values") or not BODY_TYPES[body["index"]]["exclude_values"].has(1):
-										#character_tags.append(str(TWO_COLOR_BODY, " ", body_tag))
-								#2:
-									#if not BODY_TYPES[body["index"]].has("exclude_values") or not BODY_TYPES[body["index"]]["exclude_values"].has(2):
-										#character_tags.append(str(THREE_PLUS_COLOR_BODY, " ", body_tag))
-						#_:
-		
+					
 		var trait_idx: int = -1
 		for bod_trait in character["traits"]:
 			trait_idx += 1
@@ -2040,7 +2002,6 @@ func add_tree_bodies() -> void:
 func add_body_types(to: OptionButton, select: int = 0) -> void:
 	const TAGS: Array[Array] = [["anthro"], ["anthro", "semi-anthro"], ["feral", "semi-anthro"], ["feral"], ["human"], ["humanoid"], ["taur"]]
 	
-	#var idx: int = -1
 	for body_idx in range(BODIES.size()):
 		to.add_item(BODIES[body_idx])
 		to.set_item_metadata(body_idx, TAGS[body_idx])
@@ -2049,7 +2010,6 @@ func add_body_types(to: OptionButton, select: int = 0) -> void:
 
 
 func add_ages(to: OptionButton, include_na: bool = false, select: int = 4) -> void:
-	#const AGES: PackedStringArray = ["Baby", "Toddler", "Child", "Adolescent", "Adult", "Mature", "Elderly"]
 	const TAGS: PackedStringArray = ["baby", "toddler", "child", "adolescent", "", "", "elderly"]
 	var item_idx: int = -1
 	
@@ -2067,7 +2027,6 @@ func add_ages(to: OptionButton, include_na: bool = false, select: int = 4) -> vo
 
 
 func add_genders(to: OptionButton, include_na: bool = false, select: int = 0) -> void:
-	#const GENDERS: PackedStringArray = ["Male", "Female", "Ambiguous Gender", "Andromorph", "Gynomorph", "Hermaphrodite", "Male Hermaphrodite"]
 	const ICONS: Array[Resource] = [
 		preload("res://icons/male_icon.svg"),
 		preload("res://icons/female_icon.svg"),
