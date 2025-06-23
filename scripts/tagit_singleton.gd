@@ -519,6 +519,12 @@ func update_storage() -> void:
 	
 	if current_version == 2:
 		for character in storage_data.characters:
+			if character["colors"].has("eyes") and character["colors"]["eyes"].has("properties"):
+				for property in character["colors"]["eyes"]["properties"]:
+					if property["index"] < 0 or property["id"] != "pupils":
+						continue
+					property["value"] = 0 if property["value"] == 4 else property["value"] + 1
+					
 			if character["colors"].has("pussy"):
 				character["colors"]["vulva"] = character["colors"]["pussy"]
 				character["colors"].erase("pussy")
