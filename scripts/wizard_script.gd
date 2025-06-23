@@ -400,19 +400,30 @@ const BODY_TYPES: Array[Dictionary] = [
 		"exclude_values": [0],
 		"properties": [
 			{
-				"id": "hetero",
-				"name": "Heterochromia",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Has Heterochromia",
-				"tags": ["", "heterochromia"]
+				"id": "shape",
+				"name": "Eye Shape",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Regular|N/A,Beady,Dot,Heart,Ringed,Spiral,Star,X Shaped",
+				"tags": ["", "beady eyes", "dot eyes", "heart eyes", "ringed eyes", "spiral eyes", "star eyes", "x eyes"],
+				"value": 0,
+				"tooltip": ["When the entire eye or the whole iris shape is different."]
 			},
 			{
 				"id": "pupils",
 				"name": "Pupils",
 				"mode": TreeItem.CELL_MODE_RANGE,
-				"text": "Regular,Slit,Horizontal,Heart,Star,No pupils",
-				"tags": ["", "slit pupils", "horizontal pupils", "heart pupils", "no pupils"],
-				"value": 0
+				"text": "No pupils,Regular|N/A,Slit,Horizontal,Heart,Star,Square,Spiral,Symbol-Shaped,X Shaped",
+				"tags": ["no pupils", "", "slit pupils", "horizontal pupils", "heart pupils", "square pupils", "spiral pupils", "symbol-shaped pupils", "x pupils"],
+				"value": 1,
+				"tooltip": ["The, usually black, circle at the center of the iris."]
+			},
+			{
+				"id": "hetero",
+				"name": "Heterochromia",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Has Heterochromia",
+				"tags": ["", "heterochromia"],
+				"tooltip": ["When a character's two entirely different colored eyes."]
 			},
 			{
 				"id": "sclera",
@@ -841,8 +852,8 @@ const BODY_TYPES: Array[Dictionary] = [
 		"exclude_values": [0]
 	},
 	{
-		"name": "Vagina",
-		"tag": "pussy",
+		"name": "Pussy",
+		"tag": "vulva",
 		"include_standalone": true,
 		"exclude_values": [0],
 		"properties": [
@@ -851,7 +862,7 @@ const BODY_TYPES: Array[Dictionary] = [
 				"name": "Type",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Animal,Humanoid,Hybrid,Mechanical,Unusual,N/A",
-				"tags": ["animal pussy", "humanoid pussy", "hybrid pussy", "mechanical pussy", "unusual pussy", ""],
+				"tags": ["animal vulva", "humanoid vulva", "hybrid vulva", "mechanical vulva", "unusual vulva", ""],
 				"value": 1
 			},
 			{
@@ -859,15 +870,15 @@ const BODY_TYPES: Array[Dictionary] = [
 				"name": "Size",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Small,Average,Big,Hyper",
-				"tags": ["small pussy", "", "big pussy", "hyper pussy"],
+				"tags": ["small vulva", "", "big vulva", "hyper vulva"],
 				"value": 1
 			},
 			{
-				"id": "shape",
-				"name": "Shape",
-				"mode": TreeItem.CELL_MODE_RANGE,
-				"text": "Innie,Average,Outie",
-				"tags": ["innie pussy", "", "long labia"],
+				"id": "innie", # shape -> innie
+				"name": "Innie Pussy",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Is innie",
+				"tags": ["", "innie vulva"],
 				"value": 0
 			},
 			{
@@ -882,7 +893,7 @@ const BODY_TYPES: Array[Dictionary] = [
 				"name": "Anatomically correct",
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Is correct",
-				"tags": ["", "anatomically correct pussy"]
+				"tags": ["", "anatomically correct vulva"]
 			}]
 	},
 	{
@@ -1829,7 +1840,9 @@ func generate_tags() -> Array[String]:
 							character_tags.append_array(id_to_tags(
 									absi(property["index"]),
 									property["value"],
-									property["format"] if property.has("format") else ""))
+									property["format"] if property.has("format") else "",
+									true,
+									BODY_TYPES[body["index"]]["exclude_values"] if BODY_TYPES[body["index"]].has("exclude_values") else []))
 					else:
 						match property["mode"]:
 							TreeItem.CELL_MODE_RANGE:
@@ -2113,23 +2126,21 @@ func on_media_type_selected(type: int) -> void:
 	media_type_opt_btn.select(0)
 
 
-func id_to_tags(type: int, ids: Array[String], variant: String = "", suffix: bool = true) -> Array[String]:
+func id_to_tags(type: int, ids: Array[String], variant: String = "", suffix: bool = true, color_count_exceptions: Array = []) -> Array[String]:
 	var tags: Array[String] = []
 	
 	match type:
 		1:
 			const exceptions: Dictionary = {
 				"yellow hair": "blonde hair"}
-			const coloring_exceptions: Dictionary = {
-				"multicolored pussy": "multicolored vulva"}
+			const coloring_exceptions: Dictionary = {}
 			for id in ids:
 				var tag: String = str(id, " ", variant) if suffix else str(variant, " ", id)
 				tags.append(exceptions[tag] if exceptions.has(tag) else tag)
-			if not variant.is_empty():
+			var color_count: int = ids.size()
+			if 0 < color_count and not color_count_exceptions.has(color_count):
 				var tag: String = ""
 				match ids.size():
-					0:
-						pass
 					1:
 						tag = "monotone " + variant
 					2:
