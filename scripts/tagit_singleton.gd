@@ -524,7 +524,16 @@ func update_storage() -> void:
 					if property["index"] < 0 or property["id"] != "pupils":
 						continue
 					property["value"] = 0 if property["value"] == 4 else property["value"] + 1
-					
+			if character["colors"].has("hands") and character["colors"]["hands"].has("properties"):
+				for property:Dictionary in character["colors"]["hands"]["properties"]:
+					if property["index"] < 0 or property["id"] != "fing_count":
+						continue
+					property["finger_count"] = property["fing_count"]
+					property.erase("fing_count")
+					if property["finger_count"]["value"] == 11:
+						property["finger_count"]["value"] = -1
+					break
+				
 			if character["colors"].has("pussy"):
 				character["colors"]["vulva"] = character["colors"]["pussy"]
 				character["colors"].erase("pussy")
