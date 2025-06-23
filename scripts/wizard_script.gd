@@ -208,7 +208,7 @@ const BODY_TYPES: Array[Dictionary] = [
 			"id": "length",
 			"name": "Length",
 			"mode": TreeItem.CELL_MODE_RANGE,
-			"text": "short fur,average length,long fur",
+			"text": "Short fur,Average length,Long fur",
 			"tags": ["short fur", "", "long fur"],
 			"value": 1
 			},
@@ -400,6 +400,16 @@ const BODY_TYPES: Array[Dictionary] = [
 		"exclude_values": [0],
 		"properties": [
 			{
+				"id": "count",
+				"name": "Eye amount",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"formats": {"not_applicable": "", "zero": "eyeless", "singular": "1 eye", "plural": "{0} eyes"},
+				"exceptions": [2],
+				"range": [-1, 20],
+				"value": 2,
+				"tooltip": ["How many eyes the character has", "Set to -1 for N/A"]
+			},
+			{
 				"id": "shape",
 				"name": "Eye Shape",
 				"mode": TreeItem.CELL_MODE_RANGE,
@@ -467,13 +477,22 @@ const BODY_TYPES: Array[Dictionary] = [
 		"tag": "hands",
 		"include_standalone": false,
 		"properties": [
+			#{
+				#"id": "fing_count",
+				#"name": "Finger count (per hand)",
+				#"mode": TreeItem.CELL_MODE_RANGE,
+				#"text": "No fingers,1 finger,2 fingers,3 fingers,4 fingers,5 fingers,6 fingers,7 fingers,8 fingers,9 fingers,10 fingers,N/A",
+				#"tags": ["featureless hands", "1 finger", "2 fingers", "3 fingers", "4 fingers", "5 fingers", "6 fingers", "7 fingers", "8 fingers", "9 fingers", "10 fingers", ""],
+				#"value": 5
+			#},
 			{
-				"id": "fing_count",
-				"name": "Finger count (per hand)",
+				"id": "finger_count",
+				"name": "Finger count (Per hand)",
 				"mode": TreeItem.CELL_MODE_RANGE,
-				"text": "No fingers,1 finger,2 fingers,3 fingers,4 fingers,5 fingers,6 fingers,7 fingers,8 fingers,9 fingers,10 fingers,N/A",
-				"tags": ["featureless hands", "1 finger", "2 fingers", "3 fingers", "4 fingers", "5 fingers", "6 fingers", "7 fingers", "8 fingers", "9 fingers", "10 fingers", ""],
-				"value": 5
+				"formats": {"not_applicable": "", "zero": "featureless hands", "singular": "1 finger", "plural": "{0} fingers"},
+				"range": [-1, 10],
+				"value": 5,
+				"tooltip": ["How many fingers are in each hand", "Set to -1 for N/A"]
 			},
 			{
 				"id": "nail_type",
@@ -751,7 +770,53 @@ const BODY_TYPES: Array[Dictionary] = [
 				"text": "Is veiny",
 				"tags": ["", "veiny penis"]
 			},
-		]},
+		]
+	},
+	{
+		"name": "Pussy",
+		"tag": "vulva",
+		"include_standalone": true,
+		"exclude_values": [0],
+		"properties": [
+			{
+				"id": "type",
+				"name": "Type",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Animal,Humanoid,Hybrid,Mechanical,Unusual,N/A",
+				"tags": ["animal vulva", "humanoid vulva", "hybrid vulva", "mechanical vulva", "unusual vulva", ""],
+				"value": 1
+			},
+			{
+				"id": "size",
+				"name": "Size",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Small,Average,Big,Hyper",
+				"tags": ["small vulva", "", "big vulva", "hyper vulva"],
+				"value": 1
+			},
+			{
+				"id": "innie", # shape -> innie
+				"name": "Innie Pussy",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Is innie",
+				"tags": ["", "innie vulva"],
+				"value": 0
+			},
+			{
+				"id": "plump",
+				"name": "Plump Pussy",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Is plump",
+				"tags": ["", "plump labia"]
+			},
+			{
+				"id": "correct",
+				"name": "Anatomically correct",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Is correct",
+				"tags": ["", "anatomically correct vulva"]
+			}]
+	},
 	{
 		"name": "Sheath",
 		"tag": "sheath",
@@ -850,51 +915,6 @@ const BODY_TYPES: Array[Dictionary] = [
 		"tag": "tuft",
 		"include_standalone": true,
 		"exclude_values": [0]
-	},
-	{
-		"name": "Pussy",
-		"tag": "vulva",
-		"include_standalone": true,
-		"exclude_values": [0],
-		"properties": [
-			{
-				"id": "type",
-				"name": "Type",
-				"mode": TreeItem.CELL_MODE_RANGE,
-				"text": "Animal,Humanoid,Hybrid,Mechanical,Unusual,N/A",
-				"tags": ["animal vulva", "humanoid vulva", "hybrid vulva", "mechanical vulva", "unusual vulva", ""],
-				"value": 1
-			},
-			{
-				"id": "size",
-				"name": "Size",
-				"mode": TreeItem.CELL_MODE_RANGE,
-				"text": "Small,Average,Big,Hyper",
-				"tags": ["small vulva", "", "big vulva", "hyper vulva"],
-				"value": 1
-			},
-			{
-				"id": "innie", # shape -> innie
-				"name": "Innie Pussy",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Is innie",
-				"tags": ["", "innie vulva"],
-				"value": 0
-			},
-			{
-				"id": "plump",
-				"name": "Plump Pussy",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Is plump",
-				"tags": ["", "plump labia"]
-			},
-			{
-				"id": "correct",
-				"name": "Anatomically correct",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Is correct",
-				"tags": ["", "anatomically correct vulva"]
-			}]
 	},
 	{
 		"name": "Wings",
@@ -1846,7 +1866,19 @@ func generate_tags() -> Array[String]:
 					else:
 						match property["mode"]:
 							TreeItem.CELL_MODE_RANGE:
-								var prop_tag: String = BODY_TYPES[body["index"]]["properties"][property["index"]]["tags"][property["value"]]
+								var prop_tag: String = ""
+								if BODY_TYPES[body["index"]]["properties"][property["index"]].has("tags"):
+									prop_tag = BODY_TYPES[body["index"]]["properties"][property["index"]]["tags"][property["value"]]
+								else:
+									if not BODY_TYPES[body["index"]]["properties"][property["index"]].has("exceptions") or not BODY_TYPES[body["index"]]["properties"][property["index"]]["exceptions"].has(int(property["value"])):
+										if property["value"] < 0:
+											prop_tag = BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["not_applicable"].format([int(property["value"])])
+										elif property["value"] == 0:
+											prop_tag = BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["zero"].format([int(property["value"])])
+										elif property["value"] == 1:
+											prop_tag = BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["singular"].format([int(property["value"])])
+										elif 2 <= property["value"]:
+											prop_tag = BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["plural"].format([int(property["value"])])
 								if not prop_tag.is_empty():
 									character_tags.append(prop_tag)
 							TreeItem.CELL_MODE_CHECK:
@@ -1975,10 +2007,21 @@ func add_tree_bodies() -> void:
 				
 				match property["mode"]:
 					TreeItem.CELL_MODE_RANGE:
-						new_prop.set_text(1, property["text"])
-						new_prop.set_range(
-								1,
-								property["value"] if property.has("value") else 0)
+						if property.has("text") and not property["text"].is_empty():
+							new_prop.set_text(1, property["text"])
+							new_prop.set_range(
+									1,
+									property["value"] if property.has("value") else 0)
+						else:
+							new_prop.set_range_config(
+									1,
+									property["range"][0],
+									property["range"][1],
+									1.0)
+							new_prop.set_range(
+									1,
+									property["value"])
+					
 					TreeItem.CELL_MODE_CHECK:
 						new_prop.set_text(1, property["text"])
 						new_prop.set_checked(
