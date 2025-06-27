@@ -89,8 +89,24 @@ layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
 text = "[font_size=20][b][color=SKY_BLUE]New[/color][/b][/font_size]
-[ul] Wizard has some extra options for eyes.[/ul]
+[ul] Wizard has some extra options for eyes.
+ Added new shortcuts:
+[ul] Menu dropdown: Alt+M
+ Help Menu: Alt+H
+ (Wiki) Focus tag text field: Ctrl+F
+ (Tags tab) Focus tag text field: Ctrl+F
+ (Tags tab) Open adv. search: Ctrl+Shift+F[/ul][/ul]
 [font_size=20][b][color=SKY_BLUE]Fixes[/color][/b][/font_size]
-[ul] Fixed the wizard including some invalid color-count tags.[/ul]
+[ul] Fixed the wizard including some invalid color-count tags.
+ Fixed the prefixes not working.
+ Blacklist tags & blacklist groups can now be multi-selected. Including doing CTRL+A
+ Wiki thumbnails will now scroll based on which image is focused.
+ Fixed wrong error codes on some logs.[/ul]
 [font_size=20][b][color=SKY_BLUE]Changes[/color][/b][/font_size]
-[ul] Changed wizard \"pussy\" tags to \"vulva\" as per e621 B.U.R. #11431[/ul]"
+[ul] Changed wizard \"pussy\" tags to \"vulva\" as per e621 B.U.R. #11431
+ Made keyboard navigation more usable in Tagger, Wiki, Tag & tools tabs.
+ Easier usability on Tags tab & Wiki tab. If you start writing it'll automatically focus the text field and allow you to write.
+ Focused images in wiki will have a light blue contour.
+ Wiki scrolls can now be focused and moved using arrow keys (excluding the images scroll)
+ Slightly improved Wiki page fetcher.
+ Wizard can now be exited with ESC key.[/ul]"
