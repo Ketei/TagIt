@@ -11,17 +11,22 @@ func _ready() -> void:
 	focus_exited.connect(on_focus_lost)
 
 
-func _input(_event: InputEvent) -> void:
-	if has_focus() and Input.is_action_just_pressed(&"ui_text_delete"):
-		var selected_groups: Array[TreeItem] = get_selected_tree_groups()
-		if not selected_groups.is_empty():
-			var deleted_groups: PackedInt64Array = []
-			for grp in selected_groups:
-				if not deleted_groups.has(grp.get_metadata(0)["id"]):
-					deleted_groups.append(grp.get_metadata(0)["id"])
-				grp.free()
-			groups_deleted.emit(deleted_groups)
-			get_viewport().set_input_as_handled()
+func _input(event: InputEvent) -> void:
+	if has_focus() and event is InputEventKey and not event.is_echo():
+		if Input.is_action_just_pressed(&"ui_text_delete"):
+			var selected_groups: Array[TreeItem] = get_selected_tree_groups()
+			if not selected_groups.is_empty():
+				var deleted_groups: PackedInt64Array = []
+				for grp in selected_groups:
+					if not deleted_groups.has(grp.get_metadata(0)["id"]):
+						deleted_groups.append(grp.get_metadata(0)["id"])
+					grp.free()
+				groups_deleted.emit(deleted_groups)
+				get_viewport().set_input_as_handled()
+		#elif event.keycode == KEY_A and event.ctrl_pressed and event.pressed:
+			#for group in get_root().get_children():
+				#group.select(0)
+			#get_viewport().set_input_as_handled()
 
 
 func _get_drag_data(_at_position: Vector2) -> Variant:
