@@ -1121,6 +1121,11 @@ func _ready() -> void:
 	wizard_checkboxes.data_deselected.connect(_on_data_changed.bind(false))
 
 
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed(&"ui_cancel"):
+		wizard_cancelled.emit()
+
+
 func _on_data_changed(data_type: int, key_selected: String, select: bool) -> void:
 	if color_node == null:
 		return
