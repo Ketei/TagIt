@@ -683,6 +683,8 @@ layout_mode = 2
 [node name="WikiSearchLnEdt" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/SearchContainer" instance=ExtResource("18_btkx1")]
 layout_mode = 2
 size_flags_horizontal = 3
+focus_neighbor_right = NodePath("../SearchBtn")
+focus_next = NodePath("../SearchBtn")
 placeholder_text = "Search Wiki"
 caret_blink = true
 list_direction = 1
@@ -693,12 +695,19 @@ close_on_focus_lost = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 tooltip_text = "Search Wiki"
+focus_neighbor_left = NodePath("../WikiSearchLnEdt")
+focus_neighbor_right = NodePath("../eSixSearchBtn")
+focus_next = NodePath("../eSixSearchBtn")
+focus_previous = NodePath("../WikiSearchLnEdt")
 icon = ExtResource("7_cq671")
 
 [node name="eSixSearchBtn" type="Button" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/SearchContainer"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 tooltip_text = "Search on e621"
+focus_neighbor_left = NodePath("../SearchBtn")
+focus_next = NodePath("../../../ImageContainer/WikiDets/ThumbSize/ThumbnailSizeChanger")
+focus_previous = NodePath("../SearchBtn")
 icon = ExtResource("23_cbccr")
 
 [node name="ImageContainer" type="VBoxContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer"]
@@ -721,6 +730,9 @@ text = "Size"
 [node name="ThumbnailSizeChanger" type="OptionButton" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/ImageContainer/WikiDets/ThumbSize"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
+focus_neighbor_right = NodePath("../../ReloadImagesButton")
+focus_next = NodePath("../../ReloadImagesButton")
+focus_previous = NodePath("../../../../WikiInfoContainer/SearchContainer/eSixSearchBtn")
 selected = 0
 item_count = 4
 popup/item_0/text = "Small"
@@ -735,6 +747,9 @@ popup/item_3/id = 3
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 tooltip_text = "Reload Images"
+focus_neighbor_left = NodePath("../ThumbSize/ThumbnailSizeChanger")
+focus_next = NodePath("../../ScrollContainer/ImagesContainer")
+focus_previous = NodePath("../ThumbSize/ThumbnailSizeChanger")
 icon = ExtResource("24_npyuf")
 flat = true
 icon_alignment = 1
@@ -742,15 +757,18 @@ icon_alignment = 1
 [node name="ScrollContainer" type="ScrollContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/ImageContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+follow_focus = true
 horizontal_scroll_mode = 0
 script = ExtResource("25_c3eal")
 
 [node name="ImagesContainer" type="HFlowContainer" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/ImageContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+focus_previous = NodePath("../../WikiDets/ReloadImagesButton")
 alignment = 1
 
 [node name="ViewerContainer" type="PanelContainer" parent="MainContainer/WikiPanel"]
+visible = false
 layout_mode = 2
 
 [node name="ScrollZoomView" type="MarginContainer" parent="MainContainer/WikiPanel/ViewerContainer"]
@@ -834,6 +852,7 @@ placeholder_text = "Search Tag"
 caret_blink = true
 replace_on_item_select = true
 use_timer = true
+close_on_focus_lost = true
 
 [node name="VSeparator" type="VSeparator" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer"]
 layout_mode = 2
@@ -932,6 +951,7 @@ grow_vertical = 0
 starting_position = Vector2(-166, 32)
 
 [node name="TagEditContainer" type="VBoxContainer" parent="MainContainer/TagsPanel/TagsMargin"]
+visible = false
 layout_mode = 2
 script = ExtResource("8_aldxp")
 
