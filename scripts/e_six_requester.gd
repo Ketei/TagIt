@@ -174,7 +174,7 @@ func _get_full_data(raw_tag: String) -> Dictionary:
 						parents.append(descendant_name)
 	else:
 		SingletonManager.TagIt.log_silent(
-		str("[eSix API] PARENTS request failed: ", result[0], "/", result[1]),
+		str("[eSix API] PARENTS request failed: ", p_res[0], "/", p_res[1]),
 		DataManager.LogLevel.INFO)
 	
 	if not full_job_timer.is_stopped():
@@ -200,7 +200,7 @@ func _get_full_data(raw_tag: String) -> Dictionary:
 					aliases.append(alias_dict["antecedent_name"])
 	else:
 		SingletonManager.TagIt.log_silent(
-		str("[eSix API] ALIASES request failed: ", result[0], "/", result[1]),
+		str("[eSix API] ALIASES request failed: ", a_res[0], "/", a_res[1]),
 		DataManager.LogLevel.INFO)
 	
 	if not full_job_timer.is_stopped():
@@ -228,7 +228,7 @@ func _get_full_data(raw_tag: String) -> Dictionary:
 								suggestions.append(sugg_tag)
 	else:
 		SingletonManager.TagIt.log_silent(
-		str("[eSix API] SUGGESTIONS request failed: ", result[0], "/", result[1]),
+		str("[eSix API] SUGGESTIONS request failed: ", s_res[0], "/", s_res[1]),
 		DataManager.LogLevel.INFO)
 	
 	SingletonManager.TagIt.log_message(
@@ -292,6 +292,19 @@ func format_esix_wiki(text_from_wiki: String) -> String:
 		true)
 	
 	regex.clear()
+	regex.compile("\\[sup\\].*\\[/sup\\]")
+	for result in regex.search_all(text_from_wiki):
+		return_string = return_string.replace(result.get_string(), "")
+	
+	regex.clear()
+	regex.compile("\\[section=.*\\]")
+	for result in regex.search_all(text_from_wiki):
+		var section_string: String = result.get_string().replace("[section=", "").replace("]", "")
+		return_string = return_string.replace(result.get_string(), str("[font_size=17][color=#54c472][u]--- ", section_string, " ---[/u][/color][/font_size]"))
+	
+	return_string = return_string.replace("[/section]", "")
+	
+	regex.clear()
 	regex.compile("(?m)^(?:\\*+(?:.*)?\\n*)+")
 	for result in regex.search_all(text_from_wiki):
 		return_string = return_string.replace(result.get_string(), format_nested_list(result.get_string()))
@@ -307,7 +320,13 @@ func format_esix_wiki(text_from_wiki: String) -> String:
 	for custom_url:RegExMatch in regex.search_all(return_string):
 		var array: Array = custom_url.get_string().trim_prefix("[[").trim_suffix("]]").replace("_", " ").split("|")
 		return_string = return_string.replace(custom_url.get_string(), "[color=AQUAMARINE][url={0}]{1}[/url][/color]".format(array))
-
+	
+	regex.clear()
+	regex.compile("h6\\..*")
+	for header:RegExMatch in regex.search_all(return_string):
+		var header_four = header.get_string().trim_prefix("h6.").strip_edges()
+		return_string = return_string.replace(header.get_string(), "[font_size=16][b]{0}[/b][/font_size]".format([header_four]))
+	
 	regex.clear()
 	regex.compile("h5\\..*")
 	for header:RegExMatch in regex.search_all(return_string):
@@ -337,6 +356,11 @@ func format_esix_wiki(text_from_wiki: String) -> String:
 	for header:RegExMatch in regex.search_all(return_string):
 		var header_four = header.get_string().trim_prefix("h1.").strip_edges()
 		return_string = return_string.replace(header.get_string(), "[font_size=27][b]{0}[/b][/font_size]".format([header_four]))
+	
+	regex.clear()
+	regex.compile("\\n{3,}")
+	for result in regex.search_all(text_from_wiki):
+		return_string = return_string.replace(result.get_string(), "\n\n")
 	
 	return return_string
 
@@ -505,7 +529,7 @@ func format_nested_list(input: String) -> String:
 				output += "[ul]\n"
 			open_lists = level
 			
-		output += stripped_line.strip_edges() + "\n"
+		output += stripped_line.strip_edges() + "\n" if stripped_line.strip_edges().is_empty() else " " + stripped_line.strip_edges() + "\n"
 	
 	for _n in open_lists:
 		output += "[/ul]"
