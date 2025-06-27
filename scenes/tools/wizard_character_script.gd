@@ -165,12 +165,30 @@ func _ready() -> void:
 				new_prop.set_text(0, property["name"])
 				new_prop.set_metadata(0, {"index": prop_idx, "id": property["id"]})
 				
+				if property.has("tooltip"):
+					var tips: int = property["tooltip"].size()
+					if 2 <= tips and not property["tooltip"][1].is_empty():
+						new_prop.set_tooltip_text(1, property["tooltip"][1])
+					if 1 <= tips and not property["tooltip"][0].is_empty():
+						new_prop.set_tooltip_text(0, property["tooltip"][0])
+				
 				match property["mode"]:
 					TreeItem.CELL_MODE_RANGE:
-						new_prop.set_text(1, property["text"])
-						new_prop.set_range(
-								1,
-								property["value"] if property.has("value") else 0)
+						if property.has("text") and not property["text"].is_empty():
+							new_prop.set_text(1, property["text"])
+							new_prop.set_range(
+									1,
+									property["value"] if property.has("value") else 0)
+						else:
+							new_prop.set_range_config(
+									1,
+									property["range"][0],
+									property["range"][1],
+									1.0)
+							new_prop.set_range(
+									1,
+									property["value"])
+					
 					TreeItem.CELL_MODE_CHECK:
 						new_prop.set_text(1, property["text"])
 						new_prop.set_checked(
@@ -486,6 +504,9 @@ func save_character():
 						property["value"] = property_item.is_checked(1)
 			else:
 				property["value"] = property_item.get_metadata(1)["selected_ids"].duplicate()
+				
+				if idx == -1:
+					property["format"] = property_item.get_metadata(1)["format"]
 			setting["properties"].append(property)
 		
 		properties[prop.get_metadata(0)["tag"]] = setting
