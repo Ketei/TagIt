@@ -498,34 +498,57 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if event is InputEventKey and not event.is_echo():
-		if Input.is_key_pressed(KEY_CTRL) and event.is_action_pressed(&"ui_focus_next"):
+	var _local_consumed: bool = false
+	
+	if event is InputEventKey: # General Input
+		if event.ctrl_pressed and event.is_action_pressed(&"ui_focus_next"):
 			if not tab_bar.has_focus():
 				tab_bar.grab_focus()
 			if Input.is_key_pressed(KEY_SHIFT):
 				tab_bar.current_tab = posmod(tab_bar.current_tab - 1, 5)
 			else:
 				tab_bar.current_tab = posmod(tab_bar.current_tab + 1, 5)
-			get_viewport().set_input_as_handled()
-			return
+			_local_consumed = true
+		elif event.alt_pressed:
+			if event.keycode == KEY_M:
+				menu_button.get_popup().grab_focus()
+				menu_button.show_popup()
+				menu_button.get_popup().set_focused_item(0)
+				_local_consumed = true
+			elif event.keycode == KEY_H:
+				help_button.get_popup().grab_focus()
+				help_button.show_popup()
+				help_button.get_popup().set_focused_item(0)
+				_local_consumed = true
+		
+	if _local_consumed:
+		get_viewport().set_input_as_handled()
+		return
 	
-	match tab_bar.current_tab:
-		0: # Tags input
-			if event is InputEventKey and not event.is_echo():
-				if Input.is_key_pressed(KEY_CTRL):
-					if tab_bar.current_tab == 0 and Input.is_key_pressed(KEY_G) and _allow_generate:
+	if event is InputEventKey and event.is_pressed() and not event.is_echo():
+	# Specific tab Input
+		match tab_bar.current_tab:
+			0: # Tags input
+				if event.ctrl_pressed:
+					if event.keycode == KEY_G and _allow_generate:
 						generate_tag_list()
 						get_viewport().set_input_as_handled()
-					elif tab_bar.current_tab == 0 and Input.is_key_pressed(KEY_F):
+					elif event.keycode == KEY_F:
 						if tag_search_node == null:
 							on_search_all_tags_pressed()
 						else:
 							tag_search_node.focus_main(true)
 						get_viewport().set_input_as_handled()
-		1:
-			wiki_panel.process_input(event)
-		3:
-			tools_panel.process_input(event)
+				else:
+					if not add_tag_ln_edt.has_focus():
+						var valid_range: bool = Math.is_betweeni(event.keycode, 4194433, 4194447) or Math.is_betweeni(event.keycode, 33, 96) or Math.is_betweeni(event.keycode, 123, 126)
+						if valid_range and not event.ctrl_pressed and not event.alt_pressed:
+							add_tag_ln_edt.grab_focus()
+							add_tag_ln_edt.caret_column = add_tag_ln_edt.text.length()
+			1:
+				wiki_panel.process_input(event)
+			3:
+				tools_panel.process_input(event)
 
 
 func _on_files_dropped(files: PackedStringArray) -> void:
@@ -2321,7 +2344,7 @@ func on_wiki_searched(search_text: String) -> void:
 			wiki_aliases_container.visible = true
 		
 		wiki_section_separator.visible = wiki_parents_container.visible or wiki_aliases_container.visible
-		
+		wiki_panel.update_focus()
 		if SingletonManager.TagIt.settings.load_wiki_images and hydrus_connected:
 			wiki_reload_images_button.disabled = true
 			thumbnail_size_changer.disabled = true
@@ -2343,6 +2366,20 @@ func on_wiki_searched(search_text: String) -> void:
 		wiki_section_separator.visible = false
 		wiki_cat_lbl.text = "[No Category]"
 		wiki_prio_lbl.text = "[N/A]"
+		wiki_panel.update_focus()
+	#$MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/WikiScrollCtnr
+	#$MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/ParentsContainer/DataContainer/ScrollContainer
+	#$MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/InfoMargin/InfoContainer/AliasesContainer/DataContainer/ScrollContainer
+	#if wiki_aliases_container.visible:
+		#wiki_search_ln_edt.focus_neighbor_top = wiki_aliases_container.get_path()
+	#elif wiki_parents_container.visible:
+		#wiki_search_ln_edt.focus_neighbor_top = wiki_parents_container.get_path()
+	#else:
+		#wiki_search_ln_edt.focus_neighbor_top = wiki_rtl.get_parent().get_path()
+	#
+	#wiki_search_ln_edt.focus_previous = wiki_search_ln_edt.focus_neighbor_top
+	#wiki_search_btn.focus_neighbor_top = wiki_search_ln_edt.focus_neighbor_top
+	#wiki_esix_search_btn.focus_neighbor_top = wiki_search_ln_edt.focus_neighbor_top
 
 
 
@@ -2429,7 +2466,16 @@ func on_set_category_color(id: int, initial: String) -> void:
 
 
 func on_tag_text_submitted(tag: String) -> void:
-	add_tag(tag)
+	var prefix: String = Strings.get_string_prefix(tag)
+	if prefix.is_empty():
+		add_tag(tag)
+	else:
+		if SingletonManager.TagIt.has_prefix(prefix):
+			var format: Array[String] = SingletonManager.TagIt.format_prefix(tag)
+			for new_tag in format:
+				add_tag(new_tag)
+		else:
+			add_tag(tag)
 	_list_changed()
 
 
