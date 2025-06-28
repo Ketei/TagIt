@@ -551,6 +551,28 @@ func update_storage() -> void:
 			"[TagIt] Data storage upgraded to version " + str(current_version),
 			LogLevel.INFO)
 	
+	if current_version == 3:
+		for character in storage_data.characters:
+			if character["colors"].has("horn") and character["colors"]["horn"].has("properties"):
+				var horn_location: Array[String] = []
+				var new_properties: Array[Dictionary] = []
+				for property:Dictionary in character["colors"]["horns"]["properties"]:
+					if property["index"] < 3:
+						new_properties.append(property.duplicate())
+					else:
+						horn_location.append(property["id"])
+				new_properties.append(
+						{
+							"index": -5,
+							"mode": 0,
+							"value": horn_location})
+				character["colors"]["horn"]["properties"] = new_properties
+		
+		current_version += 1
+		log_message(
+			"[TagIt] Data storage upgraded to version " + str(current_version),
+			LogLevel.INFO)
+	
 	storage_data.storage_version = STORAGE_VERSION
 	storage_data.save()
 	log_message(

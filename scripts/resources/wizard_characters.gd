@@ -46,7 +46,7 @@ func get_character(character_index: int) -> WizardCharacter:
 	return new_character
 
 
-func set_character(character_data: WizardCharacter, character_index: int = -1) -> void:
+func set_character(character_data: WizardCharacter, character_index: int = -1) -> int:
 	var index: int = characters.size() if character_index == -1 else character_index
 	var data: Dictionary = {
 		"tag": character_data.character_tag,
@@ -64,6 +64,8 @@ func set_character(character_data: WizardCharacter, character_index: int = -1) -
 		characters.append(data)
 	else:
 		characters[index] = data
+	
+	return index
 
 
 func erase_character(character_tag: String) -> void:
@@ -71,6 +73,13 @@ func erase_character(character_tag: String) -> void:
 		if characters[idx]["tag"] == character_tag:
 			characters.remove_at(idx)
 			break
+
+
+func has_character(character_tag: String) -> bool:
+	for character in characters:
+		if character["tag"] == character_tag:
+			return true
+	return false
 
 
 func save() -> void:
@@ -90,3 +99,107 @@ class WizardCharacter extends RefCounted:
 	var properties: Dictionary = {}
 	var apparel: Dictionary = {}
 	var traits: Dictionary = {}
+	
+	
+	func set_apparel(data: Dictionary) -> void:
+		for property in data:
+			if typeof(property) != TYPE_STRING or typeof(data[property]) != TYPE_DICTIONARY or not data[property].has_all(["active", "subtypes"]):
+				continue
+			var subtypes: Dictionary = {}
+			for subtype in data[property]["subtypes"]:
+				if typeof(data[property]["subtypes"][subtype]) == TYPE_BOOL:
+					subtypes[subtype] = data[property]["subtypes"][subtype]
+			apparel[property] = {
+				"active": data[property]["active"],
+				"subtypes": subtypes.duplicate()}
+			
+	
+	
+	func set_traits(data: Dictionary) -> void:
+		for char_trait in data:
+			if typeof(data[char_trait]) == TYPE_BOOL:
+				traits[char_trait] = data[char_trait]
+	
+	
+	func set_properties(data: Dictionary) -> void:
+		const NUM_TYPES: Array = [TYPE_INT, TYPE_FLOAT]
+		var valid_properties: Dictionary = {}
+		print("The passed data is: ")
+		print(data)
+		var value: bool = false
+		var found: bool = false
+		for thing in data["fur"]["properties"]:
+			if not thing.has("id"):
+				continue
+			if thing["id"] == "markings":
+				value = thing["value"]
+				found = true
+				break
+		print("The markings part on fur is: " + str(value), " and it was found: ", found)
+		for property in data:
+			if typeof(property) != TYPE_STRING or typeof(data[property]) != TYPE_DICTIONARY or not data[property].has_all(["index", "properties", "use"]):
+				continue
+			if not typeof(data[property]["index"]) in NUM_TYPES or typeof(data[property]["use"]) != TYPE_BOOL or typeof(data[property]["properties"]) != TYPE_ARRAY:
+				continue
+			
+			var new_properties: Array[Dictionary] = []
+			
+			for given_property in data[property]["properties"]:
+				if typeof(given_property) != TYPE_DICTIONARY or not given_property.has_all(["index", "mode", "value"]):
+					continue
+				if given_property["index"] < 0: #value key is string array
+					if typeof(given_property["value"]) != TYPE_ARRAY:
+						continue
+					var value_property: Array[String] = Array(
+							given_property["value"],
+							TYPE_STRING,
+							&"",
+							null)
+					var new_property: Dictionary = {"value": value_property}
+					new_property.merge(given_property)
+					new_properties.append(new_property)
+				else:
+					if not given_property.has("id") or typeof(given_property["id"]) != TYPE_STRING:
+						continue
+					#print("Matching: " + str(given_property["mode"]))
+					match given_property["mode"] as TreeItem.TreeCellMode:
+						TreeItem.CELL_MODE_CHECK:
+							print("-------------------------------------")
+							print("Property key is: " + str(property))
+							print("Property id is: " + str(given_property["id"]))
+							print("Original value is: " + str(given_property["value"]))
+							print("Original structure is: ")
+							print(given_property)
+							print("-------------------------------------")
+							var new_property: Dictionary = {
+								"value": false if typeof(given_property["value"]) != TYPE_BOOL else given_property["value"]}
+							new_property.merge(given_property)
+							new_properties.append(new_property)
+							print("New value is: " + str(new_property["value"]))
+							print("New structure is:\n" + str(new_property))
+							print("-------------------------------------")
+							#print(new_property)
+						TreeItem.CELL_MODE_RANGE:
+							if typeof(given_property["value"]) not in NUM_TYPES:
+								continue
+							var new_property: Dictionary = {
+								"value": int(given_property["value"])}
+							new_property.merge(given_property)
+							new_properties.append(new_property)
+							#print(new_property)
+						_:
+							print("askdjalskdjalskkjalkdjlaks")
+					#print("vs")
+					#print(given_property)
+					#print(new_property)
+			#if property == "fur":
+				#print("break")
+			valid_properties[property] = {
+				"index": int(data[property]["index"]),
+				"use": data[property]["use"],
+				"properties": new_properties}
+		properties = valid_properties
+		#print("-------------------------")
+		#print(data)
+		#print("vs")
+		#print(valid_properties)

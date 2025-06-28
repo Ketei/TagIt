@@ -1,8 +1,9 @@
-[gd_scene load_steps=13 format=3 uid="uid://dmdfmfx7y0a80"]
+[gd_scene load_steps=14 format=3 uid="uid://dmdfmfx7y0a80"]
 
 [ext_resource type="Script" path="res://scenes/tools/wizard_character_script.gd" id="1_ieuc1"]
 [ext_resource type="Theme" uid="uid://u13wuypqagrc" path="res://style/table_theme.tres" id="2_bb6yr"]
 [ext_resource type="Texture2D" uid="uid://dqktobxl3bnuc" path="res://icons/add_character_icon.svg" id="2_iia1s"]
+[ext_resource type="Texture2D" uid="uid://dh1jdaiwlkwf8" path="res://icons/character_options.svg" id="2_j7j7d"]
 [ext_resource type="Script" path="res://scripts/wizard_checkbox.gd" id="4_wcyo3"]
 [ext_resource type="Script" path="res://addons/SmoothScroll/SmoothScrollContainer.gd" id="5_gi8ih"]
 [ext_resource type="Script" path="res://addons/SmoothScroll/scroll_damper/expo_scroll_damper.gd" id="6_k2q2u"]
@@ -76,12 +77,30 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+focus_next = NodePath("../CharacterOptMenu")
 placeholder_text = "Search Character"
+
+[node name="CharacterOptMenu" type="MenuButton" parent="MainPanel/MainContainer/CharactersContainer/HeaderContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "Character Options"
+focus_next = NodePath("../NewCharacterButton")
+focus_previous = NodePath("../CharacterSearchLnEdt")
+focus_mode = 2
+icon = ExtResource("2_j7j7d")
+icon_alignment = 1
+expand_icon = true
+item_count = 2
+popup/item_0/text = "Import Characters"
+popup/item_1/text = "Export Characters"
+popup/item_1/id = 1
 
 [node name="NewCharacterButton" type="Button" parent="MainPanel/MainContainer/CharactersContainer/HeaderContainer"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 tooltip_text = "Create Character"
+focus_next = NodePath("../../CharacterTree")
+focus_previous = NodePath("../CharacterOptMenu")
 icon = ExtResource("2_iia1s")
 flat = true
 icon_alignment = 1

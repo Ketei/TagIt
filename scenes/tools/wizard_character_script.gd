@@ -1,6 +1,7 @@
 extends TagItTool
 
 
+const PORT_CONFIRMATION_DIALOG = preload("res://scenes/dialogs/fetcher_confirmation_dialog.tscn")
 var current_selected: TreeItem = null:
 	set(new_current):
 		current_selected = new_current
@@ -34,6 +35,7 @@ var color_node: TreeItem = null
 
 @onready var new_character_button: Button = $MainPanel/MainContainer/CharactersContainer/HeaderContainer/NewCharacterButton
 @onready var wizard_checkboxes: Control = $WizardCheckboxes
+@onready var character_opt_menu: MenuButton = $MainPanel/MainContainer/CharactersContainer/HeaderContainer/CharacterOptMenu
 
 
 func _init() -> void:
@@ -172,7 +174,7 @@ func _ready() -> void:
 					if 1 <= tips and not property["tooltip"][0].is_empty():
 						new_prop.set_tooltip_text(0, property["tooltip"][0])
 				
-				match property["mode"]:
+				match clampi(property["mode"], 0, 4) as TreeItem.TreeCellMode:
 					TreeItem.CELL_MODE_RANGE:
 						if property.has("text") and not property["text"].is_empty():
 							new_prop.set_text(1, property["text"])
@@ -244,6 +246,8 @@ func _ready() -> void:
 	body_texture_tree.button_clicked.connect(_on_property_button_clicked)
 	wizard_checkboxes.data_selected.connect(_on_data_changed.bind(true))
 	wizard_checkboxes.data_deselected.connect(_on_data_changed.bind(false))
+	
+	character_opt_menu.get_popup().id_pressed.connect(_on_characters_option_pressed)
 
 
 func _on_property_button_clicked(item: TreeItem, _column: int, id: int, _mouse_button_index: int) -> void:
@@ -326,6 +330,147 @@ func _on_clothing_item_edited() -> void:
 	if item.disable_folding != item.collapsed:
 		item.collapsed = item.disable_folding
 	_on_something_changed()
+
+
+func _on_characters_option_pressed(id: int) -> void:
+	if id == 0: # Import
+		var new_import_dialog := FileDialog.new()
+		new_import_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
+		new_import_dialog.access = FileDialog.ACCESS_FILESYSTEM
+		new_import_dialog.add_filter("*.json", "JSON Files")
+		new_import_dialog.use_native_dialog = true
+		new_import_dialog.file_selected.connect(_on_import_characters_finished.bind(new_import_dialog, true))
+		new_import_dialog.canceled.connect(_on_import_characters_finished.bind("", new_import_dialog, false))
+		add_child(new_import_dialog)
+		new_import_dialog.show()
+	else: # Export
+		var list_window := PORT_CONFIRMATION_DIALOG.instantiate()
+		var characters: Array[String] = []
+		
+		for character_idx in range(data_store.character_count()):
+			characters.append(data_store.get_character(character_idx).character_tag)
+		
+		list_window.title = "Select Characters"
+		list_window.ok_button_text = "Export"
+		add_child(list_window)
+		list_window.load_tags(characters)
+		list_window.show()
+		
+		var selection: Array[String] = await list_window.tags_selected
+		if not selection.is_empty():
+			var export_chars: Array[TagItStorage.WizardCharacter] = []
+			for tag in selection:
+				for chara_idx in range(data_store.character_count()):
+					var chara := data_store.get_character(chara_idx)
+					if chara.character_tag == tag:
+						export_chars.append(chara)
+						break
+			var chars_json: Dictionary = {}
+			for character in export_chars:
+				var char_data: Dictionary = {}
+				char_data["_version"] = 0
+				char_data["body_type"] = character.body_type
+				char_data["species"] = character.species
+				char_data["gender"] = character.gender
+				char_data["gender_lore"] = character.gender_lore
+				char_data["age"] = character.age
+				char_data["age_lore"] = character.age_lore
+				char_data["apparel"] = character.apparel
+				char_data["traits"] = character.traits
+				char_data["properties"] = character.properties
+				
+				chars_json[character.character_tag] = char_data
+			
+			var new_file_dialog := FileDialog.new()
+			new_file_dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE
+			new_file_dialog.access = FileDialog.ACCESS_FILESYSTEM
+			new_file_dialog.add_filter("*.json", "JSON Files")
+			new_file_dialog.use_native_dialog = true
+			new_file_dialog.file_selected.connect(on_file_finished.bind(new_file_dialog, chars_json, true))
+			new_file_dialog.canceled.connect(on_file_finished.bind("", new_file_dialog, {}, false))
+			add_child(new_file_dialog)
+			new_file_dialog.show()
+		
+		list_window.queue_free()
+
+
+func on_file_finished(path: String, dialog: FileDialog, data: Dictionary, success: bool) -> void:
+	if success:
+		var text: String = JSON.stringify(data, "\t")
+		var file: FileAccess = FileAccess.open(path, FileAccess.WRITE)
+		if file != null:
+			file.store_string(text)
+			file.close()
+		else:
+			SingletonManager.TagIt.log_message(
+					"[TOOLS/WzCh] There was an error while creating the file at: " + path,
+					DataManager.LogLevel.ERROR)
+	dialog.queue_free()
+
+
+func _on_import_characters_finished(path: String, dialog: FileDialog, success: bool) -> void:
+	if not success:
+		dialog.queue_free()
+		return
+	
+	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
+	
+	if file != null:
+		var json_result = JSON.parse_string(file.get_as_text())
+		file.close()
+		if json_result != null:
+			if typeof(json_result) == TYPE_DICTIONARY:
+				const NUM_TYPES: Array = [TYPE_INT, TYPE_FLOAT]
+				for character_id in json_result:
+					if typeof(character_id) != TYPE_STRING or typeof(json_result[character_id]) != TYPE_DICTIONARY or data_store.has_character(character_id):
+						continue
+					var data: Dictionary = json_result[character_id]
+					var character := TagItStorage.WizardCharacter.new()
+					character.character_tag = character_id
+					if data.has("body_type") and typeof(data["body_type"]) in NUM_TYPES:
+						character.body_type = int(data["body_type"])
+					if data.has("species") and typeof(data["species"]) == TYPE_STRING:
+						character.species = data["species"]
+					if data.has("gender") and typeof(data["gender"]) in NUM_TYPES:
+						character.gender = int(data["gender"])
+					if data.has("gender_lore") and typeof(data["gender_lore"]) in NUM_TYPES:
+						character.gender_lore = int(data["gender_lore"])
+					if data.has("age") and typeof(data["age"]) in NUM_TYPES:
+						character.age = int(data["age"])
+					if data.has("age_lore") and typeof(data["age_lore"]) in NUM_TYPES:
+						character.age_lore = int(data["age_lore"])
+					if data.has("apparel") and typeof(data["apparel"]) == TYPE_DICTIONARY:
+						character.set_apparel(data["apparel"])
+					if data.has("traits") and typeof(data["traits"]) == TYPE_DICTIONARY:
+						character.set_traits(data["traits"])
+					if data.has("properties") and typeof(data["properties"]) == TYPE_DICTIONARY:
+						character.set_properties(data["properties"])
+					
+					var idx: int = data_store.set_character(character)
+					add_character(character_id, idx)
+				
+				var finished_dialog := preload("res://scenes/dialogs/message_confirmation_dialog.gd").new()
+				finished_dialog.message = "Characters Imported"
+				add_child(finished_dialog)
+				finished_dialog.show()
+				await finished_dialog.dialog_finished
+				finished_dialog.queue_free()
+				if not json_result.is_empty():
+					something_changed.emit()
+			else:
+				SingletonManager.TagIt.log_message(
+				"[TOOLS/WzCh] Wrong JSON formatting of file: " + path,
+				DataManager.LogLevel.ERROR)
+		else:
+			SingletonManager.TagIt.log_message(
+				"[TOOLS/WzCh] There was an error while parsing the file at: " + path,
+				DataManager.LogLevel.ERROR)
+	else:
+		SingletonManager.TagIt.log_message(
+				"[TOOLS/WzCh] There was an error while loading the file at: " + path,
+				DataManager.LogLevel.ERROR)
+	
+	dialog.queue_free()
 
 
 func clear_clothing() -> void:
@@ -442,7 +587,7 @@ func load_character(index: int) -> void:
 							continue
 						if prop_dict["id"] == id:
 							if prop_dict["mode"] == prop_item.get_cell_mode(1):
-								match prop_dict["mode"]:
+								match clampi(prop_dict["mode"], 0, 4) as TreeItem.TreeCellMode:
 									TreeItem.CELL_MODE_RANGE:
 										prop_item.set_range(1, prop_dict["value"])
 									TreeItem.CELL_MODE_CHECK:
