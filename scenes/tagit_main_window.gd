@@ -501,14 +501,15 @@ func _input(event: InputEvent) -> void:
 	var _local_consumed: bool = false
 	
 	if event is InputEventKey: # General Input
-		if event.ctrl_pressed and event.is_action_pressed(&"ui_focus_next"):
-			if not tab_bar.has_focus():
-				tab_bar.grab_focus()
-			if Input.is_key_pressed(KEY_SHIFT):
-				tab_bar.current_tab = posmod(tab_bar.current_tab - 1, 5)
-			else:
-				tab_bar.current_tab = posmod(tab_bar.current_tab + 1, 5)
-			_local_consumed = true
+		if event.ctrl_pressed:
+			if event.is_action_pressed(&"ui_focus_next"):
+				if not tab_bar.has_focus():
+					tab_bar.grab_focus()
+				if Input.is_key_pressed(KEY_SHIFT):
+					tab_bar.current_tab = posmod(tab_bar.current_tab - 1, 5)
+				else:
+					tab_bar.current_tab = posmod(tab_bar.current_tab + 1, 5)
+				_local_consumed = true
 		elif event.alt_pressed:
 			if event.keycode == KEY_M:
 				menu_button.get_popup().grab_focus()
@@ -530,14 +531,19 @@ func _input(event: InputEvent) -> void:
 		match tab_bar.current_tab:
 			0: # Tags input
 				if event.ctrl_pressed:
-					if event.keycode == KEY_G and _allow_generate:
+					if event.keycode == KEY_G and _allow_generate and not event.echo and event.pressed:
 						generate_tag_list()
 						get_viewport().set_input_as_handled()
-					elif event.keycode == KEY_F:
+					elif event.keycode == KEY_F and not event.echo and event.pressed:
 						if tag_search_node == null:
 							on_search_all_tags_pressed()
 						else:
 							tag_search_node.focus_main(true)
+						get_viewport().set_input_as_handled()
+				elif event.alt_pressed:
+					if event.keycode == KEY_C and not event.echo and event.pressed:
+						if not tags_label.text.is_empty():
+							copy_tags_field()
 						get_viewport().set_input_as_handled()
 				else:
 					if not add_tag_ln_edt.has_focus():
@@ -1696,7 +1702,7 @@ func clear_all_tagger() -> void:
 	generate_version_opt_btn.select(0)
 	tags_tree.clear_popup_alts()
 	delete_alt_list_btn.disabled = true
-	tags_label.clear()
+	tags_label.text = ""
 	alt_lists.clear()
 	alt_lists.append([])
 	custom_order_list.clear()
