@@ -10,6 +10,9 @@ enum CheckTypes {
 	PATTERNS = 2,
 	MARKINGS = 3,
 	TATTOOS = 4,
+	HORNS = 5,
+	SPIKES = 6,
+	RIDGES = 7,
 }
 
 const COLORS: Dictionary = {
@@ -79,6 +82,43 @@ const TATTOOS: PackedStringArray = [
 	"tramp stamp",
 	"tribal",
 	"womb"]
+
+const HORNS: PackedStringArray = [
+	"arm",
+	"back",
+	"cheek",
+	"chest",
+	"chin",
+	"ear",
+	"floating",
+	"forehead",
+	"head",
+	"jaw",
+	"nose",
+	"shoulder"]
+
+const SPIKES: PackedStringArray = [
+	"abdomen", # spiked
+	"arm",
+	"back",
+	"balls", #Spiked
+	"cheek",
+	"chest",
+	"chin",
+	"ear",
+	"head",
+	"jaw",
+	"nose",
+	"penis", # Spiked
+	"shell", # Spiked
+	"shoulder",
+	"tail", # Spoked
+	"wing"]
+
+const RIDGE: PackedStringArray = [
+	"head",
+	"dorsal",
+	"tail"]
 
 @onready var main_container: VBoxContainer = $MainPanel/SmoothScrollContainer/MainContainer
 var mode: CheckTypes = CheckTypes.NONE
@@ -180,6 +220,36 @@ func set_mode(check_mode: int) -> void:
 				new_tattoo.toggled.connect(
 					_on_checkbox_toggled.bind(CheckTypes.TATTOOS, tattoo)	)
 				main_container.add_child(new_tattoo)
+		CheckTypes.HORNS:
+			for horn in HORNS:
+				var new_horn: CheckBox = CheckBox.new()
+				new_horn.text = horn
+				new_horn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				new_horn.set_meta(&"item_id", horn)
+				new_horn.name = StringName(horn) + &"CheckBox"
+				new_horn.toggled.connect(
+					_on_checkbox_toggled.bind(CheckTypes.HORNS, horn))
+				main_container.add_child(new_horn)
+		CheckTypes.SPIKES:
+			for spike in SPIKES:
+				var new_horn: CheckBox = CheckBox.new()
+				new_horn.text = spike
+				new_horn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				new_horn.set_meta(&"item_id", spike)
+				new_horn.name = StringName(spike) + &"CheckBox"
+				new_horn.toggled.connect(
+					_on_checkbox_toggled.bind(CheckTypes.SPIKES, spike))
+				main_container.add_child(new_horn)
+		CheckTypes.RIDGES:
+			for ridge in RIDGE:
+				var new_horn: CheckBox = CheckBox.new()
+				new_horn.text = ridge
+				new_horn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				new_horn.set_meta(&"item_id", ridge)
+				new_horn.name = StringName(ridge) + &"CheckBox"
+				new_horn.toggled.connect(
+					_on_checkbox_toggled.bind(CheckTypes.RIDGES, ridge))
+				main_container.add_child(new_horn)
 
 
 func set_boxes_checked(ids: Array[String], set_checked: bool) -> void:

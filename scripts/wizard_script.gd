@@ -317,7 +317,8 @@ const BODY_TYPES: Array[Dictionary] = [
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Tight,Normal,Saggy",
 				"tags": ["tight balls", "", "saggy balls"],
-				"tooltip": ["How low do the balls hang."]
+				"tooltip": ["How low do the balls hang."],
+				"value": 1
 			},
 			{
 				"id": "markings",
@@ -403,7 +404,7 @@ const BODY_TYPES: Array[Dictionary] = [
 				"id": "count",
 				"name": "Eye amount",
 				"mode": TreeItem.CELL_MODE_RANGE,
-				"formats": {"not_applicable": "", "zero": "eyeless", "singular": "1 eye", "plural": "{0} eyes"},
+				"formats": {"not_applicable": "", "zero": "eyeless", "singular": "1 eye", "plural": "{0} eyes", "multi_tag": "multi eye", "multi_tag_count": 3},
 				"exceptions": [2],
 				"range": [-1, 20],
 				"value": 2,
@@ -481,7 +482,7 @@ const BODY_TYPES: Array[Dictionary] = [
 				"id": "finger_count",
 				"name": "Finger count (Per hand)",
 				"mode": TreeItem.CELL_MODE_RANGE,
-				"formats": {"not_applicable": "", "zero": "featureless hands", "singular": "1 finger", "plural": "{0} fingers"},
+				"formats": {"not_applicable": "", "zero": "featureless hands", "singular": "1 finger", "plural": "{0} fingers", "multi_tag": "", "multi_tag_count": 100},
 				"range": [-1, 10],
 				"value": 5,
 				"tooltip": ["How many fingers are in each hand", "Set to -1 for N/A"]
@@ -499,10 +500,22 @@ const BODY_TYPES: Array[Dictionary] = [
 		"name": "Horns",
 		"tag": "horn",
 		"include_standalone": true,
+		"use_checkboxes": 5,
+		"tooltip": "A long and sometimes thick pointed projection of the skin",
 		"properties": [
 			{
+				"id": "count",
+				"name": "Horn count",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"formats": {"not_applicable": "", "zero": "", "singular": "1 horn", "plural": "{0} horns", "multi_tag": "multi horn", "multi_tag_count": 3},
+				"exceptions": [2],
+				"range": [-1, 20],
+				"value": 2,
+				"tooltip": ["How many horns the character has", "Set to -1 or 0 for N/A"]
+			},
+			{
 				"id": "shape",
-				"name": "Horn shape",
+				"name": "Shape",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Straight horn,Curved horn,Forked horn,Spiral horn,N/A",
 				"tags": ["straight horn", "curved horn", "forked horn", "spiral horn", ""],
@@ -510,7 +523,7 @@ const BODY_TYPES: Array[Dictionary] = [
 			},
 			{
 				"id": "texture",
-				"name": "Horn texture",
+				"name": "Texture",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "N/A,Ridged,Smooth",
 				"tags": ["", "ridged horn", "smooth horn"],
@@ -518,74 +531,12 @@ const BODY_TYPES: Array[Dictionary] = [
 			},
 			{
 				"id": "length",
-				"name": "Horn Length",
+				"name": "Length",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Short horn,Long horn,N/A",
 				"tags": ["short horn", "long horn", ""],
 				"value": 1
-			},
-			{
-				"id": "head",
-				"name": "Head Horn",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Has Horn",
-				"tags": ["", "head horn"]
-			},{
-				"id": "arm",
-				"name": "Arm Horn",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Has Horn",
-				"tags": ["", "arm horn"]
-			},
-			{
-				"id": "back",
-				"name": "Back Horn",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Has Horn",
-				"tags": ["", "back horn"]
-			},{
-				"id": "chest",
-				"name": "Chest Horn",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Has Horn",
-				"tags": ["", "chest horn"]
-			},{
-				"id": "chin",
-				"name": "Chin Horn",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Has Horn",
-				"tags": ["", "chin horn"]
-			},{
-				"id": "ear",
-				"name": "Ear Horn",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Has Horn",
-				"tags": ["", "ear horn"]
-			},{
-				"id": "floating",
-				"name": "Floating Horn",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Has Horn",
-				"tags": ["", "floating horn"]
-			},{
-				"id": "jaw",
-				"name": "Jaw Horn",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Has Horn",
-				"tags": ["", "jaw horn"]
-			},{
-				"id": "nose",
-				"name": "Nose Horn",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Has Horn",
-				"tags": ["", "nose horn"]
-			},{
-				"id": "shoulder",
-				"name": "Shoulder Horn",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Has Horn",
-				"tags": ["", "head horn"]
-			},
+			}
 			
 		]},
 	{
@@ -616,7 +567,7 @@ const BODY_TYPES: Array[Dictionary] = [
 		]
 	},
 	{
-		"name": "Marking",
+		"name": "Marks",
 		"tag": "markings",
 		"include_standalone": true,
 		"use_checkboxes": 3,
@@ -651,13 +602,18 @@ const BODY_TYPES: Array[Dictionary] = [
 				"text": "Small,Average,Big,Huge,Hyper",
 				"tags": ["small areola", "", "big areola", "huge areola", "hyper areola"],
 				"value": 1
-			},{
-				"id": "multi",
-				"name": "Multi-nipple (+3)",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Multiple Nipples",
-				"tags": ["", "multi nipple"]
-			},{
+			},
+			{
+				"id": "count",
+				"name": "Nipple count",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"formats": {"not_applicable": "", "zero": "featureless breasts", "singular": "1 nipple", "plural": "{0} nipples", "multi_tag": "multi nipple", "multi_tag_count": 3},
+				"exceptions": [2],
+				"range": [-1, 20],
+				"value": 2,
+				"tooltip": ["How many nipples the character has", "Set to -1 for N/A"]
+			},
+			{
 				"id": "height",
 				"name": "Height",
 				"mode": TreeItem.CELL_MODE_RANGE,
@@ -705,7 +661,7 @@ const BODY_TYPES: Array[Dictionary] = [
 		"include_standalone": true,
 		"exclude_values": [0]},
 	{
-		"name": "Pattern",
+		"name": "Patterns",
 		"tag": "markings",
 		"include_standalone": true,
 		"use_checkboxes": 2,
@@ -810,6 +766,14 @@ const BODY_TYPES: Array[Dictionary] = [
 			}]
 	},
 	{
+		"name": "Ridges",
+		"tag": "ridge",
+		"tooltip": "A row of blunt protrusions on the body",
+		"use_checkboxes": 7,
+		"include_standalone": false,
+		"use_colors": false
+	},
+	{
 		"name": "Sheath",
 		"tag": "sheath",
 		"include_standalone": true,
@@ -824,6 +788,14 @@ const BODY_TYPES: Array[Dictionary] = [
 				"value": 1
 			}
 		]
+	},
+	{
+		"name": "Spikes",
+		"tag": "spikes (anatomy)",
+		"include_standalone": true,
+		"use_checkboxes": 6,
+		"exclude_values": [0],
+		"tooltip": "A short pointed projection of the skin. Relatively shorter than horns",
 	},
 	{
 		"name": "Tail",
@@ -1145,6 +1117,12 @@ func _on_data_changed(data_type: int, key_selected: String, select: bool) -> voi
 			type_text = "marking"
 		4:
 			type_text = "tattoo"
+		5:
+			type_text = "horn"
+		6:
+			type_text = "spike"
+		7:
+			type_text = "ridge"
 	
 	color_node.set_text(1, str(items.size(), " ", type_text, "" if items.size() == 1 else "s", " selected"))
 
@@ -1184,13 +1162,19 @@ func clear_body_settings() -> void:
 				var type: String = ""
 				match property.get_metadata(0)["index"]:
 					-1:
-						"colors"
+						type = "colors"
 					-2:
-						"patterns"
+						type = "patterns"
 					-3:
-						"markings"
+						type = "markings"
 					-4:
-						"tattoos"
+						type = "tattoos"
+					5:
+						type = "horns"
+					6:
+						type = "spikes"
+					7:
+						type = "ridges"
 				property.get_metadata(1)["selected_ids"].clear()
 				property.set_text(1, "0 " + type + " selected")
 			else:
@@ -1672,7 +1656,7 @@ func _on_character_selected() -> void:
 						continue
 					if prop_dict["id"] == id:
 						if prop_dict["mode"] == prop_item.get_cell_mode(1):
-							match prop_dict["mode"]:
+							match clampi(prop_dict["mode"], 0, 4) as TreeItem.TreeCellMode:
 								TreeItem.CELL_MODE_RANGE:
 									prop_item.set_range(1, prop_dict["value"])
 								TreeItem.CELL_MODE_CHECK:
@@ -1845,7 +1829,7 @@ func generate_tags() -> Array[String]:
 									true,
 									BODY_TYPES[body["index"]]["exclude_values"] if BODY_TYPES[body["index"]].has("exclude_values") else []))
 					else:
-						match property["mode"]:
+						match clampi(property["mode"], 0, 4) as TreeItem.TreeCellMode:
 							TreeItem.CELL_MODE_RANGE:
 								var prop_tag: String = ""
 								if BODY_TYPES[body["index"]]["properties"][property["index"]].has("tags"):
@@ -1860,6 +1844,9 @@ func generate_tags() -> Array[String]:
 											prop_tag = BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["singular"].format([int(property["value"])])
 										elif 2 <= property["value"]:
 											prop_tag = BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["plural"].format([int(property["value"])])
+										
+										if BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["multi_tag_count"] <= property["value"] and not BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["multi_tag"].is_empty():
+											character_tags.append(BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["multi_tag"])
 								if not prop_tag.is_empty():
 									character_tags.append(prop_tag)
 							TreeItem.CELL_MODE_CHECK:
@@ -1938,6 +1925,12 @@ func add_tree_bodies() -> void:
 					check_text = "Markings"
 				4:
 					check_text = "Tattoos"
+				5:
+					check_text = "Horns"
+				6:
+					check_text = "Spikes"
+				7:
+					check_text = "Ridges"
 			var pattern_child: TreeItem = new_bod.create_child()
 			pattern_child.set_cell_mode(0, TreeItem.CELL_MODE_STRING)
 			pattern_child.set_cell_mode(1, TreeItem.CELL_MODE_STRING)
@@ -1972,7 +1965,7 @@ func add_tree_bodies() -> void:
 					if 1 <= tips and not property["tooltip"][0].is_empty():
 						new_prop.set_tooltip_text(0, property["tooltip"][0])
 				
-				match property["mode"]:
+				match clampi(property["mode"], 0, 4) as TreeItem.TreeCellMode:
 					TreeItem.CELL_MODE_RANGE:
 						if property.has("text") and not property["text"].is_empty():
 							new_prop.set_text(1, property["text"])
@@ -2141,19 +2134,23 @@ func id_to_tags(type: int, ids: Array[String], variant: String = "", suffix: boo
 			const exceptions: Dictionary = {
 				"yellow hair": "blonde hair"}
 			const coloring_exceptions: Dictionary = {}
+			const color_formatting: Dictionary = {
+				"spikes (anatomy)": "spikes"}
+			
+			var color_variant: String = color_formatting[variant] if color_formatting.has(variant) else variant
 			for id in ids:
-				var tag: String = str(id, " ", variant) if suffix else str(variant, " ", id)
+				var tag: String = str(id, " ", color_variant) if suffix else str(color_variant, " ", id)
 				tags.append(exceptions[tag] if exceptions.has(tag) else tag)
 			var color_count: int = ids.size()
-			if 0 < color_count and not color_count_exceptions.has(color_count):
+			if 0 < color_count and not color_count_exceptions.has(color_count - 1):
 				var tag: String = ""
 				match ids.size():
 					1:
-						tag = "monotone " + variant
+						tag = "monotone " + color_variant
 					2:
-						tag = "two tone " + variant
+						tag = "two tone " + color_variant
 					_:
-						tag = "multicolored " + variant
+						tag = "multicolored " + color_variant
 				tags.append(coloring_exceptions[tag] if coloring_exceptions.has(tag) else tag)
 		2:
 			const markings_straight: Array[String] = [
@@ -2173,5 +2170,22 @@ func id_to_tags(type: int, ids: Array[String], variant: String = "", suffix: boo
 					tags.append(id + " tattoo")
 				else:
 					tags.append(id)
+		5:
+			for id in ids:
+				tags.append(id + " horn")
+		6:
+			const EXCEPTIONS: Dictionary = {
+				"abdomen": "spiked abdomen",
+				"balls": "spiked balls",
+				"penis": "spiked penis",
+				"shell": "spiked shell",
+				"tail": "spiked tail"}
+			for id in ids:
+				tags.append(
+						EXCEPTIONS[id] if EXCEPTIONS.has(id) else id + " spikes")
+		7:
+			for id in ids:
+				tags.append(
+						id + " ridge")
 	
 	return tags
