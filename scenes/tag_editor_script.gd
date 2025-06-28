@@ -23,11 +23,13 @@ var initial_groups: Array[int] = []
 @onready var suggestions_tree: Tree = $MainContainer/InfoContainer/RelatedContainer/SuggestionsContainer/SuggestionsTree
 @onready var save_tag_btn: Button = $MainContainer/WikiContainer/TitleContainer/SaveTagBtn
 @onready var close_editor_btn: Button = $MainContainer/WikiContainer/TitleContainer/CloseEditorBtn
-@onready var wiki_txt_edt: TextEdit = $MainContainer/WikiContainer/WikiTxtEdt
+@onready var wiki_txt_edt: TextEdit = $MainContainer/WikiContainer/PanelContainer/WikiTxtEdt
 @onready var tooltip_ln_edt: LineEdit = $MainContainer/WikiContainer/TooltipLnEdt
 @onready var saved_notification: PanelContainer = $MainContainer/WikiContainer/TitleContainer/SaveTagBtn/SavedNotification
 @onready var is_valid_chk_bx: CheckBox = $MainContainer/InfoContainer/BasicsContainer/NameContainer/ValidPanel/IsValidChkBx
 @onready var dl_esix_btn: Button = $MainContainer/WikiContainer/TitleContainer/DlESixBtn
+@onready var preview_button: Button = $MainContainer/WikiContainer/TitleContainer/PreviewButton
+@onready var wiki_preview_rtl: RichTextLabel = $MainContainer/WikiContainer/PanelContainer/WikiPreview
 
 
 func _ready() -> void:
@@ -44,12 +46,29 @@ func _ready() -> void:
 	add_parent_ln_edt.timer_finished.connect(on_search_timer_timeout.bind(add_parent_ln_edt))
 	add_sugg_ln_edt.timer_finished.connect(on_search_timer_timeout.bind(add_sugg_ln_edt))
 	search_group_ln_edt.text_changed.connect(_on_search_group_text_changed)
+	preview_button.toggled.connect(_on_preview_toggled)
+	
 	SingletonManager.TagIt.category_created.connect(on_category_created)
 	SingletonManager.TagIt.category_icon_updated.connect(on_icon_updated)
 	SingletonManager.TagIt.category_deleted.connect(on_category_deleted)
 	SingletonManager.TagIt.group_created.connect(on_group_created)
 	SingletonManager.TagIt.group_deleted.connect(on_group_deleted)
 	SingletonManager.eSixAPI.wiki_responded.connect(_on_wiki_responded)
+
+
+func _on_preview_toggled(toggled: bool) -> void:
+	wiki_preview_rtl.text = ""
+	
+	if toggled:
+		wiki_preview_rtl.append_text(wiki_txt_edt.text)
+		preview_button.icon = preload("res://icons/preview_icon.svg")
+		preview_button.self_modulate = Color(0.486, 0.949, 0.855)
+	else:
+		preview_button.icon = preload("res://icons/preview_off_icon.svg")
+		preview_button.self_modulate = Color.WHITE
+	
+	wiki_preview_rtl.visible = toggled
+	wiki_txt_edt.visible = not toggled
 
 
 func on_save_tag_pressed() -> void:
@@ -433,6 +452,8 @@ func on_search_timer_timeout(search_line: LineEdit) -> void:
 
 func clear_all() -> void:
 	clear_trees()
+	if preview_button.button_pressed:
+		preview_button.button_pressed = false
 	category_opt_btn.select(category_opt_btn.item_count - 1)
 	group_opt_btn.select(group_opt_btn.item_count - 1)
 	priority_spn_bx.value = 0

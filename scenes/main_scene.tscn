@@ -1,4 +1,4 @@
-[gd_scene load_steps=68 format=3 uid="uid://eaxngd263vbi"]
+[gd_scene load_steps=72 format=3 uid="uid://eaxngd263vbi"]
 
 [ext_resource type="Script" path="res://scenes/tagit_main_window.gd" id="1_3rneb"]
 [ext_resource type="Theme" uid="uid://btyk3fvjow2xx" path="res://style/generic_theme.tres" id="1_heejv"]
@@ -61,6 +61,8 @@
 [ext_resource type="Texture2D" uid="uid://d24o3rwmiwpcp" path="res://icons/disconnected_icon.svg" id="45_kqm3t"]
 [ext_resource type="Texture2D" uid="uid://dxdflg0nv5wuy" path="res://icons/download_esix.svg" id="46_ftjsj"]
 [ext_resource type="Script" path="res://scripts/hydrus.gd" id="46_jhrpg"]
+[ext_resource type="Texture2D" uid="uid://dr3i4b4n5t50f" path="res://icons/preview_off_icon.svg" id="50_btvj2"]
+[ext_resource type="Script" path="res://scenes/settings_script.gd" id="54_ecxu7"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0wwcl"]
 bg_color = Color(0.121569, 0.133333, 0.156863, 1)
@@ -110,6 +112,11 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hbqds"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ubtsd"]
+bg_color = Color(0.133333, 0.133333, 0.133333, 1)
 
 [node name="TagItMain" type="Control"]
 layout_mode = 3
@@ -847,6 +854,7 @@ theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
 [node name="TagSearchContainer" type="Control" parent="MainContainer/TagsPanel/TagsMargin"]
+visible = false
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -980,7 +988,6 @@ grow_vertical = 0
 starting_position = Vector2(-166, 32)
 
 [node name="TagEditContainer" type="VBoxContainer" parent="MainContainer/TagsPanel/TagsMargin"]
-visible = false
 layout_mode = 2
 script = ExtResource("8_aldxp")
 
@@ -1194,8 +1201,18 @@ alignment = 2
 
 [node name="Label" type="Label" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/WikiContainer/TitleContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
 text = "Wiki"
+
+[node name="PreviewButton" type="Button" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/WikiContainer/TitleContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 4
+tooltip_text = "Preivew"
+toggle_mode = true
+icon = ExtResource("50_btvj2")
+flat = true
+icon_alignment = 1
 
 [node name="DlESixBtn" type="Button" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/WikiContainer/TitleContainer"]
 custom_minimum_size = Vector2(32, 32)
@@ -1259,10 +1276,22 @@ flat = true
 icon_alignment = 1
 expand_icon = true
 
-[node name="WikiTxtEdt" type="TextEdit" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/WikiContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/WikiContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_hbqds")
+
+[node name="WikiTxtEdt" type="TextEdit" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/WikiContainer/PanelContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 wrap_mode = 1
+
+[node name="WikiPreview" type="RichTextLabel" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/WikiContainer/PanelContainer"]
+visible = false
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxFlat_ubtsd")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ubtsd")
+bbcode_enabled = true
 
 [node name="TooltipLnEdt" type="LineEdit" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/WikiContainer"]
 layout_mode = 2
@@ -1366,6 +1395,7 @@ visible = false
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = ExtResource("2_u628d")
+script = ExtResource("54_ecxu7")
 
 [node name="SettingsMargin" type="MarginContainer" parent="MainContainer/SettingsPanel"]
 layout_mode = 2
@@ -1698,6 +1728,55 @@ layout_mode = 2
 texture = ExtResource("45_kqm3t")
 expand_mode = 1
 stretch_mode = 5
+
+[node name="CategoryContainer3" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer"]
+layout_mode = 2
+
+[node name="LeftSeparator" type="HSeparator" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CategoryContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CategoryLabel" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CategoryContainer3"]
+layout_mode = 2
+text = "Customization"
+
+[node name="RightSeparator" type="HSeparator" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/CategoryContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SplashScreen" type="PanelContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer"]
+layout_mode = 2
+
+[node name="MainContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/SplashScreen"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/SplashScreen/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/SplashScreen/MainContainer/HBoxContainer"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "Splash Screen"
+
+[node name="SplashOptBtn" type="OptionButton" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/SplashScreen/MainContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+selected = 0
+item_count = 2
+popup/item_0/text = "Default"
+popup/item_1/text = "Custom"
+popup/item_1/id = 1
+
+[node name="AutofilLabel" type="Label" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer/SplashScreen/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "If TagIt should use its default splash screen or a custom one"
+label_settings = ExtResource("8_2hfj2")
 
 [node name="CategoryContainer2" type="HBoxContainer" parent="MainContainer/SettingsPanel/SettingsMargin/MainContainer/AllScrlContainer/SettingsContainer"]
 layout_mode = 2
