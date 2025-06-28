@@ -1,4 +1,4 @@
-[gd_scene load_steps=67 format=3 uid="uid://eaxngd263vbi"]
+[gd_scene load_steps=68 format=3 uid="uid://eaxngd263vbi"]
 
 [ext_resource type="Script" path="res://scenes/tagit_main_window.gd" id="1_3rneb"]
 [ext_resource type="Theme" uid="uid://btyk3fvjow2xx" path="res://style/generic_theme.tres" id="1_heejv"]
@@ -65,6 +65,29 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0wwcl"]
 bg_color = Color(0.121569, 0.133333, 0.156863, 1)
 
+[sub_resource type="GDScript" id="GDScript_xy1vp"]
+script/source = "extends RichTextLabel
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	var menu: PopupMenu = get_menu()
+	menu.clear()
+	menu.add_item(\"Copy Tags\", MENU_MAX + 1)
+	menu.id_pressed.connect(_on_item_id_pressed)
+	menu.about_to_popup.connect(setup_menu)
+
+
+func setup_menu() -> void:
+	get_menu().set_item_disabled(0, text.is_empty())
+
+
+func _on_item_id_pressed(id: int) -> void:
+	match id:
+		1 + MENU_MAX:
+			DisplayServer.clipboard_set(text)
+"
+
 [sub_resource type="LabelSettings" id="LabelSettings_citsd"]
 font_size = 40
 font_color = Color(0.890196, 0.478431, 0.329412, 1)
@@ -130,6 +153,7 @@ layout_mode = 2
 
 [node name="MenuButton" type="MenuButton" parent="MainContainer/MenuMargin/MenuContainer/MenuButtonCont"]
 layout_mode = 2
+tooltip_text = "Menu (Alt+M)"
 text = "Menu"
 switch_on_hover = true
 item_count = 15
@@ -180,6 +204,7 @@ popup/item_14/id = 11
 
 [node name="HelpButton" type="MenuButton" parent="MainContainer/MenuMargin/MenuContainer/MenuButtonCont"]
 layout_mode = 2
+tooltip_text = "Help (Alt+H)"
 text = "Help"
 switch_on_hover = true
 item_count = 1
@@ -474,6 +499,10 @@ theme_override_constants/margin_right = 8
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+focus_mode = 1
+context_menu_enabled = true
+drag_and_drop_selection_enabled = false
+script = SubResource("GDScript_xy1vp")
 
 [node name="ButtonsContainer" type="VBoxContainer" parent="MainContainer/TaggerContainer/MainMargin/Containers/EndContainer/TagsField/TagsPanel/TagsContainer"]
 layout_mode = 2
@@ -501,7 +530,7 @@ flat = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Copy Tags"
+tooltip_text = "Copy Tags (Alt+C)"
 theme_override_constants/icon_max_width = 32
 icon = ExtResource("18_7o3j0")
 flat = true
