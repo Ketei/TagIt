@@ -719,6 +719,7 @@ layout_mode = 2
 [node name="WikiSearchLnEdt" parent="MainContainer/WikiPanel/WikiMargin/WikiContainer/WikiInfoContainer/SearchContainer" instance=ExtResource("18_btkx1")]
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "Search Wiki (Ctrl+F)"
 focus_neighbor_right = NodePath("../SearchBtn")
 focus_next = NodePath("../SearchBtn")
 placeholder_text = "Search Wiki"
@@ -804,7 +805,6 @@ focus_previous = NodePath("../../WikiDets/ReloadImagesButton")
 alignment = 1
 
 [node name="ViewerContainer" type="PanelContainer" parent="MainContainer/WikiPanel"]
-visible = false
 layout_mode = 2
 
 [node name="ScrollZoomView" type="MarginContainer" parent="MainContainer/WikiPanel/ViewerContainer"]
@@ -854,7 +854,6 @@ theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
 [node name="TagSearchContainer" type="Control" parent="MainContainer/TagsPanel/TagsMargin"]
-visible = false
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -885,6 +884,8 @@ metadata/_edit_use_anchors_ = true
 [node name="AllTagsSearchLnEdt" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer" instance=ExtResource("18_btkx1")]
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "Search Tag (Ctrl+F)
+Use * as wildcard."
 placeholder_text = "Search Tag"
 caret_blink = true
 replace_on_item_select = true
@@ -970,6 +971,7 @@ expand_icon = true
 [node name="AdvSearch" type="Button" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer/ButtonButtons/PageContainer"]
 layout_mode = 2
 size_flags_horizontal = 10
+tooltip_text = "Advanced Search (Ctrl + Shift + F)"
 text = "Advanced Search"
 
 [node name="AdvSearch" parent="MainContainer/TagsPanel/TagsMargin/TagSearchContainer/MenuContainer/ButtonButtons/PageContainer/AdvSearch" instance=ExtResource("42_8l23o")]
@@ -988,6 +990,7 @@ grow_vertical = 0
 starting_position = Vector2(-166, 32)
 
 [node name="TagEditContainer" type="VBoxContainer" parent="MainContainer/TagsPanel/TagsMargin"]
+visible = false
 layout_mode = 2
 script = ExtResource("8_aldxp")
 
@@ -1101,7 +1104,7 @@ layout_mode = 2
 size_flags_vertical = 3
 hide_folding = true
 hide_root = true
-select_mode = 1
+select_mode = 2
 script = ExtResource("10_c408k")
 
 [node name="AddAliasLnEdt" type="LineEdit" parent="MainContainer/TagsPanel/TagsMargin/TagEditContainer/MainContainer/InfoContainer/BasicsContainer/NameContainer/AliasesContainer"]
