@@ -89,10 +89,12 @@ layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
 text = "[font_size=20][b][color=SKY_BLUE]New[/color][/b][/font_size]
-[ul] Wizard has some extra options for eyes and horns.
+[ul] [b]Added[/b] a new [b]Customization section on settings[/b]. For now it allows to [b]change[/b] TagIt [b]boot splash[/b].
+ Wizard has some extra options for eyes and horns.
  Wizard characters have extra options for spikes and ridges
  Generated tag list has a right-click menu to copy your tags
  You can now export/import characters from the Wizard Characters Tool
+ Added a preview button on tag edit to preview the wiki.
  Added new shortcuts:
 [ul] Menu dropdown: Alt+M
  Help Menu: Alt+H
