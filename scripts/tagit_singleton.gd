@@ -1907,15 +1907,85 @@ func show_splash() -> void:
 	
 	splash_node = CanvasLayer.new()
 	splash_node.layer = 2
-	add_child(splash_node)
 	var new_splash := TextureRect.new()
-	new_splash.texture = preload("res://textures/splash.png")
+	var new_bg_col := ColorRect.new()
+	
+	new_splash.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	new_splash.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	new_splash.size = get_window().size
+	
+	new_bg_col.color = Color(0.165, 0.169, 0.176)
+	new_bg_col.show_behind_parent = true
+	new_bg_col.size = new_splash.size
+	new_bg_col.mouse_filter = Control.MOUSE_FILTER_PASS
+	
+	if FileAccess.file_exists("user://custom_splash.webp"):
+		var img := Image.load_from_file("user://custom_splash.webp")
+		if img != null:
+			new_splash.texture = ImageTexture.create_from_image(img)
+		else:
+			new_splash.texture = preload("res://textures/splash.png")
+	else:
+		new_splash.texture = preload("res://textures/splash.png")
+	
+	add_child(splash_node)
+	new_splash.add_child(new_bg_col)
 	splash_node.add_child(new_splash)
+
+
+static func resize_image_to_constraints(image: Image) -> Image:
+	const target_size: Vector2i = Vector2i(1280, 720)
+	var original_size: Vector2i = image.get_size()
+	
+	# --- Step 1: Check if the image should be returned as is ---
+	# Return as is if EITHER the width is already <= target_width, OR the height is already <= target_height.
+	#if original_size.x <= target_size.x or original_size.y <= target_size.y:
+		#return image
+	
+	if original_size.x <= target_size.x or original_size.y <= target_size.y: # This should perform both comparisons
+		return image
+	
+	# --- Step 2: If we reach here, BOTH original_width > target_width AND original_height > target_height.
+	# We MUST resize (downscale).
+	# The goal is now to ensure the new dimensions are AT LEAST 1280x720.
+	# This means we identify which dimension is "more" oversized relative to the 16:9 target aspect.
+	
+	var new_size: Vector2i = Vector2i.ZERO
+	
+	var target_aspect: float = float(target_size.x) / float(target_size.y) # 1280 / 720 = 1.777...
+	var original_aspect: float = float(original_size.x) / float(original_size.y)
+	
+	if original_aspect > target_aspect:
+		# Original image is "wider" (more landscape) than 16:9.
+		# To make sure it covers 1280x720, we scale based on HEIGHT to bring it to 720.
+		# The width will then proportionally be >= 1280.
+		new_size.y = target_size.y
+		new_size.x = roundi(original_size.x * (float(target_size.y) / float(original_size.y)))
+	else:
+		# Original image is "taller" (more portrait) or has the same aspect as 16:9.
+		# To make sure it covers 1280x720, we scale based on WIDTH to bring it to 1280.
+		# The height will then proportionally be >= 720.
+		new_size.x = target_size.x
+		new_size.y = roundi(original_size.y * (float(target_size.x) / float(original_size.x)))
+	
+	# Create a duplicate of the image to perform resizing
+	var resized_image: Image = image.duplicate()
+	resized_image.resize(new_size.x, new_size.y, Image.INTERPOLATE_LANCZOS)
+	
+	return resized_image
 
 
 func hide_splash() -> void:
 	if splash_node == null:
 		return
+	var target: TextureRect = splash_node.get_child(0)
+	var tween: Tween = create_tween()
+	tween.tween_property(
+			target,
+			^"modulate",
+			Color.TRANSPARENT,
+			0.5)
+	await tween.finished
 	splash_node.queue_free()
 	splash_node = null
 

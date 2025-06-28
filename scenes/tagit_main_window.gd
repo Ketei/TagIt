@@ -318,7 +318,15 @@ func _ready() -> void:
 	settings_blacklist_used_chk_btn.button_pressed = SingletonManager.TagIt.settings.blacklist_used_suggestions
 	wiki_image_side.visible = settings_load_img_chk_btn.button_pressed
 	thumbnail_size_changer.select(SingletonManager.TagIt.settings.wiki_thumbnail_size)
-	on_thumbnail_size_changed(thumbnail_size_changer.selected)
+	match SingletonManager.TagIt.settings.wiki_thumbnail_size:
+		0:
+			wiki_gallery.set_thumbnail_size(Vector2i(100, 100))
+		1:
+			wiki_gallery.set_thumbnail_size(Vector2i(150, 150))
+		2:
+			wiki_gallery.set_thumbnail_size(Vector2i(300, 300))
+		3:
+			wiki_gallery.set_thumbnail_size(Vector2i(600, 600))
 	$MainContainer/TaggerContainer/MainMargin/Containers/TagsContainer.size.x = SingletonManager.TagIt.settings.tag_container_width
 	tagger_suggestion_tree.size.y = SingletonManager.TagIt.settings.suggestions_height
 	backup_timer.wait_time = maxf(60.0, float(SingletonManager.TagIt.settings.backup_frequency) * 60.0)
@@ -463,9 +471,14 @@ func _ready() -> void:
 	SingletonManager.TagIt.tag_updated.connect(on_tag_updated)
 	SingletonManager.TagIt.message_logged.connect(on_log_created)
 	
-	SingletonManager.TagIt.hide_splash()
-	
 	project_backup.exited_correctly = false # Set just in case.
+	
+	if OS.has_feature("editor"): # Show splash only in editor for testing purposes.
+		SingletonManager.TagIt.show_splash()
+	
+	await get_tree().create_timer(2.0).timeout
+	
+	SingletonManager.TagIt.hide_splash()
 	
 	if SingletonManager.TagIt.settings.news_shown < DataManager.TAGIT_VERSION_ARRAY:
 		_block_events = true
