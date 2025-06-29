@@ -476,7 +476,7 @@ func _ready() -> void:
 	if OS.has_feature("editor"): # Show splash only in editor for testing purposes.
 		SingletonManager.TagIt.show_splash()
 	
-	await get_tree().create_timer(2.0).timeout
+	await get_tree().create_timer(1.5).timeout
 	
 	SingletonManager.TagIt.hide_splash()
 	
