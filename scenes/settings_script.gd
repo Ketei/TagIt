@@ -6,6 +6,8 @@ extends PanelContainer
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	splash_opt_btn.select(
+			1 if FileAccess.file_exists(ProjectSettings.globalize_path("user://custom_splash.webp")) else 0)
 	splash_opt_btn.item_selected.connect(_on_splash_idx_selected)
 
 
