@@ -559,7 +559,7 @@ func _input(event: InputEvent) -> void:
 							copy_tags_field()
 						get_viewport().set_input_as_handled()
 				else:
-					if not add_tag_ln_edt.has_focus():
+					if not add_tag_ln_edt.has_focus() and not tags_tree.has_focus() and not tagger_suggestion_tree.has_focus():
 						var valid_range: bool = Math.is_betweeni(event.keycode, 4194433, 4194447) or Math.is_betweeni(event.keycode, 33, 96) or Math.is_betweeni(event.keycode, 123, 126)
 						if valid_range and not event.ctrl_pressed and not event.alt_pressed:
 							add_tag_ln_edt.grab_focus()

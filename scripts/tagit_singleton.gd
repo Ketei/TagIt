@@ -24,7 +24,7 @@ const DB_VERSION: int = 5
 const PROJECTS_VERSION: int = 2
 const TEMPLATES_VERSION: int = 3
 const STORAGE_VERSION: int = 3
-const TAGIT_VERSION_ARRAY: Array[int] = [3, 6, 0]
+const TAGIT_VERSION_ARRAY: Array[int] = [3, 6, 1]
 const MAX_PARENT_RECURSION: int = 100
 const IMAGE_LIMITS: Vector2i = Vector2i(1000, 1000)
 const LEV_DISTANCE: float = 0.75
@@ -638,6 +638,21 @@ func update_storage() -> void:
 							"mode": 0,
 							"value": horn_location})
 				character["colors"]["horn"]["properties"] = new_properties
+		
+		current_version += 1
+		log_message(
+			"[TagIt] Data storage upgraded to version " + str(current_version),
+			LogLevel.INFO)
+	
+	if current_version == 4:
+		for character in storage_data.characters:
+			if character["colors"].has("eyes") and character["colors"]["eyes"].has("properties"):
+				for property in character["colors"]["eyes"]["properties"]:
+					if property["index"] <= 0 or property["id"] != "pupils":
+						continue
+					if property["value"] == 0:
+						property["value"] = 1
+					break
 		
 		current_version += 1
 		log_message(
