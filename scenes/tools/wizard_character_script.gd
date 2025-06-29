@@ -506,7 +506,8 @@ func _on_import_characters_finished(path: String, dialog: FileDialog, success: b
 					var idx: int = data_store.set_character(character)
 					add_character(character_id, idx)
 				
-				var finished_dialog := preload("res://scenes/dialogs/message_confirmation_dialog.gd").new()
+				var finished_dialog := preload("res://scenes/dialogs/message_accept_dialog.gd").new()
+				finished_dialog.title = "Success!"
 				finished_dialog.message = "Characters Imported"
 				add_child(finished_dialog)
 				finished_dialog.show()
