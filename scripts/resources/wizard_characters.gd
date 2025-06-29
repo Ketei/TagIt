@@ -124,18 +124,7 @@ class WizardCharacter extends RefCounted:
 	func set_properties(data: Dictionary) -> void:
 		const NUM_TYPES: Array = [TYPE_INT, TYPE_FLOAT]
 		var valid_properties: Dictionary = {}
-		print("The passed data is: ")
-		print(data)
-		var value: bool = false
-		var found: bool = false
-		for thing in data["fur"]["properties"]:
-			if not thing.has("id"):
-				continue
-			if thing["id"] == "markings":
-				value = thing["value"]
-				found = true
-				break
-		print("The markings part on fur is: " + str(value), " and it was found: ", found)
+		
 		for property in data:
 			if typeof(property) != TYPE_STRING or typeof(data[property]) != TYPE_DICTIONARY or not data[property].has_all(["index", "properties", "use"]):
 				continue
@@ -161,24 +150,12 @@ class WizardCharacter extends RefCounted:
 				else:
 					if not given_property.has("id") or typeof(given_property["id"]) != TYPE_STRING:
 						continue
-					#print("Matching: " + str(given_property["mode"]))
-					match given_property["mode"] as TreeItem.TreeCellMode:
+					match clampi(given_property["mode"], 0, 4) as TreeItem.TreeCellMode:
 						TreeItem.CELL_MODE_CHECK:
-							print("-------------------------------------")
-							print("Property key is: " + str(property))
-							print("Property id is: " + str(given_property["id"]))
-							print("Original value is: " + str(given_property["value"]))
-							print("Original structure is: ")
-							print(given_property)
-							print("-------------------------------------")
 							var new_property: Dictionary = {
 								"value": false if typeof(given_property["value"]) != TYPE_BOOL else given_property["value"]}
 							new_property.merge(given_property)
 							new_properties.append(new_property)
-							print("New value is: " + str(new_property["value"]))
-							print("New structure is:\n" + str(new_property))
-							print("-------------------------------------")
-							#print(new_property)
 						TreeItem.CELL_MODE_RANGE:
 							if typeof(given_property["value"]) not in NUM_TYPES:
 								continue
@@ -186,20 +163,8 @@ class WizardCharacter extends RefCounted:
 								"value": int(given_property["value"])}
 							new_property.merge(given_property)
 							new_properties.append(new_property)
-							#print(new_property)
-						_:
-							print("askdjalskdjalskkjalkdjlaks")
-					#print("vs")
-					#print(given_property)
-					#print(new_property)
-			#if property == "fur":
-				#print("break")
 			valid_properties[property] = {
 				"index": int(data[property]["index"]),
 				"use": data[property]["use"],
 				"properties": new_properties}
 		properties = valid_properties
-		#print("-------------------------")
-		#print(data)
-		#print("vs")
-		#print(valid_properties)
