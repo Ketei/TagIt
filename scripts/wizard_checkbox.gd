@@ -13,6 +13,17 @@ enum CheckTypes {
 	HORNS = 5,
 	SPIKES = 6,
 	RIDGES = 7,
+	TEETH_TRAITS = 8,
+	TONGUE_TRAITS = 9,
+	PATTERN_LOCATION = 10,
+	NIPPLE_PROP = 11,
+	AREOLA_PROP = 12,
+	FRILL_LOCATION = 13,
+	PENIS_PROPS = 14,
+	PENIS_TRAITS = 15,
+	ANUS_TRAITS = 16,
+	CLAW_LOCATIONS = 17,
+	THIGHS_PROPS = 18,
 }
 
 const COLORS: Dictionary = {
@@ -98,10 +109,10 @@ const HORNS: PackedStringArray = [
 	"shoulder"]
 
 const SPIKES: PackedStringArray = [
-	"abdomen", # spiked
+	"abdomen",
 	"arm",
 	"back",
-	"balls", #Spiked
+	"balls",
 	"cheek",
 	"chest",
 	"chin",
@@ -109,16 +120,128 @@ const SPIKES: PackedStringArray = [
 	"head",
 	"jaw",
 	"nose",
-	"penis", # Spiked
-	"shell", # Spiked
+	"penis",
+	"shell",
 	"shoulder",
-	"tail", # Spoked
+	"tail",
 	"wing"]
 
 const RIDGE: PackedStringArray = [
 	"head",
 	"dorsal",
 	"tail"]
+
+const TEETH_TRAITS: PackedStringArray = [
+	"sharp",
+	"tooth gap",
+	"buckteeth",
+	"sabertooth",
+	"tusks",]
+
+const TONGUE_PROPS: PackedStringArray = [
+	"barbed",
+	"granular",
+	"slippery",
+	"mellow"]
+
+const PATTERN_LOCATIONS: PackedStringArray = [
+	"ankle",
+	"anus",
+	"arm",
+	"back",
+	"back of head",
+	"ball",
+	"belly",
+	"breast",
+	"butt",
+	"cheek",
+	"chest",
+	"ear",
+	"eye",
+	"facial",
+	"foot",
+	"forehead",
+	"hand",
+	"hip",
+	"leg",
+	"neck",
+	"penis",
+	"sheath",
+	"shoulder",
+	"slit",
+	"snout",
+	"tail",
+	"thigh",
+	"vulva",
+	"wing",
+	"wrist",]
+
+const NIPP_PROPS: PackedStringArray = [
+	"erect",
+	"glistening",
+	"glowing",
+	"inverted",
+	"mottled",
+	"pierced",
+	"puffy",
+]
+
+const AREOLA_PROPS: PackedStringArray = [
+	"glistening",
+	"glowing",
+	"mottled",
+	"pierced",
+	"puffy",
+]
+
+const FRILL_LOCATION: PackedStringArray = [
+	"back",
+	"ear",
+	"fin",
+	"head",
+	"neck",
+	"tail"
+]
+
+const PENIS_PROPS: PackedStringArray = [
+	"barbed",
+	"nubbed",
+	"ribbed",
+	"ridged",
+	"scaled",
+	"spiked",
+]
+
+const PENIS_TRAITS: PackedStringArray = [
+	"hemipenes",
+	"knotted",
+	"medial ring",
+	"mottled",
+	"prehensile",
+	"veiny",
+	"pierced",
+	 
+]
+
+const ANUS_TRAITS: PackedStringArray = [
+	"at tail base",
+	"puffy",
+	"detailed",
+	"glowing",
+	"mottled",
+]
+
+const CLAW_LOCATIONS: PackedStringArray = [
+	"toe",
+	"finger",
+	"heel" # claw
+]
+
+const THIGH_PROPS: PackedStringArray = [
+	"muscular",
+	"glistening",
+	"veiny",
+	"toned"]
 
 @onready var main_container: VBoxContainer = $MainPanel/SmoothScrollContainer/MainContainer
 var mode: CheckTypes = CheckTypes.NONE
@@ -164,10 +287,11 @@ func set_mode(check_mode: int) -> void:
 	if mode == check_mode:
 		return
 	$MainPanel/SmoothScrollContainer.scroll_to_top(0.0)
-	mode = check_mode as CheckTypes
+	mode = clampi(check_mode, 0, CheckTypes.size() - 1) as CheckTypes
+	
 	clear_checkboxes()
 	
-	match check_mode:
+	match mode:
 		CheckTypes.COLOR:
 			for color:String in COLORS:
 				var new_container: HBoxContainer = HBoxContainer.new()
@@ -193,7 +317,7 @@ func set_mode(check_mode: int) -> void:
 		CheckTypes.PATTERNS:
 			for pattern:String in PATTERNS:
 				var new_pattern: CheckBox = CheckBox.new()
-				new_pattern.text = pattern
+				new_pattern.text = Strings.capitalize(pattern)
 				new_pattern.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 				new_pattern.set_meta(&"item_id", pattern)
 				new_pattern.name = StringName(pattern) + &"CheckBox"
@@ -203,7 +327,7 @@ func set_mode(check_mode: int) -> void:
 		CheckTypes.MARKINGS:
 			for marking:String in MARKING:
 				var new_marking: CheckBox = CheckBox.new()
-				new_marking.text = marking
+				new_marking.text = Strings.capitalize(marking)
 				new_marking.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 				new_marking.set_meta(&"item_id", marking)
 				new_marking.name = StringName(marking) + &"CheckBox"
@@ -213,7 +337,7 @@ func set_mode(check_mode: int) -> void:
 		CheckTypes.TATTOOS:
 			for tattoo:String in TATTOOS:
 				var new_tattoo: CheckBox = CheckBox.new()
-				new_tattoo.text = tattoo
+				new_tattoo.text = Strings.capitalize(tattoo)
 				new_tattoo.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 				new_tattoo.set_meta(&"item_id", tattoo)
 				new_tattoo.name = StringName(tattoo) + &"CheckBox"
@@ -223,7 +347,7 @@ func set_mode(check_mode: int) -> void:
 		CheckTypes.HORNS:
 			for horn in HORNS:
 				var new_horn: CheckBox = CheckBox.new()
-				new_horn.text = horn
+				new_horn.text = Strings.capitalize(horn)
 				new_horn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 				new_horn.set_meta(&"item_id", horn)
 				new_horn.name = StringName(horn) + &"CheckBox"
@@ -233,7 +357,7 @@ func set_mode(check_mode: int) -> void:
 		CheckTypes.SPIKES:
 			for spike in SPIKES:
 				var new_horn: CheckBox = CheckBox.new()
-				new_horn.text = spike
+				new_horn.text = Strings.capitalize(spike)
 				new_horn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 				new_horn.set_meta(&"item_id", spike)
 				new_horn.name = StringName(spike) + &"CheckBox"
@@ -243,13 +367,123 @@ func set_mode(check_mode: int) -> void:
 		CheckTypes.RIDGES:
 			for ridge in RIDGE:
 				var new_horn: CheckBox = CheckBox.new()
-				new_horn.text = ridge
+				new_horn.text = Strings.capitalize(ridge)
 				new_horn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 				new_horn.set_meta(&"item_id", ridge)
 				new_horn.name = StringName(ridge) + &"CheckBox"
 				new_horn.toggled.connect(
 					_on_checkbox_toggled.bind(CheckTypes.RIDGES, ridge))
 				main_container.add_child(new_horn)
+		CheckTypes.TEETH_TRAITS:
+			for item in TEETH_TRAITS:
+				var check: CheckBox = CheckBox.new()
+				check.text = Strings.capitalize(item)
+				check.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				check.set_meta(&"item_id", item)
+				check.name = StringName(item) + &"CheckBox"
+				check.toggled.connect(
+					_on_checkbox_toggled.bind(CheckTypes.TEETH_TRAITS, item))
+				main_container.add_child(check)
+		CheckTypes.TONGUE_TRAITS:
+			for item in TONGUE_PROPS:
+				var check: CheckBox = CheckBox.new()
+				check.text = Strings.capitalize(item)
+				check.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				check.set_meta(&"item_id", item)
+				check.name = StringName(item) + &"CheckBox"
+				check.toggled.connect(
+					_on_checkbox_toggled.bind(CheckTypes.TONGUE_TRAITS, item))
+				main_container.add_child(check)
+		CheckTypes.PATTERN_LOCATION:
+			for item in PATTERN_LOCATIONS:
+				var check: CheckBox = CheckBox.new()
+				check.text = Strings.capitalize(item)
+				check.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				check.set_meta(&"item_id", item)
+				check.name = StringName(item) + &"CheckBox"
+				check.toggled.connect(
+					_on_checkbox_toggled.bind(mode, item))
+				main_container.add_child(check)
+		CheckTypes.NIPPLE_PROP:
+			for item in NIPP_PROPS:
+				var check: CheckBox = CheckBox.new()
+				check.text = Strings.capitalize(item)
+				check.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				check.set_meta(&"item_id", item)
+				check.name = StringName(item) + &"CheckBox"
+				check.toggled.connect(
+					_on_checkbox_toggled.bind(mode, item))
+				main_container.add_child(check)
+		CheckTypes.AREOLA_PROP:
+			for item in AREOLA_PROPS:
+				var check: CheckBox = CheckBox.new()
+				check.text = Strings.capitalize(item)
+				check.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				check.set_meta(&"item_id", item)
+				check.name = StringName(item) + &"CheckBox"
+				check.toggled.connect(
+					_on_checkbox_toggled.bind(mode, item))
+				main_container.add_child(check)
+		CheckTypes.FRILL_LOCATION:
+			for item in FRILL_LOCATION:
+				var check: CheckBox = CheckBox.new()
+				check.text = Strings.capitalize(item)
+				check.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				check.set_meta(&"item_id", item)
+				check.name = StringName(item) + &"CheckBox"
+				check.toggled.connect(
+					_on_checkbox_toggled.bind(mode, item))
+				main_container.add_child(check)
+		CheckTypes.PENIS_PROPS:
+			for item in PENIS_PROPS:
+				var check: CheckBox = CheckBox.new()
+				check.text = Strings.capitalize(item)
+				check.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				check.set_meta(&"item_id", item)
+				check.name = StringName(item) + &"CheckBox"
+				check.toggled.connect(
+					_on_checkbox_toggled.bind(mode, item))
+				main_container.add_child(check)
+		CheckTypes.PENIS_TRAITS:
+			for item in PENIS_TRAITS:
+				var check: CheckBox = CheckBox.new()
+				check.text = Strings.capitalize(item)
+				check.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				check.set_meta(&"item_id", item)
+				check.name = StringName(item) + &"CheckBox"
+				check.toggled.connect(
+					_on_checkbox_toggled.bind(mode, item))
+				main_container.add_child(check)
+		CheckTypes.ANUS_TRAITS:
+			for item in ANUS_TRAITS:
+				var check: CheckBox = CheckBox.new()
+				check.text = Strings.capitalize(item)
+				check.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				check.set_meta(&"item_id", item)
+				check.name = StringName(item) + &"CheckBox"
+				check.toggled.connect(
+					_on_checkbox_toggled.bind(mode, item))
+				main_container.add_child(check)
+		CheckTypes.CLAW_LOCATIONS:
+			for item in CLAW_LOCATIONS:
+				var check: CheckBox = CheckBox.new()
+				check.text = Strings.capitalize(item)
+				check.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				check.set_meta(&"item_id", item)
+				check.name = StringName(item) + &"CheckBox"
+				check.toggled.connect(
+					_on_checkbox_toggled.bind(mode, item))
+				main_container.add_child(check)
+		CheckTypes.THIGHS_PROPS:
+			for item in THIGH_PROPS:
+				var check: CheckBox = CheckBox.new()
+				check.text = Strings.capitalize(item)
+				check.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				check.set_meta(&"item_id", item)
+				check.name = StringName(item) + &"CheckBox"
+				check.toggled.connect(
+					_on_checkbox_toggled.bind(mode, item))
+				main_container.add_child(check)
 
 
 func set_boxes_checked(ids: Array[String], set_checked: bool) -> void:

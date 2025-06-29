@@ -165,6 +165,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_w38ic")
 script = ExtResource("1_fvq4v")
 
 [node name="MetaContainer" type="CenterContainer" parent="MainPanel/MainContainer/MainPanel"]
+visible = false
 layout_mode = 2
 
 [node name="MainContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/MetaContainer"]
@@ -993,7 +994,6 @@ focus_previous = NodePath("../ScrollContainer/CheckboxContainer/MaleHermContaine
 text = "Clear All"
 
 [node name="Characters" type="MarginContainer" parent="MainPanel/MainContainer/MainPanel"]
-visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 80
 theme_override_constants/margin_top = 30
@@ -1123,7 +1123,8 @@ text = "Species"
 [node name="SpeciesLnEdt" type="LineEdit" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/BodyContainer/SpeciesBox"]
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "The character's species."
+tooltip_text = "The character's species.
+Multiple species allowed. Separate with comma."
 focus_next = NodePath("../../../AgeGenderContainer/HBoxContainer/GenderContainer/GenderOptBtn")
 focus_previous = NodePath("../../BodyContainer/BodyOptBtn")
 mouse_filter = 1

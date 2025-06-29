@@ -131,28 +131,57 @@ func _ready() -> void:
 			color_child.set_metadata(0, {"index": -1})
 			color_child.set_metadata(1, {"selected_ids": Array([], TYPE_STRING, &"", null), "format": bod_name["tag"]})
 		
-		if bod_name.has("use_checkboxes") and 0 < bod_name["use_checkboxes"]:
-			var check_text: String = ""
-			match bod_name["use_checkboxes"]:
-				2:
-					check_text = "Patterns"
-				3:
-					check_text = "Markings"
-				4:
-					check_text = "Tattoos"
-			var pattern_child: TreeItem = new_bod.create_child()
-			pattern_child.set_cell_mode(0, TreeItem.CELL_MODE_STRING)
-			pattern_child.set_cell_mode(1, TreeItem.CELL_MODE_STRING)
-			pattern_child.set_text(0, check_text)
-			pattern_child.set_text(1, "0 " + check_text + " Selected")
-			pattern_child.add_button(
-					1,
-					preload("res://icons/item_list.png"),
-					bod_name["use_checkboxes"],
-					false,
-					"Pick " + check_text)
-			pattern_child.set_metadata(0, {"index": bod_name["use_checkboxes"] * -1})
-			pattern_child.set_metadata(1, {"selected_ids": Array([], TYPE_STRING, &"", null)})
+		if bod_name.has("use_checkboxes") and not bod_name["use_checkboxes"].is_empty():
+			for check_id in bod_name["use_checkboxes"]:
+				var check_text: String = ""
+				match check_id:
+					2:
+						check_text = "patterns"
+					3:
+						check_text = "marks"
+					4:
+						check_text = "tattoos"
+					5:
+						check_text = "horns"
+					6:
+						check_text = "spikes"
+					7:
+						check_text = "ridges"
+					8:
+						check_text = "teeth traits"
+					9:
+						check_text = "tongue traits"
+					10:
+						check_text = "pattern locations"
+					11:
+						check_text = "nipple traits"
+					12:
+						check_text = "areola traits"
+					13:
+						check_text = "frill locations"
+					14:
+						check_text = "penis textures"
+					15:
+						check_text = "penis traits"
+					16:
+						check_text = "anus traits"
+					17:
+						check_text = "claw locations"
+					18:
+						check_text = "thigh traits"
+				var pattern_child: TreeItem = new_bod.create_child()
+				pattern_child.set_cell_mode(0, TreeItem.CELL_MODE_STRING)
+				pattern_child.set_cell_mode(1, TreeItem.CELL_MODE_STRING)
+				pattern_child.set_text(0, Strings.capitalize(check_text))
+				pattern_child.set_text(1, "0 " + check_text + " Selected")
+				pattern_child.add_button(
+						1,
+						preload("res://icons/item_list.png"),
+						check_id,
+						false,
+						"Pick " + check_text)
+				pattern_child.set_metadata(0, {"index": check_id * -1})
+				pattern_child.set_metadata(1, {"selected_ids": Array([], TYPE_STRING, &"", null)})
 		
 		var prop_idx: int = -1
 		if bod_name.has("properties"):
@@ -279,6 +308,34 @@ func _on_data_changed(data_type: int, key_selected: String, select: bool) -> voi
 			type_text = "marking"
 		4:
 			type_text = "tattoo"
+		5:
+			type_text = "horn"
+		6:
+			type_text = "spike"
+		7:
+			type_text = "ridge"
+		8:
+			type_text = "teeth trait"
+		9:
+			type_text = "tongue trait"
+		10:
+			type_text = "location"
+		11:
+			type_text = "nipple trait"
+		12:
+			type_text = "areola trait"
+		13:
+			type_text = "frill location"
+		14:
+			type_text = "penis texture"
+		15:
+			type_text = "penis trait"
+		16:
+			type_text = "anus trait"
+		17:
+			type_text = "claw location"
+		18:
+			type_text = "thigh trait"
 	
 	color_node.set_text(1, str(items.size(), " ", type_text, "" if items.size() == 1 else "s", " selected"))
 
@@ -490,15 +547,43 @@ func clear_body_settings() -> void:
 		for property in setting.get_children():
 			if property.get_metadata(0)["index"] < 0:
 				var type: String = ""
-				match property.get_metadata(0)["index"]:
-					-1:
-						"colors"
-					-2:
-						"patterns"
-					-3:
-						"markings"
-					-4:
-						"tattoos"
+				match absi(property.get_metadata(0)["index"]):
+					1:
+						type = "colors"
+					2:
+						type = "patterns"
+					3:
+						type = "marks"
+					4:
+						type = "tattoos"
+					5:
+						type = "horns"
+					6:
+						type = "spikes"
+					7:
+						type = "ridges"
+					8:
+						type = "teeth traits"
+					9:
+						type = "tongue traits"
+					10:
+						type = "locations"
+					11:
+						type = "nipple traits"
+					12:
+						type = "areola traits"
+					13:
+						type = "frill locations"
+					14:
+						type = "penis textures"
+					15:
+						type = "penis traits"
+					16:
+						type = "anus traits"
+					17:
+						type = "claw locations"
+					18:
+						type = "thigh traits"
 				property.get_metadata(1)["selected_ids"].clear()
 				property.set_text(1, "0 " + type + " selected")
 			else:

@@ -553,6 +553,77 @@ func update_storage() -> void:
 	
 	if current_version == 3:
 		for character in storage_data.characters:
+			if character["traits"].has("Slit") and character["traits"]["Slit"]:
+				character["colors"]["genital slit"] = {
+					"index": 31,
+					"use": true,
+					"properties": Array([], TYPE_DICTIONARY, &"", null)}
+			
+			if character["colors"].has("tail") and character["colors"]["tail"].has("properties"):
+				for property in character["colors"]["tail"]["properties"]:
+					if property["index"] < 0 or property["id"] != "type":
+						continue
+					if property["value"] == 4:
+						property["value"] = 5
+					break
+			
+			var markings: Array[String] = []
+			
+			if character["colors"].has("balls") and character["colors"]["balls"].has("properties"):
+				for property in character["colors"]["balls"]["properties"]:
+					if property["index"] < 0 or property["id"] != "markings":
+						continue
+					if property["value"]:
+						markings.append("ball")
+					break
+			
+			if character["colors"].has("breasts") and character["colors"]["breasts"].has("properties"):
+				for property in character["colors"]["breasts"]["properties"]:
+					if property["index"] < 0 or property["id"] != "markings":
+						continue
+					if property["value"]:
+						markings.append("breast")
+					break
+			
+			if not markings.is_empty():
+				if character["colors"].has("markings") and character["colors"]["markings"].has("properties"):
+					character["colors"]["markings"]["properties"].append(
+						{
+							"index": -10,
+							"mode": 0,
+							"value": markings})
+				else:
+					if not character["colors"].has("markings"):
+						character["colors"]["markings"] = {
+							"index": 22,
+							"use": true,
+							"properties": Array([], TYPE_DICTIONARY, &"", null)}
+					elif not character["colors"]["markings"].has("properties"):
+						character["colors"]["markings"]["properties"] = Array(
+								[],
+								TYPE_DICTIONARY,
+								&"",
+								null)
+					
+					character["colors"]["properties"].append(
+							{
+								"index": -10,
+								"mode": 0,
+								"value": markings})
+			
+			
+			if character["colors"].has("anus") and character["colors"]["anus"].has("properties"):
+				for property in character["colors"]["anus"]["properties"]:
+					if property["index"] < 0 or property["id"] != "puffy":
+						continue
+					if property["value"]:
+						character["colors"]["anus"]["properties"].append(
+							{
+								"index": -16,
+								"mode": 0,
+								"value": Array(["puffy"], TYPE_STRING, &"", null)})
+					break
+			
 			if character["colors"].has("horn") and character["colors"]["horn"].has("properties"):
 				var horn_location: Array[String] = []
 				var new_properties: Array[Dictionary] = []
