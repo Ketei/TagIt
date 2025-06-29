@@ -39,6 +39,21 @@ func _ready() -> void:
 	SingletonManager.TagIt.category_icon_updated.connect(on_category_icon_changed)
 
 
+func _input(event: InputEvent) -> void:
+	if not is_visible_in_tree():
+		return
+	if event is InputEventKey:
+		if event.pressed and not event.echo and event.keycode == KEY_F and event.ctrl_pressed:
+			if event.shift_pressed:
+				if not adv_search.visible:
+					_on_advanced_search_pressed()
+			else:
+				all_tags_search_ln_edt.grab_focus()
+				all_tags_search_ln_edt.select_all()
+				all_tags_search_ln_edt.caret_column = all_tags_search_ln_edt.text.length()
+			get_viewport().set_input_as_handled()
+
+
 func on_search_timer_timeout() -> void:
 	var clean_text: String = all_tags_search_ln_edt.text.strip_edges().to_lower()
 	var prefix: bool = clean_text.ends_with(DataManager.SEARCH_WILDCARD)

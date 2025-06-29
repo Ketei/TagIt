@@ -168,11 +168,12 @@ const CLOTHING: Array[Dictionary] = [
 	},
 	]
 const BODY_TRAITS: Array[Dictionary] = [
-	{"title": "Slit", "tag": "genital slit"},
 	{"title": "Aroused", "tag": "aroused"},
 	{"title": "Blushing", "tag": "blush"},
-	{"title": "Speaking", "tag": "dialogue"},
 	{"title": "Bound", "tag": "bound"},
+	{"title": "Dominant", "tag": "dominant"},
+	{"title": "Speaking", "tag": "dialogue"},
+	{"title": "Submissive", "tag": "submissive"},
 	{"title": "Sweating", "tag": "sweat"},
 	]
 const GENDERS: PackedStringArray = [
@@ -201,6 +202,46 @@ const BODIES: PackedStringArray = [
 	"Taur"]
 const BODY_TYPES: Array[Dictionary] = [
 	{
+		"name": "Height",
+		"tag": "height",
+		"include_standalone": false,
+		"use_colors": false,
+		"properties": [
+			{
+				"id": "height",
+				"name": "Height",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Micro,Short,Average,Tall,Macro",
+				"tags": ["micro", "short", "", "tall", "macro"],
+				"value": 2
+			},
+			{
+				"id": "dwarfism",
+				"name": "Dwarfism",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Has dwarfism",
+				"tags": ["", "dwarfism"],
+				"tooltip": ["Very short, but visibly adult characters."]
+			}
+		]
+	},
+	{
+		"name": "Weight",
+		"tag": "body_fat",
+		"include_standalone": false,
+		"use_colors": false,
+		"properties": [
+			{
+				"id": "fat_amount",
+				"name": "Fat Amount",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Skinny,Average,Chubby,Overweight,Obese,Morbidly Obese,Blob",
+				"tags": ["skinny", "", "slightly chubby", "overweight", "obese", "morbidly obese", "blobby"],
+				"value": 1
+			}
+		]
+	},
+	{
 		"name": "Fur",
 		"tag": "fur",
 		"include_standalone": true,
@@ -208,7 +249,7 @@ const BODY_TYPES: Array[Dictionary] = [
 			"id": "length",
 			"name": "Length",
 			"mode": TreeItem.CELL_MODE_RANGE,
-			"text": "short fur,average length,long fur",
+			"text": "Short fur,Average length,Long fur",
 			"tags": ["short fur", "", "long fur"],
 			"value": 1
 			},
@@ -276,6 +317,7 @@ const BODY_TYPES: Array[Dictionary] = [
 		"name": "Anus",
 		"tag": "anus",
 		"include_standalone": true,
+		"use_checkboxes": [16],
 		"properties": [
 			{
 				"id": "size",
@@ -290,12 +332,6 @@ const BODY_TYPES: Array[Dictionary] = [
 				"mode": TreeItem.CELL_MODE_CHECK,
 				"text": "Is correct",
 				"tags": ["", "anatomically correct anus"]
-			},{
-				"id": "puffy",
-				"name": "Puffy/Donut",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Is puffy",
-				"tags": ["", "puffy anus"]
 			},
 		]},
 	{
@@ -317,15 +353,8 @@ const BODY_TYPES: Array[Dictionary] = [
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Tight,Normal,Saggy",
 				"tags": ["tight balls", "", "saggy balls"],
-				"tooltip": ["How low do the balls hang."]
-			},
-			{
-				"id": "markings",
-				"name": "Markings",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Has markings",
-				"tags": ["", "ball markings"],
-				"tooltip": ["Ball markings"]
+				"tooltip": ["How low do the balls hang."],
+				"value": 1
 			},
 			{
 				"id": "seam",
@@ -351,13 +380,6 @@ const BODY_TYPES: Array[Dictionary] = [
 				"value": 2
 			},
 			{
-				"id": "markings",
-				"name": "Markings",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Has markings",
-				"tags": ["", "breast markings"]
-			},
-			{
 				"id": "featureless",
 				"name": "Featureless",
 				"mode": TreeItem.CELL_MODE_CHECK,
@@ -375,6 +397,7 @@ const BODY_TYPES: Array[Dictionary] = [
 		"name": "Claws",
 		"tag": "claws",
 		"include_standalone": true,
+		"use_checkboxes": [17],
 		"exclude_values": [0]},
 	{
 		"name": "Ears",
@@ -382,6 +405,31 @@ const BODY_TYPES: Array[Dictionary] = [
 		"include_standalone": false,
 		"exclude_values": [0],
 		"properties": [
+			{
+				"id": "size",
+				"name": "Size",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Small,Average,Big,Huge,Hyper",
+				"tags": ["small ears", "", "big ears", "huge ears", "hyper ears"],
+				"value": 1,
+				"tooltip": ["How BIG in general scale the ears are"]
+			},
+			{
+				"id": "length",
+				"name": "Length",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Short,Average,Long",
+				"tags": ["short ears", "", "long ears"],
+				"value": 1,
+				"tooltip": ["How long the ears are"]
+			},
+			{
+				"id": "pierced",
+				"name": "Piercings",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Has piercings",
+				"tags": ["", "ear piercing"]
+			},
 			{
 				"id": "colors",
 				"name": "Inner colors",
@@ -400,19 +448,40 @@ const BODY_TYPES: Array[Dictionary] = [
 		"exclude_values": [0],
 		"properties": [
 			{
-				"id": "hetero",
-				"name": "Heterochromia",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Has Heterochromia",
-				"tags": ["", "heterochromia"]
+				"id": "count",
+				"name": "Eye amount",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"formats": {"not_applicable": "", "zero": "eyeless", "singular": "1 eye", "plural": "{0} eyes", "multi_tag": "multi eye", "multi_tag_count": 3},
+				"exceptions": [2],
+				"range": [-1, 20],
+				"value": 2,
+				"tooltip": ["How many eyes the character has", "Set to -1 for N/A"]
+			},
+			{
+				"id": "shape",
+				"name": "Eye Shape",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Regular|N/A,Beady,Dot,Heart,Ringed,Spiral,Star,X Shaped",
+				"tags": ["", "beady eyes", "dot eyes", "heart eyes", "ringed eyes", "spiral eyes", "star eyes", "x eyes"],
+				"value": 0,
+				"tooltip": ["When the entire eye or the whole iris shape is different."]
 			},
 			{
 				"id": "pupils",
 				"name": "Pupils",
 				"mode": TreeItem.CELL_MODE_RANGE,
-				"text": "Regular,Slit,Horizontal,Heart,Star,No pupils",
-				"tags": ["", "slit pupils", "horizontal pupils", "heart pupils", "no pupils"],
-				"value": 0
+				"text": "No pupils,Regular|N/A,Slit,Horizontal,Heart,Star,Square,Spiral,Symbol-Shaped,X Shaped",
+				"tags": ["no pupils", "", "slit pupils", "horizontal pupils", "heart pupils", "square pupils", "spiral pupils", "symbol-shaped pupils", "x pupils"],
+				"value": 1,
+				"tooltip": ["The, usually black, circle at the center of the iris."]
+			},
+			{
+				"id": "hetero",
+				"name": "Heterochromia",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Has Heterochromia",
+				"tags": ["", "heterochromia"],
+				"tooltip": ["When a character's two entirely different colored eyes."]
 			},
 			{
 				"id": "sclera",
@@ -430,14 +499,52 @@ const BODY_TYPES: Array[Dictionary] = [
 		"include_standalone": true,
 		"properties": [
 			{
+				"id": "toe_count",
+				"name": "Toes (per feet)",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"formats": {"not_applicable": "", "zero": "featureless feet", "singular": "1 toe", "plural": "{0} toes", "multi_tag": "", "multi_tag_count": 100},
+				"range": [-1, 10],
+				"value": 5,
+				"tooltip": ["How many toes are in each hand", "Set to -1 for N/A"]
+			},
+			{
+				"id": "movement",
+				"name": "Movement",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "N/A,Biped,Quadruped",
+				"tags": ["", "biped", "quadruped"]
+			},
+			{
 				"id": "type",
 				"name": "Type",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Plantigrade,Digitigrade,Unguligrade,Hooved Plantigrade,Featureless",
 				"tags": ["plantigrade", "digitigrade", "unguligrade", "hooved plantigrade", "featureless feet"],
 				"value": 1
+			},
+			{
+				"id": "shape",
+				"name": "Shape",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "N/A,Featureless,Hooves,Humanoid,Paws,Talons",
+				"tags": ["", "featureless feet", "hooves", "humanoid feet", "paws", "talons"],
+				"value": 4
+			},
+			{
+				"id": "webbed",
+				"name": "Webbed",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Are webbed",
+				"tags": ["", "webbed feet"]
 			}
 		]},
+	{
+		"name": "Frill",
+		"tag": "frill (anatomy)",
+		"include_standalone": true,
+		"use_checkboxes": [13],
+		"tooltip": "Membranous or bony structure found around the neck or head of some animals"
+	},
 	{
 		"name": "Hair",
 		"tag": "hair",
@@ -457,12 +564,13 @@ const BODY_TYPES: Array[Dictionary] = [
 		"include_standalone": false,
 		"properties": [
 			{
-				"id": "fing_count",
-				"name": "Finger count (per hand)",
+				"id": "finger_count",
+				"name": "Finger count (Per hand)",
 				"mode": TreeItem.CELL_MODE_RANGE,
-				"text": "No fingers,1 finger,2 fingers,3 fingers,4 fingers,5 fingers,6 fingers,7 fingers,8 fingers,9 fingers,10 fingers,N/A",
-				"tags": ["featureless hands", "1 finger", "2 fingers", "3 fingers", "4 fingers", "5 fingers", "6 fingers", "7 fingers", "8 fingers", "9 fingers", "10 fingers", ""],
-				"value": 5
+				"formats": {"not_applicable": "", "zero": "featureless hands", "singular": "1 finger", "plural": "{0} fingers", "multi_tag": "", "multi_tag_count": 100},
+				"range": [-1, 10],
+				"value": 5,
+				"tooltip": ["How many fingers are in each hand", "Set to -1 for N/A"]
 			},
 			{
 				"id": "nail_type",
@@ -471,16 +579,58 @@ const BODY_TYPES: Array[Dictionary] = [
 				"text": "Nails,Claws,Hoofs,N/A",
 				"tags": ["fingernails", "finger claws", "hooved fingers", ""],
 				"value": 1
+			},
+			{
+				"id": "type",
+				"name": "Hand Shape",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Regular,Handpaw,Talon",
+				"tags": ["", "handpaw", "talon hands"]
+			},
+			{
+				"id": "webbed",
+				"name": "Webbed Hands",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Are webbed",
+				"tags": ["", "webbed hands"]
 			}
 		]},
+	{
+		"name": "Hips",
+		"tag": "hips",
+		"include_standalone": false,
+		"use_colors": false,
+		"properties": [
+			{
+				"id": "width",
+				"name": "Width",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Narrow,Average,Wide,Huge,Hyper",
+				"tags": ["narrow hips", "", "wide hips", "huge hips", "hyper hips"],
+				"value": 1
+			}
+		]
+	},
 	{
 		"name": "Horns",
 		"tag": "horn",
 		"include_standalone": true,
+		"use_checkboxes": [5],
+		"tooltip": "A long and sometimes thick pointed projection of the skin",
 		"properties": [
 			{
+				"id": "count",
+				"name": "Horn count",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"formats": {"not_applicable": "", "zero": "", "singular": "1 horn", "plural": "{0} horns", "multi_tag": "multi horn", "multi_tag_count": 3},
+				"exceptions": [2],
+				"range": [-1, 20],
+				"value": 2,
+				"tooltip": ["How many horns the character has", "Set to -1 or 0 for N/A"]
+			},
+			{
 				"id": "shape",
-				"name": "Horn shape",
+				"name": "Shape",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Straight horn,Curved horn,Forked horn,Spiral horn,N/A",
 				"tags": ["straight horn", "curved horn", "forked horn", "spiral horn", ""],
@@ -488,7 +638,7 @@ const BODY_TYPES: Array[Dictionary] = [
 			},
 			{
 				"id": "texture",
-				"name": "Horn texture",
+				"name": "Texture",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "N/A,Ridged,Smooth",
 				"tags": ["", "ridged horn", "smooth horn"],
@@ -496,74 +646,12 @@ const BODY_TYPES: Array[Dictionary] = [
 			},
 			{
 				"id": "length",
-				"name": "Horn Length",
+				"name": "Length",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Short horn,Long horn,N/A",
 				"tags": ["short horn", "long horn", ""],
 				"value": 1
-			},
-			{
-				"id": "head",
-				"name": "Head Horn",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Has Horn",
-				"tags": ["", "head horn"]
-			},{
-				"id": "arm",
-				"name": "Arm Horn",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Has Horn",
-				"tags": ["", "arm horn"]
-			},
-			{
-				"id": "back",
-				"name": "Back Horn",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Has Horn",
-				"tags": ["", "back horn"]
-			},{
-				"id": "chest",
-				"name": "Chest Horn",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Has Horn",
-				"tags": ["", "chest horn"]
-			},{
-				"id": "chin",
-				"name": "Chin Horn",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Has Horn",
-				"tags": ["", "chin horn"]
-			},{
-				"id": "ear",
-				"name": "Ear Horn",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Has Horn",
-				"tags": ["", "ear horn"]
-			},{
-				"id": "floating",
-				"name": "Floating Horn",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Has Horn",
-				"tags": ["", "floating horn"]
-			},{
-				"id": "jaw",
-				"name": "Jaw Horn",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Has Horn",
-				"tags": ["", "jaw horn"]
-			},{
-				"id": "nose",
-				"name": "Nose Horn",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Has Horn",
-				"tags": ["", "nose horn"]
-			},{
-				"id": "shoulder",
-				"name": "Shoulder Horn",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Has Horn",
-				"tags": ["", "head horn"]
-			},
+			}
 			
 		]},
 	{
@@ -594,10 +682,10 @@ const BODY_TYPES: Array[Dictionary] = [
 		]
 	},
 	{
-		"name": "Marking",
+		"name": "Marks",
 		"tag": "markings",
 		"include_standalone": true,
-		"use_checkboxes": 3,
+		"use_checkboxes": [3, 10],
 		"tooltip": "A unique, often non-repeating, shape.",
 		"properties": [
 			{
@@ -614,6 +702,7 @@ const BODY_TYPES: Array[Dictionary] = [
 		"tag": "nipples",
 		"include_standalone": true,
 		"exclude_values": [0],
+		"use_checkboxes": [11, 12],
 		"properties": [
 			{
 				"id": "size",
@@ -629,13 +718,25 @@ const BODY_TYPES: Array[Dictionary] = [
 				"text": "Small,Average,Big,Huge,Hyper",
 				"tags": ["small areola", "", "big areola", "huge areola", "hyper areola"],
 				"value": 1
-			},{
-				"id": "multi",
-				"name": "Multi-nipple (+3)",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Multiple Nipples",
-				"tags": ["", "multi nipple"]
-			},{
+			},
+			{
+				"id": "areola_shape",
+				"name": "Areola Shape",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Round,Heart,Star",
+				"tags": ["", "heart areola", "star areola"]
+			},
+			{
+				"id": "count",
+				"name": "Nipple count",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"formats": {"not_applicable": "", "zero": "featureless breasts", "singular": "1 nipple", "plural": "{0} nipples", "multi_tag": "multi nipple", "multi_tag_count": 3},
+				"exceptions": [2],
+				"range": [-1, 20],
+				"value": 2,
+				"tooltip": ["How many nipples the character has", "Set to -1 for N/A"]
+			},
+			{
 				"id": "height",
 				"name": "Height",
 				"mode": TreeItem.CELL_MODE_RANGE,
@@ -654,22 +755,6 @@ const BODY_TYPES: Array[Dictionary] = [
 				"tags": ["", "nipple dip"],
 				"tooltip": ["When the nipples have a gentle indentation or slit in them."]
 			},
-			{
-				"id": "puffy_nipple",
-				"name": "Puffy Nipples",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Is puffy",
-				"tags": ["", "puffy nipples"],
-				"tooltip": ["When a nipple is more swollen than is common."]
-			},
-			{
-				"id": "puffy_areola",
-				"name": "Puffy Areola",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Is puffy",
-				"tags": ["", "puffy areola"],
-				"tooltip": ["When the areola is bulging more than is common."]
-			}
 		]
 	},
 	{
@@ -683,10 +768,10 @@ const BODY_TYPES: Array[Dictionary] = [
 		"include_standalone": true,
 		"exclude_values": [0]},
 	{
-		"name": "Pattern",
+		"name": "Patterns",
 		"tag": "markings",
 		"include_standalone": true,
-		"use_checkboxes": 2,
+		"use_checkboxes": [2, 10],
 		"tooltip": "Marks or shapes on the body, often repeating.",
 		"properties": [
 			{
@@ -702,7 +787,18 @@ const BODY_TYPES: Array[Dictionary] = [
 		"name": "Penis",
 		"tag": "penis",
 		"include_standalone": true,
+		"use_checkboxes": [14, 15],
 		"properties": [
+			{
+				"id": "count",
+				"name": "Count",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"formats": {"not_applicable": "", "zero": "", "singular": "", "plural": "{0} penises", "multi_tag": "multi penis", "multi_tag_count": 2},
+				"exceptions": [0, 1],
+				"range": [0, 20],
+				"value": 1,
+				"tooltip": ["How many penises the character has", "Set to 0 for N/A"]
+			},
 			{
 				"id": "type",
 				"name": "Type",
@@ -716,7 +812,25 @@ const BODY_TYPES: Array[Dictionary] = [
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"text": "Micro,Small,Average,Big,Huge,Hyper",
 				"tags": ["micropenis", "small penis", "", "big penis", "huge penis", "hyper penis"],
-				"value": 2
+				"value": 2,
+				"tooltip": ["General size of the penis"]
+			},
+			{
+				"id": "length",
+				"name": "Length",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Short,Average,Long",
+				"tags": ["short penis", "", "long penis"],
+				"value": 1,
+			},
+			{
+				"id": "girth",
+				"name": "Girth",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Thin,Average,Thick",
+				"tags": ["thin penis", "", "thick penis"],
+				"value": 1,
+				"tooltip": ["When the penis has a big diameter or circumference in relation the length."]
 			},
 			{
 				"id": "is_erect",
@@ -734,13 +848,67 @@ const BODY_TYPES: Array[Dictionary] = [
 				"tags": ["", "anatomically correct penis"]
 			},
 			{
-				"id": "veiny",
-				"name": "Veiny",
+				"id": "pierced",
+				"name": "Pierced",
 				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Is veiny",
-				"tags": ["", "veiny penis"]
+				"text": "Is pierced",
+				"tags": ["", "penis piercing "]
 			},
-		]},
+		]
+	},
+	{
+		"name": "Pussy",
+		"tag": "vulva",
+		"include_standalone": true,
+		"exclude_values": [0],
+		"properties": [
+			{
+				"id": "type",
+				"name": "Type",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Animal,Humanoid,Hybrid,Mechanical,Unusual,N/A",
+				"tags": ["animal vulva", "humanoid vulva", "hybrid vulva", "mechanical vulva", "unusual vulva", ""],
+				"value": 1
+			},
+			{
+				"id": "size",
+				"name": "Size",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Small,Average,Big,Hyper",
+				"tags": ["small vulva", "", "big vulva", "hyper vulva"],
+				"value": 1
+			},
+			{
+				"id": "innie", # shape -> innie
+				"name": "Innie Pussy",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Is innie",
+				"tags": ["", "innie vulva"],
+				"value": 0
+			},
+			{
+				"id": "plump",
+				"name": "Plump Pussy",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Is plump",
+				"tags": ["", "plump labia"]
+			},
+			{
+				"id": "correct",
+				"name": "Anatomically correct",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Is correct",
+				"tags": ["", "anatomically correct vulva"]
+			}]
+	},
+	{
+		"name": "Ridges",
+		"tag": "ridge",
+		"tooltip": "A row of blunt protrusions on the body",
+		"use_checkboxes": [7],
+		"include_standalone": false,
+		"use_colors": false
+	},
 	{
 		"name": "Sheath",
 		"tag": "sheath",
@@ -758,6 +926,37 @@ const BODY_TYPES: Array[Dictionary] = [
 		]
 	},
 	{
+		"name": "Slit",
+		"tag": "genital slit",
+		"include_standalone": true,
+		"exclude_values": [0],
+		"properties": [
+			{
+				"id": "size",
+				"name": "Size",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Small,Average,Big,Huge,Hyper",
+				"tags": ["small genital slit", "", "big genital slit", "huge genital slit", "hyper genital slit"],
+				"value": 1
+			},
+			{
+				"id": "puffy",
+				"name": "Puffy",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Is puffy",
+				"tags": ["", "puffy genital slit"]
+			}
+		]
+	},
+	{
+		"name": "Spikes",
+		"tag": "spikes (anatomy)",
+		"include_standalone": true,
+		"use_checkboxes": [6],
+		"exclude_values": [0],
+		"tooltip": "A short pointed projection of the skin. Relatively shorter than horns",
+	},
+	{
 		"name": "Tail",
 		"tag": "tail",
 		"include_standalone": true,
@@ -766,8 +965,8 @@ const BODY_TYPES: Array[Dictionary] = [
 				"id": "type",
 				"name": "Type",
 				"mode": TreeItem.CELL_MODE_RANGE,
-				"text": "Furry,Scaly,Feathers,Fish,N/A",
-				"tags": ["furry tail", "scaly tail", "tail feathers", "fish tail", ""],
+				"text": "Furry,Scaly,Feathers,Fish,Snake,N/A",
+				"tags": ["furry tail", "scaly tail", "tail feathers", "fish tail", "snake tail", ""],
 				"value": 0
 			},
 			{
@@ -777,6 +976,14 @@ const BODY_TYPES: Array[Dictionary] = [
 				"text": "Small,Average,Big,Huge,Hyper",
 				"tags": ["small tail", "", "big tail", "huge tail", "hyper tail"],
 				"value": 1
+			},
+			{
+				"id": "girth",
+				"name": "Width",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Line,Thin,Average,Thick",
+				"tags": ["line tail", "thin tail", "", "thick tail"],
+				"value": 2
 			},
 			{
 				"id": "length",
@@ -802,13 +1009,29 @@ const BODY_TYPES: Array[Dictionary] = [
 				"tags": ["", "curved tail", "curled tail", "crooked tail", "erect tail", "wavy tail"],
 				"value": 0
 			},
+			{
+				"id": "tip",
+				"name": "Tail Tip",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "N/A,Tuft,Mace,Spade,Blade",
+				"tags": ["", "tail tuft", "mace tail", "spade tail", "blade tail"],
+				"value": 0
+			},
+			{
+				"id": "prehensile",
+				"name": "Prehensile",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Is prehensile",
+				"tags": ["", "prehensile tail"],
+				"tooltip": ["Tails that possess the ability to grasp, hold or otherwise control like a hand."]
+			}
 		]
 	},
 	{
 		"name": "Tattoo",
 		"tag": "tattoo",
 		"include_standalone": true,
-		"use_checkboxes": 4,
+		"use_checkboxes": [4],
 		"properties": [
 			{
 				"id": "glowing",
@@ -820,10 +1043,58 @@ const BODY_TYPES: Array[Dictionary] = [
 		]
 	},
 	{
+		"name": "Teeth",
+		"tag": "teeth",
+		"include_standalone": false,
+		"exclude_values": [0],
+		"use_checkboxes": [8],
+		"properties": [
+			{
+				"id": "fang_size",
+				"name": "Fangs Size",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "N/A,Small,Average,Big",
+				"tags": ["", "small fangs", "", "big fangs"],
+				"value": 2
+			},
+			{
+				"id": "long_fang",
+				"name": "Long Fangs",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Has Long Fangs",
+				"tags": ["", "long fangs"]
+			}
+		]
+	},
+	{
+		"name": "Thighs",
+		"tag": "thighs",
+		"include_standalone": false,
+		"use_checkboxes": [18],
+		"properties": [
+			{
+				"id": "girth",
+				"name": "Thickness",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"text": "Stick,Micro,Thin,Average,Thick,Huge,Hyper",
+				"tags": ["stick", "micro thighs", "thin thighs", "", "thick thighs", "huge thighs", "hyper thighs"],
+				"value": 3
+			},
+			{
+				"id": "gap",
+				"name": "Gap",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Has gap",
+				"tags": ["", "thigh gap"]
+			}
+		]
+	},
+	{
 		"name": "Tongue",
 		"tag": "tongue",
 		"include_standalone": true,
 		"exclude_values": [0],
+		"use_checkboxes": [9],
 		"properties": [
 			{
 				"id": "shape",
@@ -839,51 +1110,6 @@ const BODY_TYPES: Array[Dictionary] = [
 		"tag": "tuft",
 		"include_standalone": true,
 		"exclude_values": [0]
-	},
-	{
-		"name": "Vagina",
-		"tag": "pussy",
-		"include_standalone": true,
-		"exclude_values": [0],
-		"properties": [
-			{
-				"id": "type",
-				"name": "Type",
-				"mode": TreeItem.CELL_MODE_RANGE,
-				"text": "Animal,Humanoid,Hybrid,Mechanical,Unusual,N/A",
-				"tags": ["animal pussy", "humanoid pussy", "hybrid pussy", "mechanical pussy", "unusual pussy", ""],
-				"value": 1
-			},
-			{
-				"id": "size",
-				"name": "Size",
-				"mode": TreeItem.CELL_MODE_RANGE,
-				"text": "Small,Average,Big,Hyper",
-				"tags": ["small pussy", "", "big pussy", "hyper pussy"],
-				"value": 1
-			},
-			{
-				"id": "shape",
-				"name": "Shape",
-				"mode": TreeItem.CELL_MODE_RANGE,
-				"text": "Innie,Average,Outie",
-				"tags": ["innie pussy", "", "long labia"],
-				"value": 0
-			},
-			{
-				"id": "plump",
-				"name": "Plump Pussy",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Is plump",
-				"tags": ["", "plump labia"]
-			},
-			{
-				"id": "correct",
-				"name": "Anatomically correct",
-				"mode": TreeItem.CELL_MODE_CHECK,
-				"text": "Is correct",
-				"tags": ["", "anatomically correct pussy"]
-			}]
 	},
 	{
 		"name": "Wings",
@@ -1000,9 +1226,6 @@ var current_project_size: Vector2 = Vector2(310, 34)
 @onready var project_texture_container: Draggable = $ProjectTextureContainer
 # ---------------
 
-#@onready var angle_container_start: Button = $MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow/AngleContainer
-#@onready var angle_container_end: Button = $MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow/AngleContainer17
-
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -1101,6 +1324,11 @@ func _ready() -> void:
 	wizard_checkboxes.data_deselected.connect(_on_data_changed.bind(false))
 
 
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed(&"ui_cancel"):
+		wizard_cancelled.emit()
+
+
 func _on_data_changed(data_type: int, key_selected: String, select: bool) -> void:
 	if color_node == null:
 		return
@@ -1120,6 +1348,34 @@ func _on_data_changed(data_type: int, key_selected: String, select: bool) -> voi
 			type_text = "marking"
 		4:
 			type_text = "tattoo"
+		5:
+			type_text = "horn"
+		6:
+			type_text = "spike"
+		7:
+			type_text = "ridge"
+		8:
+			type_text = "teeth trait"
+		9:
+			type_text = "tongue trait"
+		10:
+			type_text = "location"
+		11:
+			type_text = "nipple trait"
+		12:
+			type_text = "areola trait"
+		13:
+			type_text = "frill location"
+		14:
+			type_text = "penis texture"
+		15:
+			type_text = "penis trait"
+		16:
+			type_text = "anus trait"
+		17:
+			type_text = "claw location"
+		18:
+			type_text = "thigh trait"
 	
 	color_node.set_text(1, str(items.size(), " ", type_text, "" if items.size() == 1 else "s", " selected"))
 
@@ -1157,15 +1413,43 @@ func clear_body_settings() -> void:
 		for property in setting.get_children():
 			if property.get_metadata(0)["index"] < 0:
 				var type: String = ""
-				match property.get_metadata(0)["index"]:
-					-1:
-						"colors"
-					-2:
-						"patterns"
-					-3:
-						"markings"
-					-4:
-						"tattoos"
+				match absi(property.get_metadata(0)["index"]):
+					1:
+						type = "colors"
+					2:
+						type = "patterns"
+					3:
+						type = "marks"
+					4:
+						type = "tattoos"
+					5:
+						type = "horns"
+					6:
+						type = "spikes"
+					7:
+						type = "ridges"
+					8:
+						type = "teeth traits"
+					9:
+						type = "tongue traits"
+					10:
+						type = "locations"
+					11:
+						type = "nipple traits"
+					12:
+						type = "areola traits"
+					13:
+						type = "frill locations"
+					14:
+						type = "penis textures"
+					15:
+						type = "penis traits"
+					16:
+						type = "anus traits"
+					17:
+						type = "claw locations"
+					18:
+						type = "thigh traits"
 				property.get_metadata(1)["selected_ids"].clear()
 				property.set_text(1, "0 " + type + " selected")
 			else:
@@ -1492,29 +1776,16 @@ func clear_character() -> void:
 	age_opt_btn.select(4)
 	lore_age_opt_btn.select(0)
 	
-	#for item in body_texture_tree.get_root().get_children():
-		#if item.is_checked(0):
-			#item.set_checked(0, false)
-		#item.set_range(1, 0)
 	body_texture_tree.get_root().call_recursive(&"set_checked", 0, false)
 	body_texture_tree.get_root().call_recursive(&"set_range", 1, 0)
 	clothing_tree.get_root().call_recursive(&"set_checked", 0, false)
 	body_traits.get_root().call_recursive(&"set_checked", 0, false)
-	#var a:TreeItem = a.set_checked()
-	#for check in clothing_a.get_children():
-		#if check.button_pressed:
-			#check.button_pressed = false
-	
-	#for check in clothing_b.get_children():
-		#if check.button_pressed:
-			#check.button_pressed = false
 
 
 func on_bg_type_selected(bg_type: int) -> void:
 	sky_rect.visible = bg_type == 0
 	solid_rect.visible = bg_type == 4
 	
-	#if bg_type != 0:
 	match bg_type:
 		0:
 			background.texture = null
@@ -1660,7 +1931,7 @@ func _on_character_selected() -> void:
 						continue
 					if prop_dict["id"] == id:
 						if prop_dict["mode"] == prop_item.get_cell_mode(1):
-							match prop_dict["mode"]:
+							match clampi(prop_dict["mode"], 0, 4) as TreeItem.TreeCellMode:
 								TreeItem.CELL_MODE_RANGE:
 									prop_item.set_range(1, prop_dict["value"])
 								TreeItem.CELL_MODE_CHECK:
@@ -1776,7 +2047,10 @@ func generate_tags() -> Array[String]:
 		character_tags.append_array(body_opt_btn.get_item_metadata(character["body"]))
 	
 		if not character["species"].is_empty():
-			character_tags.append(character["species"])
+			var species_string: String = character["species"]
+			var species_tags = Strings.split_and_strip(species_string, ",")
+			character_tags.append_array(species_tags)
+			#character_tags.append(character["species"])
 		
 		character_tags.append(gender_opt_btn.get_item_text(character["gender"]))
 		character_tags.append(gender_opt_btn.get_item_metadata(character["gender"]).format([body_opt_btn.get_item_metadata(character["body"])[0]]))
@@ -1829,32 +2103,35 @@ func generate_tags() -> Array[String]:
 							character_tags.append_array(id_to_tags(
 									absi(property["index"]),
 									property["value"],
-									property["format"] if property.has("format") else ""))
+									property["format"] if property.has("format") else "",
+									true,
+									BODY_TYPES[body["index"]]["exclude_values"] if BODY_TYPES[body["index"]].has("exclude_values") else []))
 					else:
-						match property["mode"]:
+						match clampi(property["mode"], 0, 4) as TreeItem.TreeCellMode:
 							TreeItem.CELL_MODE_RANGE:
-								var prop_tag: String = BODY_TYPES[body["index"]]["properties"][property["index"]]["tags"][property["value"]]
+								var prop_tag: String = ""
+								if BODY_TYPES[body["index"]]["properties"][property["index"]].has("tags"):
+									prop_tag = BODY_TYPES[body["index"]]["properties"][property["index"]]["tags"][property["value"]]
+								else:
+									if not BODY_TYPES[body["index"]]["properties"][property["index"]].has("exceptions") or not BODY_TYPES[body["index"]]["properties"][property["index"]]["exceptions"].has(int(property["value"])):
+										if property["value"] < 0:
+											prop_tag = BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["not_applicable"].format([int(property["value"])])
+										elif property["value"] == 0:
+											prop_tag = BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["zero"].format([int(property["value"])])
+										elif property["value"] == 1:
+											prop_tag = BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["singular"].format([int(property["value"])])
+										elif 2 <= property["value"]:
+											prop_tag = BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["plural"].format([int(property["value"])])
+										
+										if BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["multi_tag_count"] <= property["value"] and not BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["multi_tag"].is_empty():
+											character_tags.append(BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["multi_tag"])
 								if not prop_tag.is_empty():
 									character_tags.append(prop_tag)
 							TreeItem.CELL_MODE_CHECK:
 								var prop_tag: String = BODY_TYPES[body["index"]]["properties"][property["index"]]["tags"][int(property["value"])]
 								if not prop_tag.is_empty():
 									character_tags.append(prop_tag)
-						
-					#match property["index"]:
-						#-1:
-							#match property["value"] & 3:
-								#0:
-									#if not BODY_TYPES[body["index"]].has("exclude_values") or not BODY_TYPES[body["index"]]["exclude_values"].has(0):
-										#character_tags.append(str(SINGLE_COLOR_BODY, " ", body_tag))
-								#1:
-									#if not BODY_TYPES[body["index"]].has("exclude_values") or not BODY_TYPES[body["index"]]["exclude_values"].has(1):
-										#character_tags.append(str(TWO_COLOR_BODY, " ", body_tag))
-								#2:
-									#if not BODY_TYPES[body["index"]].has("exclude_values") or not BODY_TYPES[body["index"]]["exclude_values"].has(2):
-										#character_tags.append(str(THREE_PLUS_COLOR_BODY, " ", body_tag))
-						#_:
-		
+					
 		var trait_idx: int = -1
 		for bod_trait in character["traits"]:
 			trait_idx += 1
@@ -1917,28 +2194,59 @@ func add_tree_bodies() -> void:
 			color_child.set_metadata(0, {"index": -1})
 			color_child.set_metadata(1, {"selected_ids": Array([], TYPE_STRING, &"", null), "format": bod_name["tag"]})
 		
-		if bod_name.has("use_checkboxes") and 0 < bod_name["use_checkboxes"]:
-			var check_text: String = ""
-			match bod_name["use_checkboxes"]:
-				2:
-					check_text = "Patterns"
-				3:
-					check_text = "Markings"
-				4:
-					check_text = "Tattoos"
-			var pattern_child: TreeItem = new_bod.create_child()
-			pattern_child.set_cell_mode(0, TreeItem.CELL_MODE_STRING)
-			pattern_child.set_cell_mode(1, TreeItem.CELL_MODE_STRING)
-			pattern_child.set_text(0, check_text)
-			pattern_child.set_text(1, "0 " + check_text + " Selected")
-			pattern_child.add_button(
-					1,
-					preload("res://icons/item_list.png"),
-					bod_name["use_checkboxes"],
-					false,
-					"Pick " + check_text)
-			pattern_child.set_metadata(0, {"index": bod_name["use_checkboxes"] * -1})
-			pattern_child.set_metadata(1, {"selected_ids": Array([], TYPE_STRING, &"", null)})
+		if bod_name.has("use_checkboxes") and not bod_name["use_checkboxes"].is_empty():
+			for checkbox in bod_name["use_checkboxes"]:
+				if checkbox <= 0:
+					continue
+				var check_text: String = ""
+				match checkbox:
+					2:
+						check_text = "patterns"
+					3:
+						check_text = "marks"
+					4:
+						check_text = "tattoos"
+					5:
+						check_text = "horns"
+					6:
+						check_text = "spikes"
+					7:
+						check_text = "ridges"
+					8:
+						check_text = "teeth traits"
+					9:
+						check_text = "tongue traits"
+					10:
+						check_text = "pattern locations"
+					11:
+						check_text = "nipple traits"
+					12:
+						check_text = "areola traits"
+					13:
+						check_text = "frill locations"
+					14:
+						check_text = "penis textures"
+					15:
+						check_text = "penis traits"
+					16:
+						check_text = "anus traits"
+					17:
+						check_text = "claw locations"
+					18:
+						check_text = "thigh traits"
+				var pattern_child: TreeItem = new_bod.create_child()
+				pattern_child.set_cell_mode(0, TreeItem.CELL_MODE_STRING)
+				pattern_child.set_cell_mode(1, TreeItem.CELL_MODE_STRING)
+				pattern_child.set_text(0, Strings.title_case(check_text))
+				pattern_child.set_text(1, "0 " + check_text + " selected")
+				pattern_child.add_button(
+						1,
+						preload("res://icons/item_list.png"),
+						checkbox,
+						false,
+						"Pick " + check_text)
+				pattern_child.set_metadata(0, {"index": checkbox * -1})
+				pattern_child.set_metadata(1, {"selected_ids": Array([], TYPE_STRING, &"", null)})
 		
 		var prop_idx: int = -1
 		if bod_name.has("properties"):
@@ -1960,12 +2268,23 @@ func add_tree_bodies() -> void:
 					if 1 <= tips and not property["tooltip"][0].is_empty():
 						new_prop.set_tooltip_text(0, property["tooltip"][0])
 				
-				match property["mode"]:
+				match clampi(property["mode"], 0, 4) as TreeItem.TreeCellMode:
 					TreeItem.CELL_MODE_RANGE:
-						new_prop.set_text(1, property["text"])
-						new_prop.set_range(
-								1,
-								property["value"] if property.has("value") else 0)
+						if property.has("text") and not property["text"].is_empty():
+							new_prop.set_text(1, property["text"])
+							new_prop.set_range(
+									1,
+									property["value"] if property.has("value") else 0)
+						else:
+							new_prop.set_range_config(
+									1,
+									property["range"][0],
+									property["range"][1],
+									1.0)
+							new_prop.set_range(
+									1,
+									property["value"])
+					
 					TreeItem.CELL_MODE_CHECK:
 						new_prop.set_text(1, property["text"])
 						new_prop.set_checked(
@@ -1984,7 +2303,6 @@ func add_tree_bodies() -> void:
 func add_body_types(to: OptionButton, select: int = 0) -> void:
 	const TAGS: Array[Array] = [["anthro"], ["anthro", "semi-anthro"], ["feral", "semi-anthro"], ["feral"], ["human"], ["humanoid"], ["taur"]]
 	
-	#var idx: int = -1
 	for body_idx in range(BODIES.size()):
 		to.add_item(BODIES[body_idx])
 		to.set_item_metadata(body_idx, TAGS[body_idx])
@@ -1993,7 +2311,6 @@ func add_body_types(to: OptionButton, select: int = 0) -> void:
 
 
 func add_ages(to: OptionButton, include_na: bool = false, select: int = 4) -> void:
-	#const AGES: PackedStringArray = ["Baby", "Toddler", "Child", "Adolescent", "Adult", "Mature", "Elderly"]
 	const TAGS: PackedStringArray = ["baby", "toddler", "child", "adolescent", "", "", "elderly"]
 	var item_idx: int = -1
 	
@@ -2011,7 +2328,6 @@ func add_ages(to: OptionButton, include_na: bool = false, select: int = 4) -> vo
 
 
 func add_genders(to: OptionButton, include_na: bool = false, select: int = 0) -> void:
-	#const GENDERS: PackedStringArray = ["Male", "Female", "Ambiguous Gender", "Andromorph", "Gynomorph", "Hermaphrodite", "Male Hermaphrodite"]
 	const ICONS: Array[Resource] = [
 		preload("res://icons/male_icon.svg"),
 		preload("res://icons/female_icon.svg"),
@@ -2113,29 +2429,32 @@ func on_media_type_selected(type: int) -> void:
 	media_type_opt_btn.select(0)
 
 
-func id_to_tags(type: int, ids: Array[String], variant: String = "", suffix: bool = true) -> Array[String]:
+func id_to_tags(type: int, ids: Array[String], variant: String = "", suffix: bool = true, color_count_exceptions: Array = []) -> Array[String]:
 	var tags: Array[String] = []
 	
 	match type:
 		1:
 			const exceptions: Dictionary = {
 				"yellow hair": "blonde hair"}
-			const coloring_exceptions: Dictionary = {
-				"multicolored pussy": "multicolored vulva"}
+			const coloring_exceptions: Dictionary = {}
+			const color_formatting: Dictionary = {
+				"spikes (anatomy)": "spikes",
+				"frill (anatomy)": "frill"}
+			
+			var color_variant: String = color_formatting[variant] if color_formatting.has(variant) else variant
 			for id in ids:
-				var tag: String = str(id, " ", variant) if suffix else str(variant, " ", id)
+				var tag: String = str(id, " ", color_variant) if suffix else str(color_variant, " ", id)
 				tags.append(exceptions[tag] if exceptions.has(tag) else tag)
-			if not variant.is_empty():
+			var color_count: int = ids.size()
+			if 0 < color_count and not color_count_exceptions.has(color_count - 1):
 				var tag: String = ""
 				match ids.size():
-					0:
-						pass
 					1:
-						tag = "monotone " + variant
+						tag = "monotone " + color_variant
 					2:
-						tag = "two tone " + variant
+						tag = "two tone " + color_variant
 					_:
-						tag = "multicolored " + variant
+						tag = "multicolored " + color_variant
 				tags.append(coloring_exceptions[tag] if coloring_exceptions.has(tag) else tag)
 		2:
 			const markings_straight: Array[String] = [
@@ -2155,5 +2474,84 @@ func id_to_tags(type: int, ids: Array[String], variant: String = "", suffix: boo
 					tags.append(id + " tattoo")
 				else:
 					tags.append(id)
-	
+		5:
+			for id in ids:
+				tags.append(id + " horn")
+		6:
+			const EXCEPTIONS: Dictionary = {
+				"abdomen": "spiked abdomen",
+				"balls": "spiked balls",
+				"penis": "spiked penis",
+				"shell": "spiked shell",
+				"tail": "spiked tail"}
+			for id in ids:
+				tags.append(
+						EXCEPTIONS[id] if EXCEPTIONS.has(id) else id + " spikes")
+		7:
+			for id in ids:
+				tags.append(
+						id + " ridge")
+		8:
+			const EXCEPTIONS: Dictionary = {
+				"sabertooth": "sabertooth (anatomy)",
+				"sharp": "sharp teeth"}
+			for id in ids:
+				tags.append(
+						EXCEPTIONS[id] if EXCEPTIONS.has(id) else id)
+		9:
+			for id in ids:
+				tags.append(id + " tongue")
+		10:
+			const EXCEPTIONS: Dictionary = {
+				"back of head": "occipital markings"}
+			for id in ids:
+				tags.append(
+						EXCEPTIONS[id] if EXCEPTIONS.has(id) else id + " markings")
+		11:
+			const EXCEPTIONS: Dictionary = {
+				"pierced": "nipple piercing"}
+			for id in ids:
+				tags.append(
+						EXCEPTIONS[id] if EXCEPTIONS.has(id) else id + " nipples")
+		12:
+			const EXCEPTIONS: Dictionary = {
+				"pierced": "areola piercing"}
+			for id in ids:
+				tags.append(
+						EXCEPTIONS[id] if EXCEPTIONS.has(id) else id + " areola")
+		13:
+			const EXCEPTIONS: Dictionary = {
+				"back": "dorsal frill"}
+			for id in ids:
+				tags.append(
+						EXCEPTIONS[id] if EXCEPTIONS.has(id) else id + " frill")
+		14:
+			const EXCEPTIONS: Dictionary = {
+				"barbed": "penile spines"}
+			for id in ids:
+				tags.append(
+						EXCEPTIONS[id] if EXCEPTIONS.has(id) else id + " penis")
+		15:
+			const EXCEPTIONS: Dictionary = {
+				"hemipenes": "hemipenes",
+				"medial ring": "medial ring",
+				"pierced": "penis piercing"}
+			for id in ids:
+				tags.append(
+						EXCEPTIONS[id] if EXCEPTIONS.has(id) else id + " penis")
+		16:
+			const EXCEPTIONS: Dictionary = {
+				"At tail base": "tail anus"}
+			for id in ids:
+				tags.append(
+						EXCEPTIONS[id] if EXCEPTIONS.has(id) else id + " anus")
+		17:
+			const EXCEPTIONS: Dictionary = {
+				"heel": "heel claw"}
+			for id in ids:
+				tags.append(
+						EXCEPTIONS[id] if EXCEPTIONS.has(id) else id + " claws")
+		18:
+			for id in ids:
+				tags.append(id + " thighs")
 	return tags

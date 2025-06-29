@@ -63,6 +63,7 @@ size_flags_vertical = 3
 theme = ExtResource("2_7owbh")
 hide_folding = true
 hide_root = true
+select_mode = 2
 
 [node name="AddTagLnEdt" type="LineEdit" parent="MainCenter/MainPanel/MainMargin/VBoxContainer/HBoxContainer/MainContainer"]
 layout_mode = 2
@@ -85,6 +86,7 @@ size_flags_vertical = 3
 theme = ExtResource("2_7owbh")
 hide_folding = true
 hide_root = true
+select_mode = 2
 
 [node name="ButtonContainer" type="HBoxContainer" parent="MainCenter/MainPanel/MainMargin/VBoxContainer"]
 layout_mode = 2

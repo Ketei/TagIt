@@ -23,8 +23,8 @@ const SEARCH_WILDCARD: String = "*"
 const DB_VERSION: int = 5
 const PROJECTS_VERSION: int = 2
 const TEMPLATES_VERSION: int = 3
-const STORAGE_VERSION: int = 2
-const TAGIT_VERSION_ARRAY: Array[int] = [3, 5, 3]
+const STORAGE_VERSION: int = 3
+const TAGIT_VERSION_ARRAY: Array[int] = [3, 6, 0]
 const MAX_PARENT_RECURSION: int = 100
 const IMAGE_LIMITS: Vector2i = Vector2i(1000, 1000)
 const LEV_DISTANCE: float = 0.75
@@ -513,10 +513,141 @@ func update_storage() -> void:
 						else:
 							property_type["id"] = property["properties"][prop_idx]
 		current_version += 1
+		log_message(
+			"[TagIt] Data storage upgraded to version " + str(current_version),
+			LogLevel.INFO)
+	
+	if current_version == 2:
+		for character in storage_data.characters:
+			if character["colors"].has("eyes") and character["colors"]["eyes"].has("properties"):
+				for property in character["colors"]["eyes"]["properties"]:
+					if property["index"] < 0 or property["id"] != "pupils":
+						continue
+					property["value"] = 0 if property["value"] == 4 else property["value"] + 1
+			if character["colors"].has("hands") and character["colors"]["hands"].has("properties"):
+				for property:Dictionary in character["colors"]["hands"]["properties"]:
+					if property["index"] < 0 or property["id"] != "fing_count":
+						continue
+					property["finger_count"] = property["fing_count"]
+					property.erase("fing_count")
+					if property["finger_count"]["value"] == 11:
+						property["finger_count"]["value"] = -1
+					break
+				
+			if character["colors"].has("pussy"):
+				character["colors"]["vulva"] = character["colors"]["pussy"]
+				character["colors"].erase("pussy")
+				if character["colors"]["vulva"].has("properties"):
+					for property in character["colors"]["vulva"]["properties"]:
+						if property["index"] < 0:
+							continue
+						if property["id"] == "shape":
+							property["id"] = "innie"
+							property["mode"] = TreeItem.CELL_MODE_CHECK
+							property["value"] = property["value"] == 0
+							break
+		current_version += 1
+		log_message(
+			"[TagIt] Data storage upgraded to version " + str(current_version),
+			LogLevel.INFO)
+	
+	if current_version == 3:
+		for character in storage_data.characters:
+			if character["traits"].has("Slit") and character["traits"]["Slit"]:
+				character["colors"]["genital slit"] = {
+					"index": 31,
+					"use": true,
+					"properties": Array([], TYPE_DICTIONARY, &"", null)}
+			
+			if character["colors"].has("tail") and character["colors"]["tail"].has("properties"):
+				for property in character["colors"]["tail"]["properties"]:
+					if property["index"] < 0 or property["id"] != "type":
+						continue
+					if property["value"] == 4:
+						property["value"] = 5
+					break
+			
+			var markings: Array[String] = []
+			
+			if character["colors"].has("balls") and character["colors"]["balls"].has("properties"):
+				for property in character["colors"]["balls"]["properties"]:
+					if property["index"] < 0 or property["id"] != "markings":
+						continue
+					if property["value"]:
+						markings.append("ball")
+					break
+			
+			if character["colors"].has("breasts") and character["colors"]["breasts"].has("properties"):
+				for property in character["colors"]["breasts"]["properties"]:
+					if property["index"] < 0 or property["id"] != "markings":
+						continue
+					if property["value"]:
+						markings.append("breast")
+					break
+			
+			if not markings.is_empty():
+				if character["colors"].has("markings") and character["colors"]["markings"].has("properties"):
+					character["colors"]["markings"]["properties"].append(
+						{
+							"index": -10,
+							"mode": 0,
+							"value": markings})
+				else:
+					if not character["colors"].has("markings"):
+						character["colors"]["markings"] = {
+							"index": 22,
+							"use": true,
+							"properties": Array([], TYPE_DICTIONARY, &"", null)}
+					elif not character["colors"]["markings"].has("properties"):
+						character["colors"]["markings"]["properties"] = Array(
+								[],
+								TYPE_DICTIONARY,
+								&"",
+								null)
+					
+					character["colors"]["properties"].append(
+							{
+								"index": -10,
+								"mode": 0,
+								"value": markings})
+			
+			
+			if character["colors"].has("anus") and character["colors"]["anus"].has("properties"):
+				for property in character["colors"]["anus"]["properties"]:
+					if property["index"] < 0 or property["id"] != "puffy":
+						continue
+					if property["value"]:
+						character["colors"]["anus"]["properties"].append(
+							{
+								"index": -16,
+								"mode": 0,
+								"value": Array(["puffy"], TYPE_STRING, &"", null)})
+					break
+			
+			if character["colors"].has("horn") and character["colors"]["horn"].has("properties"):
+				var horn_location: Array[String] = []
+				var new_properties: Array[Dictionary] = []
+				for property:Dictionary in character["colors"]["horns"]["properties"]:
+					if property["index"] < 3:
+						new_properties.append(property.duplicate())
+					else:
+						horn_location.append(property["id"])
+				new_properties.append(
+						{
+							"index": -5,
+							"mode": 0,
+							"value": horn_location})
+				character["colors"]["horn"]["properties"] = new_properties
+		
+		current_version += 1
+		log_message(
+			"[TagIt] Data storage upgraded to version " + str(current_version),
+			LogLevel.INFO)
+	
 	storage_data.storage_version = STORAGE_VERSION
 	storage_data.save()
 	log_message(
-			"[TagIt] Data storage updated to version " + str(STORAGE_VERSION),
+			"[TagIt] Data storage has been updated to the latest version",
 			LogLevel.INFO)
 
 
@@ -1847,15 +1978,85 @@ func show_splash() -> void:
 	
 	splash_node = CanvasLayer.new()
 	splash_node.layer = 2
-	add_child(splash_node)
 	var new_splash := TextureRect.new()
-	new_splash.texture = preload("res://textures/splash.png")
+	var new_bg_col := ColorRect.new()
+	
+	new_splash.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	new_splash.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	new_splash.size = get_window().size
+	
+	new_bg_col.color = Color(0.165, 0.169, 0.176)
+	new_bg_col.show_behind_parent = true
+	new_bg_col.size = new_splash.size
+	new_bg_col.mouse_filter = Control.MOUSE_FILTER_PASS
+	
+	if FileAccess.file_exists("user://custom_splash.webp"):
+		var img := Image.load_from_file("user://custom_splash.webp")
+		if img != null:
+			new_splash.texture = ImageTexture.create_from_image(img)
+		else:
+			new_splash.texture = preload("res://textures/splash.png")
+	else:
+		new_splash.texture = preload("res://textures/splash.png")
+	
+	add_child(splash_node)
+	new_splash.add_child(new_bg_col)
 	splash_node.add_child(new_splash)
+
+
+static func resize_image_to_constraints(image: Image) -> Image:
+	const target_size: Vector2i = Vector2i(1280, 720)
+	var original_size: Vector2i = image.get_size()
+	
+	# --- Step 1: Check if the image should be returned as is ---
+	# Return as is if EITHER the width is already <= target_width, OR the height is already <= target_height.
+	#if original_size.x <= target_size.x or original_size.y <= target_size.y:
+		#return image
+	
+	if original_size.x <= target_size.x or original_size.y <= target_size.y: # This should perform both comparisons
+		return image
+	
+	# --- Step 2: If we reach here, BOTH original_width > target_width AND original_height > target_height.
+	# We MUST resize (downscale).
+	# The goal is now to ensure the new dimensions are AT LEAST 1280x720.
+	# This means we identify which dimension is "more" oversized relative to the 16:9 target aspect.
+	
+	var new_size: Vector2i = Vector2i.ZERO
+	
+	var target_aspect: float = float(target_size.x) / float(target_size.y) # 1280 / 720 = 1.777...
+	var original_aspect: float = float(original_size.x) / float(original_size.y)
+	
+	if original_aspect > target_aspect:
+		# Original image is "wider" (more landscape) than 16:9.
+		# To make sure it covers 1280x720, we scale based on HEIGHT to bring it to 720.
+		# The width will then proportionally be >= 1280.
+		new_size.y = target_size.y
+		new_size.x = roundi(original_size.x * (float(target_size.y) / float(original_size.y)))
+	else:
+		# Original image is "taller" (more portrait) or has the same aspect as 16:9.
+		# To make sure it covers 1280x720, we scale based on WIDTH to bring it to 1280.
+		# The height will then proportionally be >= 720.
+		new_size.x = target_size.x
+		new_size.y = roundi(original_size.y * (float(target_size.x) / float(original_size.x)))
+	
+	# Create a duplicate of the image to perform resizing
+	var resized_image: Image = image.duplicate()
+	resized_image.resize(new_size.x, new_size.y, Image.INTERPOLATE_LANCZOS)
+	
+	return resized_image
 
 
 func hide_splash() -> void:
 	if splash_node == null:
 		return
+	var target: TextureRect = splash_node.get_child(0)
+	var tween: Tween = create_tween()
+	tween.tween_property(
+			target,
+			^"modulate",
+			Color.TRANSPARENT,
+			0.5)
+	await tween.finished
 	splash_node.queue_free()
 	splash_node = null
 

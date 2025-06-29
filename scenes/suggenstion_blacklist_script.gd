@@ -28,28 +28,39 @@ func _ready() -> void:
 	for group in group_blacklist:
 		add_group(group, groups[group]["name"])
 	
-	tags_tree.focus_exited.connect(on_tag_tree_focus_lost)
+	tags_tree.focus_exited.connect(_on_tree_focus_lost.bind(tags_tree))
+	groups_tree.focus_exited.connect(_on_tree_focus_lost.bind(groups_tree))
 	save_button.pressed.connect(on_ok_pressed)
 	cancel_button.pressed.connect(on_cancel_pressed)
 	add_tag_ln_edt.text_submitted.connect(_on_add_tag_text_submitted)
 
 
-func _input(_event: InputEvent) -> void:
-	if Input.is_action_just_pressed(&"ui_text_delete"):
-		if tags_tree.has_focus():
-			var current: TreeItem = tags_tree.get_next_selected(null)
-			while current != null:
-				var next: TreeItem = tags_tree.get_next_selected(current)
-				current.free()
-				current = next
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey:
+		if Input.is_action_just_pressed(&"ui_text_delete"):
+			if tags_tree.has_focus():
+				var current: TreeItem = tags_tree.get_next_selected(null)
+				while current != null:
+					var next: TreeItem = tags_tree.get_next_selected(current)
+					current.free()
+					current = next
+				get_viewport().set_input_as_handled()
+			elif groups_tree.has_focus():
+				var current: TreeItem = groups_tree.get_next_selected(null)
+				while current != null:
+					var next: TreeItem = groups_tree.get_next_selected(current)
+					current.free()
+					current = next
+				get_viewport().set_input_as_handled() 
+		elif event.keycode == KEY_A and event.ctrl_pressed and not event.is_echo() and (tags_tree.has_focus() or groups_tree.has_focus()):
+			var target: Tree = tags_tree if tags_tree.has_focus() else groups_tree
+			for item in target.get_root().get_children():
+				item.select(0)
 			get_viewport().set_input_as_handled()
-		elif groups_tree.has_focus():
-			var current: TreeItem = groups_tree.get_next_selected(null)
-			while current != null:
-				var next: TreeItem = groups_tree.get_next_selected(current)
-				current.free()
-				current = next
-			get_viewport().set_input_as_handled() 
+
+
+func _on_tree_focus_lost(tree: Tree) -> void:
+	tree.deselect_all()
 
 
 func _on_add_tag_text_submitted(new_tag: String) -> void:
@@ -61,10 +72,6 @@ func _on_add_tag_text_submitted(new_tag: String) -> void:
 
 func has_tag(tag: String) -> bool:
 	return suggestion_blacklist.has(tag)
-
-
-func on_tag_tree_focus_lost() -> void:
-	tags_tree.deselect_all()
 
 
 func add_tag(tag: String) -> void:

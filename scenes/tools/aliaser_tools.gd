@@ -30,6 +30,15 @@ func _ready() -> void:
 	new_alias_btn.pressed.connect(on_create_alias_pressed)
 
 
+func input(event: InputEvent) -> void:
+	if event is InputEventKey:
+		if event.pressed and not event.is_echo() and event.keycode == KEY_F and event.ctrl_pressed:
+			search_alias_ln_edt.grab_focus()
+			search_alias_ln_edt.select_all()
+			search_alias_ln_edt.caret_column = search_alias_ln_edt.text.length()
+			get_viewport().set_input_as_handled()
+
+
 func on_alias_searched(search_text: String) -> void:
 	var clean_text: String = search_text.strip_edges().to_lower()
 	aliases_tree.clear_aliases()

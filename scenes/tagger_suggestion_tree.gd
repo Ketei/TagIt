@@ -26,17 +26,22 @@ func _get_drag_data(_at_position: Vector2) -> Variant:
 		"tree": self}
 
 
-func _input(_event: InputEvent) -> void:
-	if has_focus() and Input.is_action_just_pressed(&"ui_text_delete") and get_next_selected(null) != null:
-		var removed: Array[String] = []
-		var current: TreeItem = get_next_selected(null)
-		while current != null:
-			var next = get_next_selected(current)
-			removed.append(current.get_text(0))
-			current.free()
-			current = next
-		suggestions_deleted.emit(removed)
-		get_viewport().set_input_as_handled()
+func _input(event: InputEvent) -> void:
+	if has_focus() and event is InputEventKey and not event.is_echo():
+		if Input.is_action_just_pressed(&"ui_text_delete") and get_next_selected(null) != null:
+			var removed: Array[String] = []
+			var current: TreeItem = get_next_selected(null)
+			while current != null:
+				var next = get_next_selected(current)
+				removed.append(current.get_text(0))
+				current.free()
+				current = next
+			suggestions_deleted.emit(removed)
+			get_viewport().set_input_as_handled()
+		elif event.keycode == KEY_A and event.ctrl_pressed and event.pressed:
+			for sugg in get_root().get_children():
+				sugg.select(0)
+			get_viewport().set_input_as_handled()
 
 
 func on_focus_lost() -> void:

@@ -148,3 +148,23 @@ static func levenshtein_distance(string_1: String, string_2: String) -> float:
 	var max_len:int = maxi(len_1, len_2)
 	var similarity: float = 1.0 - float(distance) / float(max_len)
 	return similarity
+
+
+static func is_alphanumerical(character: String) -> bool:
+	if character.is_empty():
+		return false
+	var char_code: int = character.unicode_at(0)
+	return Math.is_betweeni(char_code, 65, 90) or Math.is_betweeni(char_code, 97, 122) or Math.is_betweeni(char_code, 48, 57)
+
+
+static func get_string_prefix(string: String) -> String:
+	string = string.strip_edges()
+	if string.is_empty() or is_alphanumerical(string[0]):
+		return ""
+	
+	var end_index: int = 0
+	for char_idx in range(1, string.length()):
+		if not is_alphanumerical(string[char_idx]):
+			end_index = char_idx
+	
+	return string.substr(0, end_index + 1)
