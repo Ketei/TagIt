@@ -475,8 +475,12 @@ func _ready() -> void:
 	
 	if OS.has_feature("editor"): # Show splash only in editor for testing purposes.
 		SingletonManager.TagIt.show_splash()
+		
 	
-	await get_tree().create_timer(1.5).timeout
+	var splash_time: float = maxf(0.0, 2.0 - SingletonManager.TagIt.get_splash_time())
+	
+	if 0.1 < splash_time:
+		await get_tree().create_timer(splash_time).timeout
 	
 	SingletonManager.TagIt.hide_splash()
 	
@@ -1657,12 +1661,14 @@ func on_help_id_pressed(id: int) -> void:
 			if _help_pressed or _block_events:
 				return
 			_help_pressed = true
+			_block_events = true
 			var new_help := ABOUT_WINDOW.instantiate()
 			add_child(new_help)
 			await new_help.close_pressed
 			new_help.visible = false
 			new_help.queue_free()
 			_help_pressed = false
+			_block_events = false
 
 
 func instantiate_blacklist() -> void:
