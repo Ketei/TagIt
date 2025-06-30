@@ -2,6 +2,7 @@ extends TagItTool
 
 
 const PORT_CONFIRMATION_DIALOG = preload("res://scenes/dialogs/fetcher_confirmation_dialog.tscn")
+const CHAR_CURRENT_VERSION: int = 1
 var current_selected: TreeItem = null:
 	set(new_current):
 		current_selected = new_current
@@ -99,6 +100,7 @@ func _ready() -> void:
 		new_trait.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
 		new_trait.set_text(0, body_trait["title"])
 		new_trait.set_editable(0, true)
+		new_trait.set_metadata(0, body_trait["tag"])
 	
 	idx = -1
 	for bod_name:Dictionary in TagItWizard.BODY_TYPES:
@@ -232,22 +234,23 @@ func _ready() -> void:
 					"index": idx,
 					"tag": bod_name["tag"]})
 	
-	idx = -1
 	for wear_item in TagItWizard.CLOTHING:
-		idx += 1
 		var clothing_part: TreeItem = clothing_tree.get_root().create_child()
 		clothing_part.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
 		clothing_part.set_text(0, wear_item["section"])
 		clothing_part.set_editable(0, true)
-		clothing_part.set_metadata(0, idx)
-		var sub_idx: int = -1
-		for subitem in wear_item["options"]:
-			sub_idx += 1
+		if wear_item.has("tooltip") and not wear_item["tooltip"].is_empty():
+			clothing_part.set_tooltip_text(0, wear_item["tooltip"])
+		clothing_part.set_metadata(0, wear_item["tag"])
+		for subitem:Dictionary in wear_item["options"]:
 			var new_sub: TreeItem = clothing_part.create_child()
 			new_sub.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
 			new_sub.set_editable(0, true)
-			new_sub.set_text(0, subitem)
-			new_sub.set_metadata(0, sub_idx)
+			new_sub.set_text(0, subitem["title"])
+			new_sub.set_metadata(0, subitem["tag"])
+			if subitem.has("tooltip") and not subitem["tooltip"].is_empty():
+				new_sub.set_tooltip_text(0, subitem["tooltip"])
+				
 		clothing_part.collapsed = true
 		clothing_part.disable_folding = true
 	
@@ -423,9 +426,10 @@ func _on_characters_option_pressed(id: int) -> void:
 						export_chars.append(chara)
 						break
 			var chars_json: Dictionary = {}
+			
 			for character in export_chars:
 				var char_data: Dictionary = {}
-				char_data["_version"] = 0
+				char_data["_version"] = CHAR_CURRENT_VERSION
 				char_data["body_type"] = character.body_type
 				char_data["species"] = character.species
 				char_data["gender"] = character.gender
@@ -465,6 +469,77 @@ func on_file_finished(path: String, dialog: FileDialog, data: Dictionary, succes
 	dialog.queue_free()
 
 
+func traits_to_latest(data: Dictionary, current_version: int) -> Dictionary:
+	var fixed_data: Dictionary = {}
+	if current_version == 0:
+		var trait_map: Dictionary = {}
+		for trait_section in TagItWizard.BODY_TRAITS:
+			trait_map[trait_section["title"]] = trait_section["tag"]
+		
+		for data_key in data:
+			if typeof(data_key) != TYPE_STRING or not trait_map.has(data_key) or typeof(data[data_key]) != TYPE_BOOL:
+				continue
+			fixed_data[trait_map[data_key]] = data[data_key]
+	
+	return fixed_data
+
+
+func clothing_to_latest(data: Dictionary, current_version: int) -> Dictionary:
+	var fixed_data: Dictionary = {}
+	if current_version == 0:
+		var key_map: Dictionary = {}
+		
+		for apparel_section in TagItWizard.CLOTHING:
+			var clothing: Dictionary = {}
+			for clothing_piece in apparel_section["options"]:
+				clothing[clothing_piece["title"]] = clothing_piece["tag"]
+			
+			key_map[apparel_section["section"]] = {
+				"id": apparel_section["tag"],
+				"options": clothing.duplicate()}
+		
+		for apparel_section in data:
+			if typeof(apparel_section) != TYPE_STRING:
+				continue
+			
+			if not key_map.has(apparel_section):
+				continue
+			
+			if typeof(data[apparel_section]) != TYPE_DICTIONARY:
+				continue
+			
+			if not data[apparel_section].has_all(["active", "subtypes"]):
+				continue
+			
+			if typeof(data[apparel_section]["active"]) != TYPE_BOOL:
+				continue
+			
+			if typeof(data[apparel_section]["subtypes"]) != TYPE_DICTIONARY:
+				continue
+			
+			var subtype_data: Dictionary = {}
+			
+			for subtype_title in data[apparel_section]["subtypes"]:
+				if typeof(subtype_title) != TYPE_STRING:
+					continue
+				
+				if not key_map[apparel_section]["options"].has(subtype_title):
+					continue
+				
+				if typeof(data[apparel_section]["subtypes"][subtype_title]) != TYPE_BOOL:
+					continue
+				
+				subtype_data[key_map[apparel_section]["options"][subtype_title]] = data[apparel_section]["subtypes"][subtype_title]
+			
+			var new_section: Dictionary = {
+				"active": data[apparel_section]["active"],
+				"subtypes": subtype_data.duplicate()}
+
+			fixed_data[key_map[apparel_section]["id"]] = new_section.duplicate()
+	
+	return fixed_data
+
+
 func _on_import_characters_finished(path: String, dialog: FileDialog, success: bool) -> void:
 	if not success:
 		dialog.queue_free()
@@ -497,9 +572,21 @@ func _on_import_characters_finished(path: String, dialog: FileDialog, success: b
 					if data.has("age_lore") and typeof(data["age_lore"]) in NUM_TYPES:
 						character.age_lore = int(data["age_lore"])
 					if data.has("apparel") and typeof(data["apparel"]) == TYPE_DICTIONARY:
-						character.set_apparel(data["apparel"])
+						if data["_version"] == CHAR_CURRENT_VERSION:
+							character.set_apparel(data["apparel"])
+						else:
+							character.set_apparel(
+									clothing_to_latest(
+											data["apparel"],
+											data["_version"]))
 					if data.has("traits") and typeof(data["traits"]) == TYPE_DICTIONARY:
-						character.set_traits(data["traits"])
+						if data["_version"] == CHAR_CURRENT_VERSION:
+							character.set_traits(data["traits"])
+						else:
+							character.set_traits(
+									traits_to_latest(
+											data["traits"],
+											data["_version"]))
 					if data.has("properties") and typeof(data["properties"]) == TYPE_DICTIONARY:
 						character.set_properties(data["properties"])
 					
@@ -681,25 +768,27 @@ func load_character(index: int) -> void:
 								break
 	
 	for trait_enabled in traits_tree.get_root().get_children():
-		if data.traits.has(trait_enabled.get_text(0)):
+		if data.traits.has(trait_enabled.get_metadata(0)):
 			trait_enabled.set_checked(
 					0,
-					data.traits[trait_enabled.get_text(0)])
+					data.traits[trait_enabled.get_metadata(0)])
 	
 	for apparel_item in clothing_tree.get_root().get_children():
-		if not data.apparel.has(apparel_item.get_text(0)):
+		if not data.apparel.has(apparel_item.get_metadata(0)):
 			continue
+		
 		apparel_item.set_checked(
 				0,
-				data.apparel[apparel_item.get_text(0)]["active"])
+				data.apparel[apparel_item.get_metadata(0)]["active"])
+		
 		for specific in apparel_item.get_children():
-			if data.apparel[apparel_item.get_text(0)]["subtypes"].has(specific.get_text(0)):
+			if data.apparel[apparel_item.get_metadata(0)]["subtypes"].has(specific.get_metadata(0)):
 				specific.set_checked(
 						0,
-						data.apparel[apparel_item.get_text(0)]["subtypes"][specific.get_text(0)])
+						data.apparel[apparel_item.get_metadata(0)]["subtypes"][specific.get_metadata(0)])
 		
-		apparel_item.disable_folding = not data.apparel[apparel_item.get_text(0)]["active"]
-		if not apparel_item.collapsed and not data.apparel[apparel_item.get_text(0)]["active"]:
+		apparel_item.disable_folding = not data.apparel[apparel_item.get_metadata(0)]["active"]
+		if not apparel_item.collapsed and not data.apparel[apparel_item.get_metadata(0)]["active"]:
 			apparel_item.collapsed = true
 
 
@@ -745,17 +834,17 @@ func save_character():
 	var used_clothings: Dictionary = {}
 	
 	for clothing in clothing_tree.get_root().get_children():
-		used_clothings[clothing.get_text(0)] = {
+		used_clothings[clothing.get_metadata(0)] = {
 			"active": clothing.is_checked(0),
 			"subtypes": {}}
 		
 		for subtype in clothing.get_children():
-			used_clothings[clothing.get_text(0)]["subtypes"][subtype.get_text(0)] = subtype.is_checked(0)
+			used_clothings[clothing.get_metadata(0)]["subtypes"][subtype.get_metadata(0)] = subtype.is_checked(0)
 	
 	var body_traits: Dictionary = {}
 	
 	for body_trait in traits_tree.get_root().get_children():
-		body_traits[body_trait.get_text(0)] = body_trait.is_checked(0)
+		body_traits[body_trait.get_metadata(0)] = body_trait.is_checked(0)
 	
 	var new_sheet: TagItStorage.WizardCharacter = TagItStorage.get_empty_character()
 	new_sheet.character_tag = current_selected.get_text(0)
