@@ -37,6 +37,8 @@ signal drag_ended()
 ## Defines if this node can not be dragged or resized beyond the parent control's bounds. In [InterpolatedFreeContainer], this is forced.
 @export var constrain_rect_to_parent := true
 
+@export var allow_resizing: bool = true
+
 var _mouse_over := false
 var _mouse_dragging := false
 var _mouse_dragging_direction := Vector2i.ZERO
@@ -171,7 +173,7 @@ func _gui_input(event : InputEvent, called_by : Draggable = null):
 
 				_affected_by_multi_selection.queue_redraw()
 
-		elif resize_margin == Vector2.ZERO:
+		elif resize_margin == Vector2.ZERO or not allow_resizing:
 			_mouse_dragging_direction = Vector2i.ZERO
 			mouse_default_cursor_shape = CURSOR_ARROW
 
@@ -182,14 +184,14 @@ func _gui_input(event : InputEvent, called_by : Draggable = null):
 				else 0
 				if event.position.x <= size.x - resize_margin.x
 				else 1
-			)
+			) if allow_resizing else 0
 			_mouse_dragging_direction.y = (
 				-1
 				if event.position.y < resize_margin.y
 				else 0
 				if event.position.y <= size.y - resize_margin.y
 				else 1
-			)
+			) if allow_resizing else 0
 			match _mouse_dragging_direction.y + _mouse_dragging_direction.y + _mouse_dragging_direction.y + _mouse_dragging_direction.x:
 				-4: mouse_default_cursor_shape = CURSOR_FDIAGSIZE
 				-3: mouse_default_cursor_shape = CURSOR_VSIZE
