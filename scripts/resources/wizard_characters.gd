@@ -102,23 +102,35 @@ class WizardCharacter extends RefCounted:
 	
 	
 	func set_apparel(data: Dictionary) -> void:
-		for property in data:
+		for property in data: # data should have the same structure we're trying to set to apparel
 			if typeof(property) != TYPE_STRING or typeof(data[property]) != TYPE_DICTIONARY or not data[property].has_all(["active", "subtypes"]):
 				continue
+			
+			if typeof(data[property]["active"]) != TYPE_BOOL:
+				continue
+		
+			if typeof(data[property]["subtypes"]) != TYPE_DICTIONARY:
+				continue
+			
 			var subtypes: Dictionary = {}
+			
 			for subtype in data[property]["subtypes"]:
-				if typeof(data[property]["subtypes"][subtype]) == TYPE_BOOL:
-					subtypes[subtype] = data[property]["subtypes"][subtype]
+				if typeof(data[property]["subtypes"][subtype]) != TYPE_BOOL:
+					continue
+				
+				subtypes[subtype] = data[property]["subtypes"][subtype]
+			
 			apparel[property] = {
 				"active": data[property]["active"],
 				"subtypes": subtypes.duplicate()}
-			
 	
 	
 	func set_traits(data: Dictionary) -> void:
+		traits.clear()
 		for char_trait in data:
-			if typeof(data[char_trait]) == TYPE_BOOL:
-				traits[char_trait] = data[char_trait]
+			if typeof(char_trait) != TYPE_STRING or typeof(data[char_trait]) != TYPE_BOOL:
+				continue
+			traits[char_trait] = data[char_trait]
 	
 	
 	func set_properties(data: Dictionary) -> void:
