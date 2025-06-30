@@ -16,39 +16,115 @@ const CLOTHING: Array[Dictionary] = [
 		"section": "Armwear",
 		"tag": "armwear",
 		"only_tag": "armwear only",
+		"tooltip": "Articles of clothing designed to cover a considerable part of the arm and sometimes the hands.",
 		"options": [
-			"Arm warmers",
-			"Bridal gauntlets",
-			"Detached sleeves",
-			"Elbow gloves",
-			"Elbow gloves",
-			"Fishnet armwear",
-			"Wrist warmers"],
+			{
+				"title": "Arm warmers",
+				"tag": "arm warmers"
+			},
+			{
+				"title": "Bridal gauntlets",
+				"tag": "bridal gauntlets"
+			},
+			{
+				"title": "Detached sleeves",
+				"tag": "detached sleeves"
+			},
+			{
+				"title": "Elbow gloves",
+				"tag": "elbow gloves"
+			},
+			{
+				"title": "Fishnet armwear",
+				"tag": "fishnet armwear"
+			},
+			{
+				"title": "Wrist warmers",
+				"tag": "wrist warmers"
+			}
+		],
 		"score": 10
 	},
 	{
 		"section": "Bottomwear",
 		"tag": "bottomwear",
 		"only_tag": "bottomwear only",
+		"tooltip": "Clothing worn on the lower and outermost part of the body around the pelvic region.",
 		"options": [
-			"Loincloth",
-			"Pants",
-			"Shorts",
-			"Skirt",],
+			{
+				"title": "Loincloth",
+				"tag": "loincloth"
+			},
+			{
+				"title": "Pants",
+				"tag": "pants"
+			},
+			{
+				"title": "Shorts",
+				"tag": "shorts"
+			},
+			{
+				"title": "Skirt",
+				"tag": "skirt"
+			}
+		],
 		"score": 150
+	},
+	{
+		"section": "Chastity",
+		"tag": "chastity device",
+		"only_tag": "chastity device only",
+		"tooltip": "A lockable BDSM device that limits access to the genitals.",
+		"options": [
+			{
+				"title": "Chastity cage",
+				"tag": "chastity cage"
+			},
+			{
+				"title": "Chastity belt",
+				"tag": "chastity belt"
+			},
+			{
+				"title": "Chastity bra",
+				"tag": "chastity bra"
+			}
+		],
+		"score": 0
 	},
 	{
 		"section": "Collar",
 		"tag": "collar",
 		"only_tag": "collar only",
+		"tooltip": "A device that snaps, buckles, and/or otherwise secures/locks around one's neck.",
 		"options": [
-			"Chain collar",
-			"Frilly collar",
-			"Leather collar",
-			"Metal collar",
-			"Shock collar",
-			"Spiked collar",
-			"Studded collar",
+			{
+				"title": "Chain collar",
+				"tag": "chain collar"
+			},
+			{
+				"title": "Frilly collar",
+				"tag": "frilly collar"
+			},
+			{
+				"title": "Leather collar",
+				"tag": "leather collar"
+			},
+			{
+				"title": "Metal collar",
+				"tag": "metal collar"
+			},
+			{
+				"title": "Shock collar",
+				"tag": "shock collar"
+			},
+			{
+				"title": "Spiked collar",
+				"tag": "spiked collar"
+			},
+			{
+				"title": "Studded collar",
+				"tag": "studded collar"
+			}
 		],
 		"score": 0
 	},
@@ -56,11 +132,24 @@ const CLOTHING: Array[Dictionary] = [
 		"section": "Diaper",
 		"tag": "diaper",
 		"only_tag": "diaper only",
+		"tooltip": "A type of underwear, recognized by its puffed out appearance, that allows one to release waste without the use of a toilet.",
 		"options": [
-			"Abuniverse",
-			"Cloth diaper",
-			"Frilly diaper",
-			"Pull-ups (diaper)",
+			{
+				"title": "Abuniverse",
+				"tag": "abuniverse"
+			},
+			{
+				"title": "Cloth diaper",
+				"tag": "cloth diaper"
+			},
+			{
+				"title": "Frilly diaper",
+				"tag": "frilly diaper"
+			},
+			{
+				"title": "Pull-ups (diaper)",
+				"tag": "pull-ups (diaper)"
+			}
 		],
 		"score": 10
 	},
@@ -68,16 +157,44 @@ const CLOTHING: Array[Dictionary] = [
 		"section": "Eyewear",
 		"tag": "eyewear",
 		"only_tag": "eyewear only",
+		"tooltip": "Items designed to be worn over your eyes, usually to protect them.",
 		"options": [
-			"Blinders",
-			"Blindfold",
-			"Eye patch",
-			"Glasses",
-			"Goggles",
-			"Monocle",
-			"Shutter shades",
-			"Sunglasses",
-			"Visor",
+			{
+				"title": "Blinders",
+				"tag": "blinders"
+			},
+			{
+				"title": "Blindfold",
+				"tag": "blindfold"
+			},
+			{
+				"title": "Eye patch",
+				"tag": "eye patch"
+			},
+			{
+				"title": "Glasses",
+				"tag": "glasses"
+			},
+			{
+				"title": "Goggles",
+				"tag": "goggles"
+			},
+			{
+				"title": "Monocle",
+				"tag": "monocle"
+			},
+			{
+				"title": "Shutter shades",
+				"tag": "shutter shades"
+			},
+			{
+				"title": "Sunglasses",
+				"tag": "sunglasses"
+			},
+			{
+				"title": "Visor",
+				"tag": "visor"
+			}
 		],
 		"score": 0
 	},
@@ -85,93 +202,422 @@ const CLOTHING: Array[Dictionary] = [
 		"section": "Footwear",
 		"tag": "footwear",
 		"only_tag": "footwear only",
+		"tooltip": "A clothing item typically worn on the feet",
 		"options": [
-			"Boots",
-			"Crocs",
-			"Fishnet footwear",
-			"Foot wraps",
-			"High heels",
-			"Mary janes",
-			"Sandals",
-			"Slippers",
-			"Sneakers",
-			"Socks",],
+			{
+				"title": "Boots",
+				"tag": "boots"
+			},
+			{
+				"title": "Crocs",
+				"tag": "crocs"
+			},
+			{
+				"title": "Fishnet footwear",
+				"tag": "fishnet footwear"
+			},
+			{
+				"title": "Foot wraps",
+				"tag": "foot wraps"
+			},
+			{
+				"title": "High heels",
+				"tag": "high heels"
+			},
+			{
+				"title": "Mary janes",
+				"tag": "mary janes"
+			},
+			{
+				"title": "Sandals",
+				"tag": "sandals"
+			},
+			{
+				"title": "Slippers",
+				"tag": "slippers"
+			},
+			{
+				"title": "Sneakers",
+				"tag": "sneakers"
+			},
+			{
+				"title": "Socks",
+				"tag": "socks"
+			}
+		],
 		"score": 10
 	},
 	{
 		"section": "Handwear",
 		"tag": "handwear",
 		"only_tag": "handwear only",
-		"options":[
-			"Boxing gloves",
-			"Fishnet handwear",
-			"Gloves",
-			"Mittens",
-			"Oven mitts",],
+		"tooltip": "Clothing that is designed to be worn on hands.",
+		"options": [
+			{
+				"title": "Boxing gloves",
+				"tag": "boxing gloves"
+			},
+			{
+				"title": "Fishnet handwear",
+				"tag": "fishnet handwear"
+			},
+			{
+				"title": "Gloves",
+				"tag": "gloves"
+			},
+			{
+				"title": "Mittens",
+				"tag": "mittens"
+			},
+			{
+				"title": "Oven mitts",
+				"tag": "oven mitts"
+			}
+		],
 		"score": 10
 	},
 	{
 		"section": "Headwear",
 		"tag": "headwear",
 		"only_tag": "headwear only",
+		"tooltip": "Articles of clothing worn on the head.",
 		"options": [
-			"Hat",
-			"Hat feather",
-			"Headkerchief",
-			"Headscarf",
-			"Hood",],
+			{
+				"title": "Hat",
+				"tag": "hat"
+			},
+			{
+				"title": "Hat feather",
+				"tag": "hat feather"
+			},
+			{
+				"title": "Headkerchief",
+				"tag": "headkerchief"
+			},
+			{
+				"title": "Headscarf",
+				"tag": "headscarf"
+			},
+			{
+				"title": "Hood",
+				"tag": "hood"
+			}
+		],
 		"score": 10
 	},
 	{
-		"section": "Legwear",
-		"tag": "Legwear",
-		"only_tag": "legwear only",
+		"section": "Headgear",
+		"tag": "headgear",
+		"only_tag": "headgear only",
+		"tooltip": "An article of non-clothing headpiece designed to be worn on the head",
 		"options": [
-			"Fishnet legwear",
-			"Knee highs",
-			"Leggings",
-			"Leg warmers",
-			"Leg wraps",
-			"Pantyhose",
-			"Stockings",
-			"Tights",
-			"Thigh highs",],
+			{
+				"title": "Crown",
+				"tag": "crown"
+			},
+			{
+				"title": "Headset",
+				"tag": "headset"
+			},
+			{
+				"title": "Headphones",
+				"tag": "headphones"
+			},
+			{
+				"title": "Helmet",
+				"tag": "helmet"
+			}
+		],
+		"score": 10
+	},
+	{
+		"section": "Jewelry",
+		"tag": "jewelry",
+		"only_tag": "jewelry only",
+		"tooltip": "Accessories usually worn as vanity objects.",
+		"options": [
+			{
+				"title": "armlet",
+				"tag": "armlet"
+			},
+			{
+				"title": "anklet",
+				"tag": "anklet"
+			},
+			{
+				"title": "bangle",
+				"tag": "bangle",
+				"tooltip": "A rigid bracelet or anklet."
+			},
+			{
+				"title": "bracelet",
+				"tag": "bracelet"
+			},
+			{
+				"title": "brooch",
+				"tag": "brooch"
+			},
+			{
+				"title": "circlet",
+				"tag": "circlet"
+			},
+			{
+				"title": "medallion",
+				"tag": "medallion"
+			},
+			{
+				"title": "necklace",
+				"tag": "necklace"
+			},
+			{
+				"title": "pendant",
+				"tag": "pendant"
+			},
+			{
+				"title": "ring (jewelry)",
+				"tag": "ring (jewelry)"
+			},
+			{
+				"title": "torc",
+				"tag": "torc",
+				"tooltip": "A large, single-piece, rigid or stiff neck ring in metal\nThe great majority are open at the front"
+			},
+			{
+				"title": "usekh",
+				"tag": "usekh",
+				"tooltip": "A type of broad collar or necklace often depicted worn by egyptian gods."
+			},
+			{
+				"title": "pectoral (jewelry)",
+				"tag": "pectoral (jewelry)",
+				"tooltip": "Egyptian jewelry worn upon the neck or chest.\nUnlike the usekh it doesn't cover fully the shoulders."
+			},
+			{
+				"title": "tribal jewelry",
+				"tag": "tribal jewelry"
+			}
+		],
+		"score": 0
+	},
+	{
+		"section": "Legwear",
+		"tag": "legwear",
+		"only_tag": "legwear only",
+		"legwear": "Garments worn on legs",
+		"options": [
+			{
+				"title": "Fishnet legwear",
+				"tag": "fishnet legwear"
+			},
+			{
+				"title": "Knee highs",
+				"tag": "knee highs"
+			},
+			{
+				"title": "Leggings",
+				"tag": "leggings"
+			},
+			{
+				"title": "Leg warmers",
+				"tag": "leg warmers"
+			},
+			{
+				"title": "Leg wraps",
+				"tag": "leg wraps"
+			},
+			{
+				"title": "Pantyhose",
+				"tag": "pantyhose"
+			},
+			{
+				"title": "Stockings",
+				"tag": "stockings"
+			},
+			{
+				"title": "Tights",
+				"tag": "tights"
+			},
+			{
+				"title": "Thigh highs",
+				"tag": "thigh highs"
+			}
+		],
+		"score": 10
+	},
+	{
+		"section": "Tail Accessory",
+		"tag": "tail accessory",
+		"only_tag": "accessories only",
+		"tooltip": "Decorative accessory placed on tail",
+		"options": [
+			{
+				"title": "Tail bag",
+				"tag": "tail bag"
+			},
+			{
+				"title": "Tailband",
+				"tag": "tailband"
+			},
+			{
+				"title": "Tail bell",
+				"tag": "tail bell"
+			},
+			{
+				"title": "Tail belt",
+				"tag": "tail belt"
+			},
+			{
+				"title": "Tail collar",
+				"tag": "tail collar"
+			},
+			{
+				"title": "Tail garter",
+				"tag": "tail garter"
+			},
+			{
+				"title": "Tail ornament",
+				"tag": "tail ornament"
+			},
+			{
+				"title": "Tail ribbon",
+				"tag": "tail ribbon"
+			}
+		],
+		"score": 0
+	},
+	{
+		"section": "Tail Jewelry",
+		"tag": "tail jewelry",
+		"only_tag": "jewelry only",
+		"tooltip": "Jewelry that is placed on the tail",
+		"options": [
+			{
+				"title": "Tail bangle",
+				"tag": "tail bangle",
+				"tooltip": "A rigid ring worn on the tail."
+			},
+			{
+				"title": "Tail bracelet",
+				"tag": "tail bracelet"
+			},
+			{
+				"title": "Tail ring",
+				"tag": "tail ring"
+			},
+			{
+				"title": "Tail ring (piercing)",
+				"tag": "tail ring (piercing)"
+			}
+		],
+		"score": 0
+	},
+	{
+		"section": "Tailwear",
+		"tag": "tail clothing",
+		"only_tag": "Clothing designed to be worn on the tail",
+		"options": [
+			{
+				"title": "Fishnet Tailwear",
+				"tag": "fishnet tailwear"
+			},
+			{
+				"title": "Tail sleeve",
+				"tag": "tail sleeve"
+			},
+			{
+				"title": "Tail stocking",
+				"tag": "tail stocking"
+			},
+			{
+				"title": "Tail warmer",
+				"tag": "tail warmer"
+			}
+		],
 		"score": 10
 	},
 	{
 		"section": "Topwear",
 		"tag": "topwear",
 		"only_tag": "topwear_only",
+		"tooltip": "A garment that covers the upper body.",
 		"options": [
-			"Coat",
-			"Jacket",
-			"Shirt",
-			"Sweater",
-			"Vest"],
+			{
+				"title": "Coat",
+				"tag": "coat"
+			},
+			{
+				"title": "Jacket",
+				"tag": "jacket"
+			},
+			{
+				"title": "Shirt",
+				"tag": "shirt"
+			},
+			{
+				"title": "Sweater",
+				"tag": "sweater"
+			},
+			{
+				"title": "Vest",
+				"tag": "vest"
+			}
+		],
 		"score": 150
 	},
 	{
 		"section": "Underwear",
 		"tag": "underwear",
 		"only_tag": "underwear only",
+		"tooltip": "Clothing designed to be worn underneath other clothing",
 		"options": [
-			"Boxer briefs",
-			"Boxers (clothing)",
-			"Boy shorts",
-			"Bra",
-			"Briefs",
-			"Jockstrap",
-			"Lingerie",
-			"Panties",
-			"Thong",],
+			{
+				"title": "Boxer briefs",
+				"tag": "boxer briefs"
+			},
+			{
+				"title": "Boxers (clothing)",
+				"tag": "boxers (clothing)"
+			},
+			{
+				"title": "Boy shorts",
+				"tag": "boy shorts"
+			},
+			{
+				"title": "Bra",
+				"tag": "bra"
+			},
+			{
+				"title": "Briefs",
+				"tag": "briefs"
+			},
+			{
+				"title": "Jockstrap",
+				"tag": "jockstrap"
+			},
+			{
+				"title": "Lingerie",
+				"tag": "lingerie"
+			},
+			{
+				"title": "Panties",
+				"tag": "panties"
+			},
+			{
+				"title": "Thong",
+				"tag": "thong"
+			}
+		],
 		"score": 50
-	},
-	]
+	}
+]
 const BODY_TRAITS: Array[Dictionary] = [
 	{"title": "Aroused", "tag": "aroused"},
 	{"title": "Blushing", "tag": "blush"},
 	{"title": "Bound", "tag": "bound"},
 	{"title": "Dominant", "tag": "dominant"},
+	{"title": "Musky", "tag": "musk"},
+	{"title": "Muscular", "tag": "muscular"},
+	{"title": "Pregnant", "tag": "pregnant"},
 	{"title": "Speaking", "tag": "dialogue"},
 	{"title": "Submissive", "tag": "submissive"},
 	{"title": "Sweating", "tag": "sweat"},
@@ -406,6 +852,16 @@ const BODY_TYPES: Array[Dictionary] = [
 		"exclude_values": [0],
 		"properties": [
 			{
+				"id": "count",
+				"name": "Ear Count",
+				"mode": TreeItem.CELL_MODE_RANGE,
+				"formats": {"not_applicable": "", "zero": "earless", "singular": "1 ear", "plural": "{0} ears", "multi_tag": "multi ear", "multi_tag_count": 3},
+				"exceptions": [2],
+				"range": [-1, 20],
+				"value": 2,
+				"tooltip": ["How many ears the character has", "Set to -1 for N/A"]
+			},
+			{
 				"id": "size",
 				"name": "Size",
 				"mode": TreeItem.CELL_MODE_RANGE,
@@ -437,7 +893,6 @@ const BODY_TYPES: Array[Dictionary] = [
 				"text": "Monotone,Two Tones,Multicolored,N/A",
 				"tags": ["monotone inner ear", "two tone inner ear", "multicolored inner ear", ""],
 				"value": 0
-				
 			}
 		]
 	},
@@ -449,7 +904,7 @@ const BODY_TYPES: Array[Dictionary] = [
 		"properties": [
 			{
 				"id": "count",
-				"name": "Eye amount",
+				"name": "Eye count",
 				"mode": TreeItem.CELL_MODE_RANGE,
 				"formats": {"not_applicable": "", "zero": "eyeless", "singular": "1 eye", "plural": "{0} eyes", "multi_tag": "multi eye", "multi_tag_count": 3},
 				"exceptions": [2],
@@ -1266,22 +1721,25 @@ func _ready() -> void:
 	clothing_tree.get_root().collapsed = true
 	body_traits.get_root().collapsed = true
 	
-	var idx: int = -1
-	for wear_item in CLOTHING:
-		idx += 1
+	for wear_item:Dictionary in CLOTHING:
 		var clothing_part: TreeItem = clothing_tree.get_root().create_child()
 		clothing_part.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
 		clothing_part.set_text(0, wear_item["section"])
 		clothing_part.set_editable(0, true)
-		clothing_part.set_metadata(0, idx)
-		var sub_idx: int = -1
-		for subitem in wear_item["options"]:
-			sub_idx += 1
+		if wear_item.has("tooltip") and not wear_item["tooltip"].is_empty():
+			clothing_part.set_tooltip_text(0, wear_item["tooltip"])
+		# TODO Check what this change involves on other parts of the code.
+		clothing_part.set_metadata(0, wear_item["tag"]) # Changed idx to tag for id
+		
+		for subitem:Dictionary in wear_item["options"]:
 			var new_sub: TreeItem = clothing_part.create_child()
 			new_sub.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
 			new_sub.set_editable(0, true)
-			new_sub.set_text(0, subitem)
-			new_sub.set_metadata(0, sub_idx)
+			new_sub.set_text(0, subitem["title"])
+			# TODO check what this change involves.
+			new_sub.set_metadata(0, subitem["tag"]) # Using tag as ID now
+			if subitem.has("tooltip") and not subitem["tooltip"].is_empty():
+				new_sub.set_tooltip_text(0, subitem["tooltip"])
 		clothing_part.collapsed = true
 		clothing_part.disable_folding = true
 	
@@ -1289,6 +1747,7 @@ func _ready() -> void:
 		var new_trait: TreeItem = body_traits.get_root().create_child()
 		new_trait.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
 		new_trait.set_text(0, body_trait["title"])
+		new_trait.set_metadata(0, body_trait["tag"])
 		new_trait.set_editable(0, true)
 	
 	next_button.pressed.connect(on_next_pressed)
@@ -1550,25 +2009,25 @@ func apply_character(character_index: int) -> void:
 							break
 	
 	for trait_enabled in body_traits.get_root().get_children():
-		if data.traits.has(trait_enabled.get_text(0)):
+		if data.traits.has(trait_enabled.get_metadata(0)):
 			trait_enabled.set_checked(
 					0,
-					data.traits[trait_enabled.get_text(0)])
+					data.traits[trait_enabled.get_metadata(0)])
 	
 	for apparel_item in clothing_tree.get_root().get_children():
-		if not data.apparel.has(apparel_item.get_text(0)):
+		if not data.apparel.has(apparel_item.get_metadata(0)):
 			continue
 		apparel_item.set_checked(
 				0,
-				data.apparel[apparel_item.get_text(0)]["active"])
+				data.apparel[apparel_item.get_metadata(0)]["active"])
 		for specific in apparel_item.get_children():
-			if data.apparel[apparel_item.get_text(0)]["subtypes"].has(specific.get_text(0)):
+			if data.apparel[apparel_item.get_metadata(0)]["subtypes"].has(specific.get_metadata(0)):
 				specific.set_checked(
 						0,
-						data.apparel[apparel_item.get_text(0)]["subtypes"][specific.get_text(0)])
+						data.apparel[apparel_item.get_metadata(0)]["subtypes"][specific.get_metadata(0)])
 		
-		apparel_item.disable_folding = not data.apparel[apparel_item.get_text(0)]["active"]
-		if not apparel_item.collapsed and not data.apparel[apparel_item.get_text(0)]["active"]:
+		apparel_item.disable_folding = not data.apparel[apparel_item.get_metadata(0)]["active"]
+		if not apparel_item.collapsed and not data.apparel[apparel_item.get_metadata(0)]["active"]:
 			apparel_item.collapsed = true
 
 
@@ -1580,11 +2039,11 @@ func set_project_texture(new_texture: Texture2D) -> void:
 func on_minimize_button_pressed() -> void:
 	if image_panel.visible:
 		current_project_size = project_texture_container.size
-		project_texture_container.set_deferred(&"size", Vector2(310, 34))
 		project_texture_container.allow_resizing = false
+		project_texture_container.set_deferred(&"size", Vector2(320, 34))
 	else:
-		project_texture_container.size = current_project_size
 		project_texture_container.allow_resizing = true
+		project_texture_container.size = current_project_size
 	image_panel.visible = not image_panel.visible
 
 
@@ -1724,18 +2183,31 @@ func create_character(default_name: String = "") -> void:
 	new_character.set_text(0, "Unknown Character" if default_name.is_empty() else default_name)
 	new_character.add_button(0, BIN_ICON, 0, false, "Delete Character")
 	var clothing_array: Array[Dictionary] = []
-	clothing_array.resize(clothing_tree.get_root().get_child_count())
 	
-	var trait_bools: Array[bool] = []
-	trait_bools.resize(body_traits.get_root().get_child_count())
+	for clothing_section in clothing_tree.get_root().get_children():
+		var clothing_part: Dictionary = {
+			"id": clothing_section.get_metadata(0),
+			"active": false,
+			"subtypes": Array([], TYPE_DICTIONARY, &"", null)}
+		
+		for subtype in clothing_section.get_children():
+			clothing_part["subtypes"].append(
+				{
+					"id": subtype.get_metadata(0),
+					"active": false})
+		
+		clothing_array.append(clothing_part)
 	
-	var cloth_idx: int = -1
-	for dict in clothing_array:
-		cloth_idx += 1
-		dict["active"] = false
-		var subtype: Array[bool] = []
-		subtype.resize(clothing_tree.get_root().get_child(cloth_idx).get_child_count())
-		dict["subtypes"] = subtype
+	#var trait_dict: Dictionary = {}
+	#trait_bools.resize(body_traits.get_root().get_child_count())
+	
+	#var cloth_idx: int = -1
+	#for dict in clothing_array:
+		#cloth_idx += 1
+		#dict["active"] = false
+		#var subtype: Array[bool] = []
+		#subtype.resize(clothing_tree.get_root().get_child(cloth_idx).get_child_count())
+		#dict["subtypes"] = subtype
 	
 	characters.append({
 		"name": default_name,
@@ -1747,7 +2219,7 @@ func create_character(default_name: String = "") -> void:
 		"lore_age": 0,
 		"bodies": {},
 		"clothing": clothing_array,
-		"traits": trait_bools})
+		"traits": {}})
 	
 	new_character.select(0)
 
@@ -1856,18 +2328,24 @@ func save_character() -> void:
 	
 	for check in clothing_tree.get_root().get_children():
 		var cloth_status: Dictionary = {
-			"active": check.is_checked(0)
-		}
-		var subtypes: Array[bool] = []
+			"id": check.get_metadata(0), # ID is stored on metadata column 0
+			"active": check.is_checked(0)}
+		
+		# Before an array of bools, now converted to a dictionary for ID:enabled
+		# slight memory increase, but we stop on relying for index for ID, and
+		# now we use actual IDs
+		var subtypes: Array[Dictionary] = []
 		for subtype in check.get_children():
-			subtypes.append(subtype.is_checked(0))
+			subtypes.append({
+				"active": subtype.is_checked(0),
+				"id": subtype.get_metadata(0)}) # ID is stored on metadata column 0
 		cloth_status["subtypes"] = subtypes
 		new_clothing.append(cloth_status)
 	
-	var selected_traits: Array[bool] = []
+	var selected_traits: Dictionary = {}
 	
 	for trait_tree in body_traits.get_root().get_children():
-		selected_traits.append(trait_tree.is_checked(0))
+		selected_traits[trait_tree.get_metadata(0)] = trait_tree.is_checked(0)
 	
 	characters[current_character] = {
 		"name": character_tag_ln_edt.text.strip_edges(),
@@ -1938,23 +2416,33 @@ func _on_character_selected() -> void:
 									prop_item.set_checked(1, prop_dict["value"])
 							break
 	
-	var check_idx: int = -1
 	
-	for cloth_check in clothing_tree.get_root().get_children():
-		check_idx += 1
-		cloth_check.set_checked(0, dict["clothing"][check_idx]["active"])
-		cloth_check.disable_folding = not dict["clothing"][check_idx]["active"]
-		if dict["clothing"][check_idx]["active"] == false and not cloth_check.collapsed:
-			cloth_check.collapsed = true
-		var subtype_idx: int = -1
-		for subtype in cloth_check.get_children():
-			subtype_idx += 1
-			subtype.set_checked(0, dict["clothing"][check_idx]["subtypes"][subtype_idx])
+	for cloth_section in clothing_tree.get_root().get_children():
+		
+		var section_id: String = cloth_section.get_metadata(0) # ID is stored as metadata on column 0
+		
+		for section:Dictionary in dict["clothing"]:
+			if section["id"] != section_id:
+				continue
+			
+			cloth_section.set_checked(0, section["active"])
+			cloth_section.disable_folding = not section["active"]
+			if not section["active"] and not cloth_section.collapsed:
+				cloth_section.collapsed = true
+			
+			for cloth_item in cloth_section.get_children():
+				var cloth_id: String = cloth_item.get_metadata(0) # ID stored here
+				for cloth in section["subtypes"]:
+					if cloth["id"] != cloth_id:
+						continue
+					cloth_item.set_checked(0, cloth["active"])
+					break # Item found, next loop
+			break # Section found it, no need to keep checking. Next loop
 	
-	var trait_idx: int = -1
 	for bod_trait in body_traits.get_root().get_children():
-		trait_idx += 1
-		bod_trait.set_checked(0, dict["traits"][trait_idx])
+		var id: String = bod_trait.get_metadata(0)
+		if dict["traits"].has(id):
+			bod_trait.set_checked(0, dict["traits"][id])
 	
 
 func generate_tags() -> Array[String]:
@@ -2070,26 +2558,41 @@ func generate_tags() -> Array[String]:
 					gender_lore_opt_btn.get_item_text(character["lore_gender"]) + " (lore)")
 		
 		var only_wear: bool = true
-		var last_wear: int = -1
-		
-		var clothing_idx: int = -1
+		var first_clothing_id: String = ""
+		#var section_dict: Dictionary = {}
+		var CLOTHING_LOOKUP: Dictionary = {}
+		for item: Dictionary in CLOTHING:
+			CLOTHING_LOOKUP[item["tag"]] = item
 		
 		for clothing_dict:Dictionary in character["clothing"]:
-			clothing_idx += 1
-			if clothing_dict["active"]:
-				if only_wear and last_wear != -1:
-					only_wear = false
-				last_wear = clothing_idx
-				clothing_score += CLOTHING[clothing_idx]["score"]
-				character_tags.append(CLOTHING[clothing_idx]["tag"])
-				var subitem_idx: int = -1
-				for subitem:bool in clothing_dict["subtypes"]:
-					subitem_idx += 1
-					if subitem:
-						character_tags.append(CLOTHING[clothing_idx]["options"][subitem_idx])
+			var section_id: String = clothing_dict["id"]
+			
+			if not clothing_dict["active"]: # Clothing NOT worn
+				continue # Invert check and continue to reduce indentation levels
+			
+			if first_clothing_id.is_empty(): # We do empty checks instead of constant assigning
+				first_clothing_id = section_id
+			
+			# We're wearing something OTHER than this clothing, so it's not "only wear"ing this.
+			if only_wear and first_clothing_id != section_id:
+				only_wear = false
+			
+			# Since it's ID now, we need to iterate
+			clothing_score += CLOTHING_LOOKUP[section_id]["score"]
+			character_tags.append(CLOTHING_LOOKUP[section_id]["tag"])
+			
+			for subitem:Dictionary in clothing_dict["subtypes"]: # Now a dictionary
+				if not subitem["active"]:
+					continue
 				
-		if only_wear and last_wear != -1:
-			character_tags.append(CLOTHING[last_wear]["only_tag"])
+				for subsection:Dictionary in CLOTHING_LOOKUP[section_id]["options"]:
+					if subsection["tag"] != subitem["id"]:
+						continue
+					character_tags.append(subsection["tag"])
+					break
+					
+		if only_wear and not first_clothing_id.is_empty() and CLOTHING_LOOKUP.has(first_clothing_id) and not CLOTHING_LOOKUP[first_clothing_id]["only_tag"].is_empty():
+			character_tags.append(CLOTHING_LOOKUP[first_clothing_id]["only_tag"])
 		
 		for body:Dictionary in character["bodies"]:
 			if body["use"]:
