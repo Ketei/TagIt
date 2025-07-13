@@ -23,8 +23,8 @@ const SEARCH_WILDCARD: String = "*"
 const DB_VERSION: int = 5
 const PROJECTS_VERSION: int = 2
 const TEMPLATES_VERSION: int = 3
-const STORAGE_VERSION: int = 4
-const TAGIT_VERSION_ARRAY: Array[int] = [3, 6, 1]
+const STORAGE_VERSION: int = 6
+const TAGIT_VERSION_ARRAY: Array[int] = [3, 6, 2]
 const MAX_PARENT_RECURSION: int = 100
 const IMAGE_LIMITS: Vector2i = Vector2i(1000, 1000)
 const LEV_DISTANCE: float = 0.75
@@ -653,6 +653,54 @@ func update_storage() -> void:
 					if property["value"] == 0:
 						property["value"] = 1
 					break
+		
+		current_version += 1
+		log_message(
+			"[TagIt] Data storage upgraded to version " + str(current_version),
+			LogLevel.INFO)
+	
+	if current_version == 5:
+		# Mapping the title -> ID
+		var id_map: Dictionary = {}
+		var trait_map: Dictionary = {}
+		for clothing_section in TagItWizard.CLOTHING:
+			var options: Dictionary = {}
+			for option in clothing_section["options"]:
+				options[option["title"]] = option["tag"]
+			id_map[clothing_section["section"]] = {
+				"id": clothing_section["tag"],
+				"options": options.duplicate()}
+		
+		for trait_section in TagItWizard.BODY_TRAITS:
+			trait_map[trait_section["title"]] = trait_section["tag"]
+		
+		for character in storage_data.characters:
+			var fixed_traits: Dictionary = {}
+			for trait_key in character["traits"]:
+				if not trait_map.has(trait_key):
+					continue
+				fixed_traits[trait_map[trait_key]] = character["traits"][trait_key]
+			character["traits"] = fixed_traits
+		
+		for character in storage_data.characters:
+			var new_apparel: Dictionary = {}
+			
+			for title in character["apparel"]:
+				if not id_map.has(title):
+					continue
+				
+				var subtypes: Dictionary = {}
+				
+				for sub_title in character["apparel"][title]["subtypes"]:
+					subtypes[id_map[title]["options"][sub_title]] = character["apparel"][title]["subtypes"][sub_title]
+				
+				var new_structure: Dictionary = {
+					"active": character["apparel"][title]["active"],
+					"subtypes": subtypes.duplicate()}
+				
+				new_apparel[id_map[title]["id"]] = new_structure.duplicate()
+				
+			character["apparel"] = new_apparel.duplicate()
 		
 		current_version += 1
 		log_message(
@@ -1993,6 +2041,7 @@ func show_splash() -> void:
 	
 	splash_node = CanvasLayer.new()
 	splash_node.layer = 2
+	
 	var new_splash := TextureRect.new()
 	var new_bg_col := ColorRect.new()
 	
@@ -2014,9 +2063,13 @@ func show_splash() -> void:
 	else:
 		new_splash.texture = preload("res://textures/splash.png")
 	
-	add_child(splash_node)
 	new_splash.add_child(new_bg_col)
 	splash_node.add_child(new_splash)
+	add_child(splash_node)
+	if not splash_node.is_node_ready():
+		await splash_node.ready
+	splash_node.set_meta(&"SplashTime", Time.get_ticks_msec())
+	
 
 
 static func resize_image_to_constraints(image: Image) -> Image:
@@ -2059,6 +2112,14 @@ static func resize_image_to_constraints(image: Image) -> Image:
 	resized_image.resize(new_size.x, new_size.y, Image.INTERPOLATE_LANCZOS)
 	
 	return resized_image
+
+
+func get_splash_time() -> float:
+	if splash_node == null:
+		return 0
+	var now: int = Time.get_ticks_msec()
+	var elapsed: int = now - splash_node.get_meta(&"SplashTime", now)
+	return float(elapsed) / 1000.0
 
 
 func hide_splash() -> void:

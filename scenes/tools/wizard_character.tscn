@@ -172,7 +172,8 @@ text = "Species"
 [node name="SpeciesLnEdt" type="LineEdit" parent="MainPanel/MainContainer/DataPanel/MainDataContainer/DataContainerA/BodyMainContainer/SpeciesContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "The character's species."
+tooltip_text = "The character's species.
+Multiple species allowed. Separate with comma."
 placeholder_text = "No Species"
 editable = false
 

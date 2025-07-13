@@ -71,15 +71,15 @@ border_width_right = 2
 border_width_bottom = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_flt4j"]
-bg_color = Color(0.2852, 0.297187, 0.31, 1)
+bg_color = Color(0.2832, 0.39472, 0.48, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
-expand_margin_left = 10.0
-expand_margin_top = 10.0
-expand_margin_right = 10.0
-expand_margin_bottom = 10.0
+expand_margin_left = 5.0
+expand_margin_top = 5.0
+expand_margin_right = 5.0
+expand_margin_bottom = 5.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8v57s"]
 bg_color = Color(0.1, 0.1, 0.1, 1)
@@ -1409,6 +1409,7 @@ offset_bottom = 44.0
 script = ExtResource("37_7l5mr")
 resize_margin = Vector2(10, 10)
 drop_color = Color(0.5, 0.5, 0.5, 0)
+allow_resizing = false
 
 [node name="MainPanel" type="PanelContainer" parent="ProjectTextureContainer"]
 custom_minimum_size = Vector2(300, 0)
