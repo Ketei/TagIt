@@ -46,15 +46,6 @@ func _init() -> void:
 
 
 func _ready() -> void:
-	const ICONS: Array[Resource] = [
-		preload("res://icons/male_icon.svg"),
-		preload("res://icons/female_icon.svg"),
-		preload("res://icons/ambiguous_gender_icon.svg"),
-		preload("res://icons/andro_icon.svg"),
-		preload("res://icons/gyno_icon.svg"),
-		preload("res://icons/herm_icon.svg"),
-		preload("res://icons/male_herm_icon.svg")]
-	
 	character_tree.create_item()
 	traits_tree.create_item()
 	clothing_tree.create_item()
@@ -73,26 +64,63 @@ func _ready() -> void:
 				character_index)
 	
 	lore_gender_opt.add_item("N/A", 0)
+	lore_gender_opt.set_item_metadata(0, "")
 	
-	var idx: int = 0
-	for gender in TagItWizard.GENDERS:
+	var idx: int = -1
+	var lore_idx: int = 0
+	var gender_menu: PopupMenu = gender_opt_btn.get_popup()
+	var lore_gender_menu: PopupMenu = lore_gender_opt.get_popup()
+	
+	for gender:String in TagItWizard.GENDERS.keys():
 		idx += 1
-		gender_opt_btn.add_icon_item(ICONS[idx - 1], gender, idx)
-		lore_gender_opt.add_icon_item(ICONS[idx - 1],gender, idx)
+		gender_opt_btn.add_icon_item(
+				load(TagItWizard.GENDERS[gender]["icon"]),
+				TagItWizard.GENDERS[gender]["title"],
+				idx)
+		if gender != "ambiguous_gender":
+			lore_idx += 1
+			lore_gender_opt.add_icon_item(
+					load(TagItWizard.GENDERS[gender]["icon"]),
+					TagItWizard.GENDERS[gender]["title"],
+					lore_idx)
+			lore_gender_opt.set_item_metadata(lore_idx, gender)
+		
+		gender_opt_btn.set_item_metadata(idx, gender)
+		
+		if TagItWizard.GENDERS[gender].has("tooltip"):
+			gender_menu.set_item_tooltip(
+					idx,
+					TagItWizard.GENDERS[gender]["tooltip"])
+			if gender != "ambiguous_gender":
+				lore_gender_menu.set_item_tooltip(
+						lore_idx,
+						TagItWizard.GENDERS[gender]["tooltip"])
+	
 	
 	idx = 0
-	
 	lore_age_opt_btn.add_item("N/A", 0)
+	lore_age_opt_btn.set_item_metadata(0, "")
+	var age_menu: PopupMenu = age_opt_btn.get_popup()
+	var lore_age_menu: PopupMenu = lore_age_opt_btn.get_popup()
 	
-	for age in TagItWizard.AGES:
+	for age_id in TagItWizard.AGES.keys():
 		idx += 1
-		age_opt_btn.add_item(age, idx)
-		lore_age_opt_btn.add_item(age, idx)
+		age_opt_btn.add_item(TagItWizard.AGES[age_id]["title"], idx)
+		lore_age_opt_btn.add_item(TagItWizard.AGES[age_id]["title"], idx)
+		age_opt_btn.set_item_metadata(idx - 1, age_id)
+		lore_age_opt_btn.set_item_metadata(idx, age_id)
+		if TagItWizard.AGES[age_id].has("tooltip") and not TagItWizard.AGES[age_id]["tooltip"].is_empty():
+			age_menu.set_item_tooltip(idx - 1, TagItWizard.AGES[age_id]["tooltip"])
+			lore_age_menu.set_item_tooltip(idx, TagItWizard.AGES[age_id]["tooltip"])
 	
 	idx = -1
 	
-	for body in TagItWizard.BODIES:
-		body_opt_btn.add_item(body)
+	var body_menu: PopupMenu = body_opt_btn.get_popup()
+	for body_id in TagItWizard.BODIES.keys():
+		body_opt_btn.add_item(TagItWizard.BODIES[body_id]["title"])
+		body_opt_btn.set_item_metadata(idx, body_id)
+		if TagItWizard.BODIES[body_id].has("tooltip") and not TagItWizard.BODIES[body_id]["tooltip"].is_empty():
+			body_menu.set_item_tooltip(idx, TagItWizard.BODIES[body_id]["tooltip"])
 	body_opt_btn.select(0)
 	
 	for body_trait in TagItWizard.BODY_TRAITS:
@@ -101,6 +129,8 @@ func _ready() -> void:
 		new_trait.set_text(0, body_trait["title"])
 		new_trait.set_editable(0, true)
 		new_trait.set_metadata(0, body_trait["tag"])
+		if body_trait.has("tooltip") and not body_trait["tooltip"].is_empty():
+			new_trait.set_tooltip_text(0, body_trait["tooltip"])
 	
 	idx = -1
 	for bod_name:Dictionary in TagItWizard.BODY_TYPES:
@@ -484,6 +514,46 @@ func traits_to_latest(data: Dictionary, current_version: int) -> Dictionary:
 	return fixed_data
 
 
+func body_to_latest(body_int: int) -> String:
+	match body_int:
+		0:
+			return "anthro"
+		1:
+			return "semi_anthro"
+		2:
+			return "semi_feral"
+		3:
+			return "feral"
+		4:
+			return "human"
+		5:
+			return "human_like"
+		6:
+			return "taur"
+		_:
+			return "anthro"
+
+
+func gender_to_latest(gender_int: int, _current_version: int) -> String:
+	match gender_int:
+		0:
+			return "male"
+		1:
+			return "female"
+		2:
+			return "ambiguous_gender"
+		3:
+			return "andro"
+		4:
+			return "gyno"
+		5:
+			return "herm"
+		6:
+			return "male_herm"
+		_:
+			return ""
+
+
 func clothing_to_latest(data: Dictionary, current_version: int) -> Dictionary:
 	var fixed_data: Dictionary = {}
 	if current_version == 0:
@@ -540,6 +610,30 @@ func clothing_to_latest(data: Dictionary, current_version: int) -> Dictionary:
 	return fixed_data
 
 
+func age_to_latest(age: int, lore: bool = false) -> String:
+	if lore:
+		age -= 1
+	match age:
+		-1:
+			return ""
+		0:
+			return "baby"
+		1:
+			return "toddler"
+		2:
+			return "child"
+		3:
+			return "adolescent"
+		4:
+			return "adult"
+		5:
+			return "mature"
+		6:
+			return "elder"
+		_:
+			return "adult"
+
+
 func _on_import_characters_finished(path: String, dialog: FileDialog, success: bool) -> void:
 	if not success:
 		dialog.queue_free()
@@ -559,18 +653,35 @@ func _on_import_characters_finished(path: String, dialog: FileDialog, success: b
 					var data: Dictionary = json_result[character_id]
 					var character := TagItStorage.WizardCharacter.new()
 					character.character_tag = character_id
-					if data.has("body_type") and typeof(data["body_type"]) in NUM_TYPES:
-						character.body_type = int(data["body_type"])
+					if data.has("body_type"):
+						if typeof(data["body_type"]) == TYPE_STRING:
+							select_body(data["body"])
+						elif typeof(data["body_type"]) in NUM_TYPES:
+							select_body(body_to_latest(data["body_type"]))
 					if data.has("species") and typeof(data["species"]) == TYPE_STRING:
 						character.species = data["species"]
-					if data.has("gender") and typeof(data["gender"]) in NUM_TYPES:
-						character.gender = int(data["gender"])
-					if data.has("gender_lore") and typeof(data["gender_lore"]) in NUM_TYPES:
-						character.gender_lore = int(data["gender_lore"])
-					if data.has("age") and typeof(data["age"]) in NUM_TYPES:
-						character.age = int(data["age"])
-					if data.has("age_lore") and typeof(data["age_lore"]) in NUM_TYPES:
-						character.age_lore = int(data["age_lore"])
+					if data.has("gender"):
+						if typeof(data["gender"]) == TYPE_STRING:
+							select_gender(data["gender"])
+						elif typeof(data["gender"]) in NUM_TYPES:
+							select_gender(
+									gender_to_latest(data["gender"], data["_version"]))
+					if data.has("gender_lore"):
+						if typeof(data["gender_lore"]) == TYPE_STRING:
+							select_gender(data["gender"])
+						elif typeof(data["gender_lore"]) in NUM_TYPES:
+							select_gender(
+									gender_to_latest(data["gender_lore"], data["_version"]))
+					if data.has("age"):
+						if typeof(data["age"]) == TYPE_STRING:
+							select_age(data["age"])
+						elif typeof(data["age"]) in NUM_TYPES:
+							select_age(age_to_latest(data["age"]))
+					if data.has("age_lore"):
+						if typeof(data["age_lore"]) == TYPE_STRING:
+							select_age_lore(data["age_lore"])
+						elif typeof(data["age_lore"]) in NUM_TYPES:
+							select_age_lore(age_to_latest(data["age_lore"], true))
 					if data.has("apparel") and typeof(data["apparel"]) == TYPE_DICTIONARY:
 						if data["_version"] == CHAR_CURRENT_VERSION:
 							character.set_apparel(data["apparel"])
@@ -729,11 +840,11 @@ func load_character(index: int) -> void:
 	var data: TagItStorage.WizardCharacter = data_store.get_character(index)
 	char_label.text = Strings.title_case(data.character_tag)
 	species_ln_edt.text = data.species
-	body_opt_btn.select(data.body_type)
-	gender_opt_btn.select(data.gender)
-	lore_gender_opt.select(data.gender_lore)
-	age_opt_btn.select(data.age)
-	lore_age_opt_btn.select(data.age_lore)
+	select_body(data.body_type)
+	select_gender(data.gender)
+	select_gender_lore(data.gender_lore)
+	select_age(data.age)
+	select_age_lore(data.age_lore)
 	
 	clear_body_settings()
 	
@@ -848,12 +959,12 @@ func save_character():
 	
 	var new_sheet: TagItStorage.WizardCharacter = TagItStorage.get_empty_character()
 	new_sheet.character_tag = current_selected.get_text(0)
-	new_sheet.body_type = body_opt_btn.selected
+	new_sheet.body_type = body_opt_btn.get_item_metadata(body_opt_btn.selected)
 	new_sheet.species = species_ln_edt.text.strip_edges().to_lower()
-	new_sheet.gender = gender_opt_btn.selected
-	new_sheet.gender_lore = lore_gender_opt.selected
-	new_sheet.age = age_opt_btn.selected
-	new_sheet.age_lore = lore_age_opt_btn.selected
+	new_sheet.gender = gender_opt_btn.get_item_metadata(gender_opt_btn.selected)
+	new_sheet.gender_lore = lore_gender_opt.get_item_metadata(lore_gender_opt.selected)
+	new_sheet.age = age_opt_btn.get_item_metadata(age_opt_btn.selected)
+	new_sheet.age_lore = lore_age_opt_btn.get_item_metadata(lore_age_opt_btn.selected)
 	new_sheet.apparel = used_clothings
 	new_sheet.properties = properties
 	new_sheet.traits = body_traits
@@ -875,6 +986,47 @@ func _on_item_selected() -> void:
 	else:
 		clear_fields()
 		char_label.text = Strings.title_case(current_selected.get_text(0))
+
+
+func select_gender(gender_id: String) -> void:
+	if gender_id.is_empty():
+		gender_opt_btn.select(0)
+	else:
+		for gender_idx in range(gender_opt_btn.item_count):
+			if gender_opt_btn.get_item_metadata(gender_idx) == gender_id:
+				gender_opt_btn.select(gender_idx)
+				break
+
+
+func select_gender_lore(gender_id: String) -> void:
+	for gender_idx in range(lore_gender_opt.item_count):
+		if lore_gender_opt.get_item_metadata(gender_idx) == gender_id:
+			lore_gender_opt.select(gender_idx)
+			break
+
+
+func select_body(body_id: String) -> void:
+	for idx in range(body_opt_btn.item_count):
+		if body_opt_btn.get_item_metadata(idx) == body_id:
+			body_opt_btn.select(idx)
+			break
+
+
+func select_age(age_id: String) -> void:
+	if age_id.is_empty():
+		age_opt_btn.select(0)
+	else:
+		for idx in range(age_opt_btn.item_count):
+			if age_opt_btn.get_item_metadata(idx) == age_id:
+				age_opt_btn.select(idx)
+				break
+
+
+func select_age_lore(age_id: String) -> void:
+	for idx in range(lore_age_opt_btn.item_count):
+		if lore_age_opt_btn.get_item_metadata(idx) == age_id:
+			lore_age_opt_btn.select(idx)
+			break
 
 
 func on_save_pressed() -> void:
