@@ -610,42 +610,51 @@ const CLOTHING: Array[Dictionary] = [
 		"score": 50
 	}
 ]
+
 const BODY_TRAITS: Array[Dictionary] = [
 	{"title": "Aroused", "tag": "aroused"},
+	{"title": "Biped", "tag": "biped", "tooltip": "A character that walks on 2 legs."},
 	{"title": "Blushing", "tag": "blush"},
 	{"title": "Bound", "tag": "bound"},
 	{"title": "Dominant", "tag": "dominant"},
 	{"title": "Musky", "tag": "musk"},
 	{"title": "Muscular", "tag": "muscular"},
 	{"title": "Pregnant", "tag": "pregnant"},
+	{"title": "Quadruped", "tag": "quadruped", "tooltip": "A character that walks on 4 legs."},
 	{"title": "Speaking", "tag": "dialogue"},
 	{"title": "Submissive", "tag": "submissive"},
 	{"title": "Sweating", "tag": "sweat"},
 	]
-const GENDERS: PackedStringArray = [
-	"Male",
-	"Female",
-	"Ambiguous Gender",
-	"Andromorph",
-	"Gynomorph",
-	"Hermaphrodite",
-	"Male Hermaphrodite"]
-const AGES: PackedStringArray = [
-	"Baby",
-	"Toddler",
-	"Child",
-	"Adolescent",
-	"Adult",
-	"Mature",
-	"Elderly"]
-const BODIES: PackedStringArray = [
-	"Anthro",
-	"Semi-Anthro",
-	"Semi-Feral",
-	"Feral",
-	"Human",
-	"Humanoid",
-	"Taur"]
+
+const GENDERS: Dictionary = {
+	"male": {"title": "Male", "tag": "male","icon": "res://icons/male_icon.svg", "tooltip": "A character with only apparent male genitalia or exclusively male physical traits."},
+	"female": {"title": "Female", "tag": "female", "icon": "res://icons/female_icon.svg", "tooltip": "A character with only apparent female genitalia or exclusively female physical traits."},
+	"ambiguous_gender": {"title": "Ambiguous Gender", "tag": "ambiguous gender", "icon": "res://icons/ambiguous_gender_icon.svg", "tooltip": "When the gender of a character in the image is not apparent."},
+	"andro": {"title": "Andromorph", "tag": "andromorph", "icon": "res://icons/andro_icon.svg", "tooltip": "A character with a masculine body type, a vulva, no penis and no breasts."},
+	"gyno": {"title": "Gynomorph", "tag": "gynomorph", "icon": "res://icons/gyno_icon.svg", "tooltip": "An character with a feminine body type, penis/balls, breasts, but no vulva."},
+	"herm": {"title": "Hermaphrodite", "tag": "herm", "icon": "res://icons/herm_icon.svg", "tooltip": "A character with both a vulva and a penis."},
+	"male_herm": {"title": "Male Hermaphrodite", "tag": "maleherm", "icon": "res://icons/male_herm_icon.svg", "tooltip": "A hermaphrodite who has a masculine appearance, generally has no breasts."}
+}
+
+const AGES: Dictionary = {
+	"baby": {"title": "Baby", "tag": "baby", "tooltip": "Characters less than one year old."},
+	"toddler": {"title": "Toddler", "tag": "toddler", "tooltip": "Characters from 1 to 3 years old."},
+	"child": {"title": "Child", "tag": "child", "tooltip": "Characters from 4 to 12 years old."},
+	"adolescent": {"title": "Adolescent", "tag": "adolescent", "tooltip": "Characters from 13 to 17 years old."},
+	"adult": {"title": "Adult", "tag": "", "tooltip": "Character from 18 to 40 years old."},
+	"mature": {"title": "Middle Aged", "tag": "middle-aged", "tooltip": "Characters from 41 to 64 years old."},
+	"elder": {"title": "Elder", "tag": "elderly", "tooltip": "Characters that are 65 years old and over."}}
+
+const BODIES: Dictionary = {
+	"anthro": {"title": "Anthro", "tag": "anthro", "tooltip": "An anthropomorphic animal."},
+	"semi_anthro": {"title": "Semi-Anthro", "tag": "anthro", "extra_tags": ["semi-anthro"], "tooltip": "A character with a form that lies somewhere\nbetween feral, and anthropomorphic.\nHas more anthro features than feral."},
+	"semi_feral": {"title": "Semi-Feral", "tag": "feral", "exra_tags": ["semi-anthro"], "tooltip": "A character with a form that lies somewhere\nbetween feral, and anthropomorphic.\nHas more feral features than anthro."},
+	"feral": {"title": "Feral", "tag": "feral", "tooltip": "An animal character that is depicted\nin its natural (real-life species) form."},
+	"human": {"title": "Human", "tag": "human", "tooltip": "Homo Sapiens."},
+	"human_like": {"title": "Humanoid", "tag": "humanoid", "tooltip": "A character that closely resembles a human in\nanatomy but has non-human features."},
+	"taur": {"title": "Taur", "tag": "taur", "tooltip": "A character whose lower body is that of a legged feral creature,\nand the upper body of an anthro, human, or humanoid."}
+}
+
 const BODY_TYPES: Array[Dictionary] = [
 	{
 		"name": "Height",
@@ -832,6 +841,14 @@ const BODY_TYPES: Array[Dictionary] = [
 				"text": "Are featureless",
 				"tags": ["", "featureless breasts"],
 				"tooltip": ["Breasts without nipples/areola"]
+			},
+			{
+				"id": "heavy",
+				"name": "Top Heavy",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Is Top Heavy",
+				"tags": ["", "top heavy"],
+				"tooltip": ["A physique where the upper body/breasts has noticeably more mass than their lower body"]
 			}
 		]
 	},
@@ -963,13 +980,6 @@ const BODY_TYPES: Array[Dictionary] = [
 				"tooltip": ["How many toes are in each hand", "Set to -1 for N/A"]
 			},
 			{
-				"id": "movement",
-				"name": "Movement",
-				"mode": TreeItem.CELL_MODE_RANGE,
-				"text": "N/A,Biped,Quadruped",
-				"tags": ["", "biped", "quadruped"]
-			},
-			{
 				"id": "type",
 				"name": "Type",
 				"mode": TreeItem.CELL_MODE_RANGE,
@@ -1063,6 +1073,14 @@ const BODY_TYPES: Array[Dictionary] = [
 				"text": "Narrow,Average,Wide,Huge,Hyper",
 				"tags": ["narrow hips", "", "wide hips", "huge hips", "hyper hips"],
 				"value": 1
+			},
+			{
+				"id": "heavy",
+				"name": "Bottom Heavy",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Is Bottom Heavy",
+				"tags": ["", "bottom heavy"],
+				"tooltip": ["If the character's lower half is\nnotably larger than their upper body."]
 			}
 		]
 	},
@@ -1702,7 +1720,7 @@ func _ready() -> void:
 	add_ages(age_opt_btn)
 	add_ages(lore_age_opt_btn, true, 0)
 	add_genders(gender_opt_btn)
-	add_genders(gender_lore_opt_btn, true)
+	add_genders(gender_lore_opt_btn, true, 0, true)
 	add_body_types(body_opt_btn)
 	
 	current_page_lbl.text = "1"
@@ -1748,6 +1766,8 @@ func _ready() -> void:
 		new_trait.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
 		new_trait.set_text(0, body_trait["title"])
 		new_trait.set_metadata(0, body_trait["tag"])
+		if body_trait.has("tooltip") and not body_trait["tooltip"].is_empty():
+			new_trait.set_tooltip_text(0, body_trait["tooltip"])
 		new_trait.set_editable(0, true)
 	
 	next_button.pressed.connect(on_next_pressed)
@@ -1972,11 +1992,11 @@ func apply_character(character_index: int) -> void:
 	
 	species_ln_edt.text = data.species
 	
-	body_opt_btn.select(data.body_type)
-	gender_opt_btn.select(data.gender)
-	gender_lore_opt_btn.select(data.gender_lore)
-	age_opt_btn.select(data.age)
-	lore_age_opt_btn.select(data.age_lore)
+	select_body(data.body_type)
+	select_gender(data.gender)
+	select_gender_lore(data.gender_lore)
+	select_age(data.age)
+	select_age_lore(data.age_lore)
 	
 	for target in body_texture_tree.get_root().get_children():
 		if data.properties.has(target.get_metadata(0)["tag"]):
@@ -2029,6 +2049,47 @@ func apply_character(character_index: int) -> void:
 		apparel_item.disable_folding = not data.apparel[apparel_item.get_metadata(0)]["active"]
 		if not apparel_item.collapsed and not data.apparel[apparel_item.get_metadata(0)]["active"]:
 			apparel_item.collapsed = true
+
+
+func select_body(body_id: String) -> void:
+	for idx in range(body_opt_btn.item_count):
+		if body_opt_btn.get_item_metadata(idx) == body_id:
+			body_opt_btn.select(idx)
+			break
+
+
+func select_age(age_id: String) -> void:
+	if age_id.is_empty():
+		age_opt_btn.select(0)
+	else:
+		for idx in range(age_opt_btn.item_count):
+			if age_opt_btn.get_item_metadata(idx) == age_id:
+				age_opt_btn.select(idx)
+				break
+
+
+func select_age_lore(age_id: String) -> void:
+	for idx in range(lore_age_opt_btn.item_count):
+		if lore_age_opt_btn.get_item_metadata(idx) == age_id:
+			lore_age_opt_btn.select(idx)
+			break
+
+
+func select_gender(gender_id: String) -> void:
+	if gender_id.is_empty():
+		gender_opt_btn.select(0)
+	else:
+		for gender_idx in range(gender_opt_btn.item_count):
+			if gender_opt_btn.get_item_metadata(gender_idx) == gender_id:
+				gender_opt_btn.select(gender_idx)
+				break
+
+
+func select_gender_lore(gender_id: String) -> void:
+	for gender_idx in range(gender_lore_opt_btn.item_count):
+		if gender_lore_opt_btn.get_item_metadata(gender_idx) == gender_id:
+			gender_lore_opt_btn.select(gender_idx)
+			break
 
 
 func set_project_texture(new_texture: Texture2D) -> void:
@@ -2211,12 +2272,12 @@ func create_character(default_name: String = "") -> void:
 	
 	characters.append({
 		"name": default_name,
-		"body": 0,
+		"body": "anthro",
 		"species": "",
-		"gender": 0,
-		"lore_gender": 0,
-		"age": 4,
-		"lore_age": 0,
+		"gender": "male",
+		"lore_gender": "",
+		"age": "adult",
+		"lore_age": "",
 		"bodies": {},
 		"clothing": clothing_array,
 		"traits": {}})
@@ -2349,12 +2410,12 @@ func save_character() -> void:
 	
 	characters[current_character] = {
 		"name": character_tag_ln_edt.text.strip_edges(),
-		"body": body_opt_btn.selected,
+		"body": body_opt_btn.get_item_metadata(body_opt_btn.selected),
 		"species": species_ln_edt.text.strip_edges(),
-		"gender": gender_opt_btn.selected,
-		"lore_gender": gender_lore_opt_btn.selected,
-		"age": age_opt_btn.selected,
-		"lore_age": lore_age_opt_btn.selected,
+		"gender": gender_opt_btn.get_item_metadata(gender_opt_btn.selected),
+		"lore_gender": gender_lore_opt_btn.get_item_metadata(gender_lore_opt_btn.selected),
+		"age": age_opt_btn.get_item_metadata(age_opt_btn.selected),
+		"lore_age": lore_age_opt_btn.get_item_metadata(lore_age_opt_btn.selected),
 		"bodies": body_textures,
 		"clothing": new_clothing,
 		"traits": selected_traits}
@@ -2372,12 +2433,12 @@ func _on_character_selected() -> void:
 	current_character = characters_tree.get_selected().get_index()
 	var dict: Dictionary = characters[current_character]
 	character_tag_ln_edt.text = dict["name"]
-	body_opt_btn.select(dict["body"])
 	species_ln_edt.text = dict["species"]
-	gender_opt_btn.select(dict["gender"])
-	gender_lore_opt_btn.select(dict["lore_gender"])
-	age_opt_btn.select(dict["age"])
-	lore_age_opt_btn.select(dict["lore_age"])
+	select_body(dict["body"])
+	select_gender(dict["gender"])
+	select_gender_lore(dict["lore_gender"])
+	select_age(dict["age"])
+	select_age_lore(dict["lore_age"])
 	
 	var body_idx: int = -1
 	var body_root: TreeItem = body_texture_tree.get_root()
@@ -2415,7 +2476,6 @@ func _on_character_selected() -> void:
 								TreeItem.CELL_MODE_CHECK:
 									prop_item.set_checked(1, prop_dict["value"])
 							break
-	
 	
 	for cloth_section in clothing_tree.get_root().get_children():
 		
@@ -2525,41 +2585,52 @@ func generate_tags() -> Array[String]:
 	
 	for character in characters:
 		var character_tags: Array[String] = []
+		var clothing_section_scores: Array[String] = []
 		var clothing_score: int = 0
+		var char_gender_id: String = character["gender"]
+		var body_type_id: String = character["body"]
 		
 		if character["name"].is_empty():
 			character_tags.append("character request")
 		else:
 			character_tags.append(character["name"])
 		
-		character_tags.append_array(body_opt_btn.get_item_metadata(character["body"]))
-	
+		character_tags.append(BODIES[body_type_id]["tag"])
+		if BODIES[body_type_id].has("extra_tags"):
+			character_tags.append_array(BODIES[body_type_id]["extra_tags"])
+		
 		if not character["species"].is_empty():
 			var species_string: String = character["species"]
 			var species_tags = Strings.split_and_strip(species_string, ",")
 			character_tags.append_array(species_tags)
-			#character_tags.append(character["species"])
 		
-		character_tags.append(gender_opt_btn.get_item_text(character["gender"]))
-		character_tags.append(gender_opt_btn.get_item_metadata(character["gender"]).format([body_opt_btn.get_item_metadata(character["body"])[0]]))
+		character_tags.append(GENDERS[char_gender_id]["tag"])
 		
-		var age: String = age_opt_btn.get_item_metadata(character["age"])
-		var age_lore: String = age_opt_btn.get_item_metadata(character["lore_age"])
+		if char_gender_id == "ambiguous_gender":
+			character_tags.append("ambiguous " + BODIES[body_type_id]["tag"])
+		else:
+			character_tags.append(GENDERS[char_gender_id]["tag"] + " " + BODIES[body_type_id]["tag"])
 		
-		if not age.is_empty:
-			character_tags.append(age)
-		if not age_lore.is_empty:
-			character_tags.append(age_lore)
-		if character["lore_gender"] != 0:
-			if character["lore_gender"] == 3:
+		var age_id: String = character["age"]
+		var age_lore: String = character["lore_age"]
+		
+		if not AGES[age_id]["tag"].is_empty():
+			character_tags.append(AGES[age_id]["tag"])
+			if age_id not in ["adult", "mature", "elder"]:
+				if char_gender_id != "ambiguous_gender":
+					character_tags.append("young " + GENDERS[char_gender_id]["tag"])
+		if not age_lore.is_empty() and not AGES[age_lore]["tag"].is_empty():
+			character_tags.append(AGES[age_lore]["tag"] + " (lore)")
+		
+		if character["lore_gender"] != "":
+			if character["lore_gender"] == "ambiguous_gender":
 				character_tags.append("nonbinary (lore)")
 			else:
 				character_tags.append(
-					gender_lore_opt_btn.get_item_text(character["lore_gender"]) + " (lore)")
+					GENDERS[character["lore_gender"]]["tag"] + " (lore)")
 		
 		var only_wear: bool = true
 		var first_clothing_id: String = ""
-		#var section_dict: Dictionary = {}
 		var CLOTHING_LOOKUP: Dictionary = {}
 		for item: Dictionary in CLOTHING:
 			CLOTHING_LOOKUP[item["tag"]] = item
@@ -2577,8 +2648,12 @@ func generate_tags() -> Array[String]:
 			if only_wear and first_clothing_id != section_id:
 				only_wear = false
 			
+			# We check if we previously added this score to prevent adding scores
+			# twice for the same item.
+			if section_id not in clothing_section_scores:
+				clothing_score += CLOTHING_LOOKUP[section_id]["score"]
+				clothing_section_scores.append(section_id)
 			# Since it's ID now, we need to iterate
-			clothing_score += CLOTHING_LOOKUP[section_id]["score"]
 			character_tags.append(CLOTHING_LOOKUP[section_id]["tag"])
 			
 			for subitem:Dictionary in clothing_dict["subtypes"]: # Now a dictionary
@@ -2595,60 +2670,99 @@ func generate_tags() -> Array[String]:
 			character_tags.append(CLOTHING_LOOKUP[first_clothing_id]["only_tag"])
 		
 		for body:Dictionary in character["bodies"]:
-			if body["use"]:
-				var body_tag: String = BODY_TYPES[body["index"]]["tag"]
-				if BODY_TYPES[body["index"]]["include_standalone"]:
-					character_tags.append(body_tag)
-				
-				for property in body["properties"]:
-					if property["index"] < 0:
-						if not property["value"].is_empty():
-							character_tags.append_array(id_to_tags(
-									absi(property["index"]),
-									property["value"],
-									property["format"] if property.has("format") else "",
-									true,
-									BODY_TYPES[body["index"]]["exclude_values"] if BODY_TYPES[body["index"]].has("exclude_values") else []))
-					else:
-						match clampi(property["mode"], 0, 4) as TreeItem.TreeCellMode:
-							TreeItem.CELL_MODE_RANGE:
-								var prop_tag: String = ""
-								if BODY_TYPES[body["index"]]["properties"][property["index"]].has("tags"):
-									prop_tag = BODY_TYPES[body["index"]]["properties"][property["index"]]["tags"][property["value"]]
-								else:
-									if not BODY_TYPES[body["index"]]["properties"][property["index"]].has("exceptions") or not BODY_TYPES[body["index"]]["properties"][property["index"]]["exceptions"].has(int(property["value"])):
-										if property["value"] < 0:
-											prop_tag = BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["not_applicable"].format([int(property["value"])])
-										elif property["value"] == 0:
-											prop_tag = BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["zero"].format([int(property["value"])])
-										elif property["value"] == 1:
-											prop_tag = BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["singular"].format([int(property["value"])])
-										elif 2 <= property["value"]:
-											prop_tag = BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["plural"].format([int(property["value"])])
-										
-										if BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["multi_tag_count"] <= property["value"] and not BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["multi_tag"].is_empty():
-											character_tags.append(BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["multi_tag"])
-								if not prop_tag.is_empty():
-									character_tags.append(prop_tag)
-							TreeItem.CELL_MODE_CHECK:
-								var prop_tag: String = BODY_TYPES[body["index"]]["properties"][property["index"]]["tags"][int(property["value"])]
-								if not prop_tag.is_empty():
-									character_tags.append(prop_tag)
+			if not body["use"]:
+				continue
+			
+			var body_tag: String = BODY_TYPES[body["index"]]["tag"]
+			if BODY_TYPES[body["index"]]["include_standalone"]:
+				character_tags.append(body_tag)
+			
+			for property in body["properties"]:
+				if property["index"] < 0:
+					if not property["value"].is_empty():
+						character_tags.append_array(id_to_tags(
+								absi(property["index"]),
+								property["value"],
+								property["format"] if property.has("format") else "",
+								true,
+								BODY_TYPES[body["index"]]["exclude_values"] if BODY_TYPES[body["index"]].has("exclude_values") else []))
+				else:
+					match clampi(property["mode"], 0, 4) as TreeItem.TreeCellMode:
+						TreeItem.CELL_MODE_RANGE:
+							var prop_tag: String = ""
+							if BODY_TYPES[body["index"]]["properties"][property["index"]].has("tags"):
+								prop_tag = BODY_TYPES[body["index"]]["properties"][property["index"]]["tags"][property["value"]]
+							else:
+								if not BODY_TYPES[body["index"]]["properties"][property["index"]].has("exceptions") or not BODY_TYPES[body["index"]]["properties"][property["index"]]["exceptions"].has(int(property["value"])):
+									if property["value"] < 0:
+										prop_tag = BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["not_applicable"].format([int(property["value"])])
+									elif property["value"] == 0:
+										prop_tag = BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["zero"].format([int(property["value"])])
+									elif property["value"] == 1:
+										prop_tag = BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["singular"].format([int(property["value"])])
+									elif 2 <= property["value"]:
+										prop_tag = BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["plural"].format([int(property["value"])])
+									
+									if BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["multi_tag_count"] <= property["value"] and not BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["multi_tag"].is_empty():
+										character_tags.append(BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["multi_tag"])
+							if not prop_tag.is_empty():
+								character_tags.append(prop_tag)
+						TreeItem.CELL_MODE_CHECK:
+							var prop_tag: String = BODY_TYPES[body["index"]]["properties"][property["index"]]["tags"][int(property["value"])]
+							if not prop_tag.is_empty():
+								character_tags.append(prop_tag)
 					
-		var trait_idx: int = -1
-		for bod_trait in character["traits"]:
-			trait_idx += 1
-			if bod_trait:
-				character_tags.append(BODY_TRAITS[trait_idx]["tag"])
+		for bod_trait:String in character["traits"].keys():
+			if not character["traits"][bod_trait]:
+				continue
+			
+			character_tags.append(bod_trait)
+			if bod_trait == "biped" and character["body"] == "feral":
+				character_tags.append("biped feral")
+			elif bod_trait == "submissive":
+				character_tags.append("submissive " + GENDERS[char_gender_id]["tag"])
+			elif bod_trait == "dominant":
+				character_tags.append("dominant " + GENDERS[char_gender_id]["tag"])
+			elif bod_trait == "pregnant" and char_gender_id != "ambiguous_gender":
+				character_tags.append("pregnant " + GENDERS[char_gender_id]["tag"])
+					
 		
-		if 30 <= clothing_score:
+		if 300 <= clothing_score:
 			character_tags.append("fully clothed")
-		elif 20 <= clothing_score:
+		elif 200 <= clothing_score:
 			character_tags.append("mostly clothed")
 		elif 0 < clothing_score:
 			character_tags.append("mostly nude")
 		else:
 			character_tags.append("nude")
+		
+		if clothing_section_scores.has("bottomwear") and not clothing_section_scores.has("topwear"):
+			if clothing_section_scores.has("underwear"):
+				if not Arrays.has_any(character_tags, get_bottom_underwear_items()):
+					character_tags.append("bottomless")
+			else:
+				character_tags.append("bottomless")
+		
+		if Arrays.has_all(clothing_section_scores, ["topwear", "underwear"]) and not clothing_section_scores.has("bottomwear") and Arrays.has_any(clothing_section_scores, get_bottom_underwear_items()):
+			character_tags.append("pantsless")
+		
+		if clothing_section_scores.has("topwear") and not Arrays.has_any(clothing_section_scores, ["bottomwear", "underwear", "diaper"]):
+			character_tags.append("bottomless")
+		
+		if clothing_section_scores.has("bottomwear") and not clothing_section_scores.has("topwear"):
+			if clothing_section_scores.has("underwear"):
+				if character_tags.has("bra"):
+					character_tags.append("shirtless")
+				else:
+					character_tags.append("topless")
+			else:
+				character_tags.append("topless")
+		
+		if Arrays.has_any(clothing_section_scores, ["bottomwear", "diaper"]) and not clothing_section_scores.has("topwear"):
+			if character_tags.has("bra"):
+				character_tags.append("shirtless")
+			else:
+				character_tags.append("topless")
 		
 		Arrays.append_uniques(tags, character_tags)
 	
@@ -2663,6 +2777,21 @@ func _on_property_button_clicked(item: TreeItem, _column: int, id: int, _mouse_b
 		wizard_checkboxes.set_boxes_checked(item.get_metadata(1)["selected_ids"], true)
 		wizard_checkboxes.show_box(get_local_mouse_position() - Vector2(20, 20))
 		color_node = item
+
+
+func get_bottom_underwear_items() -> Array[String]:
+	var underwear: Array[String] = []
+	
+	for item in CLOTHING:
+		if item["tag"] != "underwear":
+			continue
+		for option:Dictionary in item["options"]:
+			if option["tag"] == "bra":
+				continue
+			underwear.append(option["tag"])
+		break
+	
+	return underwear
 
 
 func add_tree_bodies() -> void:
@@ -2804,54 +2933,54 @@ func add_tree_bodies() -> void:
 
 
 func add_body_types(to: OptionButton, select: int = 0) -> void:
-	const TAGS: Array[Array] = [["anthro"], ["anthro", "semi-anthro"], ["feral", "semi-anthro"], ["feral"], ["human"], ["humanoid"], ["taur"]]
-	
-	for body_idx in range(BODIES.size()):
-		to.add_item(BODIES[body_idx])
-		to.set_item_metadata(body_idx, TAGS[body_idx])
+	var idx: int = -1
+	var menu: PopupMenu = to.get_popup()
+	for body_id:String in BODIES.keys():
+		idx += 1
+		to.add_item(BODIES[body_id]["title"])
+		to.set_item_metadata(idx, body_id)
+		if BODIES[body_id].has("tooltip") and not BODIES[body_id]["tooltip"].is_empty():
+			menu.set_item_tooltip(idx, BODIES[body_id]["tooltip"])
 	
 	to.select(select)
 
 
 func add_ages(to: OptionButton, include_na: bool = false, select: int = 4) -> void:
-	const TAGS: PackedStringArray = ["baby", "toddler", "child", "adolescent", "", "", "elderly"]
 	var item_idx: int = -1
-	
+	var age_menu: PopupMenu = to.get_popup()
 	if include_na:
 		item_idx += 1
 		to.add_item("N/A")
 		to.set_item_metadata(item_idx, "")
 	
-	for age_idx in range(AGES.size()):
+	for age_id:String in AGES.keys():
 		item_idx += 1
-		to.add_item(AGES[age_idx])
-		to.set_item_metadata(item_idx, TAGS[age_idx])
+		to.add_item(AGES[age_id]["title"])
+		to.set_item_metadata(item_idx, age_id)
+		if AGES[age_id].has("tooltip") and not AGES[age_id]["tooltip"].is_empty():
+			age_menu.set_item_tooltip(item_idx, AGES[age_id]["tooltip"])
 	
 	to.select(select)
 
 
-func add_genders(to: OptionButton, include_na: bool = false, select: int = 0) -> void:
-	const ICONS: Array[Resource] = [
-		preload("res://icons/male_icon.svg"),
-		preload("res://icons/female_icon.svg"),
-		preload("res://icons/ambiguous_gender_icon.svg"),
-		preload("res://icons/andro_icon.svg"),
-		preload("res://icons/gyno_icon.svg"),
-		preload("res://icons/herm_icon.svg"),
-		preload("res://icons/male_herm_icon.svg")]
-	
-	const FORMATTING: PackedStringArray = ["male {0}", "female {0}", "ambiguous {0}", "andromorph {0}", "gynomorph {0}", "herm {0}", "male herm {0}"]
+func add_genders(to: OptionButton, include_na: bool = false, select: int = 0, skip_ambiguous: bool = false) -> void:
 	var item_idx: int = -1
+	var menu: PopupMenu = to.get_popup()
 	
 	if include_na:
 		item_idx += 1
 		to.add_item("N/A")
 		to.set_item_metadata(item_idx, "")
 	
-	for gender_idx in range(GENDERS.size()):
+	for gender_id:String in GENDERS.keys():
+		if skip_ambiguous and gender_id == "ambiguous_gender":
+			continue
+		
 		item_idx += 1
-		to.add_icon_item(ICONS[gender_idx], GENDERS[gender_idx])
-		to.set_item_metadata(item_idx, FORMATTING[gender_idx])
+		to.add_icon_item(load(GENDERS[gender_id]["icon"]), GENDERS[gender_id]["title"])
+		to.set_item_metadata(item_idx, gender_id)
+		if GENDERS[gender_id].has("tooltip"):
+			menu.set_item_tooltip(item_idx, GENDERS[gender_id]["tooltip"])
 	
 	to.select(select)
 
