@@ -233,3 +233,17 @@ static func remove_all(array: Variant, remove_what: Variant) -> void:
 	while target_index != -1:
 		array.remove_at(target_index)
 		target_index = array.find(remove_what)
+
+
+static func has_all(array: Variant, what: Array) -> bool:
+	for item in what:
+		if not array.has(item):
+			return false
+	return true
+
+
+static func has_any(array: Variant, what: Array) -> bool:
+	for item in what:
+		if array.has(item):
+			return true
+	return false
