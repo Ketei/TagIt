@@ -514,7 +514,8 @@ const CLOTHING: Array[Dictionary] = [
 	{
 		"section": "Tailwear",
 		"tag": "tail clothing",
-		"only_tag": "Clothing designed to be worn on the tail",
+		"only_tag": "",
+		"tooltip": "Clothing designed to be worn on the tail",
 		"options": [
 			{
 				"title": "Fishnet Tailwear",
@@ -538,7 +539,7 @@ const CLOTHING: Array[Dictionary] = [
 	{
 		"section": "Topwear",
 		"tag": "topwear",
-		"only_tag": "topwear_only",
+		"only_tag": "topwear only",
 		"tooltip": "A garment that covers the upper body.",
 		"options": [
 			{
