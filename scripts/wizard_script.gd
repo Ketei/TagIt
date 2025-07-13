@@ -3174,7 +3174,7 @@ func id_to_tags(type: int, ids: Array[String], variant: String = "", suffix: boo
 						EXCEPTIONS[id] if EXCEPTIONS.has(id) else id + " penis")
 		16:
 			const EXCEPTIONS: Dictionary = {
-				"At tail base": "tail anus"}
+				"at tail base": "tail anus"}
 			for id in ids:
 				tags.append(
 						EXCEPTIONS[id] if EXCEPTIONS.has(id) else id + " anus")
