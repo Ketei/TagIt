@@ -90,12 +90,12 @@ func save() -> void:
 
 class WizardCharacter extends RefCounted:
 	var character_tag: String = ""
-	var body_type: int = 0
+	var body_type: String = "anthro"
 	var species: String = ""
-	var age: int = 4
-	var age_lore: int = 0
-	var gender: int = 0
-	var gender_lore: int = 0
+	var age: String = "adult"
+	var age_lore: String = ""
+	var gender: String = "male"
+	var gender_lore: String = ""
 	var properties: Dictionary = {}
 	var apparel: Dictionary = {}
 	var traits: Dictionary = {}
