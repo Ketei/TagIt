@@ -23,8 +23,8 @@ const SEARCH_WILDCARD: String = "*"
 const DB_VERSION: int = 5
 const PROJECTS_VERSION: int = 2
 const TEMPLATES_VERSION: int = 3
-const STORAGE_VERSION: int = 6
-const TAGIT_VERSION_ARRAY: Array[int] = [3, 6, 2]
+const STORAGE_VERSION: int = 7
+const TAGIT_VERSION_ARRAY: Array[int] = [3, 6, 3]
 const MAX_PARENT_RECURSION: int = 100
 const IMAGE_LIMITS: Vector2i = Vector2i(1000, 1000)
 const LEV_DISTANCE: float = 0.75
@@ -701,6 +701,112 @@ func update_storage() -> void:
 				new_apparel[id_map[title]["id"]] = new_structure.duplicate()
 				
 			character["apparel"] = new_apparel.duplicate()
+		
+		current_version += 1
+		log_message(
+			"[TagIt] Data storage upgraded to version " + str(current_version),
+			LogLevel.INFO)
+	
+	if current_version == 6:
+		for character:Dictionary in storage_data.characters:
+			if character.has("gender") and typeof(character["gender"]) in [TYPE_INT, TYPE_FLOAT]:
+				match int(character["gender"]):
+					0:
+						character["gender"] = "male"
+					1:
+						character["gender"] = "female"
+					2:
+						character["gender"] = "ambiguous_gender"
+					3:
+						character["gender"] = "andro"
+					4:
+						character["gender"] = "gyno"
+					5:
+						character["gender"] = "herm"
+					6:
+						character["gender"] = "male_herm"
+					_:
+						character["gender"] = "male"
+			
+			if character.has("gender_lore") and typeof(character["gender_lore"]) in [TYPE_INT, TYPE_FLOAT]:
+				match int(character["gender_lore"]):
+					0:
+						character["gender_lore"] = ""
+					1:
+						character["gender_lore"] = "male"
+					2:
+						character["gender_lore"] = "female"
+					3:
+						character["gender_lore"] = ""
+					4:
+						character["gender_lore"] = "andro"
+					5:
+						character["gender_lore"] = "gyno"
+					6:
+						character["gender_lore"] = "herm"
+					7:
+						character["gender_lore"] = "male_herm"
+					_:
+						character["gender_lore"] = ""
+			
+			if character.has("age") and typeof(character["age"]) in [TYPE_INT, TYPE_FLOAT]:
+				match int(character["age"]):
+					0:
+						character["age"] = "baby"
+					1:
+						character["age"] = "toddler"
+					2:
+						character["age"] = "child"
+					3:
+						character["age"] = "adolescent"
+					4:
+						character["age"] = "adult"
+					5:
+						character["age"] = "mature"
+					6:
+						character["age"] = "elder"
+					_:
+						character["age"] = "adult"
+			
+			if character.has("age_lore") and typeof(character["age_lore"]) in [TYPE_INT, TYPE_FLOAT]:
+				match int(character["age_lore"]):
+					0:
+						character["age_lore"] = ""
+					1:
+						character["age_lore"] = "baby"
+					2:
+						character["age_lore"] = "toddler"
+					3:
+						character["age_lore"] = "child"
+					4:
+						character["age_lore"] = "adolescent"
+					5:
+						character["age_lore"] = "adult"
+					6:
+						character["age_lore"] = "mature"
+					7:
+						character["age_lore"] = "elder"
+					_:
+						character["age_lore"] = ""
+			
+			if character.has("body") and typeof(character["body"]) in [TYPE_INT, TYPE_FLOAT]:
+				match int(character["body"]):
+					0:
+						character["body"] = "anthro"
+					1:
+						character["body"] = "semi_anthro"
+					2:
+						character["body"] = "semi_feral"
+					3:
+						character["body"] = "feral"
+					4:
+						character["body"] = "human"
+					5:
+						character["body"] = "human_like"
+					6:
+						character["body"] = "taur"
+					_:
+						character["body"] = "anthro"
 		
 		current_version += 1
 		log_message(
