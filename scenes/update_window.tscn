@@ -89,8 +89,6 @@ layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
 text = "[font_size=20][b][color=SKY_BLUE]New[/color][/b][/font_size]
-[ul] New clothing sections & traits for wizard characters.[/ul]
+[ul] Added tooltips on more items and dropdowns on the Wizard[/ul]
 [font_size=20][b][color=SKY_BLUE]Fixes[/color][/b][/font_size]
-[ul] Fixed project image not expanding on wizard.[/ul]
-[font_size=20][b][color=SKY_BLUE]Changes[/color][/b][/font_size]
-[ul] If TagIt takes longer to load, splash should fade a bit faster now.[/ul]"
+[ul] Fixed the tag wizard adding tags that weren't checked[/ul]"
