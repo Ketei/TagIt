@@ -89,9 +89,8 @@ layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
 text = "[font_size=20][b][color=SKY_BLUE]New[/color][/b][/font_size]
-[ul] Added tooltips on more items and dropdowns on the Wizard
- Wizard now adds more character tag combinations[/ul]
+[ul] Added one more page on Wizard which will populate depending on character count.
+ Wizard will add a few more tags based on weight if enabled.
+ Wizard has a few more character traits covering personality.[/ul]
 [font_size=20][b][color=SKY_BLUE]Fixes[/color][/b][/font_size]
-[ul] Fixed the tag wizard adding tags that weren't checked.
- Fixed a typo on maleherm on the wizard.
- Fixed clothing level calculation.[/ul]"
+[ul] Fixed the tag list capturing input when it shouldn't be.[/ul]"
