@@ -617,11 +617,16 @@ const BODY_TRAITS: Array[Dictionary] = [
 	{"title": "Biped", "tag": "biped", "tooltip": "A character that walks on 2 legs."},
 	{"title": "Blushing", "tag": "blush"},
 	{"title": "Bound", "tag": "bound"},
+	{"title": "Coy", "tag": "coy", "tooltip": "Making a pretense of shyness or modesty that is intended to be alluring."},
 	{"title": "Dominant", "tag": "dominant"},
+	{"title": "Dripping", "tag": "dripping"},
+	{"title": "Looking Pleasured", "tag": "looking pleasured"},
 	{"title": "Musky", "tag": "musk"},
 	{"title": "Muscular", "tag": "muscular"},
 	{"title": "Pregnant", "tag": "pregnant"},
 	{"title": "Quadruped", "tag": "quadruped", "tooltip": "A character that walks on 4 legs."},
+	{"title": "Seductive", "tag": "seductive", "tooltip": "Posing, talking, and/or behaving in a way that\nis intended to (sexually) tempt or attract someone."},
+	{"title": "Shy", "tag": "shy", "tooltip": "A character that attempts to hide or escape\npotential humiliation, embarrasment or other uncomfortable situation."},
 	{"title": "Speaking", "tag": "dialogue"},
 	{"title": "Submissive", "tag": "submissive"},
 	{"title": "Sweating", "tag": "sweat"},
@@ -1361,6 +1366,13 @@ const BODY_TYPES: Array[Dictionary] = [
 				"value": 0
 			},
 			{
+				"id": "gaping",
+				"name": "Gaping Pussy",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Is gaping",
+				"tags": ["", "gaping vagina"]
+			},
+			{
 				"id": "plump",
 				"name": "Plump Pussy",
 				"mode": TreeItem.CELL_MODE_CHECK,
@@ -1412,6 +1424,13 @@ const BODY_TYPES: Array[Dictionary] = [
 				"text": "Small,Average,Big,Huge,Hyper",
 				"tags": ["small genital slit", "", "big genital slit", "huge genital slit", "hyper genital slit"],
 				"value": 1
+			},
+			{
+				"id": "gaping",
+				"name": "Gaping",
+				"mode": TreeItem.CELL_MODE_CHECK,
+				"text": "Is gaping",
+				"tags": ["", "gaping slit"]
 			},
 			{
 				"id": "puffy",
@@ -1591,18 +1610,818 @@ const BODY_TYPES: Array[Dictionary] = [
 		"include_standalone": true}
 	]
 
+const POSES: Dictionary = {
+	"ass_up": {
+		"tag": "ass up",
+		"title": "Ass up",
+		"tooltip": "Face down, ass up/That's the way we like to fuck!",
+		"options": {
+			"jacko": {
+				"tag": "jack-o' pose",
+				"title": "Jack-o' pose",
+				"tooltip": "A character in a crouching position where they lean all the way forward\nfrom a stand at the waist, feet planted far apart, and arms resting on the ground\nwith their butt high in the air."}}},
+	"bending": {
+		"title": "Bending",
+		"tag": "bending",
+		"options": {
+			"forward": {
+					"title": "Forward",
+					"tag": "bent over",
+					"tooltip": "When a character is leaning over at a right angle, or more."},
+			"backward": {
+				"title": "Backward",
+				"tag": "bent back",
+				"tooltip": "When the character is bending over backwards."}}
+	},
+	"standing": {
+		"tag": "standing",
+		"title": "Standing",
+		"options": {
+			"one_leg": {
+				"tag": "on one leg",
+				"title": "On one leg",
+				"tooltip": "Standing with one foot in contact with the ground,\nand the other raised off the ground."
+			},
+			"contrapposto": {
+				"tag": "contrapposto",
+				"title": "Contrapposto",
+				"tooltip": "Where most of the weight is shifted onto one foot."},
+			"step": {
+				"tag": "step pose",
+				"title": "Step pose",
+				"tooltip": "When one foot is slightly elevated above the other,\ntypically resting on something or climbing/stepping up something."
+			}
+		}},
+	"sitting": {
+		"tag": "sitting",
+		"title": "Sitting",
+		"options": {
+			"lotus": {
+				"tag": "lotus pose",
+				"title": "Lotus Pose",
+				"tooltip": "Where the characters legs are crossed, with their ankles\nresting on the opposite leg's shin."}},
+			"butterfly": {
+				"tag": "butterfly sitting",
+				"title": "Butterfly",
+				"tooltip": "Where the knees are spread but feet are together without crossing."},
+			"wariza": {
+				"tag": "wariza",
+				"title": "W-sitting",
+				"tooltip": "Where the butt is on the floor and the legs are bent backwards on each side of the body."},
+			"yokozuwari": {
+				"tag": "yokozuwari",
+				"title": "Legs to the side",
+				"tooltip": "Sitting with one's legs out to one side."}},
+	"kneeling": {
+		"tag": "kneeling",
+		"title": "Kneeling",
+		"options": {
+			"one_knee": {
+				"tag": "on one knee",
+				"title": "On one knee",
+				"tooltip": "Kneeling with one knee touching the ground."},
+			"seiza": {
+				"tag": "seiza",
+				"title": "Heels on butt",
+				"tooltip": "A Japanese sitting position by kneeling\non the floor and resting the buttocks on the heels."}}},
+	"crouching": {
+		"tag": "crouching",
+		"title": "Crouching/Squatting",
+		"tooltip": "Bending the knees to bring the upper body closer to the ground.",
+		"options": {
+			"slav": {
+				"tag": "slav squat",
+				"title": "Slav squat",
+				"tooltip": "A deep squat with one's forearms resting on their legs"}}},
+	"lying": {
+		"tag": "lying",
+		"title": "Lying",
+		"tooltip": "When a character is more or less horizontal.",
+		"options": {
+			"back": {
+				"tag": "on back",
+				"title": "On back",
+				"tooltip": "When the character is lying on its back."},
+			"side": {
+				"tag": "on side",
+				"title": "On side",
+				"tooltip": "When a character is resting on the narrow width of their body."},
+			"front": {
+				"tag": "on front",
+				"title": "On belly",
+				"tooltip": "When a character is lying on their belly."}}},
+	"others": {
+		"tag": "",
+		"title": "Others",
+		"tooltip": "Specific poses not fitting to one category",
+		"options": {
+			"all_fours": {
+				"tag": "all fours",
+				"title": "On all fours",
+				"tooltip": "Where an anthro's arms and legs/knees are resting against the ground."}}},
+			"action": {
+				"tag": "action pose",
+				"title": "Dynamic action",
+				"tooltip": "Dynamic, mid-action poses that imply motion"},
+			"split": {
+				"tag": "splits",
+				"title": "Split",
+				"tooltip": "A position in which the legs are in line with each other\nand extended in opposite directions."
+			},
+			"spread_eagle": {
+				"tag": "spread eagle",
+				"title": "Spread Eagle",
+				"tooltip": "A character whose limbs are all spread out from their body,\nso that it roughly resembles an \"X\"."}}
+
+const ACTIONS: Dictionary = {
+	"presenting": {
+		"tag": "presenting",
+		"title": "Presenting",
+		"tooltip": "Poses where a character blatantly shows off exposed body parts",
+		"options": {
+			"anus": {
+				"tag": "presenting anus",
+				"title": "Presenting Anus",
+				"tooltip": "Posing in a way that specifically exposes or focuses the anus for view."},
+			"balls": {
+				"tag": "presenting balls",
+				"title": "Presenting Balls",
+				"tooltip": "Posing in a way that specifically exposes or focuses the balls for view."},
+			"belly": {
+				"tag": "presenting belly",
+				"title": "Presenting Belly",
+				"tooltip": "Posing in a way that specifically exposes or focuses the belly for view."},
+			"breasts": {
+				"tag": "presenting breasts",
+				"title": "Presenting Breasts",
+				"tooltip": "Posing in a way that specifically exposes or focuses the breasts for view."},
+			"cloaca": {
+				"tag": "presenting cloaca",
+				"title": "Presenting Cloaca",
+				"tooltip": "Posing in a way that specifically exposes or focuses the cloaca for view."},
+			"crotch": {
+				"tag": "presenting crotch",
+				"title": "Presenting Crotch",
+				"tooltip": "Posing in a way that specifically exposes or focuses the crotch for view."},
+			"hindquarters": {
+				"tag": "presenting hindquarters",
+				"title": "Presenting Hindquarters",
+				"tooltip": "Posing in a way that specifically exposes or focuses the butt for view."},
+			"penis": {
+				"tag": "presenting penis",
+				"title": "Presenting Penis",
+				"tooltip": "Posing in a way that specifically exposes or focuses the penis for view."},
+			"pussy": {
+				"tag": "presenting vulva",
+				"title": "Presenting Pussy",
+				"tooltip": "Posing in a way that specifically exposes or focuses the vulva for view."},
+			"sheath": {
+				"tag": "presentint sheath",
+				"title": "Presenting Sheath",
+				"tooltip": "Posing in a way that specifically exposes or focuses the sheath for view."},
+			"slit": {
+				"tag": "presenting slit",
+				"title": "Presenting Slit",
+				"tooltip": "Posing in a way that specifically exposes or focuses the slit for view."}}},
+	"spreading": {
+		"tag": "spreading",
+		"title": "Spreading",
+		"tooltip": "A character who is, or has someone else, or a device spreading a part of their body.",
+		"options": {
+			"anus": {
+				"tag": "spread anus",
+				"title": "Spreading Anus",
+				"tooltip": "When a character's anus is visibly stretched and/or held open by spreading."},
+			"butt": {
+				"tag": "spread butt",
+				"title": "Spreading butt",
+				"tooltip": "Where a character is spreading their own or another character's buttocks."},
+			"cloaca": {
+				"tag": "spread cloaca",
+				"title": "Spreading Cloaca",
+				"tooltip": "Where a character cloaca is being spread apart."},
+			"legs": {
+				"tag": "spread legs",
+				"title": "Spreading Legs",
+				"tooltip": "Where a character has their legs spread apart."},
+			"pussy": {
+				"tag": "spread vulva",
+				"title": "Spreading Pussy",
+				"tooltip": "Where a character is spreading apart the lips of a vulva."},
+			"slit": {
+				"tag": "spread slit",
+				"title": "Spreading Slit",
+				"tooltip": "Where a character's genital slit is being spread apart."}}},
+	"looking": {
+		"tag": "",
+		"title": "Looking At",
+		"tooltip": "When a character is looking at a specific someone.",
+		"options": {
+			"another": {
+				"tag": "looking at another",
+				"title": "Another Person",
+				"tooltip": "Where a character is looking at another character."},
+			"self": {
+				"tag": "looking at self",
+				"title": "Self",
+				"tooltip": "When a character is looking at any part of their own body."},
+			"viewer": {
+				"tag": "looking at viewer",
+				"title": "Viewer",
+				"tooltip": "Where a character is looking directly at the viewer."},
+			"object": {
+				"tag": "looking at object",
+				"title": "Object",
+				"tooltip": "When a character is looking at an object."}}},
+	"covering": {
+		"tag": "covering",
+		"title": "Covering",
+		"tooltip": "When a character is trying to hide or cover part of their,\nor someone else's, body from view.",
+		"options": {
+			"breasts": {
+				"tag": "covering breasts",
+				"title": "Breasts",
+				"tooltip": "When a character is trying to hide or cover their,\nor someone else's, breasts from view."},
+			"butt": {
+				"tag": "covering butt",
+				"title": "Butt",
+				"tooltip": "When a character is trying to hide or cover their,\nor someone else's, butt from view."},
+			"chest": {
+				"tag": "covering chest",
+				"title": "Chest",
+				"tooltip": "When a character is trying to hide or cover their,\nor someone else's, chest (not breasts) from view."},
+			"crotch": {
+				"tag": "covering crotch",
+				"title": "Crotch",
+				"tooltip": "When a character is trying to hide or cover their,\nor someone else's, crotch from view."},
+			"ears": {
+				"tag": "covering ears",
+				"title": "Ears",
+				"tooltip": "When a character is trying to hide or cover their,\nor someone else's, ears from view."},
+			"eyes": {
+				"tag": "covering eyes",
+				"title": "Eyes",
+				"tooltip": "When a character is trying to hide or cover their,\nor someone else's, eyes from view."},
+			"face": {
+				"tag": "covering face",
+				"title": "Face",
+				"tooltip": "When a character is trying to hide or cover their,\nor someone else's, face from view."},
+			"mouth": {
+				"tag": "covering mouth",
+				"title": "Mouth",
+				"tooltip": "When a character is trying to hide or cover their,\nor someone else's, mouth from view."}}},
+	"zzz_others": {
+		"tag": "",
+		"title": "Others",
+		"tooltip": "Actions that don't fit in any broad category.",
+		"options": {
+			"tongue_out": {
+				"tag": "tongue out",
+				"title": "Tongue Out",
+				"tooltip": "Which a character's tongue is protruding out between the lips."
+			}
+		}
+	}}
+
+const SEX_LABELS: Dictionary = { # This pose requires character(s) to:
+	"solo": {
+		"implications": ["solo", "single character", "one", "1 character", "1 person"]},
+	"duo": {
+		"implications": ["duo", "two characters", "2 characters", "2 people", "2 persons", "multiple", "group", "couple"]},
+	"trio": {
+		"implications": ["trio", "three characters", "3 characters", "3 people", "3 persons", "multiple", "group", "orgy"]},
+	"foursome": {
+		"implications": ["foursome", "four characters", "4 characters", "4 people", "4 persons", "multiple", "group", "orgy"]},
+	"penetration": {
+		"text":  "- A penetration on any: Anus, vagina, slit or cloaca",
+		"implications": ["penetration", "penetrated", "anal", "anus", "bussy", "vaginal", "pussy", "vulva", "slit", "colaca", "inside"]
+	},
+	"from_front": {
+		"text":  "- Characters facing each other.",
+		"implications": ["from front", "facing each other"]
+	},
+	"from_back": {
+		"text":  "- Characters facing the same direction.",
+		"implications": ["from back", "from behind", "in rear", "facing same direction"]
+	},
+	"penetrated_on_top": {
+		"text":  "- Penetrated is above the penetrator",
+		"implications": ["on top", "above", "penetrated"]
+	},
+	"penetrated_on_bottom": {
+		"text":  "- Penetrated is below the penetrator",
+		"implications": ["on bottom", "below", "penetrated"]
+	},
+	"penetrator_on_top": {
+		"text":  "- Penetrator is on top of penetrated",
+		"implications": ["on top", "above", "penetrated"]
+	},
+	"penetrator_on_bottom": {
+		"text":  "- Penetrator is below the penetrated",
+		"implications": ["on bottom", "below", "penetrated"]
+	},
+	"carrying": {
+		"text":  "- Character carrying another",
+		"implications": ["carrying"]
+	},
+	"oral": {
+		"text":  "- A character using its mouth/tongue.",
+		"implications": ["oral", "fellatio", "cunnilingus", "tongue"]
+	},
+	"lying": {
+		"text":  "- A character lying down.",
+		"implications": ["lying down", "on back", "on side", "on front", "on belly", "on chest"]
+	},
+	"all_fours_penetrator": {
+		"text":  "- Penetrator is on all fours or similar.",
+		"implications": ["all fours", "on knees", "on hands"]
+	},
+	"all_fours_penetrated": {
+		"text":  "- Penetrated is on all fours or similar.",
+		"implications": ["all fours", "bent over", "bending over", "on knees", "on hands"]
+	},
+	"standing_both": {
+		"text":  "- Both penetrated and penetrator standing.",
+		"implications": ["standing", "on feet"]
+	},
+	"on_holes": {
+		"text":  "- Interaction on any: Anus, slit, cloaca or vagina",
+		"implications": ["anus", "anal", "bussy", "vulva", "vaginal", "pussy", "slit", "cloacal"]
+	},
+	"standing": {
+		"text":  "- A character standing",
+		"implications": ["standing", "on feet"]
+	},
+	"kneeling": {
+		"text":  "- A character on their knees.",
+		"implications": ["on knees", "kneeling"]
+	},
+	"sitting": {
+		"text":  "- A character sitting.",
+		"implications": ["sitting", "on butt"]
+	}}
+
+const SEX_POSES: Dictionary = {
+	"amazon": {
+		"title": "Amazon",
+		"tag": "amazon position",
+		"tooltip": "Partner normally lies on their back with their legs up\nwhile the penetrated partner straddles and faces them from on top.",
+		"extra_tags": ["sex"],
+		"labels": ["penetration", "from_front", "penetrated_on_top"],
+		"characters_required": 2},
+	"amazon_reverse": {
+		"title": "Amazon (Reverse)",
+		"tag": "reverse amazon position",
+		"tooltip": "The top is on their back with their legs brought up towards their chest,\nwhile the bottom straddles the bent legs and rides the penis facing away from the top.",
+		"extra_tags": [],
+		"labels": ["penetration", "from_back", "penetrated_on_top"],
+		"characters_required": 2},
+	"anvil": {
+		"title": "Anvil",
+		"tag": "anvil position",
+		"tooltip": "Similar to missionary position, except the character being penetrated\nhas their legs up towards the partner's head.",
+		"extra_tags": ["from front position", "legs up"],
+		"labels": ["penetration", "from_front"],
+		"characters_required": 2},
+	"anvil_reverse": {
+		"title": "Anvil (Reverse)",
+		"tag": "",
+		"tooltip": "The penetrating character is mostly on all fours or similar for a quadruped.\nThe penetrated character can be in any upward-facing posture",
+		"extra_tags": [],
+		"labels": ["penetration"],
+		"characters_required": 2},
+	"arch": {
+		"title": "Arch",
+		"tag": "arch position",
+		"tooltip": "The receiver is in partial bridge position resting on the shoulders,\nwith the partner in the kneeling position.",
+		"extra_tags": [],
+		"labels": ["penetration"],
+		"characters_required": 2},
+	"ballerina": {
+		"title": "Ballerina",
+		"tag": "ballerina position",
+		"tooltip": "A face-to-face standing sex position in which one leg is extended\nto rest on the other partner's shoulder.",
+		"extra_tags": [],
+		"labels": ["penetration"],
+		"characters_required": 2}, # Penetration
+	"bent_spoon": {
+		"title": "Bent Spoon",
+		"tag": "bent spoon position",
+		"tooltip": "Similar to spoon position, but with both partners\nlying on their back instead.",
+		"extra_tags": [],
+		"labels": ["penetration", "from_back"],
+		"characters_required": 2},
+	"bodyguard": {
+		"title": "Bodyguard",
+		"tag": "bodyguard position",
+		"tooltip": "A standing sex position where both partners are facing in the same direction.",
+		"extra_tags": ["from behind position", "standing sex"],
+		"labels": ["penetration", "from_back", "standing_both"],
+		"characters_required": 2},
+	"bridal": {
+		"title": "Bridal Carry",
+		"tag": "bridal carry position",
+		"tooltip": "A carrying sex position where the penetrating partner\nholds the penetrated partner in a bridal carry",
+		"extra_tags": [],
+		"labels": ["penetration", "carrying"],
+		"characters_required": 2},
+	"buttler": {
+		"title": "Butler",
+		"tag": "butler position",
+		"tooltip": "The receiving character is standing upright or leaning forward,\nwhile the other character kneels down behind them giving oral sex.",
+		"extra_tags": [],
+		"labels": ["oral", "on_holes"],
+		"characters_required": 2},
+	"chair": {
+		"title": "Chair",
+		"tag": "chair position",
+		"tooltip": "Where the penetrating character is sitting up and the penetrated\ncharacter is sitting on top of them while facing away.",
+		"extra_tags": [],
+		"labels": ["penetration", "from_back"],
+		"characters_required": 2},
+	"cowgirl": {
+		"title": "Cowgirl",
+		"tag": "cowgirl position",
+		"tooltip": "The recipient of penetration is positioned on top of the giver,\nof whom faces toward their head while they lie on their back.",
+		"extra_tags": [],
+		"labels": ["penetration", "from_front", "lying", "penetrated_on_top", "penetrator_on_bottom"],
+		"characters_required": 2},
+	"cowgirl_reverse": {
+		"title": "Cowgirl (Reverse)",
+		"tag": "reverse cowgirl position",
+		"tooltip": "The cowgirl position, but with the partner being penetrated\nfacing away from, and straddling the top.",
+		"extra_tags": [],
+		"labels": ["penetration", "from_back", "lying", "penetrated_on_top", "penetrator_on_bottom"],
+		"characters_required": 2},
+	"dancer": {
+		"title": "Dancer",
+		"tag": "dancer position",
+		"tooltip": "A face-to-face standing sex position, where the penetrating partner\nholds up one of the penetrated partner's legs.",
+		"extra_tags": [],
+		"labels": ["penetration", "from_front", "standing"],
+		"characters_required": 2},
+	"deck_chair": {
+		"title": "Deck Chair",
+		"tag": "deck chair position",
+		"tooltip": "A sex position where both partners are reclining or lying down,\nin opposite directions.",
+		"extra_tags": [],
+		"labels": ["lying"],
+		"characters_required": 2},
+	"doggy": {
+		"title": "Doggy-style",
+		"tag": "doggystyle",
+		"tooltip": "Sex position in which a character crouches on all fours\nor bends over and is penetrated/stimulated from behind.",
+		"extra_tags": ["from behind position"],
+		"labels": ["penetration", "all_fours_penetrated"],
+		"characters_required": 2},
+	"eagle": {
+		"title": "Eagle",
+		"tag": "eagle position",
+		"tooltip": "Where the receiving partner's legs are pulled far back towards their head,\nand either spread out to the sides or raised up.",
+		"extra_tags": ["from front position"],
+		"labels": ["penetration", "from_front"],
+		"characters_required": 2},
+	"feedbag": {
+		"title": "Feedbag",
+		"tag": "feedbag position",
+		"tooltip": "Oral position where the receiving's legs rest on their partner's back.",
+		"extra_tags": [],
+		"labels": ["oral"],
+		"characters_required": 2},
+	"fleshlight": {
+		"title": "Fleshlight",
+		"tag": "fleshlight position",
+		"tooltip": "Where the penetrating partner has nearly full control over their partner's body.\nUsually involving a size difference.\nRestricted to PERPENDICULAR sex positions that resemble the usage of the fleshlight sex toy.",
+		"extra_tags": [],
+		"labels": ["penetration"],
+		"characters_required": 2},
+	"fleshlight_reverse": {
+		"title": "Fleshligth (Rev.)",
+		"tooltip": "Where the penetrating partner has nearly full control over their partner's body.\nUsually involving a size difference.\nRestricted to PARALLEL sex positions that resemble the usage of the fleshlight sex toy.",
+		"labels": ["penetration"],
+		"characters_required": 2},
+	"full_nelson": {
+		"title": "Full Nelson",
+		"tag": "full nelson position",
+		"tooltip": "Sex position where the bottom is being penetrated from behind,\nheld by the top in a full nelson hold.",
+		"extra_tags": ["from behind position", "full nelson"],
+		"labels": ["penetration", "carrying"],
+		"characters_required": 2},
+	"guard": {
+		"title": "Guard",
+		"tag": "guard position",
+		"tooltip": "Where the giving partner in a kneeling or sitting position while\nsupporting or lifting the hips of the receiving partner.",
+		"extra_tags": [],
+		"labels": ["penetration", "from_front"],
+		"characters_required": 2},
+	"jockey": {
+		"title": "Jockey",
+		"tag": "jockey position",
+		"tooltip": "Where the receiving partner is lying prone on front, while the penetrating\npartner does so while kneeling or crouching on top with legs spread.",
+		"extra_tags": ["prone bone position"],
+		"labels": ["penetration", "from_back", "lying"],
+		"characters_required": 2},
+	"jackhammer": {
+		"title": "Jackhammer",
+		"tag": "jackhammer position",
+		"tooltip": "The receiving partner is below the penetrating partner (usually kneeling or crouching)\nand their neck is craned backward to accommodate the penetrating partner.",
+		"labels": ["oral"],
+		"characters_required": 2},
+	"prone_bone": {
+		"title": "Prone Bone",
+		"tag": "prone bone position",
+		"tooltip": "Where the receiving partner lies flat on a surface, while their partner\npenetrates them from behind.",
+		"labels": ["penetration", "from_back", "lying"],
+		"extra_tags": ["from behind position"],
+		"characters_required": 2},
+	"kneel_oral": {
+		"title": "Kneeling Oral",
+		"tag": "kneeling oral position",
+		"tooltip": "When a character is kneeling while performing oral.",
+		"extra_tags": [],
+		"labels": ["oral", "kneeling"],
+		"characters_required": 2},
+	"kneel_blow": {
+		"title": "Kneeling and Blow",
+		"tag": "kneeling and blow position",
+		"tooltip": "Where the dominant partner is kneeling and the submissive partner\nis on all fours or lying giving oral.",
+		"extra_tags": [],
+		"labels": ["oral"],
+		"characters_required": 2},
+	"leapfrog": {
+		"title": "Leapfrog",
+		"tag": "leapfrog position",
+		"tooltip": "Where the penetrating partner is kneeling upright while\nthe bottoming partner is laying down with their hindquarters raised.",
+		"extra_tags": ["ass up", "from behind position"],
+		"labels": ["penetration", "from_back"],
+		"characters_required": 2},
+	"leg_glider": {
+		"title": "Leg Glider",
+		"tag": "leg glider position",
+		"tooltip": "Where the top is upright and the bottom is usually on their side,\nwith one leg raised up and the other leg either spread out or straddled by the top.",
+		"extra_tags": ["raised leg"],
+		"labels": ["penetration", "lying"],
+		"characters_required": 2},
+	"lotus": {
+		"title": "Lotus",
+		"tag": "lotus position",
+		"tooltip": "Where one partner in a seated position crosses his legs in front of them\nand their partner then sits in their lap facing them.",
+		"extra_tags": [],
+		"labels": ["penetration", "from_front", "sitting"],
+		"characters_required": 2},
+	"lying_blow": {
+		"title": "Lying and Blow",
+		"tag": "lying and blow position",
+		"tooltip": "A form of oral where the receiving partner is lying down and\nthe giving partner is kneeling or lying on top giving cunnilingus or fellatio.",
+		"extra_tags": [],
+		"labels": ["oral", "lying"],
+		"characters_required": 2},
+	"mastery": {
+		"title": "Mastery",
+		"tag": "mastery position",
+		"tooltip": "A position where the penetrated partner is seated on top of\nthe penetrating partner, who is in turn seated or lightly reclining.",
+		"extra_tags": ["from front position"],
+		"labels": ["penetration", "from_front", "sitting"],
+		"characters_required": 2},
+	"masturbation": {
+		"title": "Masturbation",
+		"tag": "masturbation",
+		"tooltip": "When a character is sexually stimulating themselves",
+		"characters_required": 1},
+	"mating_press": {
+		"title": "Mating Press",
+		"tag": "mating press",
+		"tooltip": "Where one character pins another character during sex\nand the later is usually lying on their back.",
+		"extra_tags": [],
+		"labels": ["penetration", "from_front", "lying"],
+		"characters_required": 2},
+	"mermaid": {
+		"title": "Mermaid",
+		"tag": "mermaid position",
+		"tooltip": "A sex position where the penetrated legs are together\nand perpendicular to their torso.",
+		"extra_tags": [],
+		"labels": ["penetration"],
+		"characters_required": 2},
+	"missionary": {
+		"title": "Missionary",
+		"tag": "missionary position",
+		"tooltip": "Where one character lays on their back while parting their legs\nto allow another character to penetrate them face-to-face.",
+		"extra_tags": [],
+		"labels": ["penetration", "from_front", "lying"],
+		"characters_required": 2},
+	"missionary_reverse": {
+		"title": "Missionary (Rev.)",
+		"tag": "reverse missionary position",
+		"tooltip": "Variant of missionary where the penetrating character\nis on the bottom instead of on top.",
+		"extra_tags": ["from front position", "on back"],
+		"labels": ["penetration", "from_front"],
+		"characters_required": 2},
+	"mounting": {
+		"title": "Mounting",
+		"tag": "mounting",
+		"tooltip": "Any sex position in which the receiving character is on\nall fours and the penetrating character lays their\ntorso on their partners' back.",
+		"extra_tags": ["from behind position"],
+		"labels": ["penetration", "from_back", "penetrator_on_top", "all_fours_penetrator", "all_fours_penetrated"],
+		"characters_required": 2},
+	"north_pole": {
+		"title": "North Pole",
+		"tag": "north pole position",
+		"tooltip": "An oral sex position from the front, in which the dominant partner\nkneels on top of their partner while the submissive partner performs oral sex.",
+		"extra_tags": [],
+		"labels": ["oral"],
+		"characters_required": 2},
+	"perching": {
+		"title": "Perching",
+		"tag": "perching position",
+		"tooltip": "Where the penetrating character has both feet off the ground,\nusually standing or crouching on top of the penetrated partner's rear end.",
+		"extra_tags": ["from behind position"],
+		"labels": ["penetration", "from_back"],
+		"characters_required": 2},
+	"piledriver": {
+		"title": "Piledriver",
+		"tag": "piledriver position",
+		"tooltip": "Where the penetrated partner lies neck down and bottom up\nwith legs bent over their head while the penetrating partner crouches over them\nand inserts directly downwards.",
+		"extra_tags": [],
+		"labels": ["penetration", "penetrator_on_top"],
+		"characters_required": 2},
+	"prison_guard": {
+		"title": "Prison Guard",
+		"tag": "prison guard position",
+		"tooltip": "Where the dominant partner penetrates from behind\nwhile grabbing the partners arms.",
+		"extra_tags": ["arm pull", "from behind position"],
+		"labels": ["penetration", "from_back"],
+		"characters_required": 2},
+	"sit_blow": {
+		"title": "Sit and Blow",
+		"tag": "sit and blow position",
+		"tooltip": "Where the dominant partner is sitting while the submissive partner\ncan be kneeling, lying or standing giving cunnilingus or fellatio.",
+		"extra_tags": [],
+		"labels": ["oral", "sitting"],
+		"characters_required": 2},
+	"sixty_nine": {
+		"title": "69 (Sixty-nine)",
+		"tag": "69 position",
+		"tooltip": "A position in which two characters align themselves\n so that each character's mouth is near the other's genitals to then perform oral.",
+		"extra_tags": ["oral"],
+		"labels": ["oral"],
+		"characters_required": 2},
+	"south_pole": {
+		"title": "South Pole",
+		"tag": "south pole position",
+		"tooltip": "An oral sex in which one partner kneels on top of the other\nfacing at their lower body while the bottom partner performs oral sex.",
+		"extra_tags": [],
+		"labels": ["oral"],
+		"characters_required": 2},
+	"speed_bump": {
+		"title": "Speed Bump",
+		"tag": "speed bump position",
+		"tooltip": "Where the receiving partner is lying prone on front,\nwhile the penetrating partner lies on top.",
+		"extra_tags": ["from behind position", "prone bone position"],
+		"labels": ["penetration", "from_back"],
+		"characters_required": 2},
+	"spoon": {
+		"title": "Spoon",
+		"tag": "spoon position",
+		"tooltip": "A sex position where both partners lie on their sides,\nthe receiving partner having their back to the penetrating partner.",
+		"extra_tags": ["from behind position"],
+		"labels": ["penetration"],
+		"characters_required": 2},
+	"squat": {
+		"title": "Squat",
+		"tag": "squat position",
+		"tooltip": "A position in which one character is penetrated from behind by another while they are crouching.",
+		"extra_tags": [],
+		"labels": ["penetration"],
+		"characters_required": 2},
+	"stand_carry": {
+		"title": "Stand and Carry",
+		"tag": "stand and carry position",
+		"tooltip": "Any sexual position that involves one character carrying their partner\nwhile standing and facing each other.",
+		"extra_tags": ["standing sex"],
+		"labels": ["penetration", "from_front", "carrying", "standing"],
+		"characters_required": 2},
+	"stand_carry_reverse": {
+		"title": "Stand and Carry (Reverse)",
+		"tag": "reverse stand and carry position",
+		"tooltip": "Any sexual position that involves one character carrying their partner\nwhile standing and facing the same direction.",
+		"extra_tags": ["standing sex"],
+		"labels": ["penetration", "from_back", "carrying", "standing"],
+		"characters_required": 2},
+	"step": {
+		"title": "Step",
+		"tag": "step position",
+		"tooltip": "A position in which the penetrating character has one foot on the ground or object,\nwith their other foot rested on the penetrated character's rear, leg, or lower back.",
+		"extra_tags": [],
+		"labels": ["penetration", "from_back"],
+		"characters_required": 2},
+	"table_lotus": {
+		"title": "Table Lotus",
+		"tag": "table lotus position",
+		"tooltip": "A front-entry position in which the receiving partner is lying on their back\n with their bottom level to the giving partner's waist.",
+		"extra_tags": ["on back"],
+		"labels": ["penetration", "from_front", "lying"],
+		"characters_required": 2},
+	"victory": {
+		"title": "Victory",
+		"tag": "victory position",
+		"tooltip": "A kneeling front entry position in which the receiving partner is lying / reclining\non their back while having their legs raised and spread into a v shape.",
+		"extra_tags": ["from front position"],
+		"labels": ["penetration", "from_front"],
+		"characters_required": 2},
+	"wheelbarrow": {
+		"title": "Wheelbarrow",
+		"tag": "wheelbarrow position",
+		"tooltip": "A position similar to doggystyle but with the top holding the bottom's legs\noff of the ground (like a wheelbarrow).",
+		"extra_tags": ["from behind position"],
+		"labels": ["penetration", "from_back"],
+		"characters_required": 2},
+	"1691": {
+		"title": "1691",
+		"tag": "1691 position",
+		"tooltip": "A foursome position where two people \"69\" while two other people,\none on either side, perform a sexual act to one of the two who are \"69ing\".",
+		"extra_tags": ["69 position", "group sex"],
+		"labels": ["penetration"],
+		"characters_required": 4},
+	"169": {
+		"title": "169",
+		"tag": "169 position",
+		"tooltip": "A threesome where two partners perform the 69 position\nwhile one of them is penetrated by a third.",
+		"extra_tags": ["69 position", "group sex"],
+		"labels": ["penetration"],
+		"characters_required": 3},
+	"eiffel_tower": {
+		"title": "Eiffel Tower",
+		"tag": "eiffel tower position",
+		"tooltip": "When one character is being penetrated from both ends at the same time,\nand the two penetrating participants are high-fiving or holding hands\nto imitate a tower.",
+		"labels": ["penetration"],
+		"characters_required": 3},
+	"spitroast": {
+		"title": "Spitroast",
+		"tag": "spitroast",
+		"tooltip": "A sex position where a character is penetrated on both ends at the same time.",
+		"extra_tags": ["fellatio", "oral"],
+		"labels": ["penetration"],
+		"characters_required": 3},
+	"sandwich": {
+		"title": "Sandwich",
+		"tag": "sandwich position",
+		"tooltip": "A position involving three participants.\nThe participants must have their bodies close together,\nwith the outer two participants both facing inward\ntowards the center participant.",
+		"extra_tags": ["group sex"],
+		"characters_required": 3},
+	"train": {
+		"title": "Train",
+		"tag": "train position",
+		"tooltip": "A sex involving at least three participants.\nThe participants must have their bodies close together, all facing the same direction.",
+		"extra_tags": ["group sex"],
+		"characters_required": 3},
+	"daisy_train": {
+		"title": "Daisy train",
+		"tag": "daisy train",
+		"tooltip": "A position where a series of characters are each performing oral\non the next in a non-looped sequence.",
+		"labels": ["oral"],
+		"characters_required": 3},
+	"daisy_chain": {
+		"title": "Daisy Chain",
+		"tag": "daisy chain",
+		"tooltip": "A position involving a group of characters each performing oral\non the next in a manner that forms a loop.",
+		"labels": ["oral"],
+		"characters_required": 3},
+	"triangle": {
+		"title": "Triangle",
+		"tag": "triangle position",
+		"tooltip": "A threesome position where one character lies on their back\nwhile another character sits over their face\nand the third character sits over the genitals of the lying character.",
+		"extra_tags": ["group sex"],
+		"characters_required": 3},
+	"totem_pole": {
+		"title": "Totem Pole",
+		"tag": "totem pole position",
+		"tooltip": "The participants are positioned on top of each other's lap\nwhile being penetrated, stacking themselves like a totem pole.",
+		"extra_tags": ["lucky pierre"],
+		"labels": ["penetration"],
+		"characters_required": 3},
+	"pussy_stack": {
+		"title": "Pussy Stack",
+		"tag": "pussy stacking",
+		"tooltip": "When two or more pussies are stacked on top of one another.",
+		"characters_required": 2}}
+
+enum CharUpdateType {
+	CREATED,
+	DELETED}
+
 var storage: TagItStorage = TagItStorage.get_storage()
-var characters: Array[Dictionary] = []
+var characters: Dictionary = {}
 var sections: PackedStringArray = [
 	"Image Meta",
 	"Image Properties",
 	"Image Angles",
 	"Character Pairings",
-	"Characters"]
-var current_character: int = -1:
+	"Characters",
+	"Poses and Penetration"]
+var current_character: String = "":
 	set(new_current):
 		current_character = new_current
-		var valid_character: bool = 0 <= new_current
+		var valid_character: bool = not current_character.is_empty()
 		character_tag_ln_edt.editable = valid_character
 		species_ln_edt.editable = valid_character
 		body_opt_btn.disabled = not valid_character
@@ -1617,9 +2436,12 @@ var current_character: int = -1:
 var color_node: TreeItem = null
 var current_page: int = 0:
 	set(new_current):
+		if current_page < 5 and new_current == 5:
+			#populate_characters_penetration()
+			update_penetrationg_tree()
 		current_page = new_current
 		previous_button.text = "Return" if current_page == 0 else "Previous"
-		next_button.text = "Next" if current_page < 4 else "Finish"
+		next_button.text = "Next" if current_page < 5 else "Finish"
 		main_panel.get_child(current_page).visible = true
 		current_page_lbl.text = str(current_page + 1)
 		title_label.text = sections[current_page]
@@ -1682,6 +2504,13 @@ var current_project_size: Vector2 = Vector2(310, 34)
 @onready var apply_character_btn: Button = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/NameContainer/ApplyCharacterBtn
 @onready var wizard_checkboxes: Control = $WizardCheckboxes
 
+@onready var pose_tree: Tree = $MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/PoseContainer/PoseTree
+@onready var penetration_tree: Tree = $MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/PenetrationContainer/PenetrationTree
+@onready var sex_tree: Tree = $MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/SexContainer/SexTree
+@onready var actions_tree: Tree = $MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/ActionsContainer/ActionsTree
+@onready var search_sex_pose_ln_edt: LineEdit = $MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/SexContainer/SearchSexPoseLnEdt
+
+
 # --- Images ---
 @onready var day: TextureRect = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Day
 @onready var night: TextureRect = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Night
@@ -1707,6 +2536,10 @@ func _ready() -> void:
 	body_texture_tree.create_item()
 	clothing_tree.create_item()
 	body_traits.create_item()
+	pose_tree.create_item()
+	penetration_tree.create_item()
+	sex_tree.create_item()
+	actions_tree.create_item()
 	
 	year_opt_btn.value = Time.get_datetime_dict_from_system().year
 	
@@ -1714,6 +2547,12 @@ func _ready() -> void:
 	body_traits.set_column_title(0, "Visible Body Trait")
 	body_texture_tree.set_column_title(0, "Body Property")
 	body_texture_tree.set_column_title(1, "Setting")
+	
+	sex_tree.set_column_expand(0, true)
+	sex_tree.set_column_expand(1, true)
+	
+	sex_tree.set_column_expand_ratio(0, 3)
+	sex_tree.set_column_expand_ratio(1, 2)
 	
 	body_texture_tree.set_column_expand_ratio(0, 2)
 	body_texture_tree.set_column_expand_ratio(1, 3)
@@ -1723,6 +2562,10 @@ func _ready() -> void:
 	add_genders(gender_opt_btn)
 	add_genders(gender_lore_opt_btn, true, 0, true)
 	add_body_types(body_opt_btn)
+	populate_poses()
+	populate_sex_poses()
+	populate_actions()
+	
 	
 	current_page_lbl.text = "1"
 	all_pages.text = str(main_panel.get_child_count())
@@ -1802,11 +2645,51 @@ func _ready() -> void:
 	
 	wizard_checkboxes.data_selected.connect(_on_data_changed.bind(true))
 	wizard_checkboxes.data_deselected.connect(_on_data_changed.bind(false))
+	
+	pose_tree.item_edited.connect(_expand_on_check.bind(pose_tree))
+	actions_tree.item_edited.connect(_expand_on_check.bind(actions_tree))
+	
+	search_sex_pose_ln_edt.text_changed.connect(_on_search_sex_text_changed)
 
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"ui_cancel"):
 		wizard_cancelled.emit()
+
+
+func update_actions_character_tree(update_type: CharUpdateType, uuid: String) -> void:
+	var root_tree: TreeItem = penetration_tree.get_root()
+	match update_type:
+		CharUpdateType.CREATED:
+			for char_tree in root_tree.get_children():
+				var new_char: TreeItem = char_tree.create_child()
+				new_char.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
+				new_char.set_editable(0, true)
+				new_char.set_metadata(0, {"uuid": uuid})
+			
+			var char_item: TreeItem = penetration_tree.get_root().create_child()
+			char_item.set_metadata(0, { "uuid": uuid})
+			
+			for char_uuid in characters.keys():
+				if char_uuid == uuid:
+					continue
+				var existing: TreeItem = char_item.create_child()
+				existing.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
+				existing.set_editable(0, true)
+				existing.set_metadata(0, {"uuid": char_uuid})
+				
+		CharUpdateType.DELETED:
+			var target_character: TreeItem = null
+			for character in root_tree.get_children():
+				if character.get_metadata(0)["uuid"] == uuid:
+					target_character = character
+					continue
+				for subchar in character.get_children():
+					if subchar.get_metadata(0)["uuid"] == uuid:
+						subchar.free()
+						break
+			if target_character != null:
+				target_character.free()
 
 
 func _on_data_changed(data_type: int, key_selected: String, select: bool) -> void:
@@ -2200,8 +3083,11 @@ func on_add_pairing_pressed() -> void:
 
 
 func on_next_pressed() -> void:
-	if current_page < 4:
-		current_page += 1
+	if current_page < 5:
+		if current_page == 4 and characters.size() == 0:
+			wizard_finished.emit(generate_tags())
+		else:
+			current_page += 1
 	else:
 		wizard_finished.emit(generate_tags())
 	
@@ -2231,19 +3117,21 @@ func on_previous_pressed() -> void:
 
 
 func on_character_tag_changed(new_char: String) -> void:
-	if current_character == -1:
+	if current_character.is_empty():
 		return
 	var new_name: String = new_char.strip_edges()
-	characters_tree.get_root().get_child(current_character).set_text(0, "Unkown Character" if new_name.is_empty() else new_name)
+	
+	characters[current_character]["_node"].set_text(0, "Unkown Character" if new_name.is_empty() else new_name)
 
 
 func create_character(default_name: String = "") -> void:
 	if characters.is_empty():
 		characters_tree.focus_next = character_tag_ln_edt.get_path()
-	
+	var uuid: String = UUID.generate_new()
 	var new_character: TreeItem = characters_tree.get_root().create_child()
 	new_character.set_text(0, "Unknown Character" if default_name.is_empty() else default_name)
 	new_character.add_button(0, BIN_ICON, 0, false, "Delete Character")
+	new_character.set_metadata(0, {"uuid": uuid})
 	var clothing_array: Array[Dictionary] = []
 	
 	for clothing_section in clothing_tree.get_root().get_children():
@@ -2259,19 +3147,9 @@ func create_character(default_name: String = "") -> void:
 					"active": false})
 		
 		clothing_array.append(clothing_part)
-	
-	#var trait_dict: Dictionary = {}
-	#trait_bools.resize(body_traits.get_root().get_child_count())
-	
-	#var cloth_idx: int = -1
-	#for dict in clothing_array:
-		#cloth_idx += 1
-		#dict["active"] = false
-		#var subtype: Array[bool] = []
-		#subtype.resize(clothing_tree.get_root().get_child(cloth_idx).get_child_count())
-		#dict["subtypes"] = subtype
-	
-	characters.append({
+	update_actions_character_tree(CharUpdateType.CREATED, uuid)
+	characters[uuid] = {
+		"_node": new_character,
 		"name": default_name,
 		"body": "anthro",
 		"species": "",
@@ -2281,7 +3159,7 @@ func create_character(default_name: String = "") -> void:
 		"lore_age": "",
 		"bodies": {},
 		"clothing": clothing_array,
-		"traits": {}})
+		"traits": {}}
 	
 	new_character.select(0)
 
@@ -2289,16 +3167,17 @@ func create_character(default_name: String = "") -> void:
 func on_character_button_clicked(item: TreeItem, _column: int, id: int, _mouse_button_index: int) -> void:
 	match id:
 		0:
-			var remove: int = item.get_index()
-			characters.remove_at(remove)
+			var uuid: String = item.get_metadata(0)["uuid"]
+			characters.erase(uuid)
 			if characters.is_empty():
 				characters_tree.focus_next = next_button.get_path()
-			if current_character == remove:
-				current_character = -1
+			if current_character == uuid:
+				current_character = ""
 				clear_character()
-			elif current_character != -1:
-				current_character = characters_tree.get_selected().get_index()
+			#elif current_character != "":
+				#current_character = characters_tree.get_selected().get_index()
 			item.free()
+			update_actions_character_tree(CharUpdateType.DELETED, uuid)
 
 
 func clear_character() -> void:
@@ -2314,6 +3193,13 @@ func clear_character() -> void:
 	body_texture_tree.get_root().call_recursive(&"set_range", 1, 0)
 	clothing_tree.get_root().call_recursive(&"set_checked", 0, false)
 	body_traits.get_root().call_recursive(&"set_checked", 0, false)
+
+
+# 6th screen tree
+func _expand_on_check(on_tree: Tree) -> void:
+	var edited: TreeItem = on_tree.get_edited()
+	if edited.get_parent() == on_tree.get_root():
+		edited.collapsed = not edited.is_checked(0)
 
 
 func on_bg_type_selected(bg_type: int) -> void:
@@ -2428,10 +3314,10 @@ func _on_character_item_tree_focus_lost(tree: Tree) -> void:
 
 
 func _on_character_selected() -> void:
-	if current_character != -1:
+	if not current_character.is_empty():
 		save_character()
 	
-	current_character = characters_tree.get_selected().get_index()
+	current_character = characters_tree.get_selected().get_metadata(0)["uuid"]
 	var dict: Dictionary = characters[current_character]
 	character_tag_ln_edt.text = dict["name"]
 	species_ln_edt.text = dict["species"]
@@ -2507,7 +3393,7 @@ func _on_character_selected() -> void:
 	
 
 func generate_tags() -> Array[String]:
-	if -1 < current_character:
+	if current_character != "":
 		save_character()
 	
 	var tags: Array[String] = []
@@ -2584,7 +3470,8 @@ func generate_tags() -> Array[String]:
 		_:
 			tags.append("group")
 	
-	for character in characters:
+	for character_key in characters:
+		var character: Dictionary = characters[character_key]
 		var character_tags: Array[String] = []
 		var clothing_section_scores: Array[String] = []
 		var clothing_score: int = 0
@@ -2706,7 +3593,12 @@ func generate_tags() -> Array[String]:
 									
 									if BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["multi_tag_count"] <= property["value"] and not BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["multi_tag"].is_empty():
 										character_tags.append(BODY_TYPES[body["index"]]["properties"][property["index"]]["formats"]["multi_tag"])
+							
 							if not prop_tag.is_empty():
+								if body_tag == "body_fat":
+									character_tags.append(prop_tag + " " + BODIES[body_type_id]["tag"])
+									if char_gender_id != "ambiguous_gender":
+										character_tags.append(prop_tag + " " + GENDERS[char_gender_id]["tag"])
 								character_tags.append(prop_tag)
 						TreeItem.CELL_MODE_CHECK:
 							var prop_tag: String = BODY_TYPES[body["index"]]["properties"][property["index"]]["tags"][int(property["value"])]
@@ -2766,6 +3658,12 @@ func generate_tags() -> Array[String]:
 				character_tags.append("topless")
 		
 		Arrays.append_uniques(tags, character_tags)
+	
+	if 0 < characters.size():
+		tags.append_array(get_pose_tags())
+		tags.append_array(get_action_tags())
+		tags.append_array(get_penetration_tags())
+		tags.append_array(get_sex_pose_tags())
 	
 	return tags
 
@@ -2962,6 +3860,318 @@ func add_ages(to: OptionButton, include_na: bool = false, select: int = 4) -> vo
 			age_menu.set_item_tooltip(item_idx, AGES[age_id]["tooltip"])
 	
 	to.select(select)
+
+
+func populate_actions() -> void:
+	var action_root: TreeItem = actions_tree.get_root()
+	
+	for action_id in ACTIONS.keys():
+		var new_action: TreeItem = action_root.create_child()
+		new_action.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
+		new_action.set_text(0, ACTIONS[action_id]["title"])
+		new_action.set_editable(0, true)
+		new_action.set_metadata(0, action_id)
+		if ACTIONS[action_id].has("tooltip") and not ACTIONS[action_id]["tooltip"].is_empty():
+			new_action.set_tooltip_text(0, ACTIONS[action_id]["tooltip"])
+		
+		if ACTIONS[action_id].has("options"):
+			for option_id in ACTIONS[action_id]["options"].keys():
+				var option: TreeItem = new_action.create_child()
+				option.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
+				option.set_editable(0, true)
+				option.set_text(0, ACTIONS[action_id]["options"][option_id]["title"])
+				
+				if ACTIONS[action_id]["options"][option_id].has("tooltip") and not ACTIONS[action_id]["options"][option_id]["tooltip"].is_empty():
+					option.set_tooltip_text(0, ACTIONS[action_id]["options"][option_id]["tooltip"])
+				option.set_metadata(0, option_id)
+		new_action.collapsed = true
+
+
+
+func sort_sex_position(key_a: String, key_b: String) -> bool:
+	return SEX_POSES[key_a]["title"].naturalnocasecmp_to(SEX_POSES[key_b]["title"]) < 0
+
+
+func populate_sex_poses() -> void:
+	var sex_root: TreeItem = sex_tree.get_root()
+	for item in sex_root.get_children():
+		item.free()
+	var poses: Array = SEX_POSES.keys()
+	poses.sort_custom(sort_sex_position)
+	
+	for pose_key in poses:
+		var pose_item: TreeItem = sex_root.create_child()
+		pose_item.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
+		pose_item.set_cell_mode(1, TreeItem.CELL_MODE_STRING)
+		
+		pose_item.set_text_overrun_behavior(0, TextServer.OVERRUN_TRIM_WORD_ELLIPSIS)
+		pose_item.set_text(0, SEX_POSES[pose_key]["title"])
+		pose_item.set_editable(0, true)
+		var characters_required: int = SEX_POSES[pose_key]["characters_required"]
+		var count_implications: Array = SEX_LABELS["solo"]["implications"] if characters_required == 1 else SEX_LABELS["duo"]["implications"] if characters_required == 2 else SEX_LABELS["trio"]["implications"] if characters_required == 3 else SEX_LABELS["foursome"]["implications"]
+		pose_item.set_metadata(0, {"key": pose_key, "required_amount": SEX_POSES[pose_key]["characters_required"], "count_labels": count_implications})
+		
+		if SEX_POSES[pose_key].has("tooltip") and not SEX_POSES[pose_key]["tooltip"].is_empty():
+			pose_item.set_tooltip_text(0, SEX_POSES[pose_key]["title"] + "\n" + SEX_POSES[pose_key]["tooltip"])
+		var label_array: Array[Array] = []
+		
+		if SEX_POSES[pose_key].has("labels") and not SEX_POSES[pose_key]["labels"].is_empty():
+			var label_text: String = "This pose requires:"
+			for label in SEX_POSES[pose_key]["labels"]:
+				label_text += "\n" + SEX_LABELS[label]["text"]
+				label_array.append(SEX_LABELS[label]["implications"])
+			pose_item.set_text(1, "Has Req.")
+			pose_item.set_tooltip_text(1, label_text)
+		pose_item.set_metadata(1, label_array)
+
+
+func populate_characters_penetration():
+	var root_tree: TreeItem = penetration_tree.get_root()
+	for item in root_tree.get_children():
+		item.free()
+	
+	for character in characters:
+		var char_item: TreeItem = root_tree.create_child()
+		char_item.set_text(0, character["name"] + " penetrating:")
+		char_item.set_metadata(0, { "age": character["age"], "form": character["body"], "gender": character["gender"]})
+		
+		for sub_char in characters:
+			if sub_char["name"] == character["name"]:
+				continue
+			var penetrated: TreeItem = char_item.create_child()
+			
+			penetrated.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
+			
+			penetrated.set_editable(0, true)
+			
+			penetrated.set_text(0, sub_char["name"])
+			penetrated.set_metadata(0, {"age": sub_char["age"], "form": sub_char["body"], "gender": sub_char["gender"]})
+
+
+func populate_poses() -> void:
+	var poses_root: TreeItem = pose_tree.get_root()
+	
+	var pose_keys: Array = POSES.keys()
+	pose_keys.sort_custom(Arrays.sort_custom_alphabetically_asc)
+	
+	for pose_key in pose_keys:
+		var top_item: TreeItem = poses_root.create_child()
+		top_item.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
+		top_item.set_editable(0, true)
+		top_item.set_text(0, POSES[pose_key]["title"])
+		top_item.set_metadata(0, pose_key)
+		if POSES[pose_key].has("tooltip") and not POSES[pose_key]["tooltip"].is_empty():
+			top_item.set_tooltip_text(0, POSES[pose_key]["tooltip"])
+		if POSES[pose_key].has("options"):
+			var pose_subkeys: Array = POSES[pose_key]["options"].keys()
+			pose_subkeys.sort_custom(Arrays.sort_custom_alphabetically_asc)
+			
+			for option_key:String in pose_subkeys:
+				var subitem: TreeItem = top_item.create_child()
+				subitem.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
+				subitem.set_text(0, POSES[pose_key]["options"][option_key]["title"])
+				subitem.set_editable(0, true)
+				subitem.set_metadata(0, option_key)
+				if POSES[pose_key]["options"][option_key].has("tooltip") and not POSES[pose_key]["options"][option_key]["tooltip"].is_empty():
+					subitem.set_tooltip_text(0, POSES[pose_key]["options"][option_key]["tooltip"])
+			top_item.collapsed = true
+
+
+func get_pose_tags() -> Array[String]:
+	var pose_tags: Array[String] = []
+	
+	for pose_item in pose_tree.get_root().get_children():
+		if not pose_item.is_checked(0):
+			continue
+		if not POSES[pose_item.get_metadata(0)]["tag"].is_empty():
+			pose_tags.append(POSES[pose_item.get_metadata(0)]["tag"])
+		for subpose in pose_item.get_children():
+			if not subpose.is_checked(0):
+				continue
+			pose_tags.append(POSES[pose_item.get_metadata(0)["options"][subpose.get_metadata(0)]["tag"]])
+	
+	return pose_tags
+
+
+func get_action_tags() -> Array[String]:
+	var actions: Array[String] = []
+	
+	for item in actions_tree.get_root().get_children():
+		if not item.is_checked(0):
+			continue
+		var id: String = item.get_metadata(0)
+		if not ACTIONS[id]["tag"].is_empty():
+			actions.append(ACTIONS[id]["tag"])
+		
+		for subaction in item.get_children():
+			if not subaction.is_checked(0):
+				continue
+			actions.append(ACTIONS[id]["options"][subaction.get_metadata(0)]["tag"])
+		
+	return actions
+
+
+func get_sex_pose_tags() -> Array[String]:
+	var poses: Array[String] = []
+	
+	for item in sex_tree.get_root().get_children():
+		if not item.is_checked(0) or not item.is_editable(0):
+			continue
+		var id: String = item.get_metadata(0)["key"]
+		
+		if not SEX_POSES[id]["tag"].is_empty():
+			poses.append(SEX_POSES[id]["tag"])
+		if SEX_POSES[id].has("extra_tags"):
+			Arrays.append_uniques(poses, SEX_POSES[id]["extra_tags"])
+	
+	return poses
+
+
+func _on_search_sex_text_changed(text: String) -> void:
+	search_for_sex(text.strip_edges())
+
+
+func search_for_sex(text: String) -> void:
+	if text.is_empty():
+		for item in sex_tree.get_root().get_children():
+			item.visible = item.is_editable(0)
+	else:
+		for item in sex_tree.get_root().get_children():
+			if not item.is_editable(0):
+				continue
+			var match_found: bool = item.get_text(0).containsn(text) or item.get_tooltip_text(0).containsn(text)
+			if not match_found: # Looking at 1 array.
+				var count_array: Array = item.get_metadata(0)["count_labels"]
+				for count_tag:String in count_array:
+					if count_tag.containsn(text):
+						match_found = true
+						break
+			if not match_found: # Looking at multiple arrays. Last check
+				for implication_array:Array in item.get_metadata(1):
+					for implication:String in implication_array:
+						if implication.containsn(text):
+							match_found = true
+							break
+					if match_found:
+						break
+			item.visible = match_found
+
+
+func update_penetrationg_tree() -> void:
+	if current_character != "":
+		save_character()
+	var character_count: int = characters.size()
+	var unknown_char_count: int = 0
+	var unnamed_characters: Dictionary = {}
+	
+	for sex_item in sex_tree.get_root().get_children():
+		var available: bool = sex_item.get_metadata(0)["required_amount"] <= character_count
+		sex_item.set_editable(0, available)
+		sex_item.visible = available
+	
+	$MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/PenetrationContainer.visible = 1 < character_count
+	if 0 == character_count:
+		return
+	
+	for character_uuid in characters.keys():
+		for penetrator in penetration_tree.get_root().get_children():
+			if penetrator.get_metadata(0)["uuid"] == character_uuid:
+				var penetrator_name: String = characters[character_uuid]["name"]
+				if penetrator_name.is_empty():
+					if not unnamed_characters.has(character_uuid):
+						unknown_char_count += 1
+						penetrator_name = "Unknown #" + str(unknown_char_count)
+						unnamed_characters[character_uuid] = penetrator_name
+					else:
+						penetrator_name = unnamed_characters[character_uuid]
+				penetrator.set_text(0, penetrator_name + " penetrating:")
+				var penetrator_dict: Dictionary = penetrator.get_metadata(0)
+				penetrator_dict.merge({
+						"form": characters[character_uuid]["body"],
+						"age": characters[character_uuid]["age"],
+						"gender": characters[character_uuid]["gender"]},
+						true)
+			else:
+				for subchar in penetrator.get_children():
+					if subchar.get_metadata(0)["uuid"] != character_uuid:
+						continue
+					var penetrator_name: String = characters[character_uuid]["name"]
+					if penetrator_name.is_empty():
+						if not unnamed_characters.has(character_uuid):
+							unknown_char_count += 1
+							penetrator_name = "Unknown #" + str(unknown_char_count)
+							unnamed_characters[character_uuid] = penetrator_name
+						else:
+							penetrator_name = unnamed_characters[character_uuid]
+							
+					subchar.set_text(0, penetrator_name)
+					var subchar_data: Dictionary = subchar.get_metadata(0)
+					subchar_data.merge({
+							"form": characters[character_uuid]["body"],
+							"age": characters[character_uuid]["age"],
+							"gender": characters[character_uuid]["gender"]},
+							true)
+					break
+
+
+func get_penetration_tags() -> Array[String]:
+	const tags_format: PackedStringArray = [
+		"{penetrating_form} penetrating",
+		"{penetrated_form} penetrated",
+		"{penetrating_form} penetrating {penetrated_form}",
+		"{penetrating_gender} penetrating",
+		"{penetrated_gender} penetrated",
+		"{penetrating_gender} penetrating {penetrated_gender}",
+		"{penetrating_form} penetrating {penetrated_gender}"]
+	
+	var tags: Array[String] = []
+	
+	for character in penetration_tree.get_root().get_children():
+		var penetrator_form_tag: String = BODIES[character.get_metadata(0)["form"]]["tag"]
+		var penetrator_gender_tag: String = GENDERS[character.get_metadata(0)["gender"]]["tag"] if character.get_metadata(0)["gender"] != "ambiguous_gender" else "ambiguous"
+		var penetrator_age_group: String = character.get_metadata(0)["age"] if not character.get_metadata(0)["age"] in ["mature", "elder"] else "adult"
+		var adult_penetrating: bool = penetrator_age_group == "adult"
+		# mature or elder
+		for penetrated in character.get_children():
+			if not penetrated.is_checked(0):
+				continue
+			var new_tags: Array[String] = []
+			var penetrated_form_tag: String = BODIES[penetrated.get_metadata(0)["form"]]["tag"]
+			var penetrated_gender_tag: String = GENDERS[penetrated.get_metadata(0)["gender"]]["tag"] if penetrated.get_metadata(0)["gender"] != "ambiguous_gender" else "ambiguous"
+			var penetrated_age_group: String = penetrated.get_metadata(0)["age"] if not penetrated.get_metadata(0)["age"] in ["mature", "elder"] else "adult"
+			var adult_penetrated: bool = penetrated_age_group == "adult"
+			
+			if not adult_penetrated: # young penetrated
+				new_tags.append("young penetrated")
+				new_tags.append(penetrator_age_group + " on young")
+				if adult_penetrating:
+					new_tags.append("old on young")
+			if not adult_penetrating:
+				tags.append("young penetrating")
+				new_tags.append("young on " + penetrated_age_group)
+				if adult_penetrated:
+					new_tags.append("young on old")
+			
+			if not adult_penetrated and not adult_penetrating:
+				new_tags.append("young on young")
+			
+			if not adult_penetrated or not adult_penetrating:
+				var age_grouping: String = penetrator_age_group + " on " + penetrated_age_group
+				new_tags.append(age_grouping)
+			
+			for tag_to_format in tags_format:
+				new_tags.append(
+						tag_to_format.format({
+							"penetrating_form": penetrator_form_tag,
+							"penetrated_form": penetrated_form_tag,
+							"penetrating_gender": penetrator_gender_tag,
+							"penetrated_gender": penetrated_gender_tag,
+							}))
+			
+			Arrays.append_uniques(tags, new_tags)
+	
+	return tags
+
 
 
 func add_genders(to: OptionButton, include_na: bool = false, select: int = 0, skip_ambiguous: bool = false) -> void:

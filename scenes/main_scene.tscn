@@ -1,4 +1,4 @@
-[gd_scene load_steps=72 format=3 uid="uid://eaxngd263vbi"]
+[gd_scene load_steps=73 format=3 uid="uid://eaxngd263vbi"]
 
 [ext_resource type="Script" path="res://scenes/tagit_main_window.gd" id="1_3rneb"]
 [ext_resource type="Theme" uid="uid://btyk3fvjow2xx" path="res://style/generic_theme.tres" id="1_heejv"]
@@ -66,6 +66,8 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0wwcl"]
 bg_color = Color(0.121569, 0.133333, 0.156863, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2pa4c"]
 
 [sub_resource type="GDScript" id="GDScript_xy1vp"]
 script/source = "extends RichTextLabel
@@ -507,6 +509,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 focus_mode = 1
+theme_override_styles/focus = SubResource("StyleBoxEmpty_2pa4c")
 context_menu_enabled = true
 drag_and_drop_selection_enabled = false
 script = SubResource("GDScript_xy1vp")

@@ -82,10 +82,10 @@ func overwrite_project(project_uuid: String, p_name: String, tags: Array[String]
 
 
 func get_new_project_uuid() -> String:
-	var uuid: String = Strings.random_string64()
+	var uuid: String = UUID.generate_new()
 
 	while is_uuid_used(uuid):
-		uuid = Strings.random_string64()
+		uuid = UUID.generate_new()
 	
 	return uuid
 

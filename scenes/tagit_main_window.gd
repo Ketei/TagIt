@@ -563,7 +563,9 @@ func _input(event: InputEvent) -> void:
 							copy_tags_field()
 						get_viewport().set_input_as_handled()
 				else:
-					if not add_tag_ln_edt.has_focus() and not tags_tree.has_focus() and not tagger_suggestion_tree.has_focus():
+					var focused_node: Control = get_viewport().gui_get_focus_owner()
+					var no_tree_search: bool = false if focused_node == null or not focused_node is Tree else 0 == focused_node.get_root().get_child_count()
+					if focused_node == null or no_tree_search or focused_node is RichTextLabel:
 						var valid_range: bool = Math.is_betweeni(event.keycode, 4194433, 4194447) or Math.is_betweeni(event.keycode, 33, 96) or Math.is_betweeni(event.keycode, 123, 126)
 						if valid_range and not event.ctrl_pressed and not event.alt_pressed:
 							add_tag_ln_edt.grab_focus()
@@ -706,7 +708,7 @@ func _notification(what):
 						
 						var image_path: String = ""
 						if project_image.texture != null:
-							image_path = Strings.random_string64() + ".webp"
+							image_path = UUID.generate_new() + ".webp"
 							project_image.texture.get_image().save_webp(TagItProjectResource.get_thumbnails_path() + image_path)
 							
 						projects.create_project(
@@ -1409,7 +1411,7 @@ func save_current_project_indexed() -> void:
 		image_path = ""
 	elif project_image != null and _image_changed:
 		if image_path.is_empty():
-			image_path = Strings.random_string64() + ".webp"
+			image_path = UUID.generate_new() + ".webp"
 		project_image.texture.get_image().save_webp(TagItProjectResource.get_thumbnails_path() + image_path)
 	
 	projects.overwrite_project(
@@ -1750,7 +1752,7 @@ func on_selector_project_saved(title: String) -> void:
 	var image_path: String = ""
 	
 	if project_image.texture != null:
-		image_path = Strings.random_string64() + ".webp"
+		image_path = UUID.generate_new() + ".webp"
 		project_image.texture.get_image().save_webp(TagItProjectResource.get_thumbnails_path() + image_path)
 		
 	current_project_uuid = projects.create_project(
