@@ -994,6 +994,7 @@ focus_previous = NodePath("../ScrollContainer/CheckboxContainer/MaleHermContaine
 text = "Clear All"
 
 [node name="Characters" type="MarginContainer" parent="MainPanel/MainContainer/MainPanel"]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 80
 theme_override_constants/margin_top = 30
@@ -1348,6 +1349,93 @@ theme = ExtResource("7_slw3q")
 theme_override_styles/focus = SubResource("StyleBoxFlat_vtu6n")
 column_titles_visible = true
 hide_root = true
+
+[node name="ActionsPoses" type="MarginContainer" parent="MainPanel/MainContainer/MainPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 30
+
+[node name="MainContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/ActionsPoses"]
+layout_mode = 2
+alignment = 1
+
+[node name="PoseContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/PoseContainer"]
+layout_mode = 2
+text = "Character Poses"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PoseTree" type="Tree" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/PoseContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+allow_reselect = true
+hide_folding = true
+hide_root = true
+scroll_horizontal_enabled = false
+
+[node name="ActionsContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/ActionsContainer"]
+layout_mode = 2
+text = "Character Actions"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ActionsTree" type="Tree" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/ActionsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+allow_reselect = true
+hide_folding = true
+hide_root = true
+scroll_horizontal_enabled = false
+
+[node name="PenetrationContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/PenetrationContainer"]
+layout_mode = 2
+text = "Character Penetration"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PenetrationTree" type="Tree" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/PenetrationContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+allow_reselect = true
+hide_root = true
+scroll_horizontal_enabled = false
+
+[node name="SexContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/SexContainer"]
+layout_mode = 2
+text = "Sex Positions"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SearchSexPoseLnEdt" type="LineEdit" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/SexContainer"]
+layout_mode = 2
+placeholder_text = "Search for Position (Word/Context)"
+
+[node name="SexTree" type="Tree" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/SexContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+columns = 2
+allow_reselect = true
+hide_folding = true
+hide_root = true
+scroll_horizontal_enabled = false
 
 [node name="MarginContainer" type="MarginContainer" parent="MainPanel/MainContainer"]
 layout_mode = 2
