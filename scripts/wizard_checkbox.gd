@@ -179,6 +179,7 @@ const PATTERN_LOCATIONS: PackedStringArray = [
 const NIPP_PROPS: PackedStringArray = [
 	"erect",
 	"glistening",
+	"gaping",
 	"glowing",
 	"inverted",
 	"mottled",
@@ -227,6 +228,7 @@ const ANUS_TRAITS: PackedStringArray = [
 	"at tail base",
 	"puffy",
 	"detailed",
+	"gaping",
 	"glowing",
 	"mottled",
 ]
