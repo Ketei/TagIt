@@ -50,6 +50,7 @@ enum SortingType {
 
 var tag_database: SQLite = null
 var icons: Dictionary[int, Dictionary] = {} # id: {name: string, texture: resource}
+var icon_category: Dictionary[int, Dictionary] = {} # id: {"icon": 0, "color": "ffffff"}
 var loaded_tags: Dictionary[String, int] = {} # Loaded in memory as need quick access. name -> id
 var invalid_tags: Array[int] = []
 var tag_search_array: PackedStringArray = []
@@ -264,6 +265,15 @@ func _ready() -> void:
 		icons[icon["id"]] = {
 			"name": icon["name"] if icon["name"] != null else "",
 			"texture": null}
+	
+	for category in tag_database.select_rows("categories", "", ["id", "icon_id", "icon_color"]):
+		var id_data: Variant = category.get("icon_id", 1)
+		var color_data: Variant = category.get("icon_color", "ffffff")
+		
+		var id: int = id_data if typeof(id_data) == TYPE_INT else 1
+		var color: String = color_data if typeof(color_data) == TYPE_STRING else "ffffff"
+		
+		icon_category[category["id"]] = {"icon": id, "color": color}
 	
 	invalid_tags.sort()
 	get_all_alias_names()
@@ -1129,12 +1139,17 @@ func get_category_icon_color(category_id: int) -> Color:
 	if category_id == 1:
 		return _default_icon_color
 	
+	if icon_category.has(category_id):
+		var col: Color = Color.from_string(icon_category[category_id]["color"], _default_icon_color)
+		return col
+	
 	var result := tag_database.select_rows("categories", "id = " + str(category_id), ["icon_color"])
 	if result.is_empty():
 		log_message(
 				str("Category ", category_id, " could not be fould."),
 				LogLevel.ERROR)
 		return "ffffff"
+	
 	return Color.from_string(result[0]["icon_color"], Color.WHITE)
 
 
@@ -1156,6 +1171,12 @@ func get_icon_texture(id: int) -> Texture2D:
 	if texture == null:
 		_load_icon_data(id)
 	return data["texture"]
+
+
+func get_icon_of_category(category: int) -> Texture2D:
+	if not icon_category.has(category):
+		return null
+	return get_icon_texture(icon_category[category]["icon"])
 
 # --- Groups ---
 
@@ -2344,6 +2365,9 @@ func save_icon(icon_name: String, icon_image: Image) -> int:
 func delete_icon(icon_id: int) -> void:
 	tag_database.delete_rows("icons", "id = " + str(icon_id))
 	icons.erase(icon_id)
+	for cat in icon_category:
+		if icon_category[cat]["icon"] == icon_id:
+			icon_category[cat]["icon"] = 1
 
 
 func delete_category(category_id: int) -> void:
@@ -2368,6 +2392,8 @@ func create_category(category_name: String, category_desc: String) -> int:
 
 
 func set_category_icon(category_id: int, icon_id: int) -> void:
+	if icon_category.has(category_id):
+		icon_category[category_id]["icon"] = icon_id
 	update_category(category_id, {"icon_id": icon_id})
 	category_icon_updated.emit(category_id, icon_id)
 
@@ -2376,6 +2402,8 @@ func set_category_icon_color(category_id: int, color: String) -> void:
 	update_category(category_id, {"icon_color": color})
 	if category_id == 1:
 		_default_icon_color = Color.from_string(color, Color.WHITE)
+	if icon_category.has(category_id):
+		icon_category[category_id]["color"] = color
 	category_color_updated.emit(category_id, color)
 
 
