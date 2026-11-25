@@ -336,6 +336,7 @@ func _ready() -> void:
 	menu_button.get_popup().id_pressed.connect(on_menu_button_id_selected)
 	help_button.get_popup().id_pressed.connect(on_help_id_pressed)
 	tagger_container.list_changed.connect(_list_changed)
+	tagger_container.search_in_wiki_pressed.connect(_on_search_in_wiki_pressed)
 	# --- Edit Tag ---
 	all_tags_search_ln_edt.text_submitted.connect(on_search_text_submitted)
 	new_tag_btn.pressed.connect(on_new_tag_pressed)
@@ -1161,7 +1162,6 @@ func on_help_id_pressed(id: int) -> void:
 				return
 			
 			get_tree().paused = true
-			
 			_help_pressed = true
 			_block_events = true
 			var new_help := ABOUT_WINDOW.instantiate()
@@ -1171,6 +1171,7 @@ func on_help_id_pressed(id: int) -> void:
 			new_help.queue_free()
 			_help_pressed = false
 			_block_events = false
+			get_tree().paused = false
 
 
 func new_list() -> void:
@@ -1460,7 +1461,7 @@ func search_hydrus_files(tags_array: Array[String], tag_count: int) -> Array[int
 	
 	var response = await hydrus_requester.request_completed
 	
-	if response[0] != OK or response[1] != 200:
+	if int(response[0]) != OK or int(response[1]) != 200:
 		SingletonManager.TagIt.log_message(
 			"API response was not 0, 200\nResponse: " + str(response[0]) + ", " + str(response[1]),
 			SingletonManager.TagIt.LogLevel.WARNING

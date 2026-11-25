@@ -262,7 +262,6 @@ tab_3/title = "Tools"
 tab_4/title = "Settings"
 
 [node name="TaggerContainer" parent="MainContainer" unique_id=559300903 instance=ExtResource("15_cq0lk")]
-visible = false
 layout_mode = 2
 
 [node name="WikiPanel" type="PanelContainer" parent="MainContainer" unique_id=1952017979]
@@ -1148,6 +1147,7 @@ theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
 [node name="SettingsPanel" type="PanelContainer" parent="MainContainer" unique_id=1513399526]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = ExtResource("2_u628d")

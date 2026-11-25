@@ -1,6 +1,7 @@
 extends PanelContainer
 
 
+signal search_in_wiki_pressed(tag: String)
 signal list_changed
 
 enum MediaStatus {
@@ -203,6 +204,8 @@ func _ready() -> void:
 	generate_list_btn.pressed.connect(generate_tag_list)
 	change_prio_btn.pressed.connect(_on_open_prioritizer_pressed)
 	export_list_btn.pressed.connect(_on_export_tags_pressed)
+	
+	tags_tree.search_in_wiki_pressed.connect(search_in_wiki_pressed.emit)
 	
 	SingletonManager.eSixAPI.suggestions_found.connect(_on_esix_api_suggestions_found)
 
