@@ -23,8 +23,8 @@ const SETTINGS_PATH: String = "user://tagit_settings.tres"
 @export var suggestion_relevancy: int = 45
 @export var search_tags_on_esix: bool = false
 @export var news_shown: Array[int] = [0,0,0]
-@export var projects_version: int = 1
-@export var templates_version: int = 1
+@export var projects_version: int = DataManager.PROJECTS_VERSION
+@export var templates_version: int = DataManager.TEMPLATES_VERSION
 @export var custom_sorting: Array[Dictionary] = []
 @export var backup_frequency: int = 5 # Time in minutes.
 

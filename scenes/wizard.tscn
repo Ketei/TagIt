@@ -1,10 +1,10 @@
-[gd_scene load_steps=55 format=3 uid="uid://hpbimfahb425"]
+[gd_scene format=3 uid="uid://hpbimfahb425"]
 
-[ext_resource type="Script" path="res://scripts/view_switcher_panel.gd" id="1_fvq4v"]
-[ext_resource type="Script" path="res://scripts/wizard_script.gd" id="1_whkki"]
+[ext_resource type="Script" uid="uid://2u5sjqk46sc5" path="res://scripts/view_switcher_panel.gd" id="1_fvq4v"]
+[ext_resource type="Script" uid="uid://1t0yo234jqtw" path="res://scripts/wizard_script.gd" id="1_whkki"]
 [ext_resource type="Texture2D" uid="uid://vypb46ut3fil" path="res://icons/x_icon.svg" id="2_2buoa"]
 [ext_resource type="Texture2D" uid="uid://gyan4237os8v" path="res://textures/wizard/time_day_bw.png" id="3_6mmue"]
-[ext_resource type="Script" path="res://scenes/genders_opt_button.gd" id="3_ycvrq"]
+[ext_resource type="Script" uid="uid://cv0f2e0ax5s5u" path="res://scenes/genders_opt_button.gd" id="3_ycvrq"]
 [ext_resource type="Texture2D" uid="uid://4o6wmhiq2xbh" path="res://textures/wizard/time_night_bw.png" id="4_j0mtv"]
 [ext_resource type="PackedScene" uid="uid://bmse2jmhjyjo5" path="res://scenes/angle_container.tscn" id="4_wkt5h"]
 [ext_resource type="Texture2D" uid="uid://fbryu5kbunc7" path="res://icons/plus_icon.svg" id="4_yf32a"]
@@ -26,7 +26,9 @@
 [ext_resource type="Texture2D" uid="uid://do7ep14tcwvmb" path="res://textures/angles/regular-34.png" id="11_ve3nk"]
 [ext_resource type="Texture2D" uid="uid://t4d20b51j6dc" path="res://textures/angles/regular-side.png" id="12_ymbs7"]
 [ext_resource type="Texture2D" uid="uid://bal44r330a68c" path="res://textures/angles/regular-back-34.png" id="13_fsnou"]
+[ext_resource type="Texture2D" uid="uid://b0mpb0wgafad" path="res://textures/wizard/ball_shade_bw_soft.png" id="13_kfm6i"]
 [ext_resource type="Texture2D" uid="uid://c6nq8p7femasa" path="res://textures/angles/regular-back.png" id="14_rxqjh"]
+[ext_resource type="Texture2D" uid="uid://drm07mgvdkqdc" path="res://textures/wizard/ball_sketch.png" id="14_t3x8s"]
 [ext_resource type="Texture2D" uid="uid://cglmd424p0otf" path="res://textures/angles/low-front.png" id="15_qfmer"]
 [ext_resource type="Texture2D" uid="uid://cccfcvjyefkdk" path="res://textures/angles/low-34.png" id="16_myr52"]
 [ext_resource type="Texture2D" uid="uid://c8g443huorone" path="res://textures/angles/low-side.png" id="17_72lc1"]
@@ -35,15 +37,19 @@
 [ext_resource type="Texture2D" uid="uid://bt2dief1tdarw" path="res://textures/angles/bird.png" id="20_ll01c"]
 [ext_resource type="Texture2D" uid="uid://dyfgep68epk42" path="res://textures/angles/worm.png" id="21_cdcvx"]
 [ext_resource type="Texture2D" uid="uid://bnev4omaxber3" path="res://icons/arrow_icon.svg" id="32_bb2o6"]
-[ext_resource type="Script" path="res://addons/SmoothScroll/SmoothScrollContainer.gd" id="34_e8ccm"]
-[ext_resource type="Script" path="res://addons/SmoothScroll/scroll_damper/expo_scroll_damper.gd" id="35_5nkt3"]
+[ext_resource type="Script" uid="uid://bkni0cy4g4ros" path="res://addons/SmoothScroll/SmoothScrollContainer.gd" id="34_e8ccm"]
+[ext_resource type="Script" uid="uid://blldin7cp8c8m" path="res://addons/SmoothScroll/scroll_damper/expo_scroll_damper.gd" id="35_5nkt3"]
 [ext_resource type="PackedScene" uid="uid://djrqboi0xp74" path="res://scenes/autofill_line_edit.tscn" id="37_5wkjy"]
-[ext_resource type="Script" path="res://addons/tnowe_extra_controls/elements/draggable.gd" id="37_7l5mr"]
+[ext_resource type="Script" uid="uid://dom24wqamc13b" path="res://addons/tnowe_extra_controls/elements/draggable.gd" id="37_7l5mr"]
 [ext_resource type="Texture2D" uid="uid://dmjor0d4lqveu" path="res://icons/reset_icon.svg" id="38_smrib"]
 [ext_resource type="Texture2D" uid="uid://b4jcjpflhaxo1" path="res://icons/minimize_icon.svg" id="39_7v64x"]
 [ext_resource type="Texture2D" uid="uid://dlitnslc8nppw" path="res://icons/apply_character.svg" id="39_askru"]
-[ext_resource type="Script" path="res://addons/tnowe_extra_controls/elements/scroll_zoom_view.gd" id="40_t16j0"]
-[ext_resource type="Script" path="res://scripts/wizard_checkbox.gd" id="44_pti71"]
+[ext_resource type="Script" uid="uid://cld20x47c5dxs" path="res://addons/tnowe_extra_controls/elements/scroll_zoom_view.gd" id="40_t16j0"]
+[ext_resource type="Texture2D" uid="uid://c5jnim6mqdp43" path="res://icons/save_icon.svg" id="42_bcfe3"]
+[ext_resource type="Script" uid="uid://ber5st7u7dtpo" path="res://scenes/gif_player.gd" id="44_4igfs"]
+[ext_resource type="Script" uid="uid://dwl7wu5bbfusm" path="res://scripts/wizard_checkbox.gd" id="44_pti71"]
+[ext_resource type="Texture2D" uid="uid://bwrwxwuiprvbp" path="res://icons/player-play.svg" id="45_kfm6i"]
+[ext_resource type="Texture2D" uid="uid://dih843678osdg" path="res://icons/player-stop.svg" id="46_t3x8s"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t4osn"]
 bg_color = Color(0.2676, 0.264, 0.3, 1)
@@ -53,15 +59,9 @@ bg_color = Color(0.180392, 0.180392, 0.180392, 1)
 
 [sub_resource type="Resource" id="Resource_yc1il"]
 script = ExtResource("35_5nkt3")
-friction = 4.0
-minimum_velocity = 0.4
-rebound_strength = 7.0
 
 [sub_resource type="Resource" id="Resource_3cl8e"]
 script = ExtResource("35_5nkt3")
-friction = 4.0
-minimum_velocity = 0.4
-rebound_strength = 7.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vtu6n"]
 draw_center = false
@@ -98,17 +98,11 @@ border_color = Color(0.47682, 0.4698, 0.54, 1)
 
 [sub_resource type="Resource" id="Resource_4hs5g"]
 script = ExtResource("35_5nkt3")
-friction = 4.0
-minimum_velocity = 0.4
-rebound_strength = 7.0
 
 [sub_resource type="Resource" id="Resource_r3ktk"]
 script = ExtResource("35_5nkt3")
-friction = 4.0
-minimum_velocity = 0.4
-rebound_strength = 7.0
 
-[node name="WizardPanel" type="Control"]
+[node name="WizardPanel" type="Control" unique_id=1683864147]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -119,7 +113,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_whkki")
 
-[node name="MainPanel" type="PanelContainer" parent="."]
+[node name="MainPanel" type="PanelContainer" parent="." unique_id=1215263186]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -128,11 +122,11 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_t4osn")
 
-[node name="MainContainer" type="VBoxContainer" parent="MainPanel"]
+[node name="MainContainer" type="VBoxContainer" parent="MainPanel" unique_id=1992697530]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="TitleLabel" type="Label" parent="MainPanel/MainContainer"]
+[node name="TitleLabel" type="Label" parent="MainPanel/MainContainer" unique_id=561169271]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 theme_override_font_sizes/font_size = 25
@@ -140,7 +134,7 @@ text = "This is the Section Title"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="CloseWizardBtn" type="Button" parent="MainPanel/MainContainer/TitleLabel"]
+[node name="CloseWizardBtn" type="Button" parent="MainPanel/MainContainer/TitleLabel" unique_id=801893025]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 1
 anchors_preset = 6
@@ -158,28 +152,27 @@ icon = ExtResource("2_2buoa")
 flat = true
 icon_alignment = 1
 
-[node name="MainPanel" type="PanelContainer" parent="MainPanel/MainContainer"]
+[node name="MainPanel" type="PanelContainer" parent="MainPanel/MainContainer" unique_id=1096878430]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_w38ic")
 script = ExtResource("1_fvq4v")
 
-[node name="MetaContainer" type="CenterContainer" parent="MainPanel/MainContainer/MainPanel"]
-visible = false
+[node name="MetaContainer" type="CenterContainer" parent="MainPanel/MainContainer/MainPanel" unique_id=864039835]
 layout_mode = 2
 
-[node name="MainContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/MetaContainer"]
+[node name="MainContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/MetaContainer" unique_id=1063487653]
 layout_mode = 2
 
-[node name="ArtistContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer"]
+[node name="ArtistContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer" unique_id=1681188357]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/ArtistContainer"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/ArtistContainer" unique_id=1035599145]
 custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 text = "Artist"
 
-[node name="ArtistLineEdit" type="LineEdit" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/ArtistContainer"]
+[node name="ArtistLineEdit" type="LineEdit" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/ArtistContainer" unique_id=1795653978]
 layout_mode = 2
 size_flags_horizontal = 3
 focus_next = NodePath("../../HBoxContainer2/YearOptBtn")
@@ -187,15 +180,15 @@ focus_previous = NodePath("../../../../../MarginContainer/NavigationContainer/Pr
 placeholder_text = "Artist Name"
 caret_blink = true
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer" unique_id=1740664220]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/HBoxContainer2"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/HBoxContainer2" unique_id=1550504461]
 custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 text = "Year"
 
-[node name="YearOptBtn" type="SpinBox" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/HBoxContainer2"]
+[node name="YearOptBtn" type="SpinBox" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/HBoxContainer2" unique_id=1397632288]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 focus_next = NodePath("../UnkownYearBtn")
@@ -206,22 +199,22 @@ value = 2024.0
 allow_greater = true
 alignment = 1
 
-[node name="UnkownYearBtn" type="CheckButton" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/HBoxContainer2"]
+[node name="UnkownYearBtn" type="CheckButton" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/HBoxContainer2" unique_id=793661678]
 custom_minimum_size = Vector2(170, 0)
 layout_mode = 2
 focus_next = NodePath("../../MediumContainer/MediumOptBtn")
 focus_previous = NodePath("../YearOptBtn")
 text = "Unknown year"
 
-[node name="MediumContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer"]
+[node name="MediumContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer" unique_id=1904147796]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/MediumContainer"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/MediumContainer" unique_id=1393829516]
 custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 text = "Medium"
 
-[node name="MediumOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/MediumContainer"]
+[node name="MediumOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/MediumContainer" unique_id=1889216371]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -230,6 +223,7 @@ focus_previous = NodePath("../../HBoxContainer2/UnkownYearBtn")
 selected = 0
 item_count = 4
 popup/item_0/text = "Digital Media (Artwork)"
+popup/item_0/id = 0
 popup/item_1/text = "Traditional Media (Artwork) "
 popup/item_1/id = 1
 popup/item_2/text = "Photography (Artwork)"
@@ -237,39 +231,39 @@ popup/item_2/id = 2
 popup/item_3/text = "Animated"
 popup/item_3/id = 3
 
-[node name="TypeContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer"]
+[node name="TypeContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer" unique_id=323553337]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/TypeContainer"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/TypeContainer" unique_id=2119708752]
 custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 text = "Type"
 
-[node name="MediaTypeOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/TypeContainer"]
+[node name="MediaTypeOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/TypeContainer" unique_id=747438777]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
 focus_next = NodePath("../../../../../MarginContainer/NavigationContainer/NextButton")
 focus_previous = NodePath("../../MediumContainer/MediumOptBtn")
 
-[node name="ImageContainer" type="CenterContainer" parent="MainPanel/MainContainer/MainPanel"]
+[node name="ImageContainer" type="CenterContainer" parent="MainPanel/MainContainer/MainPanel" unique_id=576804004]
 visible = false
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/ImageContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/ImageContainer" unique_id=1823041721]
 layout_mode = 2
 theme_override_constants/separation = 30
 
-[node name="PanelContainer" type="PanelContainer" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer" unique_id=801652052]
 custom_minimum_size = Vector2(300, 300)
 layout_mode = 2
 
-[node name="Background" type="TextureRect" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer"]
+[node name="Background" type="TextureRect" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer" unique_id=2026423235]
 layout_mode = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="SkyRect" type="ColorRect" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Background"]
+[node name="SkyRect" type="ColorRect" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Background" unique_id=818725091]
 visible = false
 show_behind_parent = true
 layout_mode = 1
@@ -280,7 +274,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(1, 1, 1, 0)
 
-[node name="SolidRect" type="ColorRect" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Background"]
+[node name="SolidRect" type="ColorRect" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Background" unique_id=1009760359]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -290,7 +284,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.368627, 0.368627, 0.368627, 1)
 
-[node name="Day" type="TextureRect" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer"]
+[node name="Day" type="TextureRect" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer" unique_id=368472943]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
@@ -298,7 +292,7 @@ texture = ExtResource("3_6mmue")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Night" type="TextureRect" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer"]
+[node name="Night" type="TextureRect" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer" unique_id=1167115422]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
@@ -306,7 +300,7 @@ texture = ExtResource("4_j0mtv")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Outside" type="TextureRect" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer"]
+[node name="Outside" type="TextureRect" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer" unique_id=1544348614]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
@@ -314,7 +308,7 @@ texture = ExtResource("5_825fn")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="OutsideDetailed" type="TextureRect" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Outside"]
+[node name="OutsideDetailed" type="TextureRect" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Outside" unique_id=424759905]
 visible = false
 show_behind_parent = true
 layout_mode = 1
@@ -328,7 +322,7 @@ texture = ExtResource("6_gw7dj")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Inside" type="TextureRect" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer"]
+[node name="Inside" type="TextureRect" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer" unique_id=1636706335]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
@@ -336,7 +330,7 @@ texture = ExtResource("7_6kibr")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="InsideDetailed" type="TextureRect" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Inside"]
+[node name="InsideDetailed" type="TextureRect" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Inside" unique_id=510456423]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -349,14 +343,14 @@ texture = ExtResource("8_5xbue")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Ball" type="TextureRect" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer"]
+[node name="Ball" type="TextureRect" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer" unique_id=1216892299]
 layout_mode = 2
 size_flags_horizontal = 3
 texture = ExtResource("10_klstj")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="BallShadow" type="TextureRect" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Ball"]
+[node name="BallShadow" type="TextureRect" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Ball" unique_id=380827396]
 show_behind_parent = true
 layout_mode = 1
 anchors_preset = 15
@@ -369,7 +363,7 @@ texture = ExtResource("9_cga1m")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="BallShaded" type="TextureRect" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Ball"]
+[node name="BallShaded" type="TextureRect" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Ball" unique_id=825501483]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -382,61 +376,114 @@ texture = ExtResource("11_gve7y")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer"]
+[node name="BallShadedSoft" type="TextureRect" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Ball" unique_id=1897147705]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+texture = ExtResource("13_kfm6i")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BallCompletion" type="TextureRect" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Ball" unique_id=1410037046]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+texture = ExtResource("14_t3x8s")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer" unique_id=1439400928]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 alignment = 1
 
-[node name="ColorContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer"]
+[node name="ColoringContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer" unique_id=1101687304]
 layout_mode = 2
 
-[node name="ColoredCheckBox" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/ColorContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-focus_next = NodePath("../ShadedSketchBox")
-focus_previous = NodePath("../../../../../../MarginContainer/NavigationContainer/PreviousButton")
-text = "Colored"
-alignment = 1
-
-[node name="ShadedSketchBox" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/ColorContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-focus_next = NodePath("../../LineContainer/LineStyleOptBtn")
-focus_previous = NodePath("../ColoredCheckBox")
-text = "Shaded"
-alignment = 1
-
-[node name="LineContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/LineContainer"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/ColoringContainer" unique_id=1856254431]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-text = "Completion"
+text = "Coloring"
 
-[node name="LineStyleOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/LineContainer"]
+[node name="ColoringTypeOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/ColoringContainer" unique_id=169200692]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
 focus_next = NodePath("../../BGContainer/BgOptBtn")
-focus_previous = NodePath("../../ColorContainer/ShadedSketchBox")
 selected = 0
 item_count = 3
-popup/item_0/text = "Sketch"
-popup/item_1/text = "Line Art"
+popup/item_0/text = "N/A"
+popup/item_0/id = 3
+popup/item_1/text = "Colored"
 popup/item_1/id = 1
-popup/item_2/text = "Lineless"
+popup/item_2/text = "Monochrome"
 popup/item_2/id = 2
 
-[node name="BGContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer"]
+[node name="ColoringContainer2" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer" unique_id=994044616]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/BGContainer"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/ColoringContainer2" unique_id=875825096]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Shading"
+
+[node name="ShadingTypeOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/ColoringContainer2" unique_id=190149378]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+focus_next = NodePath("../../BGContainer/BgOptBtn")
+selected = 0
+item_count = 3
+popup/item_0/text = "N/A"
+popup/item_0/id = 0
+popup/item_1/text = "Cel-Shading"
+popup/item_1/id = 1
+popup/item_2/text = "Soft-Shading"
+popup/item_2/id = 2
+
+[node name="LineContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer" unique_id=2058770416]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/LineContainer" unique_id=425360078]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Completion"
+
+[node name="LineStyleOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/LineContainer" unique_id=1223187307]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+focus_next = NodePath("../../BGContainer/BgOptBtn")
+selected = 0
+item_count = 4
+popup/item_0/text = "N/A"
+popup/item_0/id = 3
+popup/item_1/text = "Sketch"
+popup/item_1/id = 0
+popup/item_2/text = "Line Art"
+popup/item_2/id = 1
+popup/item_3/text = "Lineless"
+popup/item_3/id = 2
+
+[node name="BGContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer" unique_id=170448358]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/BGContainer" unique_id=279189033]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Background"
 
-[node name="BgOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/BGContainer"]
+[node name="BgOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/BGContainer" unique_id=2041105295]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -451,30 +498,30 @@ popup/item_1/id = 1
 popup/item_2/text = "Detailed Background"
 popup/item_2/id = 1
 
-[node name="BGTypeContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer"]
+[node name="BGTypeContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer" unique_id=1544439719]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/BGTypeContainer"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/BGTypeContainer" unique_id=903581441]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "BG Type"
 
-[node name="BGTypeOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/BGTypeContainer"]
+[node name="BGTypeOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/BGTypeContainer" unique_id=1795598114]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
 focus_next = NodePath("../../TimeContainer/DaytimeOptBtn")
 focus_previous = NodePath("../../BGContainer/BgOptBtn")
 
-[node name="TimeContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer"]
+[node name="TimeContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer" unique_id=369557045]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/TimeContainer"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/TimeContainer" unique_id=1688594701]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Time"
 
-[node name="DaytimeOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/TimeContainer"]
+[node name="DaytimeOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/TimeContainer" unique_id=1225783246]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -483,20 +530,21 @@ focus_previous = NodePath("../../BGTypeContainer/BGTypeOptBtn")
 selected = 0
 item_count = 3
 popup/item_0/text = "N/A"
+popup/item_0/id = 0
 popup/item_1/text = "Day"
 popup/item_1/id = 1
 popup/item_2/text = "Night"
 popup/item_2/id = 2
 
-[node name="LocationContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer"]
+[node name="LocationContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer" unique_id=1593526820]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/LocationContainer"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/LocationContainer" unique_id=1865842029]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Location"
 
-[node name="LocationOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/LocationContainer"]
+[node name="LocationOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/LocationContainer" unique_id=813814524]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -505,26 +553,27 @@ focus_previous = NodePath("../../TimeContainer/DaytimeOptBtn")
 selected = 0
 item_count = 3
 popup/item_0/text = "N/A"
+popup/item_0/id = 0
 popup/item_1/text = "Inside"
 popup/item_1/id = 1
 popup/item_2/text = "Outside"
 popup/item_2/id = 2
 
-[node name="AnglesContainer" type="CenterContainer" parent="MainPanel/MainContainer/MainPanel"]
+[node name="AnglesContainer" type="CenterContainer" parent="MainPanel/MainContainer/MainPanel" unique_id=487976167]
 visible = false
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/AnglesContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/AnglesContainer" unique_id=574966714]
 layout_mode = 2
 
-[node name="AnglesHflow" type="HFlowContainer" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer"]
+[node name="AnglesHflow" type="HFlowContainer" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer" unique_id=1091672889]
 custom_minimum_size = Vector2(650, 0)
 layout_mode = 2
 theme_override_constants/h_separation = 15
 theme_override_constants/v_separation = 15
 alignment = 1
 
-[node name="AngleContainer" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" unique_id=32198590 instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 focus_neighbor_left = NodePath(".")
 focus_neighbor_top = NodePath(".")
@@ -535,7 +584,7 @@ focus_previous = NodePath("../../../../../MarginContainer/NavigationContainer/Pr
 angle_tags = Array[String](["high-angle view", "front view"])
 angle_texture = ExtResource("5_gwi0h")
 
-[node name="AngleContainer2" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer2" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" unique_id=1045103857 instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 focus_neighbor_left = NodePath("../AngleContainer")
 focus_neighbor_top = NodePath(".")
@@ -546,7 +595,7 @@ focus_previous = NodePath("../AngleContainer")
 angle_tags = Array[String](["high-angle view", "three-quarter view", "front view"])
 angle_texture = ExtResource("6_uy6fe")
 
-[node name="AngleContainer3" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer3" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" unique_id=1020145868 instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 focus_neighbor_left = NodePath("../AngleContainer2")
 focus_neighbor_top = NodePath(".")
@@ -557,7 +606,7 @@ focus_previous = NodePath("../AngleContainer2")
 angle_tags = Array[String](["high-angle view", "side view"])
 angle_texture = ExtResource("7_r0r6t")
 
-[node name="AngleContainer4" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer4" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" unique_id=1663160059 instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 focus_neighbor_left = NodePath("../AngleContainer3")
 focus_neighbor_top = NodePath(".")
@@ -568,7 +617,7 @@ focus_previous = NodePath("../AngleContainer3")
 angle_tags = Array[String](["high-angle view", "three-quarter view", "rear view"])
 angle_texture = ExtResource("8_xwvoq")
 
-[node name="AngleContainer5" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer5" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" unique_id=1641165769 instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 focus_neighbor_left = NodePath("../AngleContainer4")
 focus_neighbor_top = NodePath(".")
@@ -579,7 +628,7 @@ focus_previous = NodePath("../AngleContainer4")
 angle_tags = Array[String](["high-angle view", "rear view"])
 angle_texture = ExtResource("9_oqo5k")
 
-[node name="AngleContainer6" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer6" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" unique_id=414090057 instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 focus_neighbor_left = NodePath(".")
 focus_neighbor_top = NodePath("../AngleContainer")
@@ -590,7 +639,7 @@ focus_previous = NodePath("../AngleContainer5")
 angle_tags = Array[String](["front view"])
 angle_texture = ExtResource("10_u2alw")
 
-[node name="AngleContainer7" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer7" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" unique_id=1393531636 instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 focus_neighbor_left = NodePath("../AngleContainer6")
 focus_neighbor_top = NodePath("../AngleContainer2")
@@ -601,7 +650,7 @@ focus_previous = NodePath("../AngleContainer6")
 angle_tags = Array[String](["three-quarter view"])
 angle_texture = ExtResource("11_ve3nk")
 
-[node name="AngleContainer8" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer8" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" unique_id=66864511 instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 focus_neighbor_left = NodePath("../AngleContainer7")
 focus_neighbor_top = NodePath("../AngleContainer3")
@@ -612,7 +661,7 @@ focus_previous = NodePath("../AngleContainer7")
 angle_tags = Array[String](["side view"])
 angle_texture = ExtResource("12_ymbs7")
 
-[node name="AngleContainer9" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer9" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" unique_id=897637004 instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 focus_neighbor_left = NodePath("../AngleContainer8")
 focus_neighbor_top = NodePath("../AngleContainer4")
@@ -623,7 +672,7 @@ focus_previous = NodePath("../AngleContainer8")
 angle_tags = Array[String](["rear view", "three-quarter view"])
 angle_texture = ExtResource("13_fsnou")
 
-[node name="AngleContainer10" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer10" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" unique_id=1412818675 instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 focus_neighbor_left = NodePath("../AngleContainer9")
 focus_neighbor_top = NodePath("../AngleContainer5")
@@ -634,7 +683,7 @@ focus_previous = NodePath("../AngleContainer9")
 angle_tags = Array[String](["rear view"])
 angle_texture = ExtResource("14_rxqjh")
 
-[node name="AngleContainer11" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer11" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" unique_id=1390033109 instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 focus_neighbor_left = NodePath(".")
 focus_neighbor_top = NodePath("../AngleContainer6")
@@ -645,7 +694,7 @@ focus_previous = NodePath("../AngleContainer10")
 angle_tags = Array[String](["low-angle view", "front view"])
 angle_texture = ExtResource("15_qfmer")
 
-[node name="AngleContainer12" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer12" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" unique_id=2119484438 instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 focus_neighbor_left = NodePath("../AngleContainer11")
 focus_neighbor_top = NodePath("../AngleContainer7")
@@ -656,7 +705,7 @@ focus_previous = NodePath("../AngleContainer11")
 angle_tags = Array[String](["low-angle view", "front view", "three-quarter view"])
 angle_texture = ExtResource("16_myr52")
 
-[node name="AngleContainer13" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer13" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" unique_id=1392690964 instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 focus_neighbor_left = NodePath("../AngleContainer12")
 focus_neighbor_top = NodePath("../AngleContainer8")
@@ -667,7 +716,7 @@ focus_previous = NodePath("../AngleContainer12")
 angle_tags = Array[String](["low-angle view", "side view"])
 angle_texture = ExtResource("17_72lc1")
 
-[node name="AngleContainer14" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer14" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" unique_id=1975868227 instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 focus_neighbor_left = NodePath("../AngleContainer13")
 focus_neighbor_top = NodePath("../AngleContainer9")
@@ -678,7 +727,7 @@ focus_previous = NodePath("../AngleContainer13")
 angle_tags = Array[String](["low-angle view", "three-quarter view", "rear view"])
 angle_texture = ExtResource("18_y5x77")
 
-[node name="AngleContainer15" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer15" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" unique_id=633140434 instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 focus_neighbor_left = NodePath("../AngleContainer14")
 focus_neighbor_top = NodePath("../AngleContainer10")
@@ -689,7 +738,7 @@ focus_previous = NodePath("../AngleContainer14")
 angle_tags = Array[String](["low-angle view", "rear view"])
 angle_texture = ExtResource("19_o7o3y")
 
-[node name="AngleContainer16" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer16" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" unique_id=1616957378 instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 focus_neighbor_left = NodePath(".")
 focus_neighbor_top = NodePath("../AngleContainer12")
@@ -700,7 +749,7 @@ focus_previous = NodePath("../AngleContainer15")
 angle_tags = Array[String](["bird's-eye view"])
 angle_texture = ExtResource("20_ll01c")
 
-[node name="AngleContainer17" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" instance=ExtResource("4_wkt5h")]
+[node name="AngleContainer17" parent="MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow" unique_id=567712129 instance=ExtResource("4_wkt5h")]
 layout_mode = 2
 focus_neighbor_left = NodePath("../AngleContainer16")
 focus_neighbor_top = NodePath("../AngleContainer13")
@@ -711,7 +760,7 @@ focus_previous = NodePath("../AngleContainer16")
 angle_tags = Array[String](["worm's-eye view"])
 angle_texture = ExtResource("21_cdcvx")
 
-[node name="PairingsContainer" type="MarginContainer" parent="MainPanel/MainContainer/MainPanel"]
+[node name="PairingsContainer" type="MarginContainer" parent="MainPanel/MainContainer/MainPanel" unique_id=1366664654]
 visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 100
@@ -719,29 +768,29 @@ theme_override_constants/margin_top = 50
 theme_override_constants/margin_right = 100
 theme_override_constants/margin_bottom = 50
 
-[node name="PairingsContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer"]
+[node name="PairingsContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer" unique_id=444024326]
 layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer" unique_id=1048762746]
 layout_mode = 2
 size_flags_vertical = 4
 theme_override_constants/separation = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer" unique_id=608212587]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="SexesContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer"]
+[node name="SexesContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer" unique_id=383037945]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/SexesContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/SexesContainer" unique_id=2134605813]
 layout_mode = 2
 
-[node name="GenderOptBtnL" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/SexesContainer/HBoxContainer"]
+[node name="GenderOptBtnL" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/SexesContainer/HBoxContainer" unique_id=149147631]
 custom_minimum_size = Vector2(200, 32)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -750,14 +799,14 @@ focus_previous = NodePath("../../../../../../../../MarginContainer/NavigationCon
 alignment = 1
 script = ExtResource("3_ycvrq")
 
-[node name="TextureRect" type="TextureRect" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/SexesContainer/HBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/SexesContainer/HBoxContainer" unique_id=319444759]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 texture = ExtResource("4_yf32a")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="GenderOptBtnR" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/SexesContainer/HBoxContainer"]
+[node name="GenderOptBtnR" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/SexesContainer/HBoxContainer" unique_id=1340514702]
 custom_minimum_size = Vector2(200, 32)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -766,46 +815,46 @@ focus_previous = NodePath("../GenderOptBtnL")
 alignment = 1
 script = ExtResource("3_ycvrq")
 
-[node name="AddPairingBtn" type="Button" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/SexesContainer"]
+[node name="AddPairingBtn" type="Button" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/SexesContainer" unique_id=479486510]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 focus_next = NodePath("../../MinglingContainer/Sexing/Threesome")
 focus_previous = NodePath("../HBoxContainer/GenderOptBtnR")
 text = "Add"
 
-[node name="MinglingContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer"]
+[node name="MinglingContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer" unique_id=1641921519]
 layout_mode = 2
 
-[node name="Sexing" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer"]
+[node name="Sexing" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer" unique_id=65110588]
 layout_mode = 2
 alignment = 1
 
-[node name="Threesome" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer/Sexing"]
+[node name="Threesome" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer/Sexing" unique_id=1808652506]
 custom_minimum_size = Vector2(180, 32)
 layout_mode = 2
 focus_next = NodePath("../Foursome2")
 focus_previous = NodePath("../../../SexesContainer/AddPairingBtn")
 text = "Threesome"
 
-[node name="Foursome2" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer/Sexing"]
+[node name="Foursome2" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer/Sexing" unique_id=2038091980]
 custom_minimum_size = Vector2(180, 32)
 layout_mode = 2
 focus_next = NodePath("../Fivesome3")
 focus_previous = NodePath("../Threesome")
 text = "Foursome"
 
-[node name="Fivesome3" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer/Sexing"]
+[node name="Fivesome3" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer/Sexing" unique_id=615853903]
 custom_minimum_size = Vector2(180, 32)
 layout_mode = 2
 focus_next = NodePath("../../Grouping/Gangbang")
 focus_previous = NodePath("../Foursome2")
 text = "Fivesome"
 
-[node name="Grouping" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer"]
+[node name="Grouping" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer" unique_id=1683901732]
 layout_mode = 2
 alignment = 1
 
-[node name="Gangbang" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer/Grouping"]
+[node name="Gangbang" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer/Grouping" unique_id=913583761]
 custom_minimum_size = Vector2(180, 32)
 layout_mode = 2
 tooltip_text = "Three or more individuals are having sex with a single character."
@@ -813,7 +862,7 @@ focus_next = NodePath("../RevGangbang2")
 focus_previous = NodePath("../../Sexing/Fivesome3")
 text = "Gangbang"
 
-[node name="RevGangbang2" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer/Grouping"]
+[node name="RevGangbang2" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer/Grouping" unique_id=66109495]
 custom_minimum_size = Vector2(180, 32)
 layout_mode = 2
 tooltip_text = "One individual having sex with a group of characters."
@@ -821,7 +870,7 @@ focus_next = NodePath("../Orgy")
 focus_previous = NodePath("../Gangbang")
 text = "Reverse Gangbang"
 
-[node name="Orgy" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer/Grouping"]
+[node name="Orgy" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer/Grouping" unique_id=230420075]
 custom_minimum_size = Vector2(180, 32)
 layout_mode = 2
 tooltip_text = "Five or more characters having sex freely among each other."
@@ -829,171 +878,171 @@ focus_next = NodePath("../../../../../../../../MarginContainer/NavigationContain
 focus_previous = NodePath("../RevGangbang2")
 text = "Orgy"
 
-[node name="TextureRect" type="TextureRect" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer" unique_id=408158146]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 texture = ExtResource("32_bb2o6")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer" unique_id=160258072]
 layout_mode = 2
 size_flags_vertical = 3
 alignment = 1
 
-[node name="ScrollContainer" type="ScrollContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2"]
+[node name="ScrollContainer" type="ScrollContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2" unique_id=977228553]
 custom_minimum_size = Vector2(280, 450)
 layout_mode = 2
 follow_focus = true
 
-[node name="CheckboxContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer"]
+[node name="CheckboxContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer" unique_id=747940168]
 layout_mode = 2
 
-[node name="AndroContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer"]
+[node name="AndroContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer" unique_id=1995999396]
 layout_mode = 2
 
-[node name="AndAmb" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/AndroContainer"]
+[node name="AndAmb" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/AndroContainer" unique_id=395280711]
 layout_mode = 2
 focus_next = NodePath("../AndAnd")
 focus_previous = NodePath("../../../../../HBoxContainer/VBoxContainer/MinglingContainer/Grouping/Orgy")
 text = "Andromorph / Ambiguous"
 
-[node name="AndAnd" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/AndroContainer"]
+[node name="AndAnd" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/AndroContainer" unique_id=931969083]
 layout_mode = 2
 text = "Andromorph / Andromorph"
 
-[node name="AndF" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/AndroContainer"]
+[node name="AndF" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/AndroContainer" unique_id=1569419577]
 layout_mode = 2
 text = "Andromorph / Female"
 
-[node name="AndM" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/AndroContainer"]
+[node name="AndM" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/AndroContainer" unique_id=701188933]
 layout_mode = 2
 focus_next = NodePath("../../FemaleContainer/FAmb")
 focus_previous = NodePath("../AndF")
 text = "Andromorph / Male"
 
-[node name="FemaleContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer"]
+[node name="FemaleContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer" unique_id=1555577374]
 layout_mode = 2
 
-[node name="FAmb" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/FemaleContainer"]
+[node name="FAmb" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/FemaleContainer" unique_id=1892922594]
 layout_mode = 2
 focus_previous = NodePath("../../AndroContainer/AndM")
 text = "Female / Ambiguous
 "
 
-[node name="FF" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/FemaleContainer"]
+[node name="FF" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/FemaleContainer" unique_id=1169275167]
 layout_mode = 2
 focus_next = NodePath("../../GynoContainer/GAmb")
 text = "Female / Female"
 
-[node name="GynoContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer"]
+[node name="GynoContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer" unique_id=148873496]
 layout_mode = 2
 
-[node name="GAmb" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/GynoContainer"]
+[node name="GAmb" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/GynoContainer" unique_id=275704738]
 layout_mode = 2
 focus_previous = NodePath("../../FemaleContainer/FF")
 text = "Gynomorph / Ambiguous"
 
-[node name="GAnd" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/GynoContainer"]
+[node name="GAnd" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/GynoContainer" unique_id=1802606102]
 layout_mode = 2
 text = "Gynomorph / Andromorph"
 
-[node name="GF" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/GynoContainer"]
+[node name="GF" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/GynoContainer" unique_id=1169016081]
 layout_mode = 2
 text = "Gynomorph / Female"
 
-[node name="GG" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/GynoContainer"]
+[node name="GG" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/GynoContainer" unique_id=1327786602]
 layout_mode = 2
 text = "Gynomorph / Gynomorph"
 
-[node name="GH" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/GynoContainer"]
+[node name="GH" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/GynoContainer" unique_id=1676093360]
 layout_mode = 2
 text = "Gynomorph / Herm"
 
-[node name="GM" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/GynoContainer"]
+[node name="GM" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/GynoContainer" unique_id=1419484162]
 layout_mode = 2
 focus_next = NodePath("../../HermContainer/HAmb")
 text = "Gynomorph / Male"
 
-[node name="HermContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer"]
+[node name="HermContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer" unique_id=443493820]
 layout_mode = 2
 
-[node name="HAmb" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/HermContainer"]
+[node name="HAmb" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/HermContainer" unique_id=1597781593]
 layout_mode = 2
 focus_previous = NodePath("../../GynoContainer/GM")
 text = "Herm / Ambiguous"
 
-[node name="HF" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/HermContainer"]
+[node name="HF" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/HermContainer" unique_id=714566456]
 layout_mode = 2
 text = "Herm / Female"
 
-[node name="HH" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/HermContainer"]
+[node name="HH" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/HermContainer" unique_id=2044810488]
 layout_mode = 2
 text = "Herm / Herm"
 
-[node name="HM" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/HermContainer"]
+[node name="HM" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/HermContainer" unique_id=868586515]
 layout_mode = 2
 focus_next = NodePath("../../MaleContainer/MAmb")
 text = "Herm / Male"
 
-[node name="MaleContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer"]
+[node name="MaleContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer" unique_id=785933433]
 layout_mode = 2
 
-[node name="MAmb" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleContainer"]
+[node name="MAmb" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleContainer" unique_id=974951569]
 layout_mode = 2
 focus_previous = NodePath("../../HermContainer/HM")
 text = "Male / Ambiguous"
 
-[node name="MF" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleContainer"]
+[node name="MF" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleContainer" unique_id=473302761]
 layout_mode = 2
 text = "Male / Female"
 
-[node name="MM" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleContainer"]
+[node name="MM" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleContainer" unique_id=313119367]
 layout_mode = 2
 focus_next = NodePath("../../MaleHermContainer/MHAmb")
 text = "Male / Male"
 
-[node name="MaleHermContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer"]
+[node name="MaleHermContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer" unique_id=401165479]
 layout_mode = 2
 
-[node name="MHAmb" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer"]
+[node name="MHAmb" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer" unique_id=1020243326]
 layout_mode = 2
 focus_previous = NodePath("../../MaleContainer/MM")
 text = "Male Herm / Ambiguous"
 
-[node name="MHAnd" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer"]
+[node name="MHAnd" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer" unique_id=1162802340]
 layout_mode = 2
 text = "Male Herm / Andromorph"
 
-[node name="MHF" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer"]
+[node name="MHF" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer" unique_id=156652406]
 layout_mode = 2
 text = "Male Herm / Female"
 
-[node name="MHG" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer"]
+[node name="MHG" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer" unique_id=1321714215]
 layout_mode = 2
 text = "Male Herm / Gynomorph"
 
-[node name="MHH" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer"]
+[node name="MHH" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer" unique_id=1767750752]
 layout_mode = 2
 text = "Male Herm / Herm"
 
-[node name="MHM" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer"]
+[node name="MHM" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer" unique_id=57499099]
 layout_mode = 2
 text = "Male Herm / Male"
 
-[node name="MHMH" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer"]
+[node name="MHMH" type="CheckBox" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2/ScrollContainer/CheckboxContainer/MaleHermContainer" unique_id=831690068]
 layout_mode = 2
 focus_next = NodePath("../../../../ClearPairingsBtn")
 text = "Male Herm / Male Herm"
 
-[node name="ClearPairingsBtn" type="Button" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2"]
+[node name="ClearPairingsBtn" type="Button" parent="MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/VBoxContainer2" unique_id=662535115]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 focus_next = NodePath("../../../../../MarginContainer/NavigationContainer/NextButton")
 focus_previous = NodePath("../ScrollContainer/CheckboxContainer/MaleHermContainer/MHMH")
 text = "Clear All"
 
-[node name="Characters" type="MarginContainer" parent="MainPanel/MainContainer/MainPanel"]
+[node name="Characters" type="MarginContainer" parent="MainPanel/MainContainer/MainPanel" unique_id=892618957]
 visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 80
@@ -1001,24 +1050,24 @@ theme_override_constants/margin_top = 30
 theme_override_constants/margin_right = 80
 theme_override_constants/margin_bottom = 30
 
-[node name="MainContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters"]
+[node name="MainContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters" unique_id=1054747934]
 custom_minimum_size = Vector2(1100, 550)
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="ChracterTree" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer"]
+[node name="ChracterTree" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer" unique_id=1026929507]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Header" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/ChracterTree"]
+[node name="Header" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/ChracterTree" unique_id=535773930]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/ChracterTree/Header"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/ChracterTree/Header" unique_id=1663563791]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Characters"
 
-[node name="NewCharBtn" type="Button" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/ChracterTree/Header"]
+[node name="NewCharBtn" type="Button" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/ChracterTree/Header" unique_id=186603807]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 tooltip_text = "Create Character"
@@ -1029,7 +1078,7 @@ flat = true
 icon_alignment = 1
 expand_icon = true
 
-[node name="CharactersTree" type="Tree" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/ChracterTree"]
+[node name="CharactersTree" type="Tree" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/ChracterTree" unique_id=1884481571]
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 4.0
@@ -1039,7 +1088,7 @@ mouse_force_pass_scroll_events = false
 hide_folding = true
 hide_root = true
 
-[node name="CharDataSmoothScroll" type="ScrollContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer"]
+[node name="CharDataSmoothScroll" type="ScrollContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer" unique_id=1433211517]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 4.0
@@ -1052,24 +1101,24 @@ drag_with_mouse = false
 drag_with_touch = false
 allow_overdragging = false
 
-[node name="ScrollPanel" type="PanelContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll"]
+[node name="ScrollPanel" type="PanelContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll" unique_id=99778823]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
 mouse_filter = 1
 
-[node name="DataContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel"]
+[node name="DataContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel" unique_id=1702428463]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Wizard" type="Control" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer"]
+[node name="Wizard" type="Control" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer" unique_id=73406427]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
 mouse_filter = 1
 
-[node name="CharacterField" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard"]
+[node name="CharacterField" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard" unique_id=1890616286]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1081,47 +1130,47 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 3.0
 
-[node name="HSeparator4" type="HSeparator" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField"]
+[node name="HSeparator4" type="HSeparator" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField" unique_id=1929155636]
 layout_mode = 2
 mouse_filter = 1
 theme_override_constants/separation = 8
 
-[node name="BodyContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField"]
+[node name="BodyContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField" unique_id=2063422577]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="BodyContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/BodyContainer"]
+[node name="BodyContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/BodyContainer" unique_id=1023812982]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/BodyContainer/BodyContainer"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/BodyContainer/BodyContainer" unique_id=1201595022]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 mouse_filter = 1
 text = "Body Type"
 
-[node name="BodyOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/BodyContainer/BodyContainer"]
+[node name="BodyOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/BodyContainer/BodyContainer" unique_id=976769006]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "What body type the character has."
 focus_next = NodePath("../../SpeciesBox/SpeciesLnEdt")
-focus_previous = NodePath("../../../../NameContainer/ApplyCharacterBtn")
+focus_previous = NodePath("../../../../NameContainer/SaveCharBtn")
 mouse_filter = 1
 disabled = true
 text_overrun_behavior = 3
 
-[node name="SpeciesBox" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/BodyContainer"]
+[node name="SpeciesBox" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/BodyContainer" unique_id=119209730]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/BodyContainer/SpeciesBox"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/BodyContainer/SpeciesBox" unique_id=984351346]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 mouse_filter = 1
 text = "Species"
 
-[node name="SpeciesLnEdt" type="LineEdit" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/BodyContainer/SpeciesBox"]
+[node name="SpeciesLnEdt" type="LineEdit" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/BodyContainer/SpeciesBox" unique_id=2023300040]
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "The character's species.
@@ -1133,29 +1182,29 @@ placeholder_text = "No Species"
 editable = false
 caret_blink = true
 
-[node name="HSeparator" type="HSeparator" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField"]
+[node name="HSeparator" type="HSeparator" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField" unique_id=1513273196]
 layout_mode = 2
 mouse_filter = 1
 theme_override_constants/separation = 8
 
-[node name="AgeGenderContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField"]
+[node name="AgeGenderContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField" unique_id=1674386593]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer" unique_id=1201783542]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="GenderContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/HBoxContainer"]
+[node name="GenderContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/HBoxContainer" unique_id=325260414]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/HBoxContainer/GenderContainer"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/HBoxContainer/GenderContainer" unique_id=16886927]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 mouse_filter = 1
 text = "Apparent Gender"
 
-[node name="GenderOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/HBoxContainer/GenderContainer"]
+[node name="GenderOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/HBoxContainer/GenderContainer" unique_id=606334249]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1166,17 +1215,17 @@ mouse_filter = 1
 disabled = true
 text_overrun_behavior = 3
 
-[node name="GenderLoreContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/HBoxContainer"]
+[node name="GenderLoreContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/HBoxContainer" unique_id=1755390582]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/HBoxContainer/GenderLoreContainer"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/HBoxContainer/GenderLoreContainer" unique_id=2123879963]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 mouse_filter = 1
 text = "Lore Gender"
 
-[node name="GenderLoreOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/HBoxContainer/GenderLoreContainer"]
+[node name="GenderLoreOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/HBoxContainer/GenderLoreContainer" unique_id=846726488]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1188,21 +1237,21 @@ mouse_filter = 1
 disabled = true
 text_overrun_behavior = 3
 
-[node name="AgeMainContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer"]
+[node name="AgeMainContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer" unique_id=1098570379]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="AgeContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/AgeMainContainer"]
+[node name="AgeContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/AgeMainContainer" unique_id=877824397]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/AgeMainContainer/AgeContainer"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/AgeMainContainer/AgeContainer" unique_id=830068273]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 mouse_filter = 1
 text = "Apparent Age"
 
-[node name="AgeOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/AgeMainContainer/AgeContainer"]
+[node name="AgeOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/AgeMainContainer/AgeContainer" unique_id=1721986580]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1213,17 +1262,17 @@ mouse_filter = 1
 disabled = true
 text_overrun_behavior = 3
 
-[node name="LoreAgeContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/AgeMainContainer"]
+[node name="LoreAgeContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/AgeMainContainer" unique_id=1033027624]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/AgeMainContainer/LoreAgeContainer"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/AgeMainContainer/LoreAgeContainer" unique_id=1080343737]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 mouse_filter = 1
 text = "Lore Age"
 
-[node name="LoreAgeOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/AgeMainContainer/LoreAgeContainer"]
+[node name="LoreAgeOptBtn" type="OptionButton" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField/AgeGenderContainer/AgeMainContainer/LoreAgeContainer" unique_id=1460026532]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1235,12 +1284,12 @@ mouse_filter = 1
 disabled = true
 text_overrun_behavior = 3
 
-[node name="HSeparator2" type="HSeparator" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField"]
+[node name="HSeparator2" type="HSeparator" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField" unique_id=794829000]
 layout_mode = 2
 mouse_filter = 1
 theme_override_constants/separation = 8
 
-[node name="BodyTextureTree" type="Tree" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField"]
+[node name="BodyTextureTree" type="Tree" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField" unique_id=256228872]
 custom_minimum_size = Vector2(0, 260)
 layout_mode = 2
 size_flags_vertical = 3
@@ -1249,22 +1298,22 @@ focus_previous = NodePath("../AgeGenderContainer/AgeMainContainer/LoreAgeContain
 mouse_filter = 1
 mouse_force_pass_scroll_events = false
 theme = ExtResource("7_slw3q")
+theme_override_constants/h_separation = 16
 theme_override_constants/draw_relationship_lines = 1
 theme_override_constants/relationship_line_width = 3
 theme_override_constants/parent_hl_line_width = 3
 theme_override_constants/children_hl_line_width = 3
-theme_override_constants/h_separation = 16
 theme_override_styles/focus = SubResource("StyleBoxFlat_vtu6n")
 columns = 2
 column_titles_visible = true
 hide_root = true
 
-[node name="HSeparator3" type="HSeparator" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField"]
+[node name="HSeparator3" type="HSeparator" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/CharacterField" unique_id=788651903]
 layout_mode = 2
 mouse_filter = 1
 theme_override_constants/separation = 8
 
-[node name="NameContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard"]
+[node name="NameContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard" unique_id=1481067824]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 1
 anchors_preset = 10
@@ -1273,13 +1322,13 @@ offset_bottom = 32.0
 grow_horizontal = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/NameContainer"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/NameContainer" unique_id=1438749295]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 mouse_filter = 1
 text = "Character Tag"
 
-[node name="CharacterTagLnEdt" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/NameContainer" instance=ExtResource("37_5wkjy")]
+[node name="CharacterTagLnEdt" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/NameContainer" unique_id=33521939 instance=ExtResource("37_5wkjy")]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1296,15 +1345,15 @@ replace_on_item_select = true
 use_timer = true
 close_on_focus_lost = true
 
-[node name="ApplyCharacterBtn" type="Button" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/NameContainer"]
+[node name="ApplyCharacterBtn" type="Button" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/NameContainer" unique_id=147031865]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 tooltip_text = "Apply character settings"
 focus_neighbor_left = NodePath("../CharacterTagLnEdt")
 focus_neighbor_top = NodePath(".")
-focus_neighbor_right = NodePath(".")
+focus_neighbor_right = NodePath("../SaveCharBtn")
 focus_neighbor_bottom = NodePath("../../CharacterField/BodyContainer/SpeciesBox/SpeciesLnEdt")
-focus_next = NodePath("../../CharacterField/BodyContainer/BodyContainer/BodyOptBtn")
+focus_next = NodePath("../SaveCharBtn")
 focus_previous = NodePath("../CharacterTagLnEdt")
 mouse_filter = 1
 disabled = true
@@ -1312,12 +1361,28 @@ icon = ExtResource("39_askru")
 icon_alignment = 1
 expand_icon = true
 
-[node name="Others" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer"]
+[node name="SaveCharBtn" type="Button" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/NameContainer" unique_id=1826328362]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "Save Character"
+focus_neighbor_left = NodePath("../ApplyCharacterBtn")
+focus_neighbor_top = NodePath(".")
+focus_neighbor_right = NodePath("../../../Others/ClothingTree")
+focus_neighbor_bottom = NodePath("../../CharacterField/BodyContainer/SpeciesBox/SpeciesLnEdt")
+focus_next = NodePath("../../CharacterField/BodyContainer/BodyContainer/BodyOptBtn")
+focus_previous = NodePath("../ApplyCharacterBtn")
+mouse_filter = 1
+disabled = true
+icon = ExtResource("42_bcfe3")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Others" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer" unique_id=822948786]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="ClothingTree" type="Tree" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Others"]
+[node name="ClothingTree" type="Tree" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Others" unique_id=1579377549]
 custom_minimum_size = Vector2(0, 260)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1327,16 +1392,16 @@ focus_previous = NodePath("../../Wizard/CharacterField/BodyTextureTree")
 mouse_filter = 1
 mouse_force_pass_scroll_events = false
 theme = ExtResource("7_slw3q")
+theme_override_constants/h_separation = 16
 theme_override_constants/draw_relationship_lines = 1
 theme_override_constants/relationship_line_width = 3
 theme_override_constants/parent_hl_line_width = 3
 theme_override_constants/children_hl_line_width = 3
-theme_override_constants/h_separation = 16
 theme_override_styles/focus = SubResource("StyleBoxFlat_vtu6n")
 column_titles_visible = true
 hide_root = true
 
-[node name="BodyTraits" type="Tree" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Others"]
+[node name="BodyTraits" type="Tree" parent="MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Others" unique_id=1478616529]
 custom_minimum_size = Vector2(0, 260)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1350,28 +1415,29 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_vtu6n")
 column_titles_visible = true
 hide_root = true
 
-[node name="ActionsPoses" type="MarginContainer" parent="MainPanel/MainContainer/MainPanel"]
+[node name="ActionsPoses" type="MarginContainer" parent="MainPanel/MainContainer/MainPanel" unique_id=1431180108]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 30
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 30
 
-[node name="MainContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/ActionsPoses"]
+[node name="MainContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MainPanel/ActionsPoses" unique_id=679785184]
 layout_mode = 2
 alignment = 1
 
-[node name="PoseContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer"]
+[node name="PoseContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer" unique_id=1705734168]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/PoseContainer"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/PoseContainer" unique_id=1439625225]
 layout_mode = 2
 text = "Character Poses"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PoseTree" type="Tree" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/PoseContainer"]
+[node name="PoseTree" type="Tree" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/PoseContainer" unique_id=1551944144]
 layout_mode = 2
 size_flags_vertical = 3
 allow_reselect = true
@@ -1379,17 +1445,17 @@ hide_folding = true
 hide_root = true
 scroll_horizontal_enabled = false
 
-[node name="ActionsContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer"]
+[node name="ActionsContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer" unique_id=1785204969]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/ActionsContainer"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/ActionsContainer" unique_id=524581999]
 layout_mode = 2
 text = "Character Actions"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ActionsTree" type="Tree" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/ActionsContainer"]
+[node name="ActionsTree" type="Tree" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/ActionsContainer" unique_id=378912714]
 layout_mode = 2
 size_flags_vertical = 3
 allow_reselect = true
@@ -1397,38 +1463,38 @@ hide_folding = true
 hide_root = true
 scroll_horizontal_enabled = false
 
-[node name="PenetrationContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer"]
+[node name="PenetrationContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer" unique_id=82144309]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/PenetrationContainer"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/PenetrationContainer" unique_id=1080865741]
 layout_mode = 2
 text = "Character Penetration"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PenetrationTree" type="Tree" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/PenetrationContainer"]
+[node name="PenetrationTree" type="Tree" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/PenetrationContainer" unique_id=235452280]
 layout_mode = 2
 size_flags_vertical = 3
 allow_reselect = true
 hide_root = true
 scroll_horizontal_enabled = false
 
-[node name="SexContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer"]
+[node name="SexContainer" type="VBoxContainer" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer" unique_id=807481211]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/SexContainer"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/SexContainer" unique_id=253476267]
 layout_mode = 2
 text = "Sex Positions"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SearchSexPoseLnEdt" type="LineEdit" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/SexContainer"]
+[node name="SearchSexPoseLnEdt" type="LineEdit" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/SexContainer" unique_id=900813703]
 layout_mode = 2
 placeholder_text = "Search for Position (Word/Context)"
 
-[node name="SexTree" type="Tree" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/SexContainer"]
+[node name="SexTree" type="Tree" parent="MainPanel/MainContainer/MainPanel/ActionsPoses/MainContainer/SexContainer" unique_id=2112227698]
 layout_mode = 2
 size_flags_vertical = 3
 columns = 2
@@ -1437,19 +1503,19 @@ hide_folding = true
 hide_root = true
 scroll_horizontal_enabled = false
 
-[node name="MarginContainer" type="MarginContainer" parent="MainPanel/MainContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="MainPanel/MainContainer" unique_id=264009982]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 5
 
-[node name="NavigationContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MarginContainer"]
+[node name="NavigationContainer" type="HBoxContainer" parent="MainPanel/MainContainer/MarginContainer" unique_id=1109516720]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 alignment = 1
 
-[node name="PreviousButton" type="Button" parent="MainPanel/MainContainer/MarginContainer/NavigationContainer"]
+[node name="PreviousButton" type="Button" parent="MainPanel/MainContainer/MarginContainer/NavigationContainer" unique_id=1833190002]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 focus_neighbor_left = NodePath(".")
@@ -1458,28 +1524,28 @@ focus_next = NodePath("../../../MainPanel/MetaContainer/MainContainer/ArtistCont
 focus_previous = NodePath("../NextButton")
 text = "Previous"
 
-[node name="Pages" type="HBoxContainer" parent="MainPanel/MainContainer/MarginContainer/NavigationContainer"]
+[node name="Pages" type="HBoxContainer" parent="MainPanel/MainContainer/MarginContainer/NavigationContainer" unique_id=168748811]
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 1
 
-[node name="CurrentPage" type="Label" parent="MainPanel/MainContainer/MarginContainer/NavigationContainer/Pages"]
+[node name="CurrentPage" type="Label" parent="MainPanel/MainContainer/MarginContainer/NavigationContainer/Pages" unique_id=1444448454]
 layout_mode = 2
 text = "1"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="CurrentPage2" type="Label" parent="MainPanel/MainContainer/MarginContainer/NavigationContainer/Pages"]
+[node name="CurrentPage2" type="Label" parent="MainPanel/MainContainer/MarginContainer/NavigationContainer/Pages" unique_id=1630725892]
 layout_mode = 2
 text = " / "
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="AllPages" type="Label" parent="MainPanel/MainContainer/MarginContainer/NavigationContainer/Pages"]
+[node name="AllPages" type="Label" parent="MainPanel/MainContainer/MarginContainer/NavigationContainer/Pages" unique_id=725909155]
 layout_mode = 2
 text = "1"
 
-[node name="NextButton" type="Button" parent="MainPanel/MainContainer/MarginContainer/NavigationContainer"]
+[node name="NextButton" type="Button" parent="MainPanel/MainContainer/MarginContainer/NavigationContainer" unique_id=1733629776]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 focus_neighbor_left = NodePath("../PreviousButton")
@@ -1488,7 +1554,7 @@ focus_next = NodePath("../PreviousButton")
 focus_previous = NodePath("../../../MainPanel/MetaContainer/MainContainer/TypeContainer/MediaTypeOptBtn")
 text = "Next"
 
-[node name="ProjectTextureContainer" type="Container" parent="."]
+[node name="ProjectTextureContainer" type="Container" parent="." unique_id=1843710829]
 visible = false
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 0
@@ -1499,20 +1565,20 @@ resize_margin = Vector2(10, 10)
 drop_color = Color(0.5, 0.5, 0.5, 0)
 allow_resizing = false
 
-[node name="MainPanel" type="PanelContainer" parent="ProjectTextureContainer"]
+[node name="MainPanel" type="PanelContainer" parent="ProjectTextureContainer" unique_id=21073761]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_flt4j")
 
-[node name="MainContainer" type="VBoxContainer" parent="ProjectTextureContainer/MainPanel"]
+[node name="MainContainer" type="VBoxContainer" parent="ProjectTextureContainer/MainPanel" unique_id=225013752]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="HeaderContainer" type="HBoxContainer" parent="ProjectTextureContainer/MainPanel/MainContainer"]
+[node name="HeaderContainer" type="HBoxContainer" parent="ProjectTextureContainer/MainPanel/MainContainer" unique_id=1727927185]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="ProjectTextureContainer/MainPanel/MainContainer/HeaderContainer"]
+[node name="Label" type="Label" parent="ProjectTextureContainer/MainPanel/MainContainer/HeaderContainer" unique_id=12085696]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
@@ -1520,7 +1586,7 @@ text = "Project Image"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ResetZoomBtn" type="Button" parent="ProjectTextureContainer/MainPanel/MainContainer/HeaderContainer"]
+[node name="ResetZoomBtn" type="Button" parent="ProjectTextureContainer/MainPanel/MainContainer/HeaderContainer" unique_id=519609834]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 tooltip_text = "Reset Zoom"
@@ -1529,7 +1595,7 @@ flat = true
 icon_alignment = 1
 expand_icon = true
 
-[node name="MinimizeImageBtn" type="Button" parent="ProjectTextureContainer/MainPanel/MainContainer/HeaderContainer"]
+[node name="MinimizeImageBtn" type="Button" parent="ProjectTextureContainer/MainPanel/MainContainer/HeaderContainer" unique_id=497454732]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 tooltip_text = "Minimize/Maximize Image"
@@ -1538,7 +1604,7 @@ flat = true
 icon_alignment = 1
 expand_icon = true
 
-[node name="ImagePanel" type="PanelContainer" parent="ProjectTextureContainer/MainPanel/MainContainer"]
+[node name="ImagePanel" type="PanelContainer" parent="ProjectTextureContainer/MainPanel/MainContainer" unique_id=1184696342]
 visible = false
 clip_contents = true
 custom_minimum_size = Vector2(300, 300)
@@ -1546,25 +1612,75 @@ layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_8v57s")
 
-[node name="ScrollZoomView" type="MarginContainer" parent="ProjectTextureContainer/MainPanel/MainContainer/ImagePanel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="ProjectTextureContainer/MainPanel/MainContainer/ImagePanel" unique_id=1356958449]
+layout_mode = 2
+
+[node name="ScrollZoomView" type="MarginContainer" parent="ProjectTextureContainer/MainPanel/MainContainer/ImagePanel/VBoxContainer" unique_id=8535306]
+custom_minimum_size = Vector2(300, 300)
 layout_mode = 2
 size_flags_vertical = 3
 script = ExtResource("40_t16j0")
 
-[node name="ProjectTexture" type="TextureRect" parent="ProjectTextureContainer/MainPanel/MainContainer/ImagePanel/ScrollZoomView"]
+[node name="Control" type="Control" parent="ProjectTextureContainer/MainPanel/MainContainer/ImagePanel/VBoxContainer/ScrollZoomView" unique_id=1717918841]
 layout_mode = 2
+
+[node name="ProjectTexture" type="TextureRect" parent="ProjectTextureContainer/MainPanel/MainContainer/ImagePanel/VBoxContainer/ScrollZoomView/Control" unique_id=1679089465]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="WizardCheckboxes" type="Control" parent="."]
+[node name="GifTextureRect" type="TextureRect" parent="ProjectTextureContainer/MainPanel/MainContainer/ImagePanel/VBoxContainer/ScrollZoomView/Control" unique_id=1946494893]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
+script = ExtResource("44_4igfs")
+metadata/_custom_type_script = "uid://ber5st7u7dtpo"
+
+[node name="PlaybackControls" type="HBoxContainer" parent="ProjectTextureContainer/MainPanel/MainContainer/ImagePanel/VBoxContainer" unique_id=49598585]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="PlayPauseBtn" type="Button" parent="ProjectTextureContainer/MainPanel/MainContainer/ImagePanel/VBoxContainer/PlaybackControls" unique_id=1040460619]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "Select Image"
+icon = ExtResource("45_kfm6i")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="StopBtn" type="Button" parent="ProjectTextureContainer/MainPanel/MainContainer/ImagePanel/VBoxContainer/PlaybackControls" unique_id=731885214]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "Select Image"
+icon = ExtResource("46_t3x8s")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="WizardCheckboxes" type="Control" parent="." unique_id=465150306]
 visible = false
 anchors_preset = 0
 offset_right = 190.0
 offset_bottom = 189.0
 script = ExtResource("44_pti71")
 
-[node name="MainPanel" type="PanelContainer" parent="WizardCheckboxes"]
-layout_mode = 2
+[node name="MainPanel" type="PanelContainer" parent="WizardCheckboxes" unique_id=754901262]
+layout_mode = 0
 offset_right = 190.0
 offset_bottom = 189.0
 size_flags_horizontal = 3
@@ -1572,7 +1688,7 @@ size_flags_vertical = 3
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_6ahlu")
 
-[node name="SmoothScrollContainer" type="ScrollContainer" parent="WizardCheckboxes/MainPanel"]
+[node name="SmoothScrollContainer" type="ScrollContainer" parent="WizardCheckboxes/MainPanel" unique_id=1570371000]
 layout_mode = 2
 horizontal_scroll_mode = 0
 script = ExtResource("34_e8ccm")
@@ -1584,5 +1700,5 @@ drag_with_touch = false
 allow_horizontal_scroll = false
 allow_overdragging = false
 
-[node name="MainContainer" type="VBoxContainer" parent="WizardCheckboxes/MainPanel/SmoothScrollContainer"]
+[node name="MainContainer" type="VBoxContainer" parent="WizardCheckboxes/MainPanel/SmoothScrollContainer" unique_id=498388369]
 layout_mode = 2

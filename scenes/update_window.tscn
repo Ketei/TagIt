@@ -1,6 +1,6 @@
-[gd_scene load_steps=7 format=3 uid="uid://lvl8me4d3ngw"]
+[gd_scene format=3 uid="uid://lvl8me4d3ngw"]
 
-[ext_resource type="Script" path="res://scenes/update_window_script.gd" id="1_2tgd3"]
+[ext_resource type="Script" uid="uid://beqc4b3bg7ld0" path="res://scenes/update_window_script.gd" id="1_2tgd3"]
 [ext_resource type="Texture2D" uid="uid://vypb46ut3fil" path="res://icons/x_icon.svg" id="2_ms83o"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rkm3r"]
@@ -40,7 +40,7 @@ expand_margin_right = 5.0
 anti_aliasing = false
 anti_aliasing_size = 0.01
 
-[node name="UpdateWindow" type="PanelContainer"]
+[node name="UpdateWindow" type="PanelContainer" unique_id=1532680332]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -48,49 +48,56 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_2tgd3")
 
-[node name="MainCenter" type="CenterContainer" parent="."]
+[node name="MainCenter" type="CenterContainer" parent="." unique_id=1239507775]
 layout_mode = 2
 
-[node name="MainPanel" type="PanelContainer" parent="MainCenter"]
+[node name="MainPanel" type="PanelContainer" parent="MainCenter" unique_id=5015382]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_rkm3r")
 
-[node name="MainContainer" type="VBoxContainer" parent="MainCenter/MainPanel"]
+[node name="MainContainer" type="VBoxContainer" parent="MainCenter/MainPanel" unique_id=863988208]
 custom_minimum_size = Vector2(400, 500)
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="TitlePanel" type="PanelContainer" parent="MainCenter/MainPanel/MainContainer"]
+[node name="TitlePanel" type="PanelContainer" parent="MainCenter/MainPanel/MainContainer" unique_id=1686731780]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_wmi3y")
 
-[node name="TitleContainer" type="HBoxContainer" parent="MainCenter/MainPanel/MainContainer/TitlePanel"]
+[node name="TitleContainer" type="HBoxContainer" parent="MainCenter/MainPanel/MainContainer/TitlePanel" unique_id=1303617065]
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="MainCenter/MainPanel/MainContainer/TitlePanel/TitleContainer"]
+[node name="TitleLabel" type="Label" parent="MainCenter/MainPanel/MainContainer/TitlePanel/TitleContainer" unique_id=1728957161]
 layout_mode = 2
 text = "What's new"
 label_settings = SubResource("LabelSettings_qlc7s")
 
-[node name="CloseButton" type="Button" parent="MainCenter/MainPanel/MainContainer/TitlePanel/TitleContainer"]
+[node name="CloseButton" type="Button" parent="MainCenter/MainPanel/MainContainer/TitlePanel/TitleContainer" unique_id=1016574799]
 layout_mode = 2
 size_flags_horizontal = 10
 icon = ExtResource("2_ms83o")
 flat = true
 icon_alignment = 1
 
-[node name="InfoContainer" type="PanelContainer" parent="MainCenter/MainPanel/MainContainer"]
+[node name="InfoContainer" type="PanelContainer" parent="MainCenter/MainPanel/MainContainer" unique_id=34850025]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_1u7h1")
 
-[node name="ChangesRTLabel" type="RichTextLabel" parent="MainCenter/MainPanel/MainContainer/InfoContainer"]
+[node name="ChangesRTLabel" type="RichTextLabel" parent="MainCenter/MainPanel/MainContainer/InfoContainer" unique_id=846968666]
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
 text = "[font_size=20][b][color=SKY_BLUE]New[/color][/b][/font_size]
-[ul] Added one more page on Wizard which will populate depending on character count.
- Wizard will add a few more tags based on weight if enabled.
- Wizard has a few more character traits covering personality.[/ul]
+[ul] You can now use ctrl+z and ctrl+y/ctrl+shift+z to undo or redo while on the tag list (as long as you're not on a text field)
+ Project images can now also be GIF images
+ Alternate version lists are now able to have their own image/animation AND suggestions
+ Added \"Monochrome\" to the Wizard.
+ The wizard ball will now also visually update when selecting sketch/lineart
+ You can now save/overwrite characters within the tag wizard
+ Added the ability to edit a website info after creation by double-clicking it.
+ Added a checkbox when creating websites to toggle wheter to use the prefixes or not.
+ When formatting a tag using a website with prefixes it'll now use them.[/ul]
 [font_size=20][b][color=SKY_BLUE]Fixes[/color][/b][/font_size]
-[ul] Fixed the tag list capturing input when it shouldn't be.[/ul]"
+[ul] Fixed an issue where advacing on the tag wizard and then returning to characters the character tag would no longer update.
+ Fixed an issue where the tag wizard was not adding all the selected character poses.[/ul]"

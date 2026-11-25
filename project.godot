@@ -8,15 +8,19 @@
 
 config_version=5
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
-config/name="TagIt"
-config/version="3.2.2"
+config/name="TagItUpdated"
+config/version="3.3.0"
 run/main_scene="res://scenes/main_scene.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="tagit3"
 config/auto_accept_quit=false
-config/features=PackedStringArray("4.3", "GL Compatibility")
+config/features=PackedStringArray("4.6", "GL Compatibility")
 run/flush_stdout_on_print=true
 config/icon="res://icons/application_icon.svg"
 config/windows_native_icon="res://application_icon.ico"

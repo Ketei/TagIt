@@ -142,11 +142,11 @@ func _on_fetch_pressed() -> void:
 		Arrays.clean_tag_array(parents)
 		Arrays.clean_tag_array(suggestions)
 		
-		Arrays.remove_all(parents, fetch_item.get_metadata(0))
-		Arrays.remove_all(aliases, fetch_item.get_metadata(0))
-		Arrays.remove_all(suggestions, fetch_item.get_metadata(0))
+		Arrays.erase_all(parents, fetch_item.get_metadata(0))
+		Arrays.erase_all(aliases, fetch_item.get_metadata(0))
+		Arrays.erase_all(suggestions, fetch_item.get_metadata(0))
 		
-		Arrays.substract_array(suggestions, parents)
+		Arrays.subtract_array(suggestions, parents)
 		
 		data["aliases"] = PackedStringArray(aliases)
 		data["parents"] = PackedStringArray(parents)

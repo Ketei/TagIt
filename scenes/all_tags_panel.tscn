@@ -1,8 +1,8 @@
-[gd_scene load_steps=13 format=3 uid="uid://n3q3ndxi2p0s"]
+[gd_scene format=3 uid="uid://n3q3ndxi2p0s"]
 
 [ext_resource type="Texture2D" uid="uid://vypb46ut3fil" path="res://icons/x_icon.svg" id="1_iy0q1"]
-[ext_resource type="Script" path="res://scenes/all_tags_panel_script.gd" id="1_s8p00"]
-[ext_resource type="Script" path="res://addons/tnowe_extra_controls/elements/draggable.gd" id="1_y88hg"]
+[ext_resource type="Script" uid="uid://j2avg48uu6d4" path="res://scenes/all_tags_panel_script.gd" id="1_s8p00"]
+[ext_resource type="Script" uid="uid://dom24wqamc13b" path="res://addons/tnowe_extra_controls/elements/draggable.gd" id="1_y88hg"]
 [ext_resource type="Texture2D" uid="uid://d83q0hy74uit" path="res://icons/search_icon.svg" id="2_5e10h"]
 [ext_resource type="Texture2D" uid="uid://npwxg0xrpf8j" path="res://icons/pointer_left.svg" id="2_pn42h"]
 [ext_resource type="Texture2D" uid="uid://cdtejl0p8c4cr" path="res://icons/pointer_right.svg" id="3_5x0m5"]
@@ -61,7 +61,7 @@ func get_selected_names() -> Array[String]:
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jm62d"]
 
-[node name="AllTags" type="Control"]
+[node name="AllTags" type="Control" unique_id=1177003703]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -71,7 +71,7 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_s8p00")
 
-[node name="DraggableContainer" type="Container" parent="."]
+[node name="DraggableContainer" type="Container" parent="." unique_id=11778045]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -81,28 +81,28 @@ offset_right = 382.0
 grow_vertical = 0
 script = ExtResource("1_y88hg")
 
-[node name="MainControl" type="PanelContainer" parent="DraggableContainer"]
+[node name="MainControl" type="PanelContainer" parent="DraggableContainer" unique_id=170836395]
 layout_mode = 2
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_tsgmn")
 
-[node name="MarginContainer" type="MarginContainer" parent="DraggableContainer/MainControl"]
+[node name="MarginContainer" type="MarginContainer" parent="DraggableContainer/MainControl" unique_id=1123727620]
 layout_mode = 2
 theme_override_constants/margin_left = 6
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 6
 theme_override_constants/margin_bottom = 6
 
-[node name="MainContainer" type="VBoxContainer" parent="DraggableContainer/MainControl/MarginContainer"]
+[node name="MainContainer" type="VBoxContainer" parent="DraggableContainer/MainControl/MarginContainer" unique_id=1358792717]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="TitlePanel" type="PanelContainer" parent="DraggableContainer/MainControl/MarginContainer/MainContainer"]
+[node name="TitlePanel" type="PanelContainer" parent="DraggableContainer/MainControl/MarginContainer/MainContainer" unique_id=180246881]
 layout_mode = 2
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxEmpty_v4kdy")
 
-[node name="Label" type="Label" parent="DraggableContainer/MainControl/MarginContainer/MainContainer/TitlePanel"]
+[node name="Label" type="Label" parent="DraggableContainer/MainControl/MarginContainer/MainContainer/TitlePanel" unique_id=1972230606]
 layout_mode = 2
 size_flags_vertical = 1
 mouse_filter = 1
@@ -110,7 +110,7 @@ text = "All Tags"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="CloseButton" type="Button" parent="DraggableContainer/MainControl/MarginContainer/MainContainer/TitlePanel"]
+[node name="CloseButton" type="Button" parent="DraggableContainer/MainControl/MarginContainer/MainContainer/TitlePanel" unique_id=171669536]
 custom_minimum_size = Vector2(26, 26)
 layout_mode = 2
 size_flags_horizontal = 8
@@ -120,7 +120,7 @@ flat = true
 icon_alignment = 1
 expand_icon = true
 
-[node name="TagsTree" type="Tree" parent="DraggableContainer/MainControl/MarginContainer/MainContainer"]
+[node name="TagsTree" type="Tree" parent="DraggableContainer/MainControl/MarginContainer/MainContainer" unique_id=1622236568]
 custom_minimum_size = Vector2(370, 315)
 layout_mode = 2
 size_flags_vertical = 3
@@ -130,35 +130,35 @@ hide_root = true
 select_mode = 2
 script = SubResource("GDScript_t5q6l")
 
-[node name="SearchMargin" type="MarginContainer" parent="DraggableContainer/MainControl/MarginContainer/MainContainer"]
+[node name="SearchMargin" type="MarginContainer" parent="DraggableContainer/MainControl/MarginContainer/MainContainer" unique_id=1240950040]
 layout_mode = 2
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_bottom = 4
 
-[node name="SerchTagLnEdt" type="LineEdit" parent="DraggableContainer/MainControl/MarginContainer/MainContainer/SearchMargin"]
+[node name="SerchTagLnEdt" type="LineEdit" parent="DraggableContainer/MainControl/MarginContainer/MainContainer/SearchMargin" unique_id=1266444618]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 placeholder_text = "Search Tag"
 clear_button_enabled = true
-right_icon = ExtResource("2_5e10h")
 caret_blink = true
+right_icon = ExtResource("2_5e10h")
 
-[node name="MarginContainer" type="MarginContainer" parent="DraggableContainer/MainControl/MarginContainer/MainContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="DraggableContainer/MainControl/MarginContainer/MainContainer" unique_id=546275884]
 layout_mode = 2
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
-[node name="BottomPanel" type="PanelContainer" parent="DraggableContainer/MainControl/MarginContainer/MainContainer/MarginContainer"]
+[node name="BottomPanel" type="PanelContainer" parent="DraggableContainer/MainControl/MarginContainer/MainContainer/MarginContainer" unique_id=804654885]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_jm62d")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="DraggableContainer/MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel"]
+[node name="HBoxContainer" type="HBoxContainer" parent="DraggableContainer/MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel" unique_id=1305377418]
 layout_mode = 2
 alignment = 1
 
-[node name="LeftButton" type="Button" parent="DraggableContainer/MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer"]
+[node name="LeftButton" type="Button" parent="DraggableContainer/MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer" unique_id=1843353626]
 custom_minimum_size = Vector2(34, 24)
 layout_mode = 2
 size_flags_vertical = 4
@@ -170,18 +170,18 @@ flat = true
 icon_alignment = 1
 expand_icon = true
 
-[node name="PageContainer" type="HBoxContainer" parent="DraggableContainer/MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer"]
+[node name="PageContainer" type="HBoxContainer" parent="DraggableContainer/MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer" unique_id=602889998]
 layout_mode = 2
 
-[node name="CurrentLbl" type="Label" parent="DraggableContainer/MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer/PageContainer"]
+[node name="CurrentLbl" type="Label" parent="DraggableContainer/MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer/PageContainer" unique_id=1279168946]
 layout_mode = 2
 text = "1"
 
-[node name="PagesLbl" type="Label" parent="DraggableContainer/MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer/PageContainer"]
+[node name="PagesLbl" type="Label" parent="DraggableContainer/MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer/PageContainer" unique_id=301959637]
 layout_mode = 2
 text = "/ 1"
 
-[node name="NextButton" type="Button" parent="DraggableContainer/MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer"]
+[node name="NextButton" type="Button" parent="DraggableContainer/MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel/HBoxContainer" unique_id=749848057]
 custom_minimum_size = Vector2(34, 24)
 layout_mode = 2
 size_flags_vertical = 4
@@ -193,14 +193,14 @@ flat = true
 icon_alignment = 1
 expand_icon = true
 
-[node name="AddButton" type="Button" parent="DraggableContainer/MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel"]
+[node name="AddButton" type="Button" parent="DraggableContainer/MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel" unique_id=1839959855]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
 text = "Add Selected"
 
-[node name="eSixCooldownBar" type="TextureProgressBar" parent="DraggableContainer/MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel"]
+[node name="eSixCooldownBar" type="TextureProgressBar" parent="DraggableContainer/MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel" unique_id=1260364172]
 modulate = Color(0.233693, 0.62897, 0.826345, 1)
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
@@ -212,6 +212,6 @@ radial_fill_degrees = 0.0
 nine_patch_stretch = true
 texture_progress = ExtResource("5_ivlcl")
 
-[node name="SearchCooldown" type="Timer" parent="."]
+[node name="SearchCooldown" type="Timer" parent="." unique_id=115770538]
 wait_time = 1.25
 one_shot = true

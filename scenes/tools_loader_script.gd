@@ -51,16 +51,23 @@ func _ready() -> void:
 		option_button.select(0)
 		on_tool_selected(0)
 	
+	set_process_input(false)
+	
 	saved_notification.visible = false
 	
+	visibility_changed.connect(_on_visibility_changed)
 	option_button.item_selected.connect(on_tool_selected)
 	save_button.pressed.connect(on_save_pressed)
 
 
-func process_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	if tool_scene == null:
 		return
 	tool_scene.input(event)
+
+
+func _on_visibility_changed() -> void:
+	set_process_input(is_visible_in_tree())
 
 
 func on_template_deleted(template_uuid: String) -> void:

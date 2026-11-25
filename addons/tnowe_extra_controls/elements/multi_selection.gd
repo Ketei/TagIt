@@ -59,11 +59,11 @@ func box_drag(global_pos : Vector2):
 ## Ends the selection box, selecting all nodes in the box. If [member modifier_key] is held down, adds to current selection instead of clearing the previous selection.
 func box_end(global_pos : Vector2):
 	var selection_rect := Rect2(_box_corner_start, global_pos - _box_corner_start).abs()
-	var selection_shape := RectangleShape2D.new()
-	var selection_xform := Transform2D(0.0, selection_rect.position + selection_rect.size * 0.5)
+	var selection_shape: RectangleShape2D = RectangleShape2D.new()
+	var selection_xform: Transform2D = Transform2D(0.0, selection_rect.position + selection_rect.size * 0.5)
 	selection_shape.size = selection_rect.size
 
-	var current_control_shape := RectangleShape2D.new()
+	var current_control_shape: RectangleShape2D = RectangleShape2D.new()
 	if !_modifier_pressed:
 		for x in _selected_nodes:
 			node_removed.emit(x)

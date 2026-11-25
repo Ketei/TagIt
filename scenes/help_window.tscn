@@ -1,6 +1,6 @@
-[gd_scene load_steps=7 format=3 uid="uid://bg5jdmdkcv0mf"]
+[gd_scene format=3 uid="uid://bg5jdmdkcv0mf"]
 
-[ext_resource type="Script" path="res://scenes/help_window.gd" id="1_iol7v"]
+[ext_resource type="Script" uid="uid://76fj4t2q07dv" path="res://scenes/help_window.gd" id="1_iol7v"]
 [ext_resource type="Texture2D" uid="uid://bpeefcjw6yf2d" path="res://textures/init.png" id="2_1dtd6"]
 [ext_resource type="Texture2D" uid="uid://vypb46ut3fil" path="res://icons/x_icon.svg" id="3_0hsyj"]
 
@@ -34,7 +34,8 @@ anti_aliasing_size = 3.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v3hue"]
 
-[node name="AboutWindow" type="Control"]
+[node name="AboutWindow" type="Control" unique_id=1509708642]
+process_mode = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -44,7 +45,7 @@ grow_vertical = 2
 script = ExtResource("1_iol7v")
 metadata/_edit_use_anchors_ = true
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1389374733]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -53,7 +54,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.392157)
 
-[node name="MainPanel" type="PanelContainer" parent="."]
+[node name="MainPanel" type="PanelContainer" parent="." unique_id=1256471282]
 custom_minimum_size = Vector2(670, 270)
 layout_mode = 1
 anchors_preset = 8
@@ -69,11 +70,11 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_lsqgi")
 
-[node name="DataContainer" type="HBoxContainer" parent="MainPanel"]
+[node name="DataContainer" type="HBoxContainer" parent="MainPanel" unique_id=2124272316]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="PortraitRect" type="TextureRect" parent="MainPanel/DataContainer"]
+[node name="PortraitRect" type="TextureRect" parent="MainPanel/DataContainer" unique_id=392368188]
 custom_minimum_size = Vector2(400, 270)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -82,7 +83,7 @@ texture = ExtResource("2_1dtd6")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="PanelContainer" type="PanelContainer" parent="MainPanel/DataContainer/PortraitRect"]
+[node name="PanelContainer" type="PanelContainer" parent="MainPanel/DataContainer/PortraitRect" unique_id=680859968]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -91,22 +92,22 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_m34u4")
 
-[node name="LabelsContainer" type="VBoxContainer" parent="MainPanel/DataContainer"]
+[node name="LabelsContainer" type="VBoxContainer" parent="MainPanel/DataContainer" unique_id=284951409]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
 
-[node name="TitlePanel" type="PanelContainer" parent="MainPanel/DataContainer/LabelsContainer"]
+[node name="TitlePanel" type="PanelContainer" parent="MainPanel/DataContainer/LabelsContainer" unique_id=131897310]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_v3hue")
 
-[node name="TitleLabel" type="Label" parent="MainPanel/DataContainer/LabelsContainer/TitlePanel"]
+[node name="TitleLabel" type="Label" parent="MainPanel/DataContainer/LabelsContainer/TitlePanel" unique_id=1400815488]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "TagIt!"
 horizontal_alignment = 1
 
-[node name="CloseButton" type="Button" parent="MainPanel/DataContainer/LabelsContainer/TitlePanel"]
+[node name="CloseButton" type="Button" parent="MainPanel/DataContainer/LabelsContainer/TitlePanel" unique_id=461516441]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 size_flags_horizontal = 8
@@ -114,7 +115,7 @@ size_flags_vertical = 4
 icon = ExtResource("3_0hsyj")
 flat = true
 
-[node name="VersionLabel" type="Label" parent="MainPanel/DataContainer/LabelsContainer"]
+[node name="VersionLabel" type="Label" parent="MainPanel/DataContainer/LabelsContainer" unique_id=1115088987]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.298039, 0.603922, 0.603922, 1)
 theme_override_font_sizes/font_size = 18
@@ -122,42 +123,43 @@ text = "version"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="AuthorsLabel" type="Label" parent="MainPanel/DataContainer/LabelsContainer"]
+[node name="AuthorsLabel" type="Label" parent="MainPanel/DataContainer/LabelsContainer" unique_id=1794552235]
 layout_mode = 2
 text = "Created by Ketei
 "
 horizontal_alignment = 1
 
-[node name="Label" type="Label" parent="MainPanel/DataContainer/LabelsContainer"]
+[node name="Label" type="Label" parent="MainPanel/DataContainer/LabelsContainer" unique_id=107043928]
+custom_minimum_size = Vector2(250, 50)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.521291, 0.562063, 0.611103, 1)
 text = "A tool to help creators generate tag lists for their content."
 autowrap_mode = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainPanel/DataContainer/LabelsContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MainPanel/DataContainer/LabelsContainer" unique_id=267164149]
 layout_mode = 2
 size_flags_vertical = 3
 alignment = 2
 
-[node name="HSeparator" type="HSeparator" parent="MainPanel/DataContainer/LabelsContainer/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="MainPanel/DataContainer/LabelsContainer/VBoxContainer" unique_id=977674812]
 layout_mode = 2
 
-[node name="StatsLabel" type="Label" parent="MainPanel/DataContainer/LabelsContainer/VBoxContainer"]
+[node name="StatsLabel" type="Label" parent="MainPanel/DataContainer/LabelsContainer/VBoxContainer" unique_id=285077794]
 layout_mode = 2
 text = "Stats"
 horizontal_alignment = 1
 
-[node name="DataContainer" type="HBoxContainer" parent="MainPanel/DataContainer/LabelsContainer/VBoxContainer"]
+[node name="DataContainer" type="HBoxContainer" parent="MainPanel/DataContainer/LabelsContainer/VBoxContainer" unique_id=1735631984]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="MainPanel/DataContainer/LabelsContainer/VBoxContainer/DataContainer"]
+[node name="Label" type="Label" parent="MainPanel/DataContainer/LabelsContainer/VBoxContainer/DataContainer" unique_id=7644637]
 custom_minimum_size = Vector2(128, 32)
 layout_mode = 2
 text = "Tags Registered:"
 vertical_alignment = 1
 
-[node name="RegisteredLbl" type="Label" parent="MainPanel/DataContainer/LabelsContainer/VBoxContainer/DataContainer"]
+[node name="RegisteredLbl" type="Label" parent="MainPanel/DataContainer/LabelsContainer/VBoxContainer/DataContainer" unique_id=1746802135]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -166,17 +168,17 @@ horizontal_alignment = 2
 vertical_alignment = 1
 text_overrun_behavior = 3
 
-[node name="TotalContainer" type="HBoxContainer" parent="MainPanel/DataContainer/LabelsContainer/VBoxContainer"]
+[node name="TotalContainer" type="HBoxContainer" parent="MainPanel/DataContainer/LabelsContainer/VBoxContainer" unique_id=1480981989]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="MainPanel/DataContainer/LabelsContainer/VBoxContainer/TotalContainer"]
+[node name="Label" type="Label" parent="MainPanel/DataContainer/LabelsContainer/VBoxContainer/TotalContainer" unique_id=482937966]
 custom_minimum_size = Vector2(128, 32)
 layout_mode = 2
 text = "Total Tags:"
 vertical_alignment = 1
 
-[node name="TotalTagsLbl" type="Label" parent="MainPanel/DataContainer/LabelsContainer/VBoxContainer/TotalContainer"]
+[node name="TotalTagsLbl" type="Label" parent="MainPanel/DataContainer/LabelsContainer/VBoxContainer/TotalContainer" unique_id=1349983256]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3

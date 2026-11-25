@@ -2,8 +2,9 @@ class_name TagItStorage
 extends Resource
 
 
-@export var storage_version: int = 1
+@export var storage_version: int = DataManager.STORAGE_VERSION
 @export var characters: Array[Dictionary] = []
+@export var character_map: Dictionary[String, Dictionary] = {}
 
 
 static func get_storage() -> TagItStorage:
@@ -23,12 +24,25 @@ static func get_storage_version() -> int:
 
 
 func character_count() -> int:
-	return characters.size()
+	return character_map.size()
 
 
-func get_character(character_index: int) -> WizardCharacter:
+func get_characters(sort: bool = false) -> Array[String]:
+	var chars: Array[String] = []
+	if character_map.is_empty():
+		return chars
+	chars.assign(character_map.keys())
+	if sort:
+		chars.sort()
+	return chars
+
+
+func get_character(character_tag: String) -> WizardCharacter:
+	if not character_map.has(character_tag):
+		return null
+	
 	var new_character := WizardCharacter.new()
-	var data: Dictionary = characters[character_index]
+	var data: Dictionary = character_map[character_tag]
 	
 	new_character.character_tag = data["tag"]
 	new_character.species = data["species"]
@@ -39,47 +53,38 @@ func get_character(character_index: int) -> WizardCharacter:
 	new_character.age = data["age"]
 	new_character.age_lore = data["age_lore"]
 	
-	new_character.properties = data["colors"].duplicate()
-	new_character.apparel = data["apparel"].duplicate()
-	new_character.traits = data["traits"].duplicate()
+	new_character.properties.assign(data["colors"].duplicate())
+	new_character.apparel.assign(data["apparel"].duplicate())
+	new_character.traits.assign(data["traits"])
 	
 	return new_character
 
 
-func set_character(character_data: WizardCharacter, character_index: int = -1) -> int:
-	var index: int = characters.size() if character_index == -1 else character_index
+func set_character(character_data: WizardCharacter) -> bool:
+	var tag: String = character_data.character_tag
+	if tag.is_empty():
+		return false
 	var data: Dictionary = {
-		"tag": character_data.character_tag,
+		"tag": tag,
 		"species": character_data.species,
 		"body": character_data.body_type,
 		"gender": character_data.gender,
 		"gender_lore": character_data.gender_lore,
 		"age": character_data.age,
 		"age_lore": character_data.age_lore,
-		"colors": character_data.properties.duplicate(),
-		"apparel": character_data.apparel.duplicate(),
-		"traits": character_data.traits.duplicate()}
-	
-	if character_index < 0:
-		characters.append(data)
-	else:
-		characters[index] = data
-	
-	return index
+		"colors": character_data.properties.duplicate(true),
+		"apparel": character_data.apparel.duplicate(true),
+		"traits": character_data.traits.duplicate()} # Traits is [String, bool]
+	character_map[tag] = data
+	return true
 
 
 func erase_character(character_tag: String) -> void:
-	for idx in range(characters.size()):
-		if characters[idx]["tag"] == character_tag:
-			characters.remove_at(idx)
-			break
+	character_map.erase(character_tag)
 
 
 func has_character(character_tag: String) -> bool:
-	for character in characters:
-		if character["tag"] == character_tag:
-			return true
-	return false
+	return character_map.has(character_tag)
 
 
 func save() -> void:
@@ -96,12 +101,12 @@ class WizardCharacter extends RefCounted:
 	var age_lore: String = ""
 	var gender: String = "male"
 	var gender_lore: String = ""
-	var properties: Dictionary = {}
-	var apparel: Dictionary = {}
-	var traits: Dictionary = {}
-	
+	var properties: Dictionary[String, Dictionary] = {}
+	var apparel: Dictionary[String, Dictionary] = {}
+	var traits: Dictionary[String, bool] = {}
 	
 	func set_apparel(data: Dictionary) -> void:
+		apparel.clear()
 		for property in data: # data should have the same structure we're trying to set to apparel
 			if typeof(property) != TYPE_STRING or typeof(data[property]) != TYPE_DICTIONARY or not data[property].has_all(["active", "subtypes"]):
 				continue
@@ -112,7 +117,7 @@ class WizardCharacter extends RefCounted:
 			if typeof(data[property]["subtypes"]) != TYPE_DICTIONARY:
 				continue
 			
-			var subtypes: Dictionary = {}
+			var subtypes: Dictionary[String, bool] = {}
 			
 			for subtype in data[property]["subtypes"]:
 				if typeof(data[property]["subtypes"][subtype]) != TYPE_BOOL:
@@ -134,6 +139,8 @@ class WizardCharacter extends RefCounted:
 	
 	
 	func set_properties(data: Dictionary) -> void:
+		properties.clear()
+		
 		const NUM_TYPES: Array = [TYPE_INT, TYPE_FLOAT]
 		var valid_properties: Dictionary = {}
 		
@@ -156,7 +163,7 @@ class WizardCharacter extends RefCounted:
 							TYPE_STRING,
 							&"",
 							null)
-					var new_property: Dictionary = {"value": value_property}
+					var new_property: Dictionary[String, Array] = {"value": value_property}
 					new_property.merge(given_property)
 					new_properties.append(new_property)
 				else:
@@ -180,3 +187,22 @@ class WizardCharacter extends RefCounted:
 				"use": data[property]["use"],
 				"properties": new_properties}
 		properties = valid_properties
+	
+	
+	func get_species() -> Array[String]:
+		var s: Array[String] = []
+		if species.is_empty():
+			return s
+		
+		var uniques: Dictionary[String, Variant] = {}
+		for sp in species.split(",", false):
+			var clean: String = sp.strip_edges().to_lower()
+			if clean.is_empty():
+				continue
+			uniques[clean] = null
+		
+		if uniques.is_empty():
+			return s
+		
+		s.assign(uniques.keys())
+		return s

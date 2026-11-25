@@ -58,10 +58,8 @@ func _ready() -> void:
 	
 	data_store = TagItStorage.get_storage()
 	
-	for character_index in range(data_store.character_count()):
-		add_character(
-				data_store.get_character(character_index).character_tag,
-				character_index)
+	for character_tag in data_store.get_characters(true):
+		add_character(character_tag)
 	
 	lore_gender_opt.add_item("N/A", 0)
 	lore_gender_opt.set_item_metadata(0, "")
@@ -409,7 +407,7 @@ func _on_new_character_pressed() -> void:
 	popup_thing.focus_main()
 	var new_character: Array = await popup_thing.dialog_confirmed
 	if new_character[0]:
-		add_character(new_character[1], -1, true)
+		add_character(new_character[1], true)
 		_on_something_changed()
 	popup_thing.queue_free()
 
@@ -437,8 +435,8 @@ func _on_characters_option_pressed(id: int) -> void:
 		var list_window := PORT_CONFIRMATION_DIALOG.instantiate()
 		var characters: Array[String] = []
 		
-		for character_idx in range(data_store.character_count()):
-			characters.append(data_store.get_character(character_idx).character_tag)
+		for character_tag in data_store.get_characters(true):
+			characters.append(character_tag)
 		
 		list_window.title = "Select Characters"
 		list_window.ok_button_text = "Export"
@@ -450,11 +448,11 @@ func _on_characters_option_pressed(id: int) -> void:
 		if not selection.is_empty():
 			var export_chars: Array[TagItStorage.WizardCharacter] = []
 			for tag in selection:
-				for chara_idx in range(data_store.character_count()):
-					var chara := data_store.get_character(chara_idx)
-					if chara.character_tag == tag:
-						export_chars.append(chara)
-						break
+				var chara: TagItStorage.WizardCharacter = data_store.get_character(tag)
+				if chara == null:
+					continue
+				export_chars.append(chara)
+			
 			var chars_json: Dictionary = {}
 			
 			for character in export_chars:
@@ -819,11 +817,10 @@ func clear_fields() -> void:
 	lore_age_opt_btn.select(0)
 
 
-func add_character(character_tag: String, character_id: int, select: bool = false) -> void:
+func add_character(character_tag: String, select: bool = false) -> void:
 	var new_character: TreeItem = character_tree.get_root().create_child()
 	new_character.set_cell_mode(0, TreeItem.CELL_MODE_STRING)
 	new_character.set_text(0, character_tag)
-	new_character.set_metadata(0, character_id)
 	
 	if select:
 		new_character.select(0)
@@ -836,8 +833,11 @@ func has_character(character_tag: String) -> bool:
 	return false
 
 
-func load_character(index: int) -> void:
-	var data: TagItStorage.WizardCharacter = data_store.get_character(index)
+func load_character(character_tag: String) -> void:
+	var data: TagItStorage.WizardCharacter = data_store.get_character(character_tag)
+	if data == null:
+		return
+	
 	char_label.text = Strings.title_case(data.character_tag)
 	species_ln_edt.text = data.species
 	select_body(data.body_type)
@@ -911,7 +911,7 @@ func get_names() -> PackedStringArray:
 
 
 func save_character():
-	var properties: Dictionary = {}
+	var properties: Dictionary[String, Dictionary] = {}
 	
 	for prop in body_texture_tree.get_root().get_children():
 		var setting: Dictionary = {
@@ -942,7 +942,7 @@ func save_character():
 		
 		properties[prop.get_metadata(0)["tag"]] = setting
 	
-	var used_clothings: Dictionary = {}
+	var used_clothings: Dictionary[String, Dictionary] = {}
 	
 	for clothing in clothing_tree.get_root().get_children():
 		used_clothings[clothing.get_metadata(0)] = {
@@ -952,7 +952,7 @@ func save_character():
 		for subtype in clothing.get_children():
 			used_clothings[clothing.get_metadata(0)]["subtypes"][subtype.get_metadata(0)] = subtype.is_checked(0)
 	
-	var body_traits: Dictionary = {}
+	var body_traits: Dictionary[String, bool] = {}
 	
 	for body_trait in traits_tree.get_root().get_children():
 		body_traits[body_trait.get_metadata(0)] = body_trait.is_checked(0)
@@ -969,7 +969,7 @@ func save_character():
 	new_sheet.properties = properties
 	new_sheet.traits = body_traits
 	
-	data_store.set_character(new_sheet, current_selected.get_metadata(0))
+	data_store.set_character(new_sheet)
 	
 	if current_selected.get_metadata(0) == -1:
 		current_selected.set_metadata(0, data_store.character_count() - 1)
@@ -980,12 +980,13 @@ func _on_item_selected() -> void:
 		save_character()
 	
 	current_selected = character_tree.get_selected()
+	var tag: String = current_selected.get_text(0)
 	
-	if 0 <= current_selected.get_metadata(0):
-		load_character(current_selected.get_metadata(0))
+	if data_store.has_character(tag):
+		load_character(tag)
 	else:
 		clear_fields()
-		char_label.text = Strings.title_case(current_selected.get_text(0))
+		char_label.text = Strings.title_case(tag)
 
 
 func select_gender(gender_id: String) -> void:

@@ -37,5 +37,6 @@ func _input(event):
 			else:
 				input_index = 0
 		if event.is_action(&"ui_cancel"):
+			get_tree().paused = false
 			close_pressed.emit()
 			get_viewport().set_input_as_handled()

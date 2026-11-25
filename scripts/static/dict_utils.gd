@@ -1,0 +1,121 @@
+class_name DictUtils
+extends RefCounted
+## A collection of static utility methods for changing, validating and getting
+## values from dictionaries.
+
+
+## A read-only empty dictionary constant.
+const EMPTY: Dictionary = {}
+
+
+static func _static_init() -> void:
+	EMPTY.make_read_only()
+
+
+## Returns [code]true[/code] if the [param dict] has any of the [param keys] given.
+static func has_any(dict: Dictionary, keys: Array) -> bool:
+	for key in keys:
+		if dict.has(key):
+			return true
+	return false
+
+
+## Returns [code]true[/code] if the [param dict] has nested keys in the order provided
+## on [param keys].
+## [codeblock]
+## var dict = { "top": { "middle": {"bottom": true} } }
+## NFDictUtils.has_nested_path(dict, ["top", "middle", "bottom"]) # Returns true
+## NFDictUtils.has_nested_path(dict, ["top", "middle"]) # Returns true
+## NFDictUtils.has_nested_path(dict, ["top", "bottom", "middle"]) # Returns false
+## [/codeblock]
+static func has_nested_path(dict: Dictionary, keys: Array) -> bool:
+	var current = dict
+	
+	for next_key in keys:
+		if typeof(current) != TYPE_DICTIONARY or not current.has(next_key):
+			return false
+		current = current[next_key]
+	
+	return true
+
+
+## Returns the value of a key from a path of nested dictionaries in [param from].
+## The keys path follows the order in [param keys]. And if the path doesn't
+## exist, or there is no value for the last key then [param default] is returned.[br]
+## If match_default_type is set to [code]true[/code] then the data type of the value
+## must match that of [param default] to be returned, if not [param default] will
+## be returned instead.[br]
+## [codeblock]
+## var dict = { "fruits": { "orange": {"amount": 621} } }
+## NFDictUtils.get_nested_value(dict, ["fruits", "orange", "amount"]) # Returns 621
+## NFDictUtils.get_nested_value(dict, ["fruits", "orange", "count"]) # Returns null
+## NFDictUtils.get_nested_value(dict, ["fruits", "apples"], 10) # Returns 10
+## NFDictUtils.get_nested_value(dict, ["fruits", "apples"], Vector2i(0,0)) # Returns Vector2i(0,0)
+## [/codeblock]
+static func get_nested_value(from: Dictionary, keys: Array, default = null, match_default_type: bool = false) -> Variant:
+	var current: Variant = from
+	var keys_size: int = keys.size()
+	
+	if keys_size == 0:
+		if match_default_type and typeof(current) != typeof(default):
+			return default
+		return current
+	
+	for i in range(keys_size - 1):
+		if typeof(current) != TYPE_DICTIONARY or not current.has(keys[i]):
+			return default
+		current = current[keys[i]]
+	
+	if typeof(current) != TYPE_DICTIONARY:
+		return default
+	
+	var final_val: Variant = current.get(keys[-1], default)
+	
+	if match_default_type and typeof(final_val) != typeof(default):
+		return default
+	
+	return final_val
+
+
+## Returns [code]true[/code] if it was able to set the value, otherwise returns
+## [code]false[/code]. By default it'll create dictionaries as needed, but
+## if [param create_dictionaries] is set to [code]false[/code] it'll
+## only set a value if the nesting already exists.[br]
+## [codeblock]
+## var dict = { "inventory": { "potions": {"blue": 0} } }
+## NFDictUtils.set_nested_value(dict, ["inventory", "potions", "blue"], 10) # Returns true
+## print(dict) # Prints { "inventory": { "potions": {"blue": 10} } }
+## NFDictUtils.set_nested_value(dict, ["inventory", "food", "kiwi"], 2, false) # Returns false
+## print(dict) # Prints { "inventory": { "potions": {"blue": 10} } }
+## NFDictUtils.set_nested_value(dict, ["inventory", "food", "kiwi"], 2) # Returns true
+## print(dict) # Prints { "inventory": { "potions": {"blue": 10} }, "food": { "kiwi": 2 } }
+## [/codeblock]
+static func set_nested_value(on: Dictionary, keys: Array, value: Variant, create_dictionaries: bool = true) -> bool:
+	var keys_size: int = keys.size()
+	if keys_size == 0:
+		return false
+	
+	var current: Dictionary = on
+	
+	for idx in range(keys_size - 1):
+		var key: Variant = keys[idx]
+		var next_node: Variant = current.get(key)
+		
+		if typeof(next_node) == TYPE_DICTIONARY:
+			current = next_node
+		elif not current.has(key):
+			if not create_dictionaries:
+				return false
+			var new_dict: Dictionary = {}
+			current[key] = new_dict
+			current = new_dict
+		else:
+			return false
+	
+	current[keys[-1]] = value
+	return true
+
+
+## Costructor for a dictionary with default parameters set.
+static func create_typed(key_type: int, value_type: int, base: Dictionary = {}, key_class_name: StringName = &"", key_script: Variant = null, value_class_name: StringName = &"", value_script: Variant = null) -> Dictionary:
+	return Dictionary(base, key_type, key_class_name, key_script, value_type, value_class_name, value_script)

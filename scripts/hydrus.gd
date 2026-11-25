@@ -70,16 +70,21 @@ func load_full(image_data: PackedByteArray, image_format: String) -> void:
 		image.generate_mipmaps()
 		return_texture = SpriteFrames.new()
 		var frame_texture: Texture2D = ImageTexture.create_from_image(image)
-		return_texture.add_frame("default", frame_texture)
+		return_texture.add_frame(&"default", frame_texture)
 	elif image_format == "png":
 		image.load_png_from_buffer(image_data)
 		image.generate_mipmaps()
 		return_texture = SpriteFrames.new()
 		var frame_texture: Texture2D = ImageTexture.create_from_image(image)
 		return_texture.add_frame(&"default", frame_texture)
+	elif image_format == "webp":
+		image.load_webp_from_buffer(image_data)
+		image.generate_mipmaps()
+		return_texture = SpriteFrames.new()
+		var texture: Texture2D = ImageTexture.create_from_image(image)
+		return_texture.add_frame(&"default", texture)
 	elif image_format == "gif":
 		return_texture = GifManager.sprite_frames_from_buffer(image_data)
-		return_texture.rename_animation(&"gif", &"default")
 		animated = true
 	full_image_loaded.emit(return_texture, animated)
 	working -= 1

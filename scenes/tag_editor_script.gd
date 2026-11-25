@@ -100,13 +100,13 @@ func on_save_tag_pressed() -> void:
 	var add_aliases: Array[String] = aliases_tree.get_new_tags()
 	
 	var add_groups: Array[int] = []
-	add_groups.assign(Arrays.difference(initial_groups, gr_sugg_tree.get_checked_groups()))
+	add_groups.assign(Arrays.symmetric_difference(initial_groups, gr_sugg_tree.get_checked_groups()))
 	var remove_groups: Array[int] = initial_groups.duplicate()
 	
-	Arrays.substract_array(remove_groups, gr_sugg_tree.get_checked_groups())
-	Arrays.substract_array(remove_parents, parents.get_existing_ids())
-	Arrays.substract_array(remove_aliases, aliases_tree.get_existing_ids())
-	Arrays.substract_array(remove_suggestions, suggestions_tree.get_existing_ids())
+	Arrays.subtract_array(remove_groups, gr_sugg_tree.get_checked_groups())
+	Arrays.subtract_array(remove_parents, parents.get_existing_ids())
+	Arrays.subtract_array(remove_aliases, aliases_tree.get_existing_ids())
+	Arrays.subtract_array(remove_suggestions, suggestions_tree.get_existing_ids())
 	
 	if not remove_parents.is_empty():
 		SingletonManager.TagIt.remove_parents(current_id, remove_parents)

@@ -2409,8 +2409,54 @@ enum CharUpdateType {
 	CREATED,
 	DELETED}
 
+enum MediaType {
+	NONE,
+	IMAGE,
+	GIF,
+}
+
+enum MediaStatus {
+	STOPPED,
+	PAUSED,
+	PLAYING,
+}
+
+var media_type: MediaType = MediaType.NONE:
+	set(t):
+		media_type = t
+		match t:
+			MediaType.GIF:
+				project_texture.visible = false
+				gif_texture_rect.visible = true
+				playback_controls.visible = true
+			MediaType.IMAGE:
+				project_texture.visible = true
+				gif_texture_rect.visible = false
+				playback_controls.visible = false
+var media_status: MediaStatus = MediaStatus.STOPPED:
+	set(p):
+		if p == media_status:
+			return
+		
+		media_status = p
+		
+		match p:
+			MediaStatus.PLAYING:
+				play_pause_btn.tooltip_text = "Pause"
+				play_pause_btn.icon = preload("res://icons/player-pause.svg")
+				stop_btn.disabled = false
+			MediaStatus.PAUSED:
+				play_pause_btn.tooltip_text = "Play"
+				play_pause_btn.icon = preload("res://icons/player-play.svg")
+				stop_btn.disabled = false
+			MediaStatus.STOPPED:
+				play_pause_btn.tooltip_text = "Play"
+				stop_btn.disabled = true
+				play_pause_btn.icon = preload("res://icons/player-play.svg")
+
 var storage: TagItStorage = TagItStorage.get_storage()
 var characters: Dictionary = {}
+var character_nodes: Dictionary[String, TreeItem] = {}
 var sections: PackedStringArray = [
 	"Image Meta",
 	"Image Properties",
@@ -2430,6 +2476,7 @@ var current_character: String = "":
 		age_opt_btn.disabled = not valid_character
 		lore_age_opt_btn.disabled = not valid_character
 		apply_character_btn.disabled = not valid_character
+		save_char_btn.disabled = not valid_character
 		body_texture_tree.get_root().collapsed = not valid_character
 		clothing_tree.get_root().collapsed = not valid_character
 		body_traits.get_root().collapsed = not valid_character
@@ -2486,8 +2533,9 @@ var current_project_size: Vector2 = Vector2(310, 34)
 @onready var artist_line_edit: LineEdit = $MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/ArtistContainer/ArtistLineEdit
 @onready var year_opt_btn: SpinBox = $MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/HBoxContainer2/YearOptBtn
 @onready var unkown_year_btn: CheckButton = $MainPanel/MainContainer/MainPanel/MetaContainer/MainContainer/HBoxContainer2/UnkownYearBtn
-@onready var colored_check_box: CheckBox = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/ColorContainer/ColoredCheckBox
-@onready var shaded_sketch_box: CheckBox = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/ColorContainer/ShadedSketchBox
+@onready var coloring_type_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/ColoringContainer/ColoringTypeOptBtn
+@onready var shading_type_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/ColoringContainer2/ShadingTypeOptBtn
+@onready var line_container: HBoxContainer = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/LineContainer
 @onready var line_style_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/LineContainer/LineStyleOptBtn
 @onready var daytime_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/TimeContainer/DaytimeOptBtn
 @onready var location_opt_btn: OptionButton = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/VBoxContainer/LocationContainer/LocationOptBtn
@@ -2495,6 +2543,9 @@ var current_project_size: Vector2 = Vector2(310, 34)
 @onready var grouping: HBoxContainer = $MainPanel/MainContainer/MainPanel/PairingsContainer/PairingsContainer/HBoxContainer/VBoxContainer/MinglingContainer/Grouping
 
 @onready var image_panel: PanelContainer = $ProjectTextureContainer/MainPanel/MainContainer/ImagePanel
+@onready var play_pause_btn: Button = $ProjectTextureContainer/MainPanel/MainContainer/ImagePanel/VBoxContainer/PlaybackControls/PlayPauseBtn
+@onready var stop_btn: Button = $ProjectTextureContainer/MainPanel/MainContainer/ImagePanel/VBoxContainer/PlaybackControls/StopBtn
+@onready var playback_controls: HBoxContainer = $ProjectTextureContainer/MainPanel/MainContainer/ImagePanel/VBoxContainer/PlaybackControls
 
 @onready var reset_zoom_btn: Button = $ProjectTextureContainer/MainPanel/MainContainer/HeaderContainer/ResetZoomBtn
 @onready var minimize_image_btn: Button = $ProjectTextureContainer/MainPanel/MainContainer/HeaderContainer/MinimizeImageBtn
@@ -2521,13 +2572,18 @@ var current_project_size: Vector2 = Vector2(310, 34)
 @onready var ball: TextureRect = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Ball
 @onready var ball_shadow: TextureRect = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Ball/BallShadow
 @onready var ball_shaded: TextureRect = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Ball/BallShaded
+@onready var ball_shaded_soft: TextureRect = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Ball/BallShadedSoft
+@onready var ball_completion: TextureRect = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Ball/BallCompletion
 @onready var sky_rect: ColorRect = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Background/SkyRect
 @onready var background: TextureRect = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Background
 @onready var solid_rect: ColorRect = $MainPanel/MainContainer/MainPanel/ImageContainer/HBoxContainer/PanelContainer/Background/SolidRect
-@onready var zoom_project: ScrollZoomView = $ProjectTextureContainer/MainPanel/MainContainer/ImagePanel/ScrollZoomView
-@onready var project_texture: TextureRect = $ProjectTextureContainer/MainPanel/MainContainer/ImagePanel/ScrollZoomView/ProjectTexture
+@onready var zoom_project: ScrollZoomView = $ProjectTextureContainer/MainPanel/MainContainer/ImagePanel/VBoxContainer/ScrollZoomView
+@onready var project_texture: TextureRect = $ProjectTextureContainer/MainPanel/MainContainer/ImagePanel/VBoxContainer/ScrollZoomView/Control/ProjectTexture
+@onready var gif_texture_rect: GifTextureRect = $ProjectTextureContainer/MainPanel/MainContainer/ImagePanel/VBoxContainer/ScrollZoomView/Control/GifTextureRect
 @onready var project_texture_container: Draggable = $ProjectTextureContainer
 # ---------------
+
+@onready var save_char_btn: Button = $MainPanel/MainContainer/MainPanel/Characters/MainContainer/CharDataSmoothScroll/ScrollPanel/DataContainer/Wizard/NameContainer/SaveCharBtn
 
 
 # Called when the node enters the scene tree for the first time.
@@ -2575,7 +2631,7 @@ func _ready() -> void:
 	on_background_type_selected(0)
 	
 	medium_opt_btn.select(0)
-	on_media_type_selected(0)
+	on_medium_type_selected(0)
 	
 	media_type_opt_btn.get_popup().max_size.y = 200
 	
@@ -2614,6 +2670,12 @@ func _ready() -> void:
 			new_trait.set_tooltip_text(0, body_trait["tooltip"])
 		new_trait.set_editable(0, true)
 	
+	play_pause_btn.pressed.connect(_on_play_pressed)
+	stop_btn.pressed.connect(_on_stop_pressed)
+	
+	save_char_btn.pressed.connect(save_wizard_character)
+	
+	line_style_opt_btn.item_selected.connect(_on_line_style_selected)
 	next_button.pressed.connect(on_next_pressed)
 	previous_button.pressed.connect(on_previous_pressed)
 	new_char_btn.pressed.connect(create_character)
@@ -2622,12 +2684,13 @@ func _ready() -> void:
 	add_pairing_btn.pressed.connect(on_add_pairing_pressed)
 	clear_pairings_btn.pressed.connect(clear_pairings)
 	bg_opt_btn.item_selected.connect(on_background_type_selected)
-	medium_opt_btn.item_selected.connect(on_media_type_selected)
+	medium_opt_btn.item_selected.connect(on_medium_type_selected)
+	media_type_opt_btn.item_selected.connect(_on_media_type_selected)
 	characters_tree.button_clicked.connect(on_character_button_clicked)
 	location_opt_btn.item_selected.connect(on_location_picked)
 	daytime_opt_btn.item_selected.connect(on_time_picked)
-	colored_check_box.toggled.connect(on_colored_toggled)
-	shaded_sketch_box.toggled.connect(on_shaded_toggled)
+	coloring_type_opt_btn.item_selected.connect(_on_colored_option_selected)
+	shading_type_opt_btn.item_selected.connect(_on_shading_option_selected)
 	bg_type_opt_btn.item_selected.connect(on_bg_type_selected)
 	clothing_tree.item_edited.connect(_on_cloth_item_edited)
 	reset_zoom_btn.pressed.connect(on_reset_zoom_button_pressed)
@@ -2756,9 +2819,11 @@ func _on_autofil_timer_finished() -> void:
 	if clean_tag.is_empty():
 		return
 	var results: Array[String] = []
-	for item in storage.characters:
-		if item["tag"].begins_with(clean_tag):
-			results.append(item["tag"])
+	for item in storage.get_characters():
+		if item.containsn(clean_tag):
+			results.append(item)
+		if character_tag_ln_edt.item_limit <= results.size():
+			break
 	if results.is_empty():
 		return
 	character_tag_ln_edt.add_items(results)
@@ -2862,17 +2927,13 @@ func _on_character_text_submitted(_text: String) -> void:
 
 
 func _on_character_name_focus_lost() -> void:
-	var idx: int = -1
 	var character_text: String = character_tag_ln_edt.text.strip_edges().to_lower()
-	for character in storage.characters:
-		idx += 1
-		if character["tag"] == character_text:
-			apply_character(idx)
-			break
+	if storage.has_character(character_text):
+		apply_character(character_text)
 
 
-func apply_character(character_index: int) -> void:
-	var data := storage.get_character(character_index)
+func apply_character(tag: String) -> void:
+	var data := storage.get_character(tag)
 	
 	species_ln_edt.text = data.species
 	
@@ -2976,16 +3037,50 @@ func select_gender_lore(gender_id: String) -> void:
 			break
 
 
-func set_project_texture(new_texture: Texture2D) -> void:
-	project_texture.texture = new_texture
+func set_project_texture(new_texture: Resource) -> void:
+	if media_status != MediaStatus.STOPPED:
+		if media_type == MediaType.GIF:
+			gif_texture_rect.stop()
+		media_status = MediaStatus.STOPPED
+	
+	if new_texture is Texture2D:
+		project_texture.texture = new_texture
+	elif new_texture is SpriteFrames:
+		gif_texture_rect.gif = new_texture
+	
+	zoom_project.reset_zoom()
 	project_texture_container.visible = new_texture != null
+
+
+func _on_play_pressed() -> void:
+	match media_status:
+		MediaStatus.PLAYING: # Convert to pause
+			media_status = MediaStatus.PAUSED
+			if media_type == MediaType.GIF:
+				gif_texture_rect.paused = true
+		MediaStatus.STOPPED:
+			media_status = MediaStatus.PLAYING
+			if media_type == MediaType.GIF:
+				if gif_texture_rect.paused:
+					gif_texture_rect.paused = false
+				gif_texture_rect.play()
+		MediaStatus.PAUSED:
+			if media_type == MediaType.GIF:
+				media_status = MediaStatus.PLAYING
+				gif_texture_rect.paused = false
+
+
+func _on_stop_pressed() -> void:
+	if media_type == MediaType.GIF:
+		gif_texture_rect.stop()
+		media_status = MediaStatus.STOPPED
 
 
 func on_minimize_button_pressed() -> void:
 	if image_panel.visible:
 		current_project_size = project_texture_container.size
 		project_texture_container.allow_resizing = false
-		project_texture_container.set_deferred(&"size", Vector2(320, 34))
+		project_texture_container.set_deferred(&"size", Vector2(320, 44))
 	else:
 		project_texture_container.allow_resizing = true
 		project_texture_container.size = current_project_size
@@ -2996,71 +3091,129 @@ func on_reset_zoom_button_pressed() -> void:
 	zoom_project.reset_zoom()
 
 
+func _on_shading_option_selected(idx: int) -> void:
+	ball_shadow.visible = idx != 0
+	ball_shaded.visible = idx != 0
+	
+	match idx:
+		1: # Cel-Shaded
+			ball_shadow.visible = true
+			ball_shaded.visible = true
+			ball_shaded_soft.visible = false
+			if coloring_type_opt_btn.selected == 1:
+				ball_shaded.texture = preload("res://textures/wizard/ball_shade.png")
+			else:
+				ball_shaded.texture = preload("res://textures/wizard/ball_shade_bw.png")
+		2: # Soft-Shaded
+			ball_shadow.visible = true
+			ball_shaded.visible = false
+			ball_shaded_soft.visible = true
+			if coloring_type_opt_btn.selected == 1:
+				ball_shaded_soft.texture = preload("res://textures/wizard/ball_shade_soft.png")
+			else:
+				ball_shaded_soft.texture = preload("res://textures/wizard/ball_shade_bw_soft.png")
+
+
+func _on_line_style_selected(idx: int) -> void:
+	ball_completion.visible = idx != 0 and idx < 3
+	match idx:
+		1: # Sketch
+			ball_completion.texture = preload("res://textures/wizard/ball_sketch.png")
+			if coloring_type_opt_btn.selected == 1: # Colored
+				ball_completion.self_modulate = Color.BLACK
+			else:
+				ball_completion.self_modulate = Color.WHITE
+		2: # Lineart
+			ball_completion.texture = preload("res://textures/wizard/ball_lineart.png")
+			if coloring_type_opt_btn.selected == 1: # Colored
+				ball_completion.self_modulate = Color.from_string("2F1611", Color.BLACK)
+			else:
+				ball_completion.self_modulate = Color.WHITE
+
+
 func on_shaded_toggled(is_toggled: bool) -> void:
 	ball_shadow.visible = is_toggled
 	ball_shaded.visible = is_toggled
 
 
-func on_colored_toggled(is_toggled: bool) -> void:
-	if is_toggled:
-		day.texture = preload("res://textures/wizard/time_day.png")
-		night.texture = preload("res://textures/wizard/time_night.png")
-		inside.texture = preload("res://textures/wizard/location_inside.png")
-		inside_detailed.texture = preload("res://textures/wizard/location_inside_detailed.png")
-		outside.texture = preload("res://textures/wizard/location_outside.png")
-		outside_detailed.texture = preload("res://textures/wizard/location_outside_detailed.png")
-		ball_shadow.texture = preload("res://textures/wizard/ball_shadow.png")
-		ball_shaded.texture = preload("res://textures/wizard/ball_shade.png")
-		ball.texture = preload("res://textures/wizard/ball.png")
-		solid_rect.color = Color(0.266, 0.259, 0.373)
-		
-		if bg_opt_btn.selected == 1:
-			match bg_type_opt_btn.selected:
-				1:
-					background.texture = preload("res://textures/wizard/abstract.jpg")
-				2:
-					background.texture = preload("res://textures/wizard/geometric.png")
-				3:
-					background.texture = preload("res://textures/wizard/gradient.jpg")
-				5:
-					background.texture = preload("res://textures/wizard/pattern.jpg")
-				6:
-					background.texture = preload("res://textures/wizard/textured.jpg")
-		
-		if daytime_opt_btn.selected == 1:
-			if colored_check_box.button_pressed:
-				sky_rect.color = Color(0.502, 0.741, 0.855)
+func _on_colored_option_selected(idx: int) -> void:
+	match idx:
+		0: # NA
+			pass
+		1: # Colored. Any Hues
+			day.texture = preload("res://textures/wizard/time_day.png")
+			night.texture = preload("res://textures/wizard/time_night.png")
+			inside.texture = preload("res://textures/wizard/location_inside.png")
+			inside_detailed.texture = preload("res://textures/wizard/location_inside_detailed.png")
+			outside.texture = preload("res://textures/wizard/location_outside.png")
+			outside_detailed.texture = preload("res://textures/wizard/location_outside_detailed.png")
+			ball_shadow.texture = preload("res://textures/wizard/ball_shadow.png")
+			if shading_type_opt_btn.selected == 1:
+				ball_shaded.texture = preload("res://textures/wizard/ball_shade.png")
+			elif shading_type_opt_btn.selected == 2:
+				ball_shaded.texture = preload("res://textures/wizard/ball_shade_soft.png")
 			else:
-				sky_rect.color = Color(0.682, 0.682, 0.682)
-		elif daytime_opt_btn.selected == 2:
-			if colored_check_box.button_pressed:
-				sky_rect.color = Color(0.322, 0.451, 0.722)
-			else:
-				sky_rect.color = Color(0.443, 0.443, 0.443)
+				ball_shaded.texture = null
+			ball.texture = preload("res://textures/wizard/ball.png")
+			solid_rect.color = Color(0.266, 0.259, 0.373)
 			
-	else:
-		day.texture = preload("res://textures/wizard/time_day_bw.png")
-		night.texture = preload("res://textures/wizard/time_night_bw.png")
-		inside.texture = preload("res://textures/wizard/location_inside_bw.png")
-		inside_detailed.texture = preload("res://textures/wizard/location_inside_detailed_bw.png")
-		outside.texture = preload("res://textures/wizard/location_outside_bw.png")
-		outside_detailed.texture = preload("res://textures/wizard/location_outside_detailed_bw.png")
-		ball_shadow.texture = preload("res://textures/wizard/ball_shadow_bw.png")
-		ball_shaded.texture = preload("res://textures/wizard/ball_shade_bw.png")
-		ball.texture = preload("res://textures/wizard/ball_bw.png")
-		solid_rect.color = Color(0.37, 0.37, 0.37)
-		if bg_opt_btn.selected == 1:
-			match bg_type_opt_btn.selected:
-				1:
-					background.texture = preload("res://textures/wizard/abstract_bw.jpg")
-				2:
-					background.texture = preload("res://textures/wizard/geometric_bw.png")
-				3:
-					background.texture = preload("res://textures/wizard/gradient_bw.jpg")
-				5:
-					background.texture = preload("res://textures/wizard/pattern_bw.jpg")
-				6:
-					background.texture = preload("res://textures/wizard/textured_bw.jpg")
+			if bg_opt_btn.selected == 1:
+				match bg_type_opt_btn.selected:
+					1:
+						background.texture = preload("res://textures/wizard/abstract.jpg")
+					2:
+						background.texture = preload("res://textures/wizard/geometric.png")
+					3:
+						background.texture = preload("res://textures/wizard/gradient.jpg")
+					5:
+						background.texture = preload("res://textures/wizard/pattern.jpg")
+					6:
+						background.texture = preload("res://textures/wizard/textured.jpg")
+					_:
+						background.texture = null
+			
+			if daytime_opt_btn.selected == 1:
+				sky_rect.color = Color(0.502, 0.741, 0.855)
+			elif daytime_opt_btn.selected == 2:
+				sky_rect.color = Color(0.322, 0.451, 0.722)
+			
+			if ball_completion.visible:
+				ball_completion.self_modulate = Color.from_string("2F1611", Color.BLACK)
+		2: # Monochrome. Single hue.
+			day.texture = preload("res://textures/wizard/time_day_bw.png")
+			night.texture = preload("res://textures/wizard/time_night_bw.png")
+			inside.texture = preload("res://textures/wizard/location_inside_bw.png")
+			inside_detailed.texture = preload("res://textures/wizard/location_inside_detailed_bw.png")
+			outside.texture = preload("res://textures/wizard/location_outside_bw.png")
+			outside_detailed.texture = preload("res://textures/wizard/location_outside_detailed_bw.png")
+			ball_shadow.texture = preload("res://textures/wizard/ball_shadow_bw.png")
+			if shading_type_opt_btn.selected == 1:
+				ball_shaded.texture = preload("res://textures/wizard/ball_shade_bw.png")
+			elif shading_type_opt_btn.selected == 2:
+				ball_shaded.texture = preload("res://textures/wizard/ball_shade_bw_soft.png")
+			else:
+				ball_shaded.texture = null
+			ball.texture = preload("res://textures/wizard/ball_bw.png")
+			solid_rect.color = Color(0.37, 0.37, 0.37)
+			
+			if ball_completion.visible:
+				ball_completion.self_modulate = Color.WHITE
+			if bg_opt_btn.selected == 1:
+				match bg_type_opt_btn.selected:
+					1:
+						background.texture = preload("res://textures/wizard/abstract_bw.jpg")
+					2:
+						background.texture = preload("res://textures/wizard/geometric_bw.png")
+					3:
+						background.texture = preload("res://textures/wizard/gradient_bw.jpg")
+					5:
+						background.texture = preload("res://textures/wizard/pattern_bw.jpg")
+					6:
+						background.texture = preload("res://textures/wizard/textured_bw.jpg")
+			if daytime_opt_btn.selected == 1:
+				sky_rect.color = Color(0.682, 0.682, 0.682)
+			elif daytime_opt_btn.selected == 2:
+				sky_rect.color = Color(0.443, 0.443, 0.443)
 
 
 func clear_pairings() -> void:
@@ -3097,7 +3250,7 @@ func on_next_pressed() -> void:
 			previous_button.focus_next = artist_line_edit.get_path()
 		1:
 			next_button.focus_previous = location_opt_btn.get_path()
-			previous_button.focus_next = colored_check_box.get_path()
+			previous_button.focus_next = coloring_type_opt_btn.get_path()
 		2:
 			next_button.focus_previous = $MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow/AngleContainer17.get_path()
 			previous_button.focus_next = $MainPanel/MainContainer/MainPanel/AnglesContainer/HBoxContainer/AnglesHflow/AngleContainer.get_path()
@@ -3120,8 +3273,9 @@ func on_character_tag_changed(new_char: String) -> void:
 	if current_character.is_empty():
 		return
 	var new_name: String = new_char.strip_edges()
-	
-	characters[current_character]["_node"].set_text(0, "Unkown Character" if new_name.is_empty() else new_name)
+	var tree: TreeItem = character_nodes.get(current_character)
+	if tree != null:
+		tree.set_text(0, "Unkown Character" if new_name.is_empty() else new_name)
 
 
 func create_character(default_name: String = "") -> void:
@@ -3160,22 +3314,22 @@ func create_character(default_name: String = "") -> void:
 		"bodies": {},
 		"clothing": clothing_array,
 		"traits": {}}
+	character_nodes[uuid] = new_character
 	
 	new_character.select(0)
 
 
 func on_character_button_clicked(item: TreeItem, _column: int, id: int, _mouse_button_index: int) -> void:
 	match id:
-		0:
+		0: # Erase
 			var uuid: String = item.get_metadata(0)["uuid"]
 			characters.erase(uuid)
+			character_nodes.erase(uuid)
 			if characters.is_empty():
 				characters_tree.focus_next = next_button.get_path()
 			if current_character == uuid:
 				current_character = ""
 				clear_character()
-			#elif current_character != "":
-				#current_character = characters_tree.get_selected().get_index()
 			item.free()
 			update_actions_character_tree(CharUpdateType.DELETED, uuid)
 
@@ -3210,32 +3364,32 @@ func on_bg_type_selected(bg_type: int) -> void:
 		0:
 			background.texture = null
 		1:
-			if colored_check_box.button_pressed:
+			if coloring_type_opt_btn.selected == 1:# colored_check_box.button_pressed
 				background.texture = preload("res://textures/wizard/abstract.jpg")
 			else:
 				background.texture = preload("res://textures/wizard/abstract_bw.jpg")
 		2:
-			if colored_check_box.button_pressed:
+			if coloring_type_opt_btn.selected == 1:#colored_check_box.button_pressed:
 				background.texture = preload("res://textures/wizard/geometric.png")
 			else:
 				background.texture = preload("res://textures/wizard/geometric_bw.png")
 		3:
-			if colored_check_box.button_pressed:
+			if coloring_type_opt_btn.selected == 1:
 				background.texture = preload("res://textures/wizard/gradient.jpg")
 			else:
 				background.texture = preload("res://textures/wizard/gradient_bw.jpg")
 		4:
-			if colored_check_box.button_pressed:
+			if coloring_type_opt_btn.selected == 1:
 				solid_rect.color = Color(0.443, 0.316, 0.475)
 			else:
 				solid_rect.color = Color(0.369, 0.369, 0.369)
 		5:
-			if colored_check_box.button_pressed:
+			if coloring_type_opt_btn.selected == 1:
 				background.texture = preload("res://textures/wizard/pattern.jpg")
 			else:
 				background.texture = preload("res://textures/wizard/pattern_bw.jpg")
 		6:
-			if colored_check_box.button_pressed:
+			if coloring_type_opt_btn.selected == 1:
 				background.texture = preload("res://textures/wizard/textured.jpg")
 			else:
 				background.texture = preload("res://textures/wizard/textured_bw.jpg")
@@ -3306,6 +3460,90 @@ func save_character() -> void:
 		"bodies": body_textures,
 		"clothing": new_clothing,
 		"traits": selected_traits}
+
+
+func save_wizard_character() -> void:
+	var character_name: String = character_tag_ln_edt.text.strip_edges().to_lower()
+	var body: String = body_opt_btn.get_selected_metadata()
+	var species: Array[String] = []
+	var vis_gender: String = gender_opt_btn.get_selected_metadata()
+	var vis_age: String = age_opt_btn.get_selected_metadata()
+	
+	var canon_gender: String = gender_lore_opt_btn.get_selected_metadata()
+	var canon_age: String = lore_age_opt_btn.get_selected_metadata()
+	var apparel: Dictionary[String, Dictionary] = {}
+	var traits: Dictionary[String, bool] = {}
+	var properties: Dictionary[String, Dictionary] = {}
+	
+	for prop in body_texture_tree.get_root().get_children():
+		var setting: Dictionary[String, Variant] = {
+			"use": prop.is_checked(0),
+			"index": prop.get_metadata(0)["index"],
+			"properties": Array([], TYPE_DICTIONARY, &"", null)}
+		
+		for property_item in prop.get_children():
+			var idx: int = property_item.get_metadata(0)["index"]
+			var property: Dictionary = {
+				"mode": property_item.get_cell_mode(1),
+				"index": idx}
+			
+			if 0 <= idx:
+				property["id"] = property_item.get_metadata(0)["id"]
+			
+				match property_item.get_cell_mode(1):
+					TreeItem.CELL_MODE_RANGE:
+						property["value"] = property_item.get_range(1)
+					TreeItem.CELL_MODE_CHECK:
+						property["value"] = property_item.is_checked(1)
+			else:
+				property["value"] = property_item.get_metadata(1)["selected_ids"].duplicate()
+				
+				if idx == -1:
+					property["format"] = property_item.get_metadata(1)["format"]
+			setting["properties"].append(property)
+		
+		properties[prop.get_metadata(0)["tag"]] = setting
+	
+	for apparel_tree in clothing_tree.get_root().get_children():
+		var section_id: String = apparel_tree.get_metadata(0) # ID is stored as metadata on column 0
+		var target: Dictionary[String, bool] = {}
+		for subapparel in apparel_tree.get_children():
+			var cloth_id: String = subapparel.get_metadata(0) # ID stored here
+			target[cloth_id] = subapparel.is_checked(0)
+		if not target.is_empty():
+			apparel[section_id] = target
+	
+	for trait_tree in body_traits.get_root().get_children():
+		var id: String = trait_tree.get_metadata(0)
+		traits[id] = trait_tree.is_checked(0)
+	
+	var unique_species: Dictionary[String, Variant] = {}
+	for sp in species_ln_edt.text.strip_edges().split(","):
+		var cl_sp: String = sp.strip_edges()
+		unique_species[cl_sp] = null
+	
+	if not unique_species.is_empty():
+		species.assign(unique_species.keys())
+	
+	var new_sheet: TagItStorage.WizardCharacter = null
+	
+	if storage.has_character(character_name):
+		new_sheet = storage.get_character(character_name)
+	else:
+		new_sheet = TagItStorage.get_empty_character()
+	new_sheet.character_tag = character_name
+	new_sheet.body_type = body
+	if not species.is_empty():
+		new_sheet.species = ",".join(species)
+	new_sheet.gender = vis_gender
+	new_sheet.gender_lore = canon_gender
+	new_sheet.age = vis_age
+	new_sheet.age_lore = canon_age
+	new_sheet.apparel = apparel
+	new_sheet.properties = properties
+	new_sheet.traits = traits
+	
+	storage.set_character(new_sheet)
 
 
 func _on_character_item_tree_focus_lost(tree: Tree) -> void:
@@ -3409,24 +3647,30 @@ func generate_tags() -> Array[String]:
 		tags.append(
 			media_type_opt_btn.get_item_text(media_type_opt_btn.selected))
 	
-	if line_style_opt_btn.selected == 0: # Sketch
+	if line_style_opt_btn.selected == 1: # Sketch
 		tags.append("sketch")
-		if colored_check_box.button_pressed:
+		if coloring_type_opt_btn.selected == 1:
 			tags.append("colored sketch")
 	
-	elif line_style_opt_btn.selected == 1: # Lineart
-		if colored_check_box.button_pressed:
-			if not shaded_sketch_box.button_pressed:
+	elif line_style_opt_btn.selected == 2: # Lineart
+		if coloring_type_opt_btn.selected == 1:
+			if shading_type_opt_btn.selected == 0:
 				tags.append("flat colors")
 		else:
 			tags.append("line art")
-	elif line_style_opt_btn.selected == 2: # Lineless
+	elif line_style_opt_btn.selected == 3: # Lineless
 		tags.append("lineless")
-		if colored_check_box.button_pressed and not shaded_sketch_box.button_pressed:
+		if coloring_type_opt_btn.selected == 1 and shading_type_opt_btn.selected == 0:
 			tags.append("flat colors")
-		
-	if shaded_sketch_box.button_pressed:
+	
+	if 0 < shading_type_opt_btn.selected:
 		tags.append("shaded")
+	
+	if shading_type_opt_btn.selected == 1:
+		tags.append("cel shading")
+	elif shading_type_opt_btn.selected == 2:
+		tags.append("soft shading")
+	
 	
 	if 0 < bg_opt_btn.selected:
 		tags.append(bg_opt_btn.get_item_text(bg_opt_btn.selected))
@@ -3832,14 +4076,12 @@ func add_tree_bodies() -> void:
 
 
 func add_body_types(to: OptionButton, select: int = 0) -> void:
-	var idx: int = -1
 	var menu: PopupMenu = to.get_popup()
 	for body_id:String in BODIES.keys():
-		idx += 1
 		to.add_item(BODIES[body_id]["title"])
-		to.set_item_metadata(idx, body_id)
+		to.set_item_metadata(-1, body_id)
 		if BODIES[body_id].has("tooltip") and not BODIES[body_id]["tooltip"].is_empty():
-			menu.set_item_tooltip(idx, BODIES[body_id]["tooltip"])
+			menu.set_item_tooltip(-1, BODIES[body_id]["tooltip"])
 	
 	to.select(select)
 
@@ -3983,12 +4225,15 @@ func get_pose_tags() -> Array[String]:
 	for pose_item in pose_tree.get_root().get_children():
 		if not pose_item.is_checked(0):
 			continue
-		if not POSES[pose_item.get_metadata(0)]["tag"].is_empty():
-			pose_tags.append(POSES[pose_item.get_metadata(0)]["tag"])
+		var pose_key: String = pose_item.get_metadata(0)
+		var pose_tag: String = POSES[pose_key]["tag"]
+		if not pose_tag.is_empty():
+			pose_tags.append(pose_tag)
 		for subpose in pose_item.get_children():
 			if not subpose.is_checked(0):
 				continue
-			pose_tags.append(POSES[pose_item.get_metadata(0)["options"][subpose.get_metadata(0)]["tag"]])
+			var subpose_key: String = subpose.get_metadata(0)
+			pose_tags.append(POSES[pose_key]["options"][subpose_key]["tag"])
 	
 	return pose_tags
 
@@ -4197,13 +4442,16 @@ func add_genders(to: OptionButton, include_na: bool = false, select: int = 0, sk
 
 
 func on_background_type_selected(id: int) -> void:
+	solid_rect.visible = id == 1
 	match id:
-		0:
+		0: # N/A
+			background.texture = null
 			bg_type_opt_btn.clear()
 			bg_type_opt_btn.add_item("N/A")
-		1:
+		1: # Simple
 			set_simple_background()
 		2:
+			background.texture = null
 			set_detailed_background()
 	bg_type_opt_btn.select(0)
 
@@ -4247,18 +4495,18 @@ func on_time_picked(idx: int) -> void:
 	if idx == 0:
 		sky_rect.color = Color(1, 1, 1, 0)
 	elif idx == 1:
-		if colored_check_box.button_pressed:
+		if coloring_type_opt_btn.selected == 1:
 			sky_rect.color = Color(0.502, 0.741, 0.855)
 		else:
 			sky_rect.color = Color(0.682, 0.682, 0.682)
 	elif idx == 2:
-		if colored_check_box.button_pressed:
+		if coloring_type_opt_btn.selected == 1:
 			sky_rect.color = Color(0.322, 0.451, 0.722)
 		else:
 			sky_rect.color = Color(0.443, 0.443, 0.443)
 
 
-func on_media_type_selected(type: int) -> void:
+func on_medium_type_selected(type: int) -> void:
 	const TYPES: Array[Array] = [
 		["N/A", "Digital Drawing (Artwork)", "Digital Painting (Artwork)", "Pixel (artwork)", "3D (Artwork)", "Oekaki"],
 		["N/A", "Colored Pencil (Artwork)", "Marker (Artwork)", "Crayon (Artwork)", "Pastel (Artwork)", "Painting (Artwork)", "Pen (Artwork)", "Sculpture (Artwork)", "Graphite (Artwork)", "Chalk (Artwork)", "Charcoal (Artwork)"],
@@ -4270,6 +4518,17 @@ func on_media_type_selected(type: int) -> void:
 	for some in TYPES[type]:
 		media_type_opt_btn.add_item(some)
 	media_type_opt_btn.select(0)
+
+
+func _on_media_type_selected(type: int) -> void:
+	if type == 4:
+		medium_opt_btn.select(0)
+		line_container.visible = false
+	else:
+		line_container.visible = true
+	
+	line_style_opt_btn.select(0)
+	_on_line_style_selected(0)
 
 
 func id_to_tags(type: int, ids: Array[String], variant: String = "", suffix: bool = true, color_count_exceptions: Array = []) -> Array[String]:

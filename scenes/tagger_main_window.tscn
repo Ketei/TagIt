@@ -1,0 +1,487 @@
+[gd_scene format=3 uid="uid://crgvr3tvr84xe"]
+
+[ext_resource type="StyleBox" uid="uid://bhixcdmu2tfx" path="res://style/tab_panel_style.tres" id="1_htj0h"]
+[ext_resource type="Texture2D" uid="uid://04folbrctoj7" path="res://icons/bin_icon.svg" id="2_0uc7y"]
+[ext_resource type="Script" uid="uid://dkmfeeipvs4xq" path="res://scenes/tagger_container_script.gd" id="2_s2ay2"]
+[ext_resource type="Theme" uid="uid://u13wuypqagrc" path="res://style/table_theme.tres" id="3_s2ay2"]
+[ext_resource type="Script" uid="uid://basvylylulb0b" path="res://scenes/tags_tree_script.gd" id="4_8q3lo"]
+[ext_resource type="Script" uid="uid://dwhpfcn0mey00" path="res://scripts/right_click_popup.gd" id="5_ljumd"]
+[ext_resource type="Texture2D" uid="uid://d83q0hy74uit" path="res://icons/search_icon.svg" id="6_xrska"]
+[ext_resource type="PackedScene" uid="uid://djrqboi0xp74" path="res://scenes/autofill_line_edit.tscn" id="7_7s3r1"]
+[ext_resource type="Script" uid="uid://b8mxdbgxpj4mq" path="res://scenes/tagger_suggestion_tree.gd" id="8_6yeyc"]
+[ext_resource type="Script" uid="uid://cfabnvluj5to2" path="res://scenes/tagger_groups_suggestions_tree.gd" id="9_yh2m8"]
+[ext_resource type="Script" uid="uid://cld20x47c5dxs" path="res://addons/tnowe_extra_controls/elements/scroll_zoom_view.gd" id="10_psy50"]
+[ext_resource type="Texture2D" uid="uid://dmjor0d4lqveu" path="res://icons/reset_icon.svg" id="12_0uc7y"]
+[ext_resource type="Texture2D" uid="uid://c03por8vrxsy7" path="res://icons/image_icon.svg" id="12_k4643"]
+[ext_resource type="Script" uid="uid://ber5st7u7dtpo" path="res://scenes/gif_player.gd" id="12_ljumd"]
+[ext_resource type="Texture2D" uid="uid://doflm0070386w" path="res://icons/image_icon_crossed.svg" id="13_rwge8"]
+[ext_resource type="Texture2D" uid="uid://cg42djkjsef7v" path="res://icons/tag_prioritizer.svg" id="14_0s6ri"]
+[ext_resource type="Texture2D" uid="uid://bwrwxwuiprvbp" path="res://icons/player-play.svg" id="14_8q3lo"]
+[ext_resource type="Texture2D" uid="uid://dih843678osdg" path="res://icons/player-stop.svg" id="15_ljumd"]
+[ext_resource type="Texture2D" uid="uid://bd5h782h4qtqn" path="res://icons/export_file.svg" id="15_x1w3m"]
+[ext_resource type="Texture2D" uid="uid://dxobus6vj5f1c" path="res://icons/copy_icon.svg" id="16_hywyh"]
+[ext_resource type="Script" uid="uid://dpxxtbwrn3u1s" path="res://scenes/websites_opt_btn.gd" id="17_qfa5i"]
+[ext_resource type="Script" uid="uid://blffv6v57y885" path="res://scenes/alt_wizard_script.gd" id="22_xrska"]
+[ext_resource type="Texture2D" uid="uid://ikfodwdw27dk" path="res://icons/check_green.svg" id="23_7s3r1"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0wwcl"]
+bg_color = Color(0.121569, 0.133333, 0.156863, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2pa4c"]
+
+[sub_resource type="GDScript" id="GDScript_xy1vp"]
+script/source = "extends RichTextLabel
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	var menu: PopupMenu = get_menu()
+	menu.clear()
+	menu.add_item(\"Copy Tags\", MENU_MAX + 1)
+	menu.id_pressed.connect(_on_item_id_pressed)
+	menu.about_to_popup.connect(setup_menu)
+
+
+func setup_menu() -> void:
+	get_menu().set_item_disabled(0, text.is_empty())
+
+
+func _on_item_id_pressed(id: int) -> void:
+	match id:
+		1 + MENU_MAX:
+			DisplayServer.clipboard_set(text)
+"
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ljumd"]
+bg_color = Color(0.180392, 0.180392, 0.180392, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.47007585, 0.47007585, 0.47007585, 1)
+
+[node name="TaggerContainer" type="PanelContainer" unique_id=559300903]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("1_htj0h")
+script = ExtResource("2_s2ay2")
+
+[node name="MainMargin" type="MarginContainer" parent="." unique_id=612005347]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="Containers" type="HSplitContainer" parent="MainMargin" unique_id=760290582]
+layout_mode = 2
+
+[node name="TagsContainer" type="HSplitContainer" parent="MainMargin/Containers" unique_id=109331899]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CurrentTagsContainer" type="VBoxContainer" parent="MainMargin/Containers/TagsContainer" unique_id=800277066]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AltSelectContainer" type="HBoxContainer" parent="MainMargin/Containers/TagsContainer/CurrentTagsContainer" unique_id=328525949]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainMargin/Containers/TagsContainer/CurrentTagsContainer/AltSelectContainer" unique_id=402208677]
+layout_mode = 2
+text = "List:"
+
+[node name="AltOptBtn" type="OptionButton" parent="MainMargin/Containers/TagsContainer/CurrentTagsContainer/AltSelectContainer" unique_id=867839519]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+text_overrun_behavior = 3
+
+[node name="DeleteAltListBtn" type="Button" parent="MainMargin/Containers/TagsContainer/CurrentTagsContainer/AltSelectContainer" unique_id=411597963]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "Delete Alternate List"
+disabled = true
+icon = ExtResource("2_0uc7y")
+flat = true
+icon_alignment = 1
+
+[node name="TagsTree" type="Tree" parent="MainMargin/Containers/TagsContainer/CurrentTagsContainer" unique_id=1759509078]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("3_s2ay2")
+allow_rmb_select = true
+hide_root = true
+select_mode = 2
+scroll_horizontal_enabled = false
+script = ExtResource("4_8q3lo")
+
+[node name="MainTaggerPopup" type="PopupMenu" parent="MainMargin/Containers/TagsContainer/CurrentTagsContainer/TagsTree" unique_id=1509253243]
+oversampling_override = 1.0
+size = Vector2i(120, 90)
+script = ExtResource("5_ljumd")
+
+[node name="BarItems" type="HBoxContainer" parent="MainMargin/Containers/TagsContainer/CurrentTagsContainer" unique_id=142623557]
+layout_mode = 2
+
+[node name="SearchTagBtn" type="Button" parent="MainMargin/Containers/TagsContainer/CurrentTagsContainer/BarItems" unique_id=1810299755]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "Search Tags (Ctrl + F)"
+icon = ExtResource("6_xrska")
+icon_alignment = 1
+expand_icon = true
+
+[node name="AddTagLnEdt" parent="MainMargin/Containers/TagsContainer/CurrentTagsContainer/BarItems" unique_id=639072112 instance=ExtResource("7_7s3r1")]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Add Tag"
+keep_editing_on_text_submit = true
+caret_blink = true
+list_direction = 1
+close_on_focus_lost = true
+
+[node name="SuggestionContainer" type="VSplitContainer" parent="MainMargin/Containers/TagsContainer" unique_id=163853563]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SuggestionTree" type="Tree" parent="MainMargin/Containers/TagsContainer/SuggestionContainer" unique_id=33946562]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 4.0
+theme = ExtResource("3_s2ay2")
+allow_reselect = true
+hide_folding = true
+hide_root = true
+select_mode = 2
+script = ExtResource("8_6yeyc")
+
+[node name="GroupsTree" type="Tree" parent="MainMargin/Containers/TagsContainer/SuggestionContainer" unique_id=1070837785]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.0
+theme = ExtResource("3_s2ay2")
+allow_reselect = true
+hide_root = true
+select_mode = 2
+script = ExtResource("9_yh2m8")
+
+[node name="EndContainer" type="VBoxContainer" parent="MainMargin/Containers" unique_id=1661804302]
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ImageContainer" type="VBoxContainer" parent="MainMargin/Containers/EndContainer" unique_id=986766524]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 4.0
+
+[node name="PanelContainer" type="PanelContainer" parent="MainMargin/Containers/EndContainer/ImageContainer" unique_id=23679781]
+clip_contents = true
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 3.0
+
+[node name="ScrollZoomView" type="MarginContainer" parent="MainMargin/Containers/EndContainer/ImageContainer/PanelContainer" unique_id=230618524]
+layout_mode = 2
+script = ExtResource("10_psy50")
+pan_button = 1
+zoom_range = Vector2(1, 6)
+
+[node name="Viewer" type="Control" parent="MainMargin/Containers/EndContainer/ImageContainer/PanelContainer/ScrollZoomView" unique_id=2139249737]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ProjectImage" type="TextureRect" parent="MainMargin/Containers/EndContainer/ImageContainer/PanelContainer/ScrollZoomView/Viewer" unique_id=1813742801]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 3.0
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GIFPlayer" type="TextureRect" parent="MainMargin/Containers/EndContainer/ImageContainer/PanelContainer/ScrollZoomView/Viewer" unique_id=434606996]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
+script = ExtResource("12_ljumd")
+
+[node name="BtnCtnr" type="HBoxContainer" parent="MainMargin/Containers/EndContainer/ImageContainer" unique_id=280137533]
+layout_mode = 2
+alignment = 2
+
+[node name="ResetImageBtn" type="Button" parent="MainMargin/Containers/EndContainer/ImageContainer/BtnCtnr" unique_id=217500739]
+visible = false
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 2
+tooltip_text = "Reset Image View"
+icon = ExtResource("12_0uc7y")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="PlaybackControls" type="HBoxContainer" parent="MainMargin/Containers/EndContainer/ImageContainer/BtnCtnr" unique_id=374367802]
+visible = false
+layout_mode = 2
+
+[node name="PlayPauseBtn" type="Button" parent="MainMargin/Containers/EndContainer/ImageContainer/BtnCtnr/PlaybackControls" unique_id=1515351606]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "Select Image"
+icon = ExtResource("14_8q3lo")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="StopBtn" type="Button" parent="MainMargin/Containers/EndContainer/ImageContainer/BtnCtnr/PlaybackControls" unique_id=2069777680]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "Select Image"
+icon = ExtResource("15_ljumd")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="VSeparator" type="VSeparator" parent="MainMargin/Containers/EndContainer/ImageContainer/BtnCtnr/PlaybackControls" unique_id=573500122]
+layout_mode = 2
+
+[node name="ClearImgBtn" type="Button" parent="MainMargin/Containers/EndContainer/ImageContainer/BtnCtnr" unique_id=2063707781]
+visible = false
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "Remove Image"
+icon = ExtResource("13_rwge8")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="OpenImgBtn" type="Button" parent="MainMargin/Containers/EndContainer/ImageContainer/BtnCtnr" unique_id=1614198224]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "Select Image"
+icon = ExtResource("12_k4643")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="TagsField" type="VBoxContainer" parent="MainMargin/Containers/EndContainer" unique_id=727407868]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="ListVersionContainer" type="HBoxContainer" parent="MainMargin/Containers/EndContainer/TagsField" unique_id=1221477204]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainMargin/Containers/EndContainer/TagsField/ListVersionContainer" unique_id=1928325133]
+layout_mode = 2
+text = "List Version:"
+
+[node name="GenerateVersionOptBtn" type="OptionButton" parent="MainMargin/Containers/EndContainer/TagsField/ListVersionContainer" unique_id=1514629624]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TagsPanel" type="PanelContainer" parent="MainMargin/Containers/EndContainer/TagsField" unique_id=1648982289]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="TagsContainer" type="HBoxContainer" parent="MainMargin/Containers/EndContainer/TagsField/TagsPanel" unique_id=134244660]
+layout_mode = 2
+
+[node name="TextPanel" type="PanelContainer" parent="MainMargin/Containers/EndContainer/TagsField/TagsPanel/TagsContainer" unique_id=1790876512]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_0wwcl")
+
+[node name="TextMargin" type="MarginContainer" parent="MainMargin/Containers/EndContainer/TagsField/TagsPanel/TagsContainer/TextPanel" unique_id=1234983426]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_right = 8
+
+[node name="TagsLabel" type="RichTextLabel" parent="MainMargin/Containers/EndContainer/TagsField/TagsPanel/TagsContainer/TextPanel/TextMargin" unique_id=1152563597]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+focus_mode = 1
+theme_override_styles/focus = SubResource("StyleBoxEmpty_2pa4c")
+context_menu_enabled = true
+drag_and_drop_selection_enabled = false
+script = SubResource("GDScript_xy1vp")
+
+[node name="ButtonsContainer" type="VBoxContainer" parent="MainMargin/Containers/EndContainer/TagsField/TagsPanel/TagsContainer" unique_id=777259518]
+layout_mode = 2
+alignment = 2
+
+[node name="ChangePrioBtn" type="Button" parent="MainMargin/Containers/EndContainer/TagsField/TagsPanel/TagsContainer/ButtonsContainer" unique_id=1551421738]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Change Tags Priority"
+theme_override_constants/icon_max_width = 32
+icon = ExtResource("14_0s6ri")
+flat = true
+
+[node name="ExportBtn" type="Button" parent="MainMargin/Containers/EndContainer/TagsField/TagsPanel/TagsContainer/ButtonsContainer" unique_id=1919592514]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Export List"
+theme_override_constants/icon_max_width = 32
+icon = ExtResource("15_x1w3m")
+flat = true
+
+[node name="CopyBtn" type="Button" parent="MainMargin/Containers/EndContainer/TagsField/TagsPanel/TagsContainer/ButtonsContainer" unique_id=1854950244]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Copy Tags (Alt+C)"
+theme_override_constants/icon_max_width = 32
+icon = ExtResource("16_hywyh")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="BtnCotnainer" type="HBoxContainer" parent="MainMargin/Containers/EndContainer/TagsField" unique_id=1944666323]
+layout_mode = 2
+
+[node name="SiteOptBtn" type="OptionButton" parent="MainMargin/Containers/EndContainer/TagsField/BtnCotnainer" unique_id=1530418607]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text_overrun_behavior = 3
+script = ExtResource("17_qfa5i")
+
+[node name="GenerateBtn" type="Button" parent="MainMargin/Containers/EndContainer/TagsField/BtnCotnainer" unique_id=1559412099]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 3.0
+tooltip_text = "Builds the current tag list. (Ctrl + G)"
+text = "Generate List"
+
+[node name="MouseBlock" type="Control" parent="." unique_id=379417330]
+visible = false
+layout_mode = 2
+mouse_force_pass_scroll_events = false
+
+[node name="AltWizard" type="Control" parent="." unique_id=1390446929]
+visible = false
+layout_mode = 2
+script = ExtResource("22_xrska")
+
+[node name="PanelContainer" type="PanelContainer" parent="AltWizard" unique_id=743799414]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -263.0
+offset_top = -169.0
+offset_right = 263.0
+offset_bottom = 169.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ljumd")
+
+[node name="MarginContainer" type="MarginContainer" parent="AltWizard/PanelContainer" unique_id=1097609894]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="AltWizard/PanelContainer/MarginContainer" unique_id=973490249]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="AltWizard/PanelContainer/MarginContainer/VBoxContainer" unique_id=643888707]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="AltWizard/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=2076713330]
+custom_minimum_size = Vector2(146, 0)
+layout_mode = 2
+text = "Main Version:"
+
+[node name="MainListLn" type="LineEdit" parent="AltWizard/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1934078648]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Main Version"
+
+[node name="WarningMain" type="TextureRect" parent="AltWizard/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1658979373]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+mouse_filter = 0
+texture = ExtResource("23_7s3r1")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="AltWizard/PanelContainer/MarginContainer/VBoxContainer" unique_id=1270503105]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="AltWizard/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer3" unique_id=1456826316]
+custom_minimum_size = Vector2(146, 0)
+layout_mode = 2
+text = "Alternate Version:"
+
+[node name="AltListLn" type="LineEdit" parent="AltWizard/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer3" unique_id=398306949]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Alternate Version"
+
+[node name="WarningAlt" type="TextureRect" parent="AltWizard/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer3" unique_id=2000923342]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+mouse_filter = 0
+texture = ExtResource("23_7s3r1")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="HSeparator" type="HSeparator" parent="AltWizard/PanelContainer/MarginContainer/VBoxContainer" unique_id=267494346]
+layout_mode = 2
+
+[node name="SharedTagsTree" type="Tree" parent="AltWizard/PanelContainer/MarginContainer/VBoxContainer" unique_id=1404822854]
+layout_mode = 2
+size_flags_vertical = 3
+columns = 2
+column_titles_visible = true
+hide_folding = true
+hide_root = true
+
+[node name="HSeparator2" type="HSeparator" parent="AltWizard/PanelContainer/MarginContainer/VBoxContainer" unique_id=146310950]
+layout_mode = 2
+
+[node name="ButtonContainer" type="HBoxContainer" parent="AltWizard/PanelContainer/MarginContainer/VBoxContainer" unique_id=1521832216]
+layout_mode = 2
+
+[node name="CancelAltsBtn" type="Button" parent="AltWizard/PanelContainer/MarginContainer/VBoxContainer/ButtonContainer" unique_id=309462490]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Cancel"
+
+[node name="CreateAltsBtn" type="Button" parent="AltWizard/PanelContainer/MarginContainer/VBoxContainer/ButtonContainer" unique_id=2041638595]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "Create"

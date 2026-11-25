@@ -15,22 +15,27 @@ signal tag_created(tag_name: String, tag_id: int)
 signal tags_created(tag_names: Array[String])
 signal tags_validity_updated(tag_ids: Array[int], valid: bool)
 signal website_created(site_id: int, site_name: String)
+signal website_updated(site_id: int, data_updated: Dictionary)
 signal website_deleted(site_id: int)
 signal icon_created(icon_id: int)
 
 const DATABASE_PATH: String = "user://tag_database.db"
 const SEARCH_WILDCARD: String = "*"
-const DB_VERSION: int = 5
-const PROJECTS_VERSION: int = 2
-const TEMPLATES_VERSION: int = 3
-const STORAGE_VERSION: int = 7
-const TAGIT_VERSION_ARRAY: Array[int] = [3, 6, 5]
+const DB_VERSION: int = 6
+const PROJECTS_VERSION: int = 3
+const TEMPLATES_VERSION: int = 4
+const STORAGE_VERSION: int = 8
+const TAGIT_VERSION_ARRAY: Array[int] = [3, 7, 0]
 const MAX_PARENT_RECURSION: int = 100
 const IMAGE_LIMITS: Vector2i = Vector2i(1000, 1000)
 const LEV_DISTANCE: float = 0.75
 const LEV_LOOP_LIMIT: int = 100
 const INVALID_COLOR: Color = Color(0.859, 0.302, 0.376)
 const PREFIX_SEPARATOR: String = "|"
+
+const VALID_APPENDS: Dictionary[String, Array] = {
+	"Images": ["jpg", "jpeg", "png", "webp", "gif"],
+	"Animated Images": ["gif"]}
 
 enum LogLevel {
 	INFO,
@@ -44,8 +49,8 @@ enum SortingType {
 }
 
 var tag_database: SQLite = null
-var icons: Dictionary = {} # id: {name: string, texture: resource}
-var loaded_tags: Dictionary = {} # Loaded in memory as need quick access. name -> id
+var icons: Dictionary[int, Dictionary] = {} # id: {name: string, texture: resource}
+var loaded_tags: Dictionary[String, int] = {} # Loaded in memory as need quick access. name -> id
 var invalid_tags: Array[int] = []
 var tag_search_array: PackedStringArray = []
 var tag_search_data: PackedStringArray = []
@@ -53,6 +58,29 @@ var settings: AppSettingsRes = null
 var _default_icon_color: Color = Color.WHITE
 var splash_node: CanvasLayer = null
 var verbose: bool = false
+
+static var _valid_appends: Array[String] = []
+
+
+static func get_valid_append_formats() -> Array[String]:
+	if not VALID_APPENDS.is_empty() and _valid_appends.is_empty():
+		var formats: Dictionary[String, Variant] = {}
+		for type in VALID_APPENDS:
+			for format in VALID_APPENDS[type]:
+				formats[format] = null
+		_valid_appends.assign(formats.keys())
+	return _valid_appends.duplicate()
+
+
+static func is_valid_append_format(format: String) -> bool:
+	if not VALID_APPENDS.is_empty() and _valid_appends.is_empty():
+		var formats: Dictionary[String, Variant] = {}
+		for type in VALID_APPENDS:
+			for valid_format in VALID_APPENDS[type]:
+				formats[valid_format] = null
+		_valid_appends.assign(formats.keys())
+	
+	return _valid_appends.has(format)
 
 
 # Needs to be run on main tagger load.
@@ -109,7 +137,8 @@ func _ready() -> void:
 			"id": {"data_type": "int", "primary_key": true, "not_null": true, "auto_increment": true, "unique": true},
 			"name": {"data_type": "text"},
 			"whitespace": {"data_type": "text", "not_null": true},
-			"separator": {"data_type": "text", "not_null": true}}
+			"separator": {"data_type": "text", "not_null": true},
+			"use_prefix": {"data_type": "int", "not_null": true, "default": 0}}
 
 		tag_database.create_table("tags", tags_table)
 		tag_database.create_table("icons", icons_table)
@@ -248,7 +277,7 @@ func _ready() -> void:
 # --- Icons ---
 
 func _load_icon_data(id: int) -> void:
-	var icon_data := _get_icon_data(id)
+	var icon_data: Dictionary = _get_icon_data(id)
 	icons[id]["texture"] = icon_data["texture"]
 
 
@@ -277,6 +306,112 @@ func update_projects(from_version: int) -> void:
 				for project_idx in range(project["alt_lists"].size() - 1):
 					project["alt_lists"][project_idx]["name"] = project["alt_lists"][project_idx + 1]["name"]
 		current_version += 1
+	
+	if current_version == 2:
+		var new_projects: Array[Dictionary] = []
+		
+		for project:Dictionary in projects.projects:
+			var uuid: String = UUID.generate_new()
+			var project_hash: String = uuid.replace("-", "")
+			
+			var new_file: TagItProject = TagItProject.new()
+			var prio_data: Variant = project.get("custom_priorities")
+			var blacklist_tags: Variant = project.get("blacklist_tags")
+			var blacklist_groups: Variant = project.get("blacklist_groups")
+			var tags: Variant = project.get("tags")
+			var alts: Variant = project.get("alt_lists")
+			var sugg_data: Variant = project.get("suggestions")
+			var img_path_data: Variant = project.get("image_path")
+			
+			var img_file: String = img_path_data if typeof(img_path_data) == TYPE_STRING else ""
+			var project_thumbnail_path: String = ""
+			var shared: ProjectList = ProjectList.new()
+			new_file.shared_list = shared
+			
+			new_file.title = project.get("name")
+			new_file._uuid = uuid
+			
+			if not img_file.is_empty() and img_file.is_valid_filename():
+				project_thumbnail_path = img_file
+				var file_path: String = TagItProjectResource.get_thumbnails_path() + img_file
+				if FileAccess.file_exists(file_path):
+					if file_path.get_extension() != "webp":
+						var new_path: String = file_path.get_basename() + ".webp"
+						var img: Image = Image.load_from_file(file_path)
+						img.save_webp(new_path)
+						file_path = new_path
+					
+					var image_hash: String = ProjectList.hash_file_bytes(file_path)
+					var img_filename: String = image_hash + ".webp"
+					
+					var path: String = TagItProjectResource.get_resources_path(
+						new_file._hash)
+					var new_name: String = path.path_join(img_filename)
+					var new_thumbnail: String = TagItProjectResource.get_thumbnails_path() + project_hash + ".webp"
+					if not DirAccess.dir_exists_absolute(path):
+						DirAccess.make_dir_recursive_absolute(path)
+					DirAccess.copy_absolute(file_path, new_name)
+					DirAccess.rename_absolute(file_path, new_thumbnail)
+					shared._project_append = img_filename
+			
+			if typeof(prio_data) == TYPE_DICTIONARY and not prio_data.is_empty():
+				new_file.custom_priorities.assign(prio_data.duplicate(true))
+			
+			if typeof(blacklist_tags) == TYPE_PACKED_STRING_ARRAY:
+				new_file.tag_blacklist.assign(blacklist_tags)
+			
+			if typeof(blacklist_groups) == TYPE_PACKED_INT64_ARRAY:
+				new_file.group_blacklist.assign(blacklist_groups)
+			
+			if typeof(sugg_data) == TYPE_ARRAY:
+				for suggestion in sugg_data:
+					if typeof(suggestion) != TYPE_STRING:
+						continue
+					shared.add_tag_to_suggestions(suggestion)
+			
+			if typeof(tags) == TYPE_ARRAY:
+				for tag in tags:
+					if typeof(tag) != TYPE_STRING:
+						continue
+					shared.add_tag_to_list(tag)
+			
+			if typeof(alts) == TYPE_ARRAY:
+				for alt_list: Dictionary in alts:
+					var id: String = alt_list.get("name")
+					
+					if new_file.lists.has(id):
+						var new_id: String = id
+						var counter: int = 0
+						while new_file.lists.has(new_id):
+							counter += 1
+							new_id = id + "_" + str(counter)
+						id = new_id
+					
+					var new_list: ProjectList = new_file.new_list(id)
+					var tag_data: Variant = alt_list.get("list")
+					if typeof(tag_data) == TYPE_ARRAY:
+						for alt_tag in tag_data:
+							if typeof(alt_tag) != TYPE_STRING:
+								continue
+							new_list.add_tag_to_list(alt_tag)
+			
+			var project_path: String = TagItProjectResource.get_resources_path(new_file._hash)
+			var full_path: String = TagItProjectResource.get_project_path(new_file._hash)
+			
+			var new_project: Dictionary[String, Variant] = {
+				"_uuid": uuid,
+				"uid_hash": new_file._hash,
+				"name": new_file.title,
+				"thumbnail": project_thumbnail_path}
+			
+			new_projects.append(new_project)
+			
+			if not DirAccess.dir_exists_absolute(project_path):
+				DirAccess.make_dir_recursive_absolute(project_path)
+			ResourceSaver.save(new_file, full_path)
+			
+		projects.projects = new_projects
+		current_version += 1
 	projects.save()
 
 
@@ -288,7 +423,7 @@ func update_templates(from_version: int) -> void:
 			template["_uuid"] = templates.get_new_template_uuid()
 		current_version += 1
 	if current_version == 2: # jpg -> webp
-		var template_folder: String = TemplateResource.get_thumbnail_path()
+		var template_folder: String = TemplateResource.get_thumbnails_folder()
 		for template in templates.templates:
 			if not template["thumbnail"].is_empty() and template["thumbnail"].get_extension() == "jpg":
 				if FileAccess.file_exists(template_folder + template["thumbnail"]):
@@ -299,6 +434,26 @@ func update_templates(from_version: int) -> void:
 					template["thumbnail"] = new_file
 				else:
 					template["thumbnail"] = ""
+		current_version += 1
+	
+	if current_version == 3:
+		for dict:Dictionary in templates.templates:
+			var uid: String = UUID.generate_new()
+			var new_template: Dictionary[String, Variant] = {
+				"title": dict["title"],
+				"description": dict["description"],
+				"groups": dict["groups"].duplicate(),
+				"tags": dict["tags"].duplicate()}
+			templates.template_map[uid] = new_template
+			var thumb: String = dict["thumbnail"]
+			if not thumb.is_empty():
+				var folder: String = TemplateResource.get_thumbnails_folder()
+				var full_path: String = folder.path_join(thumb)
+				var hash_file: String = uid.replace("-", "") + ".webp"
+				var new_full_path: String = folder.path_join(hash_file)
+				DirAccess.rename_absolute(full_path, new_full_path)
+		current_version += 1
+		templates.templates.clear()
 	templates.save()
 
 
@@ -411,6 +566,19 @@ func update_tables(current_version: int) -> void:
 			);")
 		log_silent(
 				"Database updated from version 4 to version 5.",
+				DataManager.LogLevel.INFO)
+		update_version += 1
+	
+	# Changes in version 5 -> 6
+	# Added a new column to the sites table "use_prefix" to fix
+	# the fact I forgot an option to add prefixes to the generated
+	# tags.
+	if update_version == 5:
+		tag_database.query(
+			"ALTER TABLE sites 
+			ADD COLUMN use_prefix INTEGER NOT NULL DEFAULT 0;")
+		log_silent(
+				"Database updated from version 5 to version 6.",
 				DataManager.LogLevel.INFO)
 		update_version += 1
 
@@ -813,6 +981,12 @@ func update_storage() -> void:
 			"[TagIt] Data storage upgraded to version " + str(current_version),
 			LogLevel.INFO)
 	
+	if current_version == 7:
+		for character:Dictionary in storage_data.characters:
+			var char_id: String = character["tag"]
+			storage_data.character_map[char_id] = character
+		storage_data.characters.clear()
+	
 	storage_data.storage_version = STORAGE_VERSION
 	storage_data.save()
 	log_message(
@@ -888,7 +1062,8 @@ func verify_db_tables(tables: Array) -> void:
 			"id": {"data_type": "int", "primary_key": true, "not_null": true, "auto_increment": true, "unique": true},
 			"name": {"data_type": "text"},
 			"whitespace": {"data_type": "text", "not_null": true},
-			"separator": {"data_type": "text", "not_null": true}}
+			"separator": {"data_type": "text", "not_null": true},
+			"use_prefix": {"data_type": "int", "not_null": true, "default": 0}}
 		}
 	
 	var existing_tables: Array[String] = []
@@ -896,7 +1071,11 @@ func verify_db_tables(tables: Array) -> void:
 	for table in tables:
 		existing_tables.append(table["name"])
 	
-	var missing_tables: Array = Arrays.difference(required_tables.keys(), existing_tables, false)
+	var missing_tables: Array = []
+	
+	for item in required_tables.keys():
+		if not existing_tables.has(item):
+			missing_tables.append(item)
 	
 	if not missing_tables.is_empty():
 		for table in missing_tables:
@@ -944,7 +1123,6 @@ func get_icon_names() -> Array[String]:
 	for icon_id in icons:
 		names.append(icons[icon_id]["name"])
 	return names
-	
 
 
 func get_category_icon_color(category_id: int) -> Color:
@@ -971,9 +1149,13 @@ func get_category_icon_id(category_id: int) ->int:
 
 
 func get_icon_texture(id: int) -> Texture2D:
-	if icons[id]["texture"] == null:
+	if not icons.has(id):
+		return null
+	var data: Dictionary = icons[id]
+	var texture: Texture2D = data["texture"]
+	if texture == null:
 		_load_icon_data(id)
-	return icons[id]["texture"]
+	return data["texture"]
 
 # --- Groups ---
 
@@ -1048,17 +1230,17 @@ func remove_all_group_suggestions(from_tag: int) -> void:
 	tag_database.delete_rows("group_suggestions", "tag_id = " + str(from_tag))
 
 
-func get_groups_and_tags(groups: Array[int]) -> Dictionary:
+func get_groups_and_tags(groups: Array[int]) -> Dictionary[int, Dictionary]:
 	if groups.is_empty():
 		return {}
 	# group_id: group_name, tags:
 	var prompt_string: String = "(" + ", ".join(groups) + ")"
-	var all_dict: Dictionary = {}
+	var all_dict: Dictionary[int, Dictionary] = {}
 	
 	for group_data in tag_database.select_rows("groups", "id IN " + prompt_string, ["id", "name"]):
 		all_dict[group_data["id"]] = {
 				"group_name": group_data["name"],
-				"tags": {}}
+				"tags": DictUtils.create_typed(TYPE_INT, TYPE_STRING)}
 	
 	tag_database.query(
 		"SELECT data.tag_id, data.group_id, tags.name 
@@ -1067,7 +1249,8 @@ func get_groups_and_tags(groups: Array[int]) -> Dictionary:
 		WHERE data.group_id IN " + prompt_string + ";")
 	
 	for result in tag_database.query_result:
-		all_dict[result["group_id"]]["tags"][result["tag_id"]] = result["name"]
+		var tags_dict: Dictionary = all_dict[result["group_id"]]["tags"]
+		tags_dict[result["tag_id"]] = result["name"]
 	
 	return all_dict
 
@@ -1177,8 +1360,8 @@ func get_aliases_to(tag_id: int) -> Array[int]:
 	return from_tag
 
 
-func get_aliases_consequent_names_from(tag_ids: Array[int]) -> Dictionary:
-	var exisiting_aliases: Dictionary = {}
+func get_aliases_consequent_names_from(tag_ids: Array[int]) -> Dictionary[int, String]:
+	var exisiting_aliases: Dictionary[int, String] = {}
 	var promt_search: String = "(" + ",".join(tag_ids) + ")"
 	
 	tag_database.query(
@@ -1360,17 +1543,18 @@ func get_tag_data_column(tag_id: int, column: String) -> Variant:
 	return tag_database.select_rows("data", "tag_id = " + str(tag_id), [column])[0][column]
 
 
-func get_tag_data_columns(tag_id: int, columns:Array[String]) -> Dictionary:
-	var return_columns: Dictionary = {}
-	var data := tag_database.select_rows("data", "tag_id = " + str(tag_id), columns)
+func get_tag_data_columns(tag_id: int, columns:Array[String]) -> Dictionary[String, Variant]:
+	var return_columns: Dictionary[String, Variant] = {}
+	var data: Array = tag_database.select_rows("data", "tag_id = " + str(tag_id), columns)
 	
-	for column in data[0]:
-		return_columns[column] = data[0][column]
+	if not data.is_empty():
+		for column in data[0]:
+			return_columns[column] = data[0][column]
 	
 	return return_columns
 
 
-func get_tag_data(tag_id: int) -> Dictionary:
+func get_tag_data(tag_id: int) -> Dictionary[String, Variant]:
 	tag_database.query(
 			"SELECT tags.name, tags.is_valid, 
 			data.priority, data.category_id, data.description, data.tooltip, data.group_id
@@ -1378,19 +1562,25 @@ func get_tag_data(tag_id: int) -> Dictionary:
 			LEFT JOIN data ON data.tag_id = tags.id WHERE tags.id = " + str(tag_id) + ";")
 
 	var result: Dictionary = tag_database.query_result[0].duplicate()
-
-	return {
-		"tag": result["name"],
+	
+	var desc: Variant = result.get("description", "")
+	var tooltip: Variant = result.get("tooltip", "")
+	var group: Variant = result.get("group_id", 0)
+	
+	var tag_data: Dictionary[String, Variant] = {
+		"tag": result.get("name", ""),
 		"aliases": get_aliases_to(tag_id),
 		"suggestions": get_suggestions(tag_id),
 		"parents": get_parents(tag_id),
-		"is_valid": bool(result["is_valid"]),
-		"priority": result["priority"],
-		"category": result["category_id"],
-		"description": result["description"] if result["description"] != null else "",
-		"tooltip": result["tooltip"] if result["tooltip"] != null else "",
-		"group": result["group_id"] if result["group_id"] != null else 0,
+		"is_valid": bool(result.get("is_valid", true)),
+		"priority": result.get("priority", 0),
+		"category": result.get("category_id", 1),
+		"description": desc if desc != null else "",
+		"tooltip": tooltip if tooltip != null else "",
+		"group": group if group != null else 0,
 		"suggested_groups": get_suggested_groups(tag_id)}
+	
+	return tag_data
 
 
 # Will only get tag data in the tag & data tables.
@@ -1508,7 +1698,7 @@ func get_parents_recursive(tag_id: int, _queued_parents: Array[int] = [], _itera
 	# We remove the queued ones from the ones we still need to search:
 	# all_parents - queued_parents
 	# [0, 1, 2] - [0, 2] = [1]
-	Arrays.substract_array(all_parents, _queued_parents)
+	Arrays.subtract_array(all_parents, _queued_parents, true)
 	# We add all_parents to the queue since they are uniques.
 	_queued_parents.append_array(all_parents)
 	
@@ -1570,6 +1760,24 @@ func get_suggestions(for_tag: int) -> Array[int]:
 	return suggestions
 
 
+# Iterates through the tags(ints) and returns a suggestion list
+func get_suggestions_for_tags(tags: Array) -> Array[int]:
+	var valid_ids: Array[int] = []
+	var suggestion_ids: Array[int] = []
+	valid_ids.assign(
+			tags.filter(
+					func(i) -> bool:
+						return typeof(i) == TYPE_INT))
+	var query: String = "SELECT suggestion_id FROM suggestions WHERE tag_id IN (" + ", ".join(valid_ids) + ");"
+	var result: bool = tag_database.query(query)
+	if not result:
+		return suggestion_ids
+	for res in tag_database.query_result:
+		suggestion_ids.append(res["suggestion_id"])
+	
+	return suggestion_ids
+
+
 # --- Group Collections ---
 
 func get_suggested_groups(from_tag: int) -> Array[int]:
@@ -1595,17 +1803,30 @@ func get_hydrus_category_prefix(category_id: int) -> String:
 
 # --- Sites ---
 
-func create_site(site_name: String, tag_whitespace: String, tag_separator: String) -> int:
+func create_site(site_name: String, tag_whitespace: String, tag_separator: String, use_prefix: bool) -> int:
 	@warning_ignore("incompatible_ternary")
 	tag_database.insert_row(
 			"sites",
 			{
 				"name": site_name if not site_name.is_empty() else null,
 				"whitespace": tag_whitespace,
-				"separator": tag_separator
+				"separator": tag_separator,
+				"use_prefix": int(use_prefix)
 			})
 	website_created.emit(tag_database.last_insert_rowid, site_name)
 	return tag_database.last_insert_rowid
+
+
+func update_site(site: int, rows: Dictionary) -> void:
+	if rows.is_empty():
+		return
+	
+	tag_database.update_rows(
+			"sites",
+			"id = " + str(site),
+			rows)
+	
+	website_updated.emit(site, rows.duplicate(true))
 
 
 func delete_site(site_id: int) -> void:
@@ -1618,14 +1839,24 @@ func get_site_data(site_id: int) -> Dictionary:
 	return {
 		"name": site[0]["name"] if site[0]["name"] != null else "",
 		"whitespace": site[0]["whitespace"],
-		"separator": site[0]["separator"]}
+		"separator": site[0]["separator"],
+		"use_prefix": bool(site[0]["use_prefix"])}
 
 
 func get_site_formatting(site_id: int) -> Dictionary:
-	var site := tag_database.select_rows("sites", "id = " + str(site_id), ["whitespace", "separator"])
+	var site := tag_database.select_rows("sites", "id = " + str(site_id), ["whitespace", "separator", "use_prefix"])
 	return {
 		"whitespace": site[0]["whitespace"],
-		"separator": site[0]["separator"]}
+		"separator": site[0]["separator"],
+		"use_prefix": bool(site[0]["use_prefix"])}
+
+
+func site_uses_prefixes(site_id: int) -> bool:
+	var site: Array = tag_database.select_rows("sites", "id = " + str(site_id), ["use_prefix"])
+	if site.is_empty():
+		return false
+	var prefix_bit: int = site[0].get("use_prefix", 0)
+	return bool(prefix_bit)
 
 
 func get_sites() -> Dictionary:
@@ -1694,11 +1925,12 @@ func get_all_tag_names(with_data: bool) -> Array[String]:
 
 
 func get_tag_id(tag_name: String) -> int:
-	return loaded_tags[tag_name]
+	var clean_name: String = tag_name.strip_edges().to_lower()
+	return loaded_tags.get(clean_name, -1)
 
 
-func get_tags_ids(tag_array: Array[String]) -> Dictionary:
-	var return_dict: Dictionary = {}
+func get_tags_ids(tag_array: Array[String]) -> Dictionary[String, int]:
+	var return_dict: Dictionary[String, int] = {}
 	for tag in tag_array:
 		if has_tag(tag):
 			return_dict[tag] = get_tag_id(tag)
@@ -1712,14 +1944,38 @@ func get_tag_name(tag_id: int) -> String:
 
 
 # preserve_order makes sure that the result names match the order of the given id_list.
-func get_tags_name(id_list: Array[int]) -> Dictionary:
-	var tag_names: Dictionary = {}
+func get_tags_name(id_list: Array[int], use_prefixes: bool = false) -> Dictionary[int, String]:
+	var tag_names: Dictionary[int, String] = {}
 	var string_ids: String = "(" + ", ".join(id_list) + ")"
-	tag_database.query("SELECT id, name FROM tags WHERE id IN " + string_ids + ";")
+	var query: String = ""
+	if use_prefixes:
+		query = "SELECT t.id, t.name, d.category_id FROM tags AS t LEFT JOIN data AS d ON t.id = d.tag_id WHERE t.id IN %s;" % string_ids
+	else:
+		query = "SELECT id, name FROM tags WHERE id IN %s;" % string_ids
 	
-
+	var prefixes: Dictionary[int, String] = {}
+	if use_prefixes:
+		for category in tag_database.select_rows("categories", "", ["id", "hydrus_prefix"]):
+			var prefix_data: Variant = category.get("hydrus_prefix")
+			if typeof(prefix_data) == TYPE_STRING:
+				prefixes[category["id"]] = prefix_data + ":"
+			else:
+				prefixes[category["id"]] = ""
+	
+	tag_database.query(query)
 	for result in tag_database.query_result:
-		tag_names[result["id"]] = result["name"]
+		var text: String = result["name"]
+		if use_prefixes:
+			var category_id_data: Variant = result.get("category_id")
+			var type: int = typeof(category_id_data)
+			if type == TYPE_INT or type == TYPE_FLOAT:
+				var category: int = int(category_id_data)
+				var category_data: Variant = prefixes.get(category, "")
+				if typeof(category_data) == TYPE_STRING:
+					var prefix: String = category_data
+					if not prefix.is_empty():
+						text = prefix + text
+		tag_names[result["id"]] = text
 	
 	return tag_names
 

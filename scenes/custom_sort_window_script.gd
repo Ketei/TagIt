@@ -65,6 +65,14 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
+func clear() -> void:
+	sorting_tree.clear()
+	categories_tree.clear()
+	
+	sorting_tree.create_item()
+	categories_tree.create_item()
+
+
 func _on_save_pressed() -> void:
 	custom_sort_finished.emit(true, get_custom_sorting())
 
@@ -196,6 +204,8 @@ func add_tag_group(group_name: String = "Category Group", sort_mode: int = 0) ->
 
 
 func set_custom_sorting(sorting_data: Array[Dictionary]) -> void:
+	clear()
+	
 	if sorting_data.is_empty():
 		return
 	

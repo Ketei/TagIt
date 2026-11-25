@@ -25,6 +25,7 @@ var _api_working: bool = false
 @onready var add_button: Button = $DraggableContainer/MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel/AddButton
 @onready var search_cooldown: Timer = $SearchCooldown
 @onready var esix_cooldown_bar: TextureProgressBar = $DraggableContainer/MainControl/MarginContainer/MainContainer/MarginContainer/BottomPanel/eSixCooldownBar
+@onready var draggable_container: Draggable = $DraggableContainer
 
 
 func _ready() -> void:
@@ -48,7 +49,7 @@ func focus_main(select_all: bool = false) -> void:
 
 
 func on_tags_marked(tags: Array[String]) -> void:
-	Arrays.append_uniques_asc(active_tags, tags)
+	Arrays.insert_uniques_asc(active_tags, tags)
 
 
 func on_search_text_submitted(text: String) -> void:
@@ -181,6 +182,27 @@ func on_cooldown_finished() -> void:
 func clear_tags() -> void:
 	for tag in tags_tree.get_root().get_children():
 		tag.free()
+
+
+func clear():
+	tags_tree.clear()
+	tags_tree.create_item()
+	
+	current_tags.clear()
+	active_tags.clear()
+	_current_search = ""
+	search_tag_ln_edt.text = ""
+	value = 0
+	pages_lbl.text = "/ 1"
+	
+	set_next_arrow_disabled(true)
+	set_prev_arrow_disabled(true)
+
+
+func reset_position() -> void:
+	var target_position: Vector2 = Vector2.ZERO
+	target_position.y = size.y - draggable_container.size.y
+	draggable_container.position = target_position
 
 
 func set_prev_arrow_disabled(set_disabled: bool) -> void:

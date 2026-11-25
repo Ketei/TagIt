@@ -172,16 +172,12 @@ func add_items(items: Array[String], clear_items: bool = true) -> void:
 
 func add_item(item: String, alias: String = "") -> void:
 	var idx: int = 0
+	var new_text: String = item if alias.is_empty() else item + " → " + alias
+	
 	if list_direction == 0:
-		if alias.is_empty():
-			idx = autofill_list.add_item(item)
-		else:
-			idx = autofill_list.add_item(item + " → " + alias)
+		idx = autofill_list.add_item(new_text)
 	else:
-		if alias.is_empty():
-			idx = autofill_list.add_item(item)
-		else:
-			idx = autofill_list.add_item(item + " → " + alias)
+		idx = autofill_list.add_item(new_text)
 		autofill_list.move_item(idx, 0)
 		idx = 0
 	autofill_list.set_item_metadata(idx, item if alias.is_empty() else alias)

@@ -1,8 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://bfbitp4tflorf"]
+[gd_scene format=3 uid="uid://bfbitp4tflorf"]
 
 [ext_resource type="Texture2D" uid="uid://dmjor0d4lqveu" path="res://icons/reset_icon.svg" id="1_3x73l"]
 [ext_resource type="Theme" uid="uid://u13wuypqagrc" path="res://style/table_theme.tres" id="1_8eobt"]
-[ext_resource type="Script" path="res://scenes/custom_sort_window_script.gd" id="1_c6enm"]
+[ext_resource type="Script" uid="uid://ixlhndmwutdq" path="res://scenes/custom_sort_window_script.gd" id="1_c6enm"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q1bkn"]
 content_margin_left = 200.0
@@ -129,7 +129,7 @@ func remove_categories(category_ids: Array[int]) -> void:
 				child.free()
 "
 
-[node name="CustomSortWindow" type="PanelContainer"]
+[node name="CustomSortWindow" type="PanelContainer" unique_id=1712473052]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -138,28 +138,28 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_q1bkn")
 script = ExtResource("1_c6enm")
 
-[node name="MainPanel" type="PanelContainer" parent="."]
+[node name="MainPanel" type="PanelContainer" parent="." unique_id=764662452]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_f8485")
 
-[node name="MainContainer" type="HBoxContainer" parent="MainPanel"]
+[node name="MainContainer" type="HBoxContainer" parent="MainPanel" unique_id=128172997]
 layout_mode = 2
 size_flags_vertical = 3
 alignment = 1
 
-[node name="SortContainer" type="VBoxContainer" parent="MainPanel/MainContainer"]
+[node name="SortContainer" type="VBoxContainer" parent="MainPanel/MainContainer" unique_id=446215403]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/SortContainer"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/SortContainer" unique_id=252358310]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 text = "Sorting"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ResetSortingBtn" type="Button" parent="MainPanel/MainContainer/SortContainer/Label"]
+[node name="ResetSortingBtn" type="Button" parent="MainPanel/MainContainer/SortContainer/Label" unique_id=1686533511]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 1
 anchors_preset = 6
@@ -177,7 +177,7 @@ icon = ExtResource("1_3x73l")
 flat = true
 icon_alignment = 1
 
-[node name="SortingTree" type="Tree" parent="MainPanel/MainContainer/SortContainer"]
+[node name="SortingTree" type="Tree" parent="MainPanel/MainContainer/SortContainer" unique_id=1972115008]
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("1_8eobt")
@@ -186,29 +186,29 @@ column_titles_visible = true
 allow_reselect = true
 script = SubResource("GDScript_umib8")
 
-[node name="HSeparator" type="HSeparator" parent="MainPanel/MainContainer/SortContainer"]
+[node name="HSeparator" type="HSeparator" parent="MainPanel/MainContainer/SortContainer" unique_id=562813191]
 layout_mode = 2
 theme_override_constants/separation = 10
 theme_override_styles/separator = SubResource("StyleBoxEmpty_iiv7b")
 
-[node name="CancelButton" type="Button" parent="MainPanel/MainContainer/SortContainer"]
+[node name="CancelButton" type="Button" parent="MainPanel/MainContainer/SortContainer" unique_id=321239506]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Cancel"
 
-[node name="GroupsContainer" type="VBoxContainer" parent="MainPanel/MainContainer"]
+[node name="GroupsContainer" type="VBoxContainer" parent="MainPanel/MainContainer" unique_id=1139423330]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
 
-[node name="Label" type="Label" parent="MainPanel/MainContainer/GroupsContainer"]
+[node name="Label" type="Label" parent="MainPanel/MainContainer/GroupsContainer" unique_id=2036731833]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 text = "Categories"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="GroupsTree" type="Tree" parent="MainPanel/MainContainer/GroupsContainer"]
+[node name="GroupsTree" type="Tree" parent="MainPanel/MainContainer/GroupsContainer" unique_id=281127343]
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("1_8eobt")
@@ -216,12 +216,12 @@ hide_root = true
 select_mode = 2
 script = SubResource("GDScript_ticeo")
 
-[node name="HSeparator" type="HSeparator" parent="MainPanel/MainContainer/GroupsContainer"]
+[node name="HSeparator" type="HSeparator" parent="MainPanel/MainContainer/GroupsContainer" unique_id=172034564]
 layout_mode = 2
 theme_override_constants/separation = 10
 theme_override_styles/separator = SubResource("StyleBoxEmpty_iiv7b")
 
-[node name="SaveButton" type="Button" parent="MainPanel/MainContainer/GroupsContainer"]
+[node name="SaveButton" type="Button" parent="MainPanel/MainContainer/GroupsContainer" unique_id=1278014634]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Save"

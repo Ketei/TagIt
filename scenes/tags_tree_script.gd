@@ -1,9 +1,10 @@
 extends IDTree
 
 
-signal suggestions_dropped(suggestions: Array[String], can_blacklist: bool)
-signal move_tags_to_list_pressed(list_idx: int, tags: Array[String], indexes: Array[int])
-signal move_tags_to_new_list_pressed(tags: Array[String], indexes: Array[int])
+signal suggestions_dropped(suggestions: Array[String])
+signal groups_dropped(groups: Dictionary[int, Dictionary])
+signal move_tags_to_list_pressed(list: String, tags: Array[String])
+signal move_tags_to_new_list_pressed(tags: Array[String])
 signal search_in_wiki_pressed(tag: String)
 signal tags_changed
 
@@ -11,6 +12,9 @@ signal tags_changed
 var _current_alt: int = 0
 var alt_list_submenu: PopupMenu = null
 @onready var main_tagger_popup: RightClickPopupMenu = $MainTaggerPopup
+
+var _current_tags: Dictionary[String, TagItem] = {}
+var _tag_trees: Dictionary[String, TreeItem] = {}
 
 
 func _ready() -> void:
@@ -52,7 +56,14 @@ func _input(event: InputEvent) -> void:
 
 
 func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:
-	return typeof(data) == TYPE_DICTIONARY and data.has_all(["type", "tag_names", "tree", "tree_type"]) and data["type"] == "tag_array"
+	if typeof(data) != TYPE_DICTIONARY:
+		return false
+	
+	var type: Variant = data.get("type")
+	if type != "suggestions" and type != "group_tags":
+		return false
+	
+	return true
 
 
 func _get_drag_data(_at_position: Vector2) -> Variant:
@@ -82,24 +93,23 @@ func _get_drag_data(_at_position: Vector2) -> Variant:
 
 
 func _drop_data(_at_position: Vector2, data: Variant) -> void:
-	if data["tag_names"].is_empty():
-		return
-	
-	var unique_tags: Array[String] = []
-	
-	for tag in data["tag_names"]:
-		if has_tag(tag):
-			continue
-		unique_tags.append(tag)
-	
-	if data["tree_type"] == 0:
-		data["tree"].delete_tags(data["tag_names"])
-	elif data["tree_type"] == 2:
-		data["tree"].mark_tags(data["tag_names"])
-	
-	suggestions_dropped.emit(
-			unique_tags,
-			data["tree_type"] == 0 or data["tree_type"] == 1)
+	match data["type"]:
+		"suggestions":
+			if data["tag_names"].is_empty():
+				return
+			suggestions_dropped.emit(data["tag_names"].duplicate())
+		"group_tags":
+			if data["group_tags"].is_empty():
+				return
+			groups_dropped.emit(data["group_tags"].duplicate(true))
+
+
+func get_used_tags() -> Dictionary[String, int]:
+	var result: Dictionary[String, int] = {}
+	for tag in _current_tags:
+		var item: TagItem = _current_tags[tag]
+		result[item.tag_text] = item.tag_id
+	return result
 
 
 func _on_tags_created(tag_names: Array[String]) -> void:
@@ -145,13 +155,11 @@ func _on_main_popup_id_pressed(id: int) -> void:
 func _on_submenu_index_pressed(index: int) -> void:
 	if index == 0:
 		move_tags_to_new_list_pressed.emit(
-			get_selected_tags(),
-			get_selected_array())
+			get_selected_tags())
 	else:
 		move_tags_to_list_pressed.emit(
-				index - 1,
-				get_selected_tags(),
-				get_selected_array())
+				main_tagger_popup.get_item_metadata(index),
+				get_selected_tags())
 
 
 func select_all() -> void:
@@ -159,9 +167,15 @@ func select_all() -> void:
 		tag.select(0)
 
 
-func delete_alt_list(idx: int) -> void:
-	alt_list_submenu.remove_item(idx + 1)
-	if _current_alt == idx:
+func delete_alt_list(id: String) -> void:
+	var index: int = -1
+	for idx in alt_list_submenu.item_count:
+		if alt_list_submenu.get_item_metadata(idx) == id:
+			alt_list_submenu.remove_item(idx)
+			index = idx
+			break
+	
+	if _current_alt == index:
 		_current_alt = -1
 
 
@@ -187,8 +201,9 @@ func get_selected_array() -> Array[int]:
 	return result
 
 
-func add_alt_list(alt_list_name: String) -> void:
+func add_alt_list(alt_list_name: String, id: String) -> void:
 	alt_list_submenu.add_item(alt_list_name)
+	alt_list_submenu.set_item_metadata(-1, id)
 
 
 func clear_popup_alts() -> void:
@@ -209,26 +224,78 @@ func on_focus_lost() -> void:
 	deselect_all()
 
 
-func add_tag(tag_id: int, tag_name: String, tooltip: String, icon: Texture2D, category: int, color: Color) -> TreeItem:
-	if has_item(get_root(), tag_name, 0):
+func add_tag(tag_id: int, tag_name: String, tooltip: String = "", icon: Texture2D = null, category: int = 0, color: Color = Color.WHITE) -> TreeItem:
+	if _current_tags.has(tag_name):
 		return null
 	
 	var new_tag: TreeItem = get_root().create_child()
 	
 	new_tag.set_cell_mode(0, TreeItem.CELL_MODE_STRING)
 	
-	new_tag.set_icon(0, icon)
-	new_tag.set_icon_modulate(0, color)
+	if icon != null:
+		new_tag.set_icon(0, icon)
+		new_tag.set_icon_modulate(0, color)
 	
 	new_tag.set_text(0, tag_name)
 	new_tag.set_metadata(0, {"id": tag_id, "category": category, "valid": SingletonManager.TagIt.is_tag_valid(tag_id)})
 	
-	new_tag.set_tooltip_text(0, tooltip)
+	if not tooltip.is_empty():
+		new_tag.set_tooltip_text(0, tooltip)
 	
 	if not new_tag.get_metadata(0)["valid"]:
 		new_tag.set_custom_color(0, DataManager.INVALID_COLOR)
 	
+	var tag_item: TagItem = TagItem.new_tag(tag_id, tag_name)
+	_current_tags[tag_name] = tag_item
+	
+	_tag_trees[tag_name] = new_tag
+	
 	return new_tag
+
+
+func remove_tag_from_text(tag: String) -> void:
+	if not _tag_trees.has(tag):
+		return
+	
+	var item: TreeItem = _tag_trees[tag]
+	
+	_current_tags.erase(tag)
+	_tag_trees.erase(tag)
+	
+	item.free()
+
+
+func set_tag_id_text_color(tag: int, color: Color) -> void:
+	if tag <= 0:
+		return
+	
+	var text: String = ""
+	var found: bool = false
+	for item in _current_tags:
+		if _current_tags[item].tag_id == tag:
+			text = _current_tags[item].tag_text
+			found = true
+			break
+	if not found:
+		return
+	var target: TreeItem = _tag_trees.get(text)
+	if target == null:
+		return
+	target.set_custom_color(0, color)
+
+
+func set_tag_text_color(tag: String, color: Color) -> void:
+	var target: TreeItem = _tag_trees.get(tag)
+	if target == null:
+		return
+	target.set_custom_color(0, color)
+
+
+func clear_tag_text_color(tag: String) -> void:
+	var target: TreeItem = _tag_trees.get(tag)
+	if target == null:
+		return
+	target.clear_custom_color(0)
 
 
 func has_tag(tag_text: String) -> bool:
@@ -297,7 +364,7 @@ func update_tag(tag_id: int, _parents: Array[String], valid: bool) -> void:
 			break
 
 
-func get_tags() -> Dictionary:
+func get_tags() -> Dictionary[String, Array]:
 	var tag_id: Array[int] = []
 	var non_id: Array[String] = []
 	
@@ -307,7 +374,11 @@ func get_tags() -> Dictionary:
 		else:
 			tag_id.append(tag.get_metadata(0)["id"])
 	
-	return { "id": tag_id, "tag": non_id }
+	var data: Dictionary[String, Array] = {
+		"id": tag_id,
+		"tag": non_id}
+	
+	return data
 
 
 func get_all_tags_text() -> Array[String]:
@@ -318,5 +389,142 @@ func get_all_tags_text() -> Array[String]:
 
 
 func clear_tags() -> void:
-	for tag in get_root().get_children():
-		tag.free()
+	for tag in _tag_trees:
+		_tag_trees[tag].free()
+	
+	_current_tags.clear()
+	_tag_trees.clear()
+
+
+func sort_tags_custom() -> void:
+	if _current_tags.is_empty():
+		return
+	
+	var root: TreeItem = get_root()
+	var groups: Array[Array] = []
+	var tags: Array[TreeItem] = root.get_children()
+	
+	var group_tags: Dictionary[int, Array] = {}
+	
+	for item in tags:
+		var cat: int = item.get_metadata(0)["category"]
+		if not group_tags.has(cat):
+			var new_group: Array[TreeItem] = []
+			group_tags[cat] = new_group
+		group_tags[cat].append(item)
+	
+	for group in SingletonManager.TagIt.settings.custom_sorting:
+		var new_group: Array[TreeItem] = []
+		
+		for group_id in group["group_ids"]:
+			if group_tags.has(group_id):
+				new_group.append_array(group_tags[group_id])
+		
+		if group["sorting"] == DataManager.SortingType.ALPHABETICAL:
+			new_group.sort_custom(
+					func (a:TreeItem,b:TreeItem) -> bool:
+						return a.get_text(0) < b.get_text(0))
+		else:
+			var tag_names: Dictionary[String, Dictionary] = {}
+			var tag_id_to_names: Dictionary [int, Dictionary]= {}# id: {tag, priority}
+			var id_tags: Array[int] = []
+			
+			for tree in new_group:
+				tag_names[tree.get_text(0)] = {"tree": tree, "priority": 0}
+			
+			# tag_name: TagId
+			var valid_ids: Dictionary = SingletonManager.TagIt.get_tags_ids(
+					Array(tag_names.keys(), TYPE_STRING, &"", null))
+			
+			for tag in tag_names:
+				if valid_ids.has(tag):
+					tag_id_to_names[valid_ids[tag]] = {"tag": tag, "priority": 0}
+					id_tags.append(valid_ids[tag])
+			
+			# priority:[ids]
+			var sorted_ids: Dictionary = SingletonManager.TagIt.sort_tag_ids_by_priority(id_tags)
+			
+			for priority in sorted_ids:
+				for tag_id in sorted_ids[priority]:
+					tag_id_to_names[tag_id]["priority"] = priority
+			
+			for ideed_tag in tag_id_to_names:
+				tag_names[ tag_id_to_names[ideed_tag]["tag"] ]["priority"] = tag_id_to_names[ideed_tag]["priority"]
+			
+			var groupings: Array[Dictionary] = []
+			
+			for tag_name in tag_names:
+				var group_dict: Dictionary = {
+					"tree": tag_names[tag_name]["tree"],
+					"priority": tag_names[tag_name]["priority"]}
+				groupings.append(group_dict)
+			
+			groupings.sort_custom(
+					func (a:Dictionary,b:Dictionary) -> bool:
+						if a["priority"] == b["priority"]:
+							return a["tree"].get_text(0) < b["tree"].get_text
+						else:
+							return b["priority"] < a["priority"])
+			
+			var new_order: Array[TreeItem] = []
+			
+			for group_dict in groupings:
+				new_order.append(group_dict["tree"])
+			
+			new_group = new_order
+		
+		if new_group.is_empty():
+			continue
+		
+		Arrays.subtract_array(tags, new_group)
+		groups.append(new_group)
+	
+	if groups.is_empty():
+		return
+	
+	var index: int = 0
+	for group in groups:
+		for tag: TreeItem in group:
+			if tag.get_index() != index:
+				tag.move_before(root.get_child(index))
+			index += 1
+	
+	for remaining_tag in tags:
+		if remaining_tag.get_index() != index:
+			remaining_tag.move_before(root.get_child(index))
+		index += 1
+
+
+func sort_tags_alphabetical(ascending: bool = true) -> void:
+	if _tag_trees.is_empty():
+		return
+	
+	var root: TreeItem = get_root()
+	var tags: Array = _tag_trees.keys()
+	tags.sort()
+	if not ascending:
+		tags.reverse()
+	
+	var idx: int = 0
+	for tag in tags:
+		var item: TreeItem = _tag_trees[tag]
+		if item.get_index() != idx:
+			item.move_before(root.get_child(idx))
+		idx += 1
+
+
+func sort_tags_category(ascending: bool = true) -> void:
+	var root: TreeItem = get_root()
+	var tags: Array[TreeItem] = []
+	
+	tags.sort_custom(
+			func(a:TreeItem,b:TreeItem) -> bool:
+				return a.get_metadata(0)["category"] < b.get_metadata(0)["category"])
+	if not ascending:
+		tags.reverse()
+	
+	var idx: int = 0
+	for tag in tags:
+		if tag.get_index() != idx:
+			tag.move_before(root.get_child(idx))
+		idx += 1

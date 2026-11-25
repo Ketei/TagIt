@@ -1,52 +1,59 @@
-[gd_scene load_steps=2 format=3 uid="uid://bajlrodmmrhoa"]
+[gd_scene format=3 uid="uid://bajlrodmmrhoa"]
 
-[ext_resource type="Script" path="res://scenes/dialogs/site_confirmation_dialog.gd" id="1_l3ibe"]
+[ext_resource type="Script" uid="uid://dga8ix3kapu5x" path="res://scenes/dialogs/site_confirmation_dialog.gd" id="1_l3ibe"]
 
-[node name="SiteConfirmationDialog" type="ConfirmationDialog"]
+[node name="SiteConfirmationDialog" type="ConfirmationDialog" unique_id=291959935]
 auto_translate_mode = 1
+oversampling_override = 1.0
 title = "Create Site..."
 initial_position = 1
-size = Vector2i(250, 150)
+size = Vector2i(250, 185)
+visible = true
 ok_button_text = "Create"
 script = ExtResource("1_l3ibe")
 
-[node name="MainContainer" type="VBoxContainer" parent="."]
+[node name="MainContainer" type="VBoxContainer" parent="." unique_id=999793703]
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 242.0
-offset_bottom = 101.0
+offset_bottom = 136.0
 
-[node name="SiteNameLnEdt" type="LineEdit" parent="MainContainer"]
+[node name="SiteNameLnEdt" type="LineEdit" parent="MainContainer" unique_id=1867390054]
 layout_mode = 2
 placeholder_text = "Site Name"
 
-[node name="DataContainer" type="HBoxContainer" parent="MainContainer"]
+[node name="DataContainer" type="HBoxContainer" parent="MainContainer" unique_id=468104274]
 layout_mode = 2
 
-[node name="WhitespaceContainer" type="VBoxContainer" parent="MainContainer/DataContainer"]
+[node name="WhitespaceContainer" type="VBoxContainer" parent="MainContainer/DataContainer" unique_id=1414687794]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MainContainer/DataContainer/WhitespaceContainer"]
+[node name="Label" type="Label" parent="MainContainer/DataContainer/WhitespaceContainer" unique_id=85837945]
 layout_mode = 2
 text = "Whitespace"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="WhitespaceLnEdt" type="LineEdit" parent="MainContainer/DataContainer/WhitespaceContainer"]
+[node name="WhitespaceLnEdt" type="LineEdit" parent="MainContainer/DataContainer/WhitespaceContainer" unique_id=1879238277]
 layout_mode = 2
 placeholder_text = "Whitespace"
 
-[node name="SeparatorContainer" type="VBoxContainer" parent="MainContainer/DataContainer"]
+[node name="SeparatorContainer" type="VBoxContainer" parent="MainContainer/DataContainer" unique_id=1944123671]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MainContainer/DataContainer/SeparatorContainer"]
+[node name="Label" type="Label" parent="MainContainer/DataContainer/SeparatorContainer" unique_id=271054558]
 layout_mode = 2
 text = "Separator"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SeparatorLnEdit" type="LineEdit" parent="MainContainer/DataContainer/SeparatorContainer"]
+[node name="SeparatorLnEdit" type="LineEdit" parent="MainContainer/DataContainer/SeparatorContainer" unique_id=1373857875]
 layout_mode = 2
 placeholder_text = "Separator"
+
+[node name="UsePrefixBtn" type="CheckBox" parent="MainContainer" unique_id=1684668277]
+layout_mode = 2
+text = "Use Prefixes"
+alignment = 1

@@ -1,46 +1,171 @@
+@tool
 extends ConfirmationDialog
 
 
-signal dialog_finished(success: bool, text: String)
+signal dialog_finished(success: bool, line_selected: String)
 
-var _submit_ln_edt: LineEdit
-var allow_empty: bool = false
 
-# Called when the node enters the scene tree for the first time.
+enum _ErrorStates {
+	NO_ISSUE = 0,
+	EMPTY = 1,
+	BLACKLIST_WORD = 2,
+	BLACKLIST_CHAR = 4,
+}
+
+var _error_flags: int = -1
+var _bypass_validation: bool = false
+var _dialog_line: LineEdit
+var _info_label: TextureRect
+var _ok_button: Button
+var line_placeholder_text: String:
+	set(new_text):
+		_dialog_line.placeholder_text = new_text
+	get():
+		return _dialog_line.placeholder_text
+
+var text_blacklist: Array[String] = []
+var character_blacklist: PackedStringArray = []
+var strip_edges: bool = true
+var use_blacklist: bool = false:
+	set(b):
+		use_blacklist = b
+		validate_bypass()
+var allow_empty: bool = true:
+	set(e):
+		allow_empty = e
+		validate_bypass()
+
+var error_line_empty_msg: String = "Field can't be empty"
+var error_line_blacklist_word_msg: String = "Word is blacklisted"
+var error_line_blacklist_character_msg: String = "A character is blacklisted"
+var error_line_ok: String = "No issues found"
+
+
+func _init() -> void:
+	_dialog_line = LineEdit.new()
+	_info_label = TextureRect.new()
+	_info_label.custom_minimum_size = Vector2(32.0, 32.0)
+	_info_label.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_info_label.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_info_label.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS
+	_dialog_line.custom_minimum_size.y = 32.0
+	_dialog_line.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_ok_button = get_ok_button()
+	size = Vector2i(250, 89)
+	initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_MAIN_WINDOW_SCREEN
+
+
 func _ready() -> void:
-	if not allow_empty:
-		get_ok_button().disabled = true
-	_submit_ln_edt = LineEdit.new()
-	add_child(_submit_ln_edt)
-	_submit_ln_edt.custom_minimum_size.y = 32
-	size = Vector2(220, 90)
-	ok_button_text = "Confirm"
-	initial_position = WINDOW_INITIAL_POSITION_CENTER_PRIMARY_SCREEN
-	_submit_ln_edt.text_changed.connect(on_text_changed)
-	_submit_ln_edt.text_submitted.connect(on_line_submitted)
-	confirmed.connect(on_confirmed)
-	canceled.connect(on_cancelled)
+	var new_container: HBoxContainer = HBoxContainer.new()
+	new_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	add_child(new_container)
+	new_container.add_child(_dialog_line)
+	new_container.add_child(_info_label)
+	
+	validate_bypass()
+	
+	_dialog_line.text_changed.connect(_on_text_changed)
+	_dialog_line.text_submitted.connect(_on_text_submitted)
+	confirmed.connect(_on_confirmed)
+	canceled.connect(_on_canceled)
 
 
-func on_confirmed() -> void:
-	dialog_finished.emit(true, _submit_ln_edt.text.strip_edges())
+func _on_text_changed(_text: String) -> void:
+	if _bypass_validation:
+		return
+	validate_text()
 
 
-func on_cancelled() -> void:
+func validate_text() -> void:
+	var text: String = _dialog_line.text
+	var stripped_text: String = text.strip_edges()
+	var invalid_char: bool = false
+	for character in text:
+		if character in character_blacklist:
+			invalid_char = true
+			break
+	
+	var error_flags: int = 0
+	var error_block: PackedStringArray = []
+	
+	if stripped_text.is_empty() and not allow_empty:
+		error_flags += _ErrorStates.EMPTY
+		error_block.append(error_line_empty_msg)
+	if use_blacklist and stripped_text in text_blacklist:
+		error_flags += _ErrorStates.BLACKLIST_WORD
+		error_block.append(error_line_blacklist_word_msg)
+	if invalid_char:
+		error_flags += _ErrorStates.BLACKLIST_CHAR
+		error_block.append(error_line_blacklist_character_msg)
+	
+	if error_flags == _error_flags:
+		return
+	
+	_error_flags = error_flags
+	
+	if error_flags == _ErrorStates.NO_ISSUE:
+		_info_label.texture = preload("res://icons/check_green.svg")
+		_info_label.tooltip_text = error_line_ok
+		if _ok_button.disabled:
+			_ok_button.disabled = false
+	else:
+		_info_label.texture = preload("res://icons/error_red.svg")
+		_info_label.tooltip_text = "\n".join(error_block)
+		if not _ok_button.disabled:
+			_ok_button.disabled = true
+
+
+func validate_bypass() -> void:
+	if use_blacklist or not allow_empty or not character_blacklist.is_empty():
+		_bypass_validation = false
+		if not _info_label.visible:
+			_info_label.visible = true
+		validate_text()
+	else:
+		_error_flags = -1
+		_bypass_validation = true
+		if _info_label.visible:
+			_info_label.visible = false
+
+
+func _on_text_submitted(text: String) -> void:
+	if get_ok_button().disabled:
+		return
+	hide()
+	dialog_finished.emit(
+			true,
+			text.strip_edges() if strip_edges else text)
+
+
+func _on_confirmed() -> void:
+	var line_text: String = _dialog_line.text
+	if strip_edges:
+		line_text = line_text.strip_edges()
+	dialog_finished.emit(true, line_text)
+
+
+func _on_canceled() -> void:
 	dialog_finished.emit(false, "")
 
 
-func on_line_submitted(text_submitted: String) -> void:
-	if not get_ok_button().disabled:
-		dialog_finished.emit(true, text_submitted.strip_edges())
-	hide()
+func grab_text_focus() -> void:
+	_dialog_line.grab_focus()
 
 
-func on_text_changed(new_text: String) -> void:
-	if allow_empty:
-		return
-	get_ok_button().disabled = new_text.strip_edges().is_empty()
+func set_line_text(text: String, caret_pos: int = -1) -> void:
+	var diff_text: bool = _dialog_line.text != text
+	_dialog_line.text = text
+	if not text.is_empty():
+		var text_len: int = text.length()
+		var real_index: int = clampi(caret_pos, -text_len, text_len - 1)
+		_dialog_line.caret_column = real_index
+	if diff_text:
+		_on_text_changed(text)
 
 
-func focus_line_edit() -> void:
-	_submit_ln_edt.grab_focus()
+func select_all_text() -> void:
+	_dialog_line.select_all()
+
+
+func caret_to_end() -> void:
+	_dialog_line.caret_column = _dialog_line.text.length()

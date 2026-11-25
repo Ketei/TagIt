@@ -4,7 +4,7 @@ extends Node
 
 signal request_get(request_response: Array)
 signal prio_get(request_response: Array)
-signal suggestions_found(for_tag: String, suggestions: Array[String])
+signal suggestions_found(for_tag: String, for_list: String, suggestions: Array[String])
 signal tag_search_results_found(for_tag: String, tags: PackedStringArray)
 signal wiki_responded(tag: String, wiki: String, parents: PackedStringArray, aliases: PackedStringArray, suggestions: PackedStringArray)
 signal _next_in_queue(uuid: String)
@@ -99,20 +99,21 @@ func get_tag_request_url(tag_name: String, order := "date", limit: int = 75) -> 
 	return request_url
 
 
-func queue_job(url: String, job_type: JobTypes) -> void:
+func queue_job(url: String, job_type: JobTypes, list: String) -> void:
 	working = true
-	jobs.append({"url": url, "type": job_type})
+	jobs.append({"url": url, "type": job_type, "list": list})
 	
 	if job_timer.is_stopped():
 		job_timer.start()
 
 
 ## Searches suggestions for a tag
-func search_suggestions(for_tag: String) -> void:
+func search_suggestions(for_tag: String, for_list: String) -> void:
 	SingletonManager.TagIt.log_silent("[eSIx API] Queueing request for tag \"" + for_tag + "\"", DataManager.LogLevel.INFO)
 	queue_job(
 			get_tag_request_url(for_tag.replace(" ", "_"), "count", 1),
-			JobTypes.SUGGESTION)
+			JobTypes.SUGGESTION,
+			for_list)
 
 
 func _get_full_data(raw_tag: String) -> Dictionary:
@@ -376,17 +377,18 @@ func on_timer_timeout() -> void:
 		requester.request(req_url["url"], get_headers())
 		var response: Array = await request_get
 		SingletonManager.TagIt.log_message("[eSix API] Response received", DataManager.LogLevel.INFO)
-		process_response(response, req_url["type"])
+		process_response(response, req_url["type"], req_url["list"])
 		job_timer.start()
 	else:
 		working = false
 
 
-func process_response(response: Array, response_type: JobTypes) -> void:
+func process_response(response: Array, response_type: JobTypes, list: String) -> void:
 	if response_type == JobTypes.SUGGESTION:
 		if response.is_empty():
 			suggestions_found.emit(
 					"",
+					list,
 					Array([], TYPE_STRING, &"", null))
 			return
 		var suggestion_array: Dictionary = parse_tag_strength(
@@ -399,7 +401,7 @@ func process_response(response: Array, response_type: JobTypes) -> void:
 				continue
 			for item: String in suggestion_array[strength]:
 				suggestions.append(item.replace("_", " "))
-		suggestions_found.emit(response[0]["name"], suggestions)
+		suggestions_found.emit(response[0]["name"], list, suggestions)
 
 
 func on_request_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:

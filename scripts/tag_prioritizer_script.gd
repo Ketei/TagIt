@@ -2,6 +2,7 @@ extends Control
 
 
 signal close_pressed
+signal updated
 
 var priority_tags: Dictionary = {} : set = set_priority_tags
 
@@ -24,8 +25,8 @@ func _ready() -> void:
 	
 	add_tag_ln_edt.text_submitted.connect(_on_text_submitted)
 	add_tag_ln_edt.timer_finished.connect(on_search_timer_timeout)
-	prio_tree.item_edited.connect(_on_item_edited)
 	close_window_btn.pressed.connect(_on_close_button_pressed)
+	prio_tree.item_edited.connect(_on_item_edited)
 	prio_tree.tags_dropped.connect(_on_tags_dropped)
 
 
@@ -68,6 +69,7 @@ func _on_text_submitted(new_text: String) -> void:
 	
 	add_tag(clean_text, prio)
 	priority_tags[clean_text] = prio
+	updated.emit()
 
 
 func _on_close_button_pressed() -> void:
@@ -77,6 +79,7 @@ func _on_close_button_pressed() -> void:
 func _on_item_edited() -> void:
 	var edited: TreeItem = prio_tree.get_edited()
 	priority_tags[edited.get_text(0)] = int(edited.get_range(1))
+	updated.emit()
 
 
 func clear_tags() -> void:

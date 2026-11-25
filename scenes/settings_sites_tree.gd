@@ -1,6 +1,8 @@
 extends Tree
 
 
+signal website_activated(site: int)
+
 const BIN_ICON = preload("res://icons/bin_icon.svg")
 var root_tree: TreeItem = null
 
@@ -8,6 +10,15 @@ var root_tree: TreeItem = null
 func _ready() -> void:
 	root_tree = create_item()
 	button_clicked.connect(on_button_clicked)
+	item_activated.connect(_on_item_activated)
+
+
+func _on_item_activated() -> void:
+	var selected: TreeItem = get_selected()
+	if selected == null:
+		return
+	
+	website_activated.emit(selected.get_metadata(0))
 
 
 func add_site(site_name: String, site_id: int) -> void:

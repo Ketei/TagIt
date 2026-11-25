@@ -5,10 +5,11 @@ extends Resource
 const FILE_PATH: String = "user://autosave.tres"
 
 @export var exited_correctly: bool = true
+@export var lists: Dictionary[String, Array] = {
+	"id": ["main list tags"]
+} 
 @export var main_list: Array[String] = []
-@export var alt_lists: Array[Dictionary] = []
-@export var suggestions: Array[String] = []
-@export var groups: Array[int] = []
+
 # If it crashed when an UUID is present, it'll reopen the project, replace the
 # list data and set the UUID in case the user wants to save.
 @export var project_uuid: String = ""
@@ -26,21 +27,14 @@ static func get_autosave_file() -> AutoSave:
 func safe_exit() -> void:
 	exited_correctly = true
 	main_list.clear()
-	alt_lists.clear()
-	suggestions.clear()
-	groups.clear()
+	lists.clear()
 	project_uuid = ""
 	ResourceSaver.save(
 			self,
 			ProjectSettings.globalize_path(FILE_PATH))
 
 
-func backup_data(main: Array[String], alts: Array[Dictionary], active_suggestions: Array[String], active_groups: Array[int], active_uuid: String = "") -> void:
-	main_list = main
-	alt_lists = alts
-	suggestions = active_suggestions
-	groups = active_groups
-	project_uuid = active_uuid
+func backup_data() -> void:
 	ResourceSaver.save(
 			self,
 			ProjectSettings.globalize_path(FILE_PATH))

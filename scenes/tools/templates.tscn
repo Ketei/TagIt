@@ -1,13 +1,13 @@
-[gd_scene load_steps=7 format=3 uid="uid://doospxbh0so4i"]
+[gd_scene format=3 uid="uid://doospxbh0so4i"]
 
-[ext_resource type="Script" path="res://scenes/tools/templates_script.gd" id="1_q14ue"]
+[ext_resource type="Script" uid="uid://cjc51675vk3rt" path="res://scenes/tools/templates_script.gd" id="1_q14ue"]
 [ext_resource type="Texture2D" uid="uid://cs1peems7gyk2" path="res://icons/new_template_icon.svg" id="1_sivrn"]
 [ext_resource type="Texture2D" uid="uid://d83q0hy74uit" path="res://icons/search_icon.svg" id="3_xrx8o"]
 [ext_resource type="Texture2D" uid="uid://c03por8vrxsy7" path="res://icons/image_icon.svg" id="4_rcfse"]
 [ext_resource type="Texture2D" uid="uid://doflm0070386w" path="res://icons/image_icon_crossed.svg" id="5_i4e8j"]
 [ext_resource type="PackedScene" uid="uid://djrqboi0xp74" path="res://scenes/autofill_line_edit.tscn" id="5_t3cac"]
 
-[node name="Templates" type="HBoxContainer"]
+[node name="Templates" type="HBoxContainer" unique_id=672006483]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -15,21 +15,21 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_q14ue")
 
-[node name="TemplatesContainer" type="VBoxContainer" parent="."]
+[node name="TemplatesContainer" type="VBoxContainer" parent="." unique_id=2141475713]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="HeaderContainer" type="HBoxContainer" parent="TemplatesContainer"]
+[node name="HeaderContainer" type="HBoxContainer" parent="TemplatesContainer" unique_id=1125028096]
 layout_mode = 2
 
-[node name="SearchTemplateLnEdt" type="LineEdit" parent="TemplatesContainer/HeaderContainer"]
+[node name="SearchTemplateLnEdt" type="LineEdit" parent="TemplatesContainer/HeaderContainer" unique_id=985570688]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Search Template"
 caret_blink = true
 
-[node name="NewTemplateBtn" type="Button" parent="TemplatesContainer/HeaderContainer"]
+[node name="NewTemplateBtn" type="Button" parent="TemplatesContainer/HeaderContainer" unique_id=1153042566]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 tooltip_text = "New Template"
@@ -37,124 +37,124 @@ icon = ExtResource("1_sivrn")
 flat = true
 icon_alignment = 1
 
-[node name="TemplateTree" type="Tree" parent="TemplatesContainer"]
+[node name="TemplateTree" type="Tree" parent="TemplatesContainer" unique_id=1153723889]
 layout_mode = 2
 size_flags_vertical = 3
 hide_folding = true
 hide_root = true
 
-[node name="SetupContainer" type="HBoxContainer" parent="."]
+[node name="SetupContainer" type="HBoxContainer" parent="." unique_id=1615913080]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 4.0
 
-[node name="InfoContaienr" type="VBoxContainer" parent="SetupContainer"]
+[node name="InfoContaienr" type="VBoxContainer" parent="SetupContainer" unique_id=1235486400]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="SetupContainer/InfoContaienr"]
+[node name="Label" type="Label" parent="SetupContainer/InfoContaienr" unique_id=1228003329]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 text = "Info"
 vertical_alignment = 2
 
-[node name="TitleContainer" type="VBoxContainer" parent="SetupContainer/InfoContaienr"]
+[node name="TitleContainer" type="VBoxContainer" parent="SetupContainer/InfoContaienr" unique_id=408933252]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 2.0
 
-[node name="TemplateTitle" type="LineEdit" parent="SetupContainer/InfoContaienr/TitleContainer"]
+[node name="TemplateTitle" type="LineEdit" parent="SetupContainer/InfoContaienr/TitleContainer" unique_id=1440998536]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 placeholder_text = "Template Title"
 editable = false
 caret_blink = true
 
-[node name="DescriptionTxtEdt" type="TextEdit" parent="SetupContainer/InfoContaienr/TitleContainer"]
+[node name="DescriptionTxtEdt" type="TextEdit" parent="SetupContainer/InfoContaienr/TitleContainer" unique_id=2131741276]
 layout_mode = 2
 size_flags_vertical = 3
 placeholder_text = "Template Description"
 editable = false
 
-[node name="ImageContainer" type="VBoxContainer" parent="SetupContainer/InfoContaienr"]
+[node name="ImageContainer" type="VBoxContainer" parent="SetupContainer/InfoContaienr" unique_id=219322856]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
 
-[node name="PanelContainer" type="PanelContainer" parent="SetupContainer/InfoContaienr/ImageContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="SetupContainer/InfoContaienr/ImageContainer" unique_id=1578311415]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ThumbnailContainer" type="TextureRect" parent="SetupContainer/InfoContaienr/ImageContainer/PanelContainer"]
+[node name="ThumbnailContainer" type="TextureRect" parent="SetupContainer/InfoContaienr/ImageContainer/PanelContainer" unique_id=1452978652]
 layout_mode = 2
 size_flags_vertical = 3
 expand_mode = 1
 stretch_mode = 6
 
-[node name="ButtonContainer" type="HBoxContainer" parent="SetupContainer/InfoContaienr/ImageContainer"]
+[node name="ButtonContainer" type="HBoxContainer" parent="SetupContainer/InfoContaienr/ImageContainer" unique_id=1583686114]
 layout_mode = 2
 alignment = 2
 
-[node name="SelectThumbButton" type="Button" parent="SetupContainer/InfoContaienr/ImageContainer/ButtonContainer"]
+[node name="SelectThumbButton" type="Button" parent="SetupContainer/InfoContaienr/ImageContainer/ButtonContainer" unique_id=551469585]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 disabled = true
 icon = ExtResource("4_rcfse")
 flat = true
 
-[node name="ClearThumbnail" type="Button" parent="SetupContainer/InfoContaienr/ImageContainer/ButtonContainer"]
+[node name="ClearThumbnail" type="Button" parent="SetupContainer/InfoContaienr/ImageContainer/ButtonContainer" unique_id=1677207815]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 disabled = true
 icon = ExtResource("5_i4e8j")
 flat = true
 
-[node name="TagsContainer" type="VBoxContainer" parent="SetupContainer"]
+[node name="TagsContainer" type="VBoxContainer" parent="SetupContainer" unique_id=1360272425]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="SetupContainer/TagsContainer"]
+[node name="Label" type="Label" parent="SetupContainer/TagsContainer" unique_id=686983475]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 text = "Tags"
 vertical_alignment = 2
 
-[node name="TagsTree" type="Tree" parent="SetupContainer/TagsContainer"]
+[node name="TagsTree" type="Tree" parent="SetupContainer/TagsContainer" unique_id=513992172]
 layout_mode = 2
 size_flags_vertical = 3
 hide_folding = true
 hide_root = true
 select_mode = 2
 
-[node name="AddTagLnEdt" parent="SetupContainer/TagsContainer" instance=ExtResource("5_t3cac")]
+[node name="AddTagLnEdt" parent="SetupContainer/TagsContainer" unique_id=1482420508 instance=ExtResource("5_t3cac")]
 layout_mode = 2
 caret_blink = true
 list_direction = 1
 replace_on_item_select = true
 use_timer = true
 
-[node name="GroupsContainer" type="VBoxContainer" parent="SetupContainer"]
+[node name="GroupsContainer" type="VBoxContainer" parent="SetupContainer" unique_id=1329512466]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="SetupContainer/GroupsContainer"]
+[node name="Label" type="Label" parent="SetupContainer/GroupsContainer" unique_id=836991633]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 text = "Groups"
 vertical_alignment = 2
 
-[node name="SearchGroupLnEdt" type="LineEdit" parent="SetupContainer/GroupsContainer"]
+[node name="SearchGroupLnEdt" type="LineEdit" parent="SetupContainer/GroupsContainer" unique_id=1088507489]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 placeholder_text = "Search Group"
 clear_button_enabled = true
-right_icon = ExtResource("3_xrx8o")
 caret_blink = true
+right_icon = ExtResource("3_xrx8o")
 
-[node name="GroupTree" type="Tree" parent="SetupContainer/GroupsContainer"]
+[node name="GroupTree" type="Tree" parent="SetupContainer/GroupsContainer" unique_id=429859726]
 layout_mode = 2
 size_flags_vertical = 3
 hide_folding = true

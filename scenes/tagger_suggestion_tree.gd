@@ -1,8 +1,10 @@
 extends Tree
 
 
-signal suggestions_activated(suggestion_ids: Array[int], tree: Tree)
+signal suggestions_activated(suggestion_ids: Array[String])
 signal suggestions_deleted(suggestions: Array[String])
+
+var _suggestions: Dictionary[String, TreeItem] = {}
 
 
 func _ready() -> void:
@@ -12,7 +14,7 @@ func _ready() -> void:
 
 
 func _get_drag_data(_at_position: Vector2) -> Variant:
-	var tag_array := get_selected_names()
+	var tag_array: Array[String] = get_selected_names()
 	var tags_label := Label.new()
 	var tag_count: int = tag_array.size()
 	tags_label.text = str("    ", tag_count, " tag")
@@ -20,10 +22,9 @@ func _get_drag_data(_at_position: Vector2) -> Variant:
 		tags_label.text += "s"
 	set_drag_preview(tags_label)
 	return {
-		"type": "tag_array",
+		"type": "suggestions",
 		"tag_names": tag_array,
-		"tree_type": 0,
-		"tree": self}
+		"tree_type": 0}
 
 
 func _input(event: InputEvent) -> void:
@@ -34,7 +35,6 @@ func _input(event: InputEvent) -> void:
 			while current != null:
 				var next = get_next_selected(current)
 				removed.append(current.get_text(0))
-				current.free()
 				current = next
 			suggestions_deleted.emit(removed)
 			get_viewport().set_input_as_handled()
@@ -48,24 +48,18 @@ func on_focus_lost() -> void:
 	deselect_all()
 
 
-func add_suggestion(suggestion_name: String) -> void:
-	var new_suggestion: TreeItem = get_root().create_child()#create_item(root_tree)
-	new_suggestion.set_text(0, suggestion_name)
-	#new_suggestion.set_metadata(0, suggestion_id)
-
-
-#func has_suggestion_id(suggestion_id: int) -> bool:
-	#for child in get_root().get_children():
-		#if child.get_metadata(0) == suggestion_id:
-			#return true
-	#return false
+func add_suggestion(text: String) -> bool:
+	if _suggestions.has(text):
+		return false
+	
+	var new_suggestion: TreeItem = get_root().create_child()
+	new_suggestion.set_text(0, text)
+	_suggestions[text] = new_suggestion
+	return true
 
 
 func has_suggestion(suggestion_text: String) -> bool:
-	for child in get_root().get_children():
-		if child.get_text(0) == suggestion_text:
-			return true
-	return false
+	return _suggestions.has(suggestion_text)
 
 
 func get_selected_names() -> Array[String]:
@@ -78,24 +72,20 @@ func get_selected_names() -> Array[String]:
 
 
 func on_item_activated() -> void:
-	suggestions_activated.emit(get_selected_names(), self)
-	delete_selected()
+	suggestions_activated.emit(get_selected_names())
 
 
 func delete_tags(tags: Array[String]) -> void:
 	for tag in tags:
-		for child in get_root().get_children():
-			if child.get_text(0) == tag:
-				child.free()
-				break
+		if _suggestions.has(tag):
+			_suggestions[tag].free()
+			_suggestions.erase(tag)
 
 
 func delete_tag(tag: String) -> void:
-	for child in get_root().get_children():
-		if child.get_text(0) == tag:
-			child.free()
-			break
-
+	if _suggestions.has(tag):
+		_suggestions[tag].free()
+		_suggestions.erase(tag)
 
 
 func get_all_suggestions_text() -> Array[String]:
@@ -111,3 +101,9 @@ func delete_selected() -> void:
 		var next = get_next_selected(current)
 		current.free()
 		current = next
+
+
+func clear_suggestions() -> void:
+	for item in _suggestions:
+		_suggestions[item].free()
+	_suggestions.clear()

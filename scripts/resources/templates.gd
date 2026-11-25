@@ -5,14 +5,20 @@ extends Resource
 const TEMPLATE_PATH: String = "user://templates/templates.tres"
 const TEMPLATE_THUMBNAILS: String = "user://templates/thumbnails/"
 @export var templates: Array[Dictionary] = []
+@export var template_map: Dictionary[String, Dictionary] = {}
 var template_stash: Dictionary = {}
 
 
-static func get_thumbnail_path() -> String:
+static func get_thumbnails_folder() -> String:
 	var path: String = ProjectSettings.globalize_path(TEMPLATE_THUMBNAILS)
 	if not path.ends_with("/"):
 		path += "/"
 	return path
+
+
+static func get_thumbnail_path(thumb_hash: String) -> String:
+	var path: String = ProjectSettings.globalize_path(TEMPLATE_THUMBNAILS)
+	return path.path_join(thumb_hash) + ".webp"
 
 
 static func get_file_path() -> String:
@@ -30,13 +36,13 @@ static func get_templates() -> TemplateResource:
 
 
 func new_template(title: String, description: String, tags: Array[String], groups: Array[int], thumbnail: String) -> String:
-	var uuid: String = get_new_template_uuid()
+	var uuid: String = UUID.generate_new()
 	templates.append({
 		"_uuid": uuid,
 		"title": title,
 		"description": description,
-		"groups": groups,
-		"tags": tags,
+		"groups": groups.duplicate(),
+		"tags": tags.duplicate(),
 		"thumbnail": thumbnail})
 	return uuid
 
@@ -90,26 +96,59 @@ func overwrite_template(template_uuid: String, title: String, description: Strin
 		break
 
 
+func save_template(template: TagItTemplate) -> bool:
+	if template._uuid.is_empty() or template_map.has(template._uuid):
+		return false
+	
+	var data: Dictionary[String, Variant] = {
+		"_uuid": template._uuid,
+		"title": template.title,
+		"description": template.description,
+		"groups": template.groups.duplicate(),
+		"tags": template.tags.duplicate()}
+	
+	template_map[template._uuid] = data
+	return true
+
+
 func erase_template(template_uuid: String) -> void:
-	for template_idx in range(templates.size()):
-		if templates[template_idx]["_uuid"] == template_uuid:
-			templates.remove_at(template_idx)
-			break
+	if not template_map.has(template_uuid):
+		return
+	
+	var t_hash: String = template_uuid.replace("-", "")
+	var thumb_path: String = get_thumbnail_path(t_hash)
+	if not thumb_path.is_empty() and FileAccess.file_exists(thumb_path):
+		OS.move_to_trash(thumb_path)
+		
+	template_map.erase(template_uuid)
 
 
-func delete_template_thumbnail(template_uuid: String) -> void:
-	for template_idx in range(templates.size()):
-		if templates[template_idx]["_uuid"] == template_uuid:
-			if not templates[template_idx]["thumbnail"].is_empty() and FileAccess.file_exists(get_thumbnail_path() + templates[template_idx]["thumbnail"]):
-				OS.move_to_trash(get_thumbnail_path() + templates[template_idx]["thumbnail"])
-			break
-
-
-func get_template(template_uuid: String) -> Dictionary:
-	for template_idx in range(templates.size()):
-		if templates[template_idx]["_uuid"] == template_uuid:
-			return templates[template_idx].duplicate()
-	return {}
+func get_template(template_uuid: String) -> TagItTemplate:
+	if not template_map.has(template_uuid):
+		return null
+	
+	var data: Dictionary = template_map[template_uuid]
+	var template: TagItTemplate = TagItTemplate.new()
+	
+	var groups_data: Variant = data.get("groups")
+	var tags_data: Variant = data.get("tags")
+	var thumbnail_file: String = TemplateResource.get_thumbnail_path(template_uuid.replace("-", ""))
+	
+	template._uuid = template_uuid
+	template.title = data.get("title", "")
+	template.description = data.get("description", "")
+	if typeof(groups_data) == TYPE_ARRAY:
+		template.groups = groups_data.duplicate()
+	if typeof(tags_data) == TYPE_ARRAY:
+		template.tags = tags_data.duplicate()
+	
+	if FileAccess.file_exists(thumbnail_file):
+		var img: Image = Image.load_from_file(thumbnail_file)
+		if img != null:
+			var tex: ImageTexture = ImageTexture.create_from_image(img)
+			template._thumbnail = tex
+	
+	return template
 
 
 func get_stash(stash_uuid: String) -> Dictionary:
@@ -121,6 +160,14 @@ func get_template_thumbnail_path(uuid: String) -> String:
 		if template["_uuid"] == uuid:
 			return template["thumbnail"]
 	return ""
+
+
+func get_template_uuids() -> Array[String]:
+	return Arrays.create_typed(TYPE_STRING, template_map.keys())
+
+
+func has_template(uid: String) -> bool:
+	return template_map.has(uid)
 
 
 func save() -> void:
