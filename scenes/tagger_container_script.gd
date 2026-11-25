@@ -293,7 +293,7 @@ func set_tags_of_list(list_id: String, tags: Array, create: bool = false) -> voi
 		return
 	
 	var on_selected: bool = current_list == list_id
-	list.clear()
+	list.clear_tags()
 	if on_selected:
 		tags_tree.clear_tags()
 	
@@ -605,17 +605,6 @@ func load_tag_list(list_id: String) -> bool:
 	return true
 
 
-func save_current_list() -> void:
-	var list: TagList = lists.get(current_list, shared_list)
-	if list == null:
-		return
-	
-	list.clear()
-	var entries: Dictionary = tags_tree.get_used_tags() # [String, int]
-	for tag_text:String in entries:
-		list.add_tag(tag_text, entries[tag_text])
-
-
 func generate_tag_list() -> void:
 	var common_tags: Dictionary[String, int] = shared_list.get_list_tags()
 	
@@ -745,51 +734,43 @@ func erase_tag_list(list_id: String) -> bool:
 	if not lists.has(list_id):
 		return false
 	
-	# id: Title
-	var list_items: Dictionary[String, String] = {}
-	var prev_selected: String = current_list
-	var select_shared: bool = current_list == list_id
+	var on_list: String = current_list
+	
+	# --- List Btn ---
+	var new_select: int = list_opt_btn.selected
+	if on_list == list_id:
+		new_select = posmod(new_select, list_opt_btn.item_count - 1)
 	
 	for idx in list_opt_btn.item_count:
-		list_items[list_opt_btn.get_item_metadata(idx)] = list_opt_btn.get_item_text(idx)
+		if list_opt_btn.get_item_metadata(idx) == list_id:
+			list_opt_btn.remove_item(idx)
+			break
+	list_opt_btn.select(new_select)
+	# ----------------
 	
-	list_items.erase(list_id)
-	var ids: Array = list_items.keys()
+	# --- Gen List Btn ---
+	var new_gen: int = gen_version_opt_btn.selected
+	if -1 < new_gen and gen_version_opt_btn.get_selected_metadata() == on_list:
+		if gen_version_opt_btn.item_count == 1:
+			new_gen = -1
+		else:
+			new_gen = posmod(new_gen, gen_version_opt_btn.item_count - 1)
 	
-	list_opt_btn.clear()
-	for id in list_items:
-		list_opt_btn.add_item(list_items[id])
-		list_opt_btn.set_item_metadata(-1, id)
-	
-	if select_shared:
-		list_opt_btn.select(0)
-		load_tag_list("")
-	else:
-		list_opt_btn.select(ids.find(prev_selected))
-	
-	var generators: Dictionary[String, String] = {}
 	for idx in gen_version_opt_btn.item_count:
-		generators[gen_version_opt_btn.get_item_metadata(idx)] = gen_version_opt_btn.get_item_text(idx)
+		if gen_version_opt_btn.get_item_metadata(idx) == list_id:
+			gen_version_opt_btn.remove_item(idx)
+			break
+	# --------------------
 	
-	generators.erase(list_id)
-	var new_gens: Array = generators.keys()
-	var gen_selected: String = gen_version_opt_btn.get_selected_metadata()
-	gen_version_opt_btn.clear()
-	for id in generators:
-		gen_version_opt_btn.add_item(generators[id])
-		gen_version_opt_btn.set_item_metadata(-1, id)
-	
-	if 0 < gen_version_opt_btn.item_count:
-		var new_idx: int = clampi(new_gens.find(gen_selected), 0, gen_version_opt_btn.item_count - 1)
-		gen_version_opt_btn.select(new_idx)
-	else:
-		gen_version_opt_btn.select(-1)
+	lists.erase(list_id)
 	
 	if lists.size() == 0:
 		list_selector_container.visible = false
 		list_version_container.visible = false
 	
 	tags_tree.delete_alt_list(list_id)
+	
+	load_tag_list(current_list)
 	
 	return true
 
@@ -964,7 +945,6 @@ func set_image_from_path(path: String) -> void:
 	var list: TagList = lists.get(current_list, shared_list)
 	
 	if ext == "gif":
-		#var gif: GIFTexture = GIFTexture.load_from_file(file_path)
 		var gif: SpriteFrames = GifManager.sprite_frames_from_file(path)
 		if gif == null:
 			return
@@ -1142,13 +1122,11 @@ func _do_create_wizard_lists(main: String, alt: String, tags_moved: Array[String
 	create_tag_list(alt)
 	
 	var main_list: TagList = lists.get(main)
-	print("Moving tags: ", tags_moved)
 	var on_shared: bool = current_list.is_empty()
 	for tag in tags_moved:
 		var id: int = SingletonManager.TagIt.get_tag_id(tag)
 		main_list.add_tag(tag, id)
 		if shared_list.remove_tag_text(tag) and on_shared:
-			print("Removing: ", tag)
 			tags_tree.remove_tag_from_text(tag)
 
 
@@ -1288,82 +1266,64 @@ func _on_search_timer_timeout() -> void:
 
 func _on_erase_tag_list_pressed() -> void:
 	var list_to_erase: String = current_list
-	var list_tags: Dictionary[String, int] = tags_tree.get_used_tags()
-	var ver_idx: int = 0
-	
-	for item in gen_version_opt_btn.item_count:
-		if gen_version_opt_btn.get_item_metadata(item) == list_to_erase:
-			ver_idx = item
-			break
+	var list_tags: Array[String] = tags_tree.get_all_tags_text()
+	var s_tags: Array[String] = suggestion_tags.get_suggestions()
 	
 	_undo.create_action("Erase List '%s'" % list_to_erase)
 	_undo.add_do_method(_do_erase_tag_list.bind(list_to_erase))
-	_undo.add_undo_method(_undo_erase_tag_list.bind(list_to_erase, list_opt_btn.selected, ver_idx, list_tags))
+	_undo.add_undo_method(_undo_erase_tag_list.bind(list_to_erase, list_opt_btn.selected, list_tags, s_tags))
 	_undo.commit_action()
 	
 	list_changed.emit()
 
 
-func _undo_erase_tag_list(list_id: String, list_index:int, generator_index: int, list_tags: Dictionary[String, int]) -> void:
+func _undo_erase_tag_list(list_id: String, list_index:int, list_tags: Array[String], suggestions: Array[String]) -> void:
 	if lists.has(list_id):
 		return
 	
+	create_tag_list(list_id, false)
+	
+	# --- GUI WORK ---
 	var selected: String = current_list
-	var list_items: Array[String] = []
+	var gen_selected: String = "" if gen_version_opt_btn.selected < 0 else gen_version_opt_btn.get_selected_metadata()
 	
+	var current_items: Array[String] = []
 	for idx in list_opt_btn.item_count:
-		list_items.append(list_opt_btn.get_item_metadata(idx))
+		current_items.append(list_opt_btn.get_item_metadata(idx))
 	
-	if list_items.is_empty():
-		list_items.append(list_id)
-	else:
-		var index_insert: int = Arrays.clamp_index(list_items, list_index)
-		list_items.insert(index_insert, list_id)
+	var switch_index: int = Arrays.clamp_index(current_items, list_index)
+	var current_index: int = current_items.find(list_id)
 	
-	list_opt_btn.clear()
-	for item_idx in list_items.size():
-		var text: String = list_items[item_idx]
-		list_opt_btn.add_item(text, item_idx)
-		list_opt_btn.set_item_metadata(item_idx, text)
+	if current_index != switch_index:
+		Arrays.switch_indexes(current_index, switch_index, current_items)
+		list_opt_btn.clear()
+		list_opt_btn.add_item("* Shared *", 0)
+		list_opt_btn.set_item_metadata(0, "")
+		for idx in range(1, current_items.size()):
+			var id: String = current_items[idx]
+			list_opt_btn.add_item(Strings.capitalize(id))
+			list_opt_btn.set_item_metadata(-1, id)
+		list_opt_btn.select(switch_index)
 	
-	var new_selected: int = list_items.find(selected)
-	if new_selected == -1:
-		new_selected = list_items.find(list_id)
+	var gen_select: int = current_items.slice(1).find(gen_selected)
+	if gen_select != gen_version_opt_btn.selected:
+		gen_version_opt_btn.clear()
+		for idx in range(1, current_items.size()):
+			var id: String = current_items[idx]
+			gen_version_opt_btn.add_item(Strings.capitalize(id))
+			gen_version_opt_btn.set_item_metadata(-1, id)
+		gen_version_opt_btn.select(gen_select)
+	# ----------------
 	
-	var gen_selected: String = gen_version_opt_btn.get_selected_metadata() if -1 < gen_version_opt_btn.selected else ""
-	var gen_items: Array[String] = []
-	for idx in gen_version_opt_btn.item_count:
-		gen_items.append(gen_version_opt_btn.get_item_metadata(idx))
-	
-	if gen_items.is_empty():
-		gen_items.append(list_id)
-	else:
-		var index_insert: int = Arrays.clamp_index(gen_items, generator_index)
-		gen_items.insert(index_insert, list_id)
-	
-	gen_version_opt_btn.clear()
-	for idx in gen_items.size():
-		gen_version_opt_btn.add_item(gen_items[idx], idx)
-		gen_version_opt_btn.set_item_metadata(idx, gen_items[idx])
-	
-	var new_gen_select: int = gen_items.find(gen_selected)
-	if new_gen_select == -1:
-		new_gen_select = gen_items.find(list_id)
-	
-	gen_version_opt_btn.select(new_gen_select)
-	
-	var new_list: TagList = TagList.new()
+	var new_list: TagList = lists[list_id]
 	for tag_text in list_tags:
-		new_list.add_tag(tag_text, list_tags[tag_text])
+		var id: int = SingletonManager.TagIt.get_tag_id(tag_text)
+		new_list.add_tag(tag_text, id)
 	
-	lists[list_id] = new_list
-	list_opt_btn.select(new_selected)
+	for s in suggestions:
+		new_list.add_suggestion(s)
 	
-	if selected == list_items[new_selected]:
-		return
-	
-	save_current_list()
-	load_tag_list(list_items[new_selected])
+	load_tag_list(list_id)
 
 
 func _do_erase_tag_list(to_erase: String) -> void:
@@ -2139,3 +2099,18 @@ class TagList extends RefCounted:
 	func clear() -> void:
 		_tag_ids.clear()
 		_tags.clear()
+		_suggestions.clear()
+		origin_path = ""
+		image = null
+		image_type = ""
+		image_path = ""
+	
+	
+	func clear_tags() -> void:
+		_tag_ids.clear()
+		_tags.clear()
+	
+	
+	func clear_suggestions() -> void:
+		_suggestions.clear()
+	

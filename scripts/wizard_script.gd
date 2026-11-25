@@ -2933,7 +2933,7 @@ func _on_character_name_focus_lost() -> void:
 
 
 func apply_character(tag: String) -> void:
-	var data := storage.get_character(tag)
+	var data: TagItStorage.WizardCharacter = storage.get_character(tag)
 	
 	species_ln_edt.text = data.species
 	
@@ -2943,56 +2943,85 @@ func apply_character(tag: String) -> void:
 	select_age(data.age)
 	select_age_lore(data.age_lore)
 	
+	clear_body_settings()
 	for target in body_texture_tree.get_root().get_children():
-		if data.properties.has(target.get_metadata(0)["tag"]):
-			var prop_data: Dictionary = data.properties[target.get_metadata(0)["tag"]]
-			target.set_checked(0, prop_data["use"])
-			if prop_data["use"]:
-				target.disable_folding = false
-
-			for sub_prop in target.get_children():
-				if sub_prop.get_metadata(0)["index"] < 0:
-					for saved_prop in prop_data["properties"]:
-						if saved_prop["index"] != sub_prop.get_metadata(0)["index"]:
-							continue
-						var items: Array[String] = saved_prop["value"]
-						sub_prop.set_text(1, str(items.size(), " item " if items.size() == 1 else " items ", "selected"))
-						sub_prop.get_metadata(1)["selected_ids"].clear()
-						sub_prop.get_metadata(1)["selected_ids"].assign(items)
+		var prop_tag: String = target.get_metadata(0)["tag"]
+		if not data.properties.has(prop_tag):
+			target.set_checked(0, false)
+			target.disable_folding = true
+			continue
+		
+		var prop_data: Dictionary = data.properties[target.get_metadata(0)["tag"]]
+		var uses_prop: bool = prop_data.get("use", false)
+		target.set_checked(0, uses_prop)
+		target.disable_folding = false
+		
+		for sub_prop in target.get_children():
+			if sub_prop.get_metadata(0)["index"] < 0:
+				for saved_prop in prop_data["properties"]:
+					if saved_prop["index"] != sub_prop.get_metadata(0)["index"]:
+						continue
+					var items: Array[String] = saved_prop["value"]
+					sub_prop.set_text(1, str(items.size(), " item " if items.size() == 1 else " items ", "selected"))
+					sub_prop.get_metadata(1)["selected_ids"].clear()
+					sub_prop.get_metadata(1)["selected_ids"].assign(items)
+					break
+			else:
+				for saved_prop in prop_data["properties"]:
+					if saved_prop["index"] < 0:
+						continue
+					if sub_prop.get_metadata(0)["id"] == saved_prop["id"]:
+						if sub_prop.get_cell_mode(1) == saved_prop["mode"]:
+							match sub_prop.get_cell_mode(1):
+								TreeItem.CELL_MODE_RANGE:
+									sub_prop.set_range(1, saved_prop["value"])
+								TreeItem.CELL_MODE_CHECK:
+									sub_prop.set_checked(1, saved_prop["value"])
 						break
-				else:
-					for saved_prop in prop_data["properties"]:
-						if saved_prop["index"] < 0:
-							continue
-						if sub_prop.get_metadata(0)["id"] == saved_prop["id"]:
-							if sub_prop.get_cell_mode(1) == saved_prop["mode"]:
-								match sub_prop.get_cell_mode(1):
-									TreeItem.CELL_MODE_RANGE:
-										sub_prop.set_range(1, saved_prop["value"])
-									TreeItem.CELL_MODE_CHECK:
-										sub_prop.set_checked(1, saved_prop["value"])
-							break
 	
 	for trait_enabled in body_traits.get_root().get_children():
-		if data.traits.has(trait_enabled.get_metadata(0)):
-			trait_enabled.set_checked(
-					0,
-					data.traits[trait_enabled.get_metadata(0)])
+		var enabled: bool = data.traits.get(
+				trait_enabled.get_metadata(0),
+				false)
+		trait_enabled.set_checked(
+				0,
+				enabled)
 	
 	for apparel_item in clothing_tree.get_root().get_children():
-		if not data.apparel.has(apparel_item.get_metadata(0)):
+		var id: String = apparel_item.get_metadata(0)
+		
+		if not data.apparel.has(id):
+			apparel_item.set_checked(0, false)
+			apparel_item.collapsed = true
+			apparel_item.disable_folding = true
+			
+			for sub_item in apparel_item.get_children():
+				sub_item.set_checked(0, false)
 			continue
+		
+		var ap_data: Dictionary = data.apparel[id]
+		var use: bool = ap_data.get("active", false)
+		apparel_item.disable_folding = not use
 		apparel_item.set_checked(
 				0,
-				data.apparel[apparel_item.get_metadata(0)]["active"])
-		for specific in apparel_item.get_children():
-			if data.apparel[apparel_item.get_metadata(0)]["subtypes"].has(specific.get_metadata(0)):
-				specific.set_checked(
-						0,
-						data.apparel[apparel_item.get_metadata(0)]["subtypes"][specific.get_metadata(0)])
+				use)
 		
-		apparel_item.disable_folding = not data.apparel[apparel_item.get_metadata(0)]["active"]
-		if not apparel_item.collapsed and not data.apparel[apparel_item.get_metadata(0)]["active"]:
+		if not use:
+			for sub_item in apparel_item.get_children():
+				sub_item.set_checked(0, false)
+			continue
+		
+		var subtypes: Dictionary = ap_data.get("subtypes", DictUtils.EMPTY)
+		for specific in apparel_item.get_children():
+			var sub_id: String = specific.get_metadata(0)
+			var uses_sub: bool = subtypes.get(sub_id)
+			specific.set_checked(
+					0,
+					uses_sub)
+		
+		var is_active: bool = data.apparel[apparel_item.get_metadata(0)].get("active", false)#["active"]
+		apparel_item.disable_folding = not is_active
+		if not apparel_item.collapsed and not is_active:
 			apparel_item.collapsed = true
 
 
@@ -3045,8 +3074,10 @@ func set_project_texture(new_texture: Resource) -> void:
 	
 	if new_texture is Texture2D:
 		project_texture.texture = new_texture
+		media_type = MediaType.IMAGE
 	elif new_texture is SpriteFrames:
 		gif_texture_rect.gif = new_texture
+		media_type = MediaType.GIF
 	
 	zoom_project.reset_zoom()
 	project_texture_container.visible = new_texture != null
@@ -3476,10 +3507,11 @@ func save_wizard_character() -> void:
 	var properties: Dictionary[String, Dictionary] = {}
 	
 	for prop in body_texture_tree.get_root().get_children():
-		var setting: Dictionary[String, Variant] = {
-			"use": prop.is_checked(0),
-			"index": prop.get_metadata(0)["index"],
-			"properties": Array([], TYPE_DICTIONARY, &"", null)}
+		var is_checked: bool = prop.is_checked(0)
+		if not is_checked:
+			continue
+		
+		var body_props: Array[Dictionary] = []
 		
 		for property_item in prop.get_children():
 			var idx: int = property_item.get_metadata(0)["index"]
@@ -3488,34 +3520,63 @@ func save_wizard_character() -> void:
 				"index": idx}
 			
 			if 0 <= idx:
-				property["id"] = property_item.get_metadata(0)["id"]
-			
+				var id: String = property_item.get_metadata(0)["id"]
+				var value: Variant = null
 				match property_item.get_cell_mode(1):
 					TreeItem.CELL_MODE_RANGE:
-						property["value"] = property_item.get_range(1)
+						value = property_item.get_range(1)
 					TreeItem.CELL_MODE_CHECK:
-						property["value"] = property_item.is_checked(1)
+						value = property_item.is_checked(1)
+				property["id"] = id
+				property["value"] = value
 			else:
-				property["value"] = property_item.get_metadata(1)["selected_ids"].duplicate()
+				var ids: Array = property_item.get_metadata(1)["selected_ids"].duplicate()
+				if ids.is_empty():
+					continue
 				
+				property["value"] = ids
 				if idx == -1:
 					property["format"] = property_item.get_metadata(1)["format"]
-			setting["properties"].append(property)
+			
+			body_props.append(property)
+		
+		if not is_checked and properties.is_empty():
+			continue
+		
+		var setting: Dictionary[String, Variant] = {
+			"use": is_checked,
+			"index": prop.get_metadata(0)["index"],
+			"properties": body_props}
 		
 		properties[prop.get_metadata(0)["tag"]] = setting
 	
 	for apparel_tree in clothing_tree.get_root().get_children():
+		var active: bool = apparel_tree.is_checked(0)
+		if not active:
+			continue
+		
 		var section_id: String = apparel_tree.get_metadata(0) # ID is stored as metadata on column 0
 		var target: Dictionary[String, bool] = {}
 		for subapparel in apparel_tree.get_children():
+			if not subapparel.is_checked(0):
+				continue
+			
 			var cloth_id: String = subapparel.get_metadata(0) # ID stored here
 			target[cloth_id] = subapparel.is_checked(0)
-		if not target.is_empty():
-			apparel[section_id] = target
+		
+		if target.is_empty():
+			continue
+		
+		var entry: Dictionary[String, Variant] = {
+			"active": active,
+			"subtypes": target}
+		
+		apparel_tree[section_id] = entry
 	
 	for trait_tree in body_traits.get_root().get_children():
 		var id: String = trait_tree.get_metadata(0)
-		traits[id] = trait_tree.is_checked(0)
+		if trait_tree.is_checked(0):
+			traits[id] = true
 	
 	var unique_species: Dictionary[String, Variant] = {}
 	for sp in species_ln_edt.text.strip_edges().split(","):
@@ -3544,6 +3605,7 @@ func save_wizard_character() -> void:
 	new_sheet.traits = traits
 	
 	storage.set_character(new_sheet)
+	storage.save()
 
 
 func _on_character_item_tree_focus_lost(tree: Tree) -> void:

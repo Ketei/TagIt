@@ -71,6 +71,13 @@ func get_selected_names() -> Array[String]:
 	return selected_ids
 
 
+func get_suggestions() -> Array[String]:
+	var s: Array[String] = []
+	if not _suggestions.is_empty():
+		s.assign(_suggestions.keys())
+	return s
+
+
 func on_item_activated() -> void:
 	suggestions_activated.emit(get_selected_names())
 
