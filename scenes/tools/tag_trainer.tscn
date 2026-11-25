@@ -1,0 +1,346 @@
+[gd_scene format=3 uid="uid://un4f5tn1dh25"]
+
+[ext_resource type="Script" uid="uid://bjowq0volgv0u" path="res://scenes/tools/tag_trainer.gd" id="1_sy21w"]
+[ext_resource type="Script" uid="uid://cu38gkhbpkcof" path="res://scenes/tools/trainer_script.gd" id="2_0vdg4"]
+[ext_resource type="Script" uid="uid://6ctyfxvsur3i" path="res://scenes/tools/sqldb_trainer.gd" id="3_mjm6a"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sy21w"]
+content_margin_left = 8.0
+content_margin_top = 10.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+
+[sub_resource type="GDScript" id="GDScript_0vdg4"]
+script/source = "class_name TvecTester
+extends Node
+
+const TVEC_PATH: String = \"user://tag_vectors.tvec\"
+const DIMENSIONS: int = 128
+
+# Added: Inspector inputs for testing 1-5 tags
+@export var test_tags: PackedStringArray = PackedStringArray()
+@export_range(1, 25) var top_n: int = 5
+
+var tag_names: PackedStringArray = PackedStringArray()
+var tag_to_index: Dictionary[String, int] = {}
+var flat_vectors: PackedFloat32Array = PackedFloat32Array()
+
+
+func perform_test() -> void:
+	if not load_tvec(TVEC_PATH):
+		push_error(\"Failed to load \" + TVEC_PATH)
+		return
+	
+	print(\"Loaded %d tags from %s\" % [tag_names.size(), TVEC_PATH])
+	
+	var cleaned_query := PackedStringArray()
+	for raw_tag: String in test_tags:
+		var normalized: String = raw_tag.strip_edges().to_lower()
+		if not normalized.is_empty():
+			cleaned_query.append(normalized)
+		if cleaned_query.size() >= 5:
+			break
+	
+	if cleaned_query.is_empty():
+		print(\"No tags set in 'test_tags' Inspector property.\")
+		return
+	
+	print_neighbors(cleaned_query, top_n)
+
+
+func load_tvec(path: String) -> bool:
+	if not FileAccess.file_exists(path):
+		return false
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return false
+	
+	if file.get_buffer(4).get_string_from_ascii() != \"TVEC\":
+		return false
+	
+	var _version: int = file.get_32()
+	var dims: int = file.get_32()
+	var count: int = file.get_32()
+	if dims != DIMENSIONS or count <= 0:
+		return false
+	
+	tag_names.clear()
+	tag_to_index.clear()
+	
+	for i: int in range(count):
+		var str_len: int = file.get_16()
+		var tag_str: String = file.get_buffer(str_len).get_string_from_utf8()
+		tag_names.append(tag_str)
+		tag_to_index[tag_str] = i
+	
+	var total_floats: int = count * DIMENSIONS
+	flat_vectors = file.get_buffer(total_floats * 4).to_float32_array()
+	file.close()
+	
+	return flat_vectors.size() == total_floats
+
+
+func print_neighbors(query_tags: PackedStringArray, result_count: int = 5) -> void:
+	for tag: String in query_tags:
+		if not tag_to_index.has(tag):
+			print(\"Warning: Tag '%s' was not found in .tvec vocabulary.\" % tag)
+	
+	var centroid := _build_centroid(query_tags)
+	if centroid.is_empty():
+		print(\"None of the query tags exist in the .tvec file: \", query_tags)
+		return
+	
+	var results: Array[Dictionary] = []
+	for i: int in range(tag_names.size()):
+		var candidate: String = tag_names[i]
+		if query_tags.has(candidate):
+			continue
+		var score: float = _dot_product(centroid, i)
+		results.append({ \"tag\": candidate, \"score\": score })
+	
+	results.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a[\"score\"] > b[\"score\"])
+	
+	print(\"\\n--- Query: %s ---\" % [\", \".join(query_tags)])
+	var limit: int = mini(result_count, results.size())
+	for i: int in range(limit):
+		print(\"  %d. %s (score: %.4f)\" % [i + 1, results[i][\"tag\"], results[i][\"score\"]])
+
+
+func _build_centroid(query_tags: PackedStringArray) -> PackedFloat32Array:
+	var centroid := PackedFloat32Array()
+	centroid.resize(DIMENSIONS)
+	centroid.fill(0.0)
+	
+	var valid_count: int = 0
+	for tag: String in query_tags:
+		if not tag_to_index.has(tag):
+			continue
+		var offset: int = tag_to_index[tag] * DIMENSIONS
+		for d: int in range(DIMENSIONS):
+			centroid[d] += flat_vectors[offset + d]
+		valid_count += 1
+	
+	if valid_count == 0:
+		return PackedFloat32Array()
+	
+	var mag_sq: float = 0.0
+	for d: int in range(DIMENSIONS):
+		mag_sq += centroid[d] * centroid[d]
+	
+	if mag_sq > 0.000001:
+		var inv_mag: float = 1.0 / sqrt(mag_sq)
+		for d: int in range(DIMENSIONS):
+			centroid[d] *= inv_mag
+	
+	return centroid
+
+
+func _dot_product(query_vec: PackedFloat32Array, tag_index: int) -> float:
+	var offset: int = tag_index * DIMENSIONS
+	var sum: float = 0.0
+	for d: int in range(DIMENSIONS):
+		sum += query_vec[d] * flat_vectors[offset + d]
+	return sum
+"
+
+[node name="TagsTrainer" type="Control" unique_id=1511771966]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_sy21w")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1087006180]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TrainSelectorOpt" type="OptionButton" parent="VBoxContainer" unique_id=1945792136]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+alignment = 1
+selected = 0
+item_count = 2
+popup/item_0/text = "Own Database"
+popup/item_0/id = 0
+popup/item_1/text = "Hydrus DB"
+popup/item_1/id = 1
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer" unique_id=720295582]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_sy21w")
+
+[node name="TrainerContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer" unique_id=467431106]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="SettingsContainer" type="VBoxContainer" parent="VBoxContainer/PanelContainer/TrainerContainer" unique_id=695719379]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer/TrainerContainer/SettingsContainer" unique_id=955668583]
+layout_mode = 2
+text = "Tags to train on"
+
+[node name="TagsTree" type="Tree" parent="VBoxContainer/PanelContainer/TrainerContainer/SettingsContainer" unique_id=438327057]
+layout_mode = 2
+size_flags_vertical = 3
+hide_folding = true
+hide_root = true
+
+[node name="TrainerTagsLn" type="LineEdit" parent="VBoxContainer/PanelContainer/TrainerContainer/SettingsContainer" unique_id=122140606]
+layout_mode = 2
+placeholder_text = "Tags to train on"
+keep_editing_on_text_submit = true
+
+[node name="ExcludeContainer" type="VBoxContainer" parent="VBoxContainer/PanelContainer/TrainerContainer" unique_id=1459161413]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PrefixesContainer" type="VBoxContainer" parent="VBoxContainer/PanelContainer/TrainerContainer/ExcludeContainer" unique_id=921511553]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer/TrainerContainer/ExcludeContainer/PrefixesContainer" unique_id=385163533]
+layout_mode = 2
+text = "Prefixes to exclude"
+
+[node name="PrefixesTree" type="Tree" parent="VBoxContainer/PanelContainer/TrainerContainer/ExcludeContainer/PrefixesContainer" unique_id=1617566864]
+layout_mode = 2
+size_flags_vertical = 3
+hide_folding = true
+hide_root = true
+
+[node name="PrefixesLn" type="LineEdit" parent="VBoxContainer/PanelContainer/TrainerContainer/ExcludeContainer/PrefixesContainer" unique_id=1129861816]
+layout_mode = 2
+placeholder_text = "Add Prefix"
+keep_editing_on_text_submit = true
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer/TrainerContainer/ExcludeContainer" unique_id=2093336630]
+layout_mode = 2
+text = "Tags to ignore"
+
+[node name="ExcludeTagTree" type="Tree" parent="VBoxContainer/PanelContainer/TrainerContainer/ExcludeContainer" unique_id=835620768]
+layout_mode = 2
+size_flags_vertical = 3
+hide_folding = true
+hide_root = true
+
+[node name="ExcludeTagLn" type="LineEdit" parent="VBoxContainer/PanelContainer/TrainerContainer/ExcludeContainer" unique_id=1467452038]
+layout_mode = 2
+placeholder_text = "Tags to exclude"
+keep_editing_on_text_submit = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/PanelContainer/TrainerContainer" unique_id=2015791970]
+layout_mode = 2
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/PanelContainer/TrainerContainer/VBoxContainer" unique_id=1577982135]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="HBoxContainer" type="VBoxContainer" parent="VBoxContainer/PanelContainer/TrainerContainer/VBoxContainer/VBoxContainer" unique_id=851912054]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer/TrainerContainer/VBoxContainer/VBoxContainer/HBoxContainer" unique_id=2100897848]
+layout_mode = 2
+text = "Amount of posts to train"
+horizontal_alignment = 1
+
+[node name="PostCountSpn" type="SpinBox" parent="VBoxContainer/PanelContainer/TrainerContainer/VBoxContainer/VBoxContainer/HBoxContainer" unique_id=2085650016]
+layout_mode = 2
+min_value = 1.0
+max_value = 1000.0
+value = 200.0
+
+[node name="IgnorePrevChk" type="CheckBox" parent="VBoxContainer/PanelContainer/TrainerContainer/VBoxContainer/VBoxContainer" unique_id=1759493951]
+layout_mode = 2
+tooltip_text = "The trainer will retrain on posts previously trained on.
+Otherwise, they'll be skipped"
+text = " Retrain on posts"
+
+[node name="TrainButton" type="Button" parent="VBoxContainer/PanelContainer/TrainerContainer/VBoxContainer" unique_id=1424519905]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_vertical = 8
+text = "Train"
+
+[node name="OwnDatabase" type="VBoxContainer" parent="VBoxContainer/PanelContainer" unique_id=753572579]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer/OwnDatabase" unique_id=337492424]
+layout_mode = 2
+text = "This will train on your database tag suggestions.
+The training goes in order of tag registration but you can specify how many toags to train on at a time."
+horizontal_alignment = 1
+
+[node name="MainContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/OwnDatabase" unique_id=1747119807]
+layout_mode = 2
+
+[node name="ConfigContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/OwnDatabase/MainContainer" unique_id=921530880]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer/OwnDatabase/MainContainer/ConfigContainer" unique_id=89672902]
+layout_mode = 2
+text = "Train on: "
+
+[node name="DBTagCount" type="SpinBox" parent="VBoxContainer/PanelContainer/OwnDatabase/MainContainer/ConfigContainer" unique_id=352826390]
+layout_mode = 2
+min_value = 1.0
+max_value = 9999.0
+value = 1.0
+
+[node name="TrainSQLBtn" type="Button" parent="VBoxContainer/PanelContainer/OwnDatabase/MainContainer" unique_id=1626291915]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Train"
+
+[node name="ProgressBar" type="VBoxContainer" parent="VBoxContainer/PanelContainer" unique_id=1204287083]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer/ProgressBar" unique_id=1835640167]
+layout_mode = 2
+text = "Progress"
+horizontal_alignment = 1
+
+[node name="TrainingProgress" type="ProgressBar" parent="VBoxContainer/PanelContainer/ProgressBar" unique_id=121270476]
+layout_mode = 2
+
+[node name="MsgLbl" type="Label" parent="VBoxContainer/PanelContainer/ProgressBar" unique_id=815005584]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="VocabLbl" type="Label" parent="VBoxContainer/PanelContainer/ProgressBar" unique_id=2033106735]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="DoneBtn" type="Button" parent="VBoxContainer/PanelContainer/ProgressBar" unique_id=843318022]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Done"
+
+[node name="BackgroundTrainer" type="Node" parent="." unique_id=406519435]
+script = ExtResource("2_0vdg4")
+
+[node name="Node" type="Node" parent="." unique_id=662547951]
+script = SubResource("GDScript_0vdg4")
+test_tags = PackedStringArray("vaporeon")
+top_n = 25
+
+[node name="SQLDBTrainer" type="Node" parent="." unique_id=614446739]
+script = ExtResource("3_mjm6a")
