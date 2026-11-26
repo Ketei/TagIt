@@ -467,8 +467,8 @@ func _template_tree_drop_data(at_position: Vector2, data: Variant) -> void:
 		return
 	
 	if over == null:
-		if item.get_index() != template_tree.get_child_count() - 1:
-			item.move_before(template_tree.get_root().get_child(-1))
+		if item.get_index() != template_tree.get_root().get_child_count() - 1:
+			item.move_after(template_tree.get_root().get_child(-1))
 		return
 	
 	var section: int = template_tree.get_drop_section_at_position(at_position)
