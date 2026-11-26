@@ -547,8 +547,11 @@ func load_tag_list(list_id: String) -> bool:
 		var icon: Texture2D = null
 		var color: Color = Color.WHITE
 		if 0 < data_category:
-			icon = SingletonManager.TagIt.get_icon_texture(data_category)
+			icon = SingletonManager.TagIt.get_icon_of_category(data_category)
 			color = SingletonManager.TagIt.get_category_icon_color(data_category)
+		else:
+			icon = SingletonManager.TagIt.get_icon_of_category(1)
+			color = SingletonManager.TagIt.get_category_icon_color(1)
 		
 		tags_tree.add_tag(
 				tag_id,

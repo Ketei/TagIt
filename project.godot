@@ -15,7 +15,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="TagItUpdated"
-config/version="3.3.0"
+config/version="3.7.1"
 run/main_scene="res://scenes/main_scene.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="tagit3"

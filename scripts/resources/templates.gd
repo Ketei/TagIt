@@ -35,15 +35,14 @@ static func get_templates() -> TemplateResource:
 	return TemplateResource.new()
 
 
-func new_template(title: String, description: String, tags: Array[String], groups: Array[int], thumbnail: String) -> String:
+func new_template(title: String, description: String, tags: Array[String], groups: Array[int]) -> String:
 	var uuid: String = UUID.generate_new()
-	templates.append({
+	template_map[uuid] = {
 		"_uuid": uuid,
 		"title": title,
 		"description": description,
 		"groups": groups.duplicate(),
-		"tags": tags.duplicate(),
-		"thumbnail": thumbnail})
+		"tags": tags.duplicate()}
 	return uuid
 
 
@@ -52,6 +51,17 @@ func get_new_template_uuid() -> String:
 	while has_uuid(uuid):
 		uuid = Strings.random_string64()
 	return uuid
+
+
+func get_template_index(uuid: String) -> int:
+	if template_map.has(uuid):
+		template_map[uuid].get("index", 0)
+	return -1
+
+
+func set_template_index(uuid: String, idx: int) -> void:
+	if template_map.has(uuid):
+		template_map[uuid]["index"] = idx
 
 
 func has_uuid(uuid: String) -> bool:
@@ -96,8 +106,8 @@ func overwrite_template(template_uuid: String, title: String, description: Strin
 		break
 
 
-func save_template(template: TagItTemplate) -> bool:
-	if template._uuid.is_empty() or template_map.has(template._uuid):
+func save_template(template: TagItTemplate, idx: int = -1) -> bool:
+	if template._uuid.is_empty():
 		return false
 	
 	var data: Dictionary[String, Variant] = {
@@ -105,7 +115,8 @@ func save_template(template: TagItTemplate) -> bool:
 		"title": template.title,
 		"description": template.description,
 		"groups": template.groups.duplicate(),
-		"tags": template.tags.duplicate()}
+		"tags": template.tags.duplicate(),
+		"index": maxi(0, idx)}
 	
 	template_map[template._uuid] = data
 	return true
@@ -163,7 +174,13 @@ func get_template_thumbnail_path(uuid: String) -> String:
 
 
 func get_template_uuids() -> Array[String]:
-	return Arrays.create_typed(TYPE_STRING, template_map.keys())
+	var uids: Array[String] = []
+	uids.assign(template_map.keys())
+	uids.sort_custom(
+			func (a:String,b:String) -> bool:
+				return template_map[a].get("index", 0) < template_map[b].get("index", 0))
+	
+	return uids
 
 
 func has_template(uid: String) -> bool:

@@ -25,7 +25,7 @@ const DB_VERSION: int = 6
 const PROJECTS_VERSION: int = 3
 const TEMPLATES_VERSION: int = 4
 const STORAGE_VERSION: int = 8
-const TAGIT_VERSION_ARRAY: Array[int] = [3, 7, 0]
+const TAGIT_VERSION_ARRAY: Array[int] = [3, 7, 1]
 const MAX_PARENT_RECURSION: int = 100
 const IMAGE_LIMITS: Vector2i = Vector2i(1000, 1000)
 const LEV_DISTANCE: float = 0.75
@@ -1176,6 +1176,7 @@ func get_icon_texture(id: int) -> Texture2D:
 func get_icon_of_category(category: int) -> Texture2D:
 	if not icon_category.has(category):
 		return null
+	
 	return get_icon_texture(icon_category[category]["icon"])
 
 # --- Groups ---

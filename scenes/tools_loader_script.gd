@@ -32,6 +32,7 @@ const TOOLS: Array[Dictionary] = [
 
 const MessageConfirmationDialog = preload("res://scenes/dialogs/message_confirmation_dialog.gd")
 
+var _saving: bool = false
 var tool_scene: TagItTool = null
 var warn_unsaved: bool = false
 var current_tool_idx: int = -1
@@ -63,6 +64,18 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if tool_scene == null:
 		return
+	
+	if event is InputEventKey:
+		if not event.echo and event.pressed:
+			if event.keycode == KEY_S and event.ctrl_pressed and not event.shift_pressed:
+				if tool_scene != null and tool_scene.requires_save:
+					if _saving:
+						tool_scene.on_save_pressed()
+					else:
+						on_save_pressed()
+					warn_unsaved = false
+				get_viewport().set_input_as_handled()
+	
 	tool_scene.input(event)
 
 

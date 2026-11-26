@@ -89,16 +89,10 @@ layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
 text = "[font_size=20][b][color=SKY_BLUE]New[/color][/b][/font_size]
-[ul] Slimmed down the binary by more than half its size.
- You can now use ctrl+z and ctrl+y/ctrl+shift+z to undo or redo while on the tag list (as long as you're not on a text field).
- Project images can now also be GIF images.
- Alternate version lists are now able to have their own image and suggestions.
- Added \"Monochrome\" to the Wizard.
- The wizard ball will now also visually update when selecting sketch/line art.
- You can now save/overwrite characters within the tag wizard.
- Added the ability to edit a website info after creation by double-clicking it.
- Added a checkbox when creating websites to toggle whether to use the prefixes or not.
- When formatting a tag using a website with prefixes it'll now use them.[/ul]
+[ul]
+ You can now save while on a tool by pressing ctrl+s as long as the tool supports saving.
+ You can now set the order of presets by reordering the preset list (Drag and Drop) on the preset tool window (Remember to save)[/ul]
 [font_size=20][b][color=SKY_BLUE]Fixes[/color][/b][/font_size]
-[ul] Fixed an issue where advancing on the tag wizard and then returning to characters the character tag would no longer update.
- Fixed an issue where the tag wizard was not adding all the selected character poses.[/ul]"
+[ul] CRITICAL FIX: Fixed an error where the program wouldn't save a list unless you've clicked on creating a new project first
+ Fixed an issue where alternate list icons wouldn't load correctly
+ Fixed an issue where non-new templates wouldn't save.[/ul]"

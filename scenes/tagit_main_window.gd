@@ -203,6 +203,8 @@ func _ready() -> void:
 	tab_bar.current_tab = 0
 	on_tab_changed(0)
 	
+	loaded_project = TagItProject.new()
+	
 	sort_submenu = PopupMenu.new()
 	sort_submenu.add_item("Alphabetically", 0)
 	sort_submenu.add_item("Category", 1)
@@ -1095,6 +1097,9 @@ func on_menu_button_id_selected(id: int) -> void:
 		1: # Save:
 			if _block_events:
 				return
+			
+			if loaded_project == null:
+				loaded_project = TagItProject.new()
 			
 			if not loaded_project._uuid.is_empty():
 				save_current_project()

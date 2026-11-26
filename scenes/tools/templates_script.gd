@@ -16,6 +16,7 @@ var current_template: TreeItem = null:
 		select_thumb_button.disabled = not valid_id
 		set_groups_editable(valid_id)
 
+var tree_items: Dictionary[String, TreeItem] = {}
 var all_templates: Dictionary[String, Dictionary] = {
 	#"uuid": {"template": null, "edited": false}
 }
@@ -63,6 +64,7 @@ func _ready() -> void:
 		var new_template: TreeItem = template_tree.get_root().create_child()
 		new_template.set_text(0, title)
 		new_template.set_metadata(0, template_id)
+		tree_items[template_id] = new_template
 	
 	var groups: Dictionary = SingletonManager.TagIt.get_tag_groups()
 	
@@ -90,6 +92,12 @@ func _ready() -> void:
 	new_template_btn.pressed.connect(on_new_template_pressed)
 	template_tree.item_selected.connect(_on_template_item_selected)
 	add_tag_ln_edt.timer_finished.connect(on_search_timer_timeout)
+	
+	template_tree.set_drag_forwarding(
+		_template_tree_get_drag_data,
+		_template_tree_can_drop_data,
+		_template_tree_drop_data)
+	
 	SingletonManager.TagIt.group_created.connect(_on_group_created)
 	SingletonManager.TagIt.group_deleted.connect(_on_group_deleted)
 
@@ -263,6 +271,7 @@ func create_template(template_name: String = "New Template") -> void:
 	var new_template: TreeItem = template_tree.get_root().create_child()
 	new_template.set_text(0, template_name)
 	new_template.set_metadata(0, uid)
+	tree_items[uid] = new_template
 
 
 func on_template_deleted(deleted_uuid: String) -> void:
@@ -279,10 +288,10 @@ func on_template_deleted(deleted_uuid: String) -> void:
 		current_template = null
 		loaded_template = null
 	
-	for template in template_tree.get_root().get_children():
-		if template.get_metadata(0) == deleted_uuid:
-			template.free()
-			break
+	var target: TreeItem = tree_items.get(deleted_uuid)
+	if target != null:
+		target.free()
+	tree_items.erase(deleted_uuid)
 
 
 func clear_fields() -> void:
@@ -333,6 +342,9 @@ func save_current_template() -> void:
 		if group.is_checked(0):
 			groups.append(group.get_metadata(0))
 	
+	
+	loaded_template.title = template_title.text.strip_edges()
+	loaded_template.description = description_txt_edt.text.strip_edges()
 	loaded_template.tags = tags
 	loaded_template.groups = groups
 
@@ -406,14 +418,63 @@ func on_save_pressed() -> void:
 	if loaded_template != null:
 		save_current_template()
 	
-	for template_id in all_templates:
+	for template_id in all_templates: # All loaded templates
 		var data: Dictionary = all_templates[template_id]
+		var idx: int = tree_items[template_id].get_index()
 		if not data["edited"]:
+			template_resource.set_template_index(template_id, idx)
 			continue
 		var t: TagItTemplate = data["template"]
 		if t.thumbnail_updated():
 			t.update_thumbnail()
-		template_resource.save_template(t)
+		
+		template_resource.save_template(t, idx)
 		data["edited"] = false
 	
+	for template_uuid in tree_items:
+		var idx: int = tree_items[template_uuid].get_index()
+		template_resource.set_template_index(template_uuid, idx)
+	
 	template_resource.save()
+
+
+func _template_tree_get_drag_data(at_position: Vector2) -> Variant:
+	var item: TreeItem = template_tree.get_item_at_position(at_position) 
+	if item == null:
+		return null
+	
+	var dragging: Label = Label.new()
+	dragging.text = "    " + item.get_text(0)
+	set_drag_preview(dragging)
+	
+	return {"uuid": item.get_metadata(0), "origin": "template_tool"}
+
+
+func _template_tree_can_drop_data(_at_position: Vector2, data: Variant) -> bool:
+	if not typeof(data) == TYPE_DICTIONARY or data.get("origin") != "template_tool":
+		template_tree.drop_mode_flags = template_tree.DROP_MODE_DISABLED
+		return false
+	
+	template_tree.drop_mode_flags = template_tree.DROP_MODE_INBETWEEN
+	return true
+
+
+func _template_tree_drop_data(at_position: Vector2, data: Variant) -> void:
+	var item: TreeItem = tree_items[data["uuid"]]
+	var over: TreeItem = template_tree.get_item_at_position(at_position)
+	
+	if item == over:
+		return
+	
+	if over == null:
+		if item.get_index() != template_tree.get_child_count() - 1:
+			item.move_before(template_tree.get_root().get_child(-1))
+		return
+	
+	var section: int = template_tree.get_drop_section_at_position(at_position)
+	match section:
+		-1:
+			item.move_before(over)
+		0, 1:
+			item.move_after(over)
+	_on_field_edited()
