@@ -22,13 +22,13 @@ const fixes: Array[String] = [
 
 func _ready() -> void:
 	var news_str: String = ""
-	if not ADD_STR.is_empty():
+	if not adds.is_empty():
 		var news: PackedStringArray = []
 		for item in adds:
 			news.append(" " + item)
 		news_str = ADD_STR % "\n".join(news)
 	
-	if not FIX_STR.is_empty():
+	if not fixes.is_empty():
 		var news: PackedStringArray = []
 		for item in fixes:
 			news.append(" " + item)
