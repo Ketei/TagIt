@@ -153,9 +153,10 @@ func append_animation(path: String) -> bool:
 	var full_path: String = TagItProjectResource.build_resource_path(
 			_project_hash,
 			file_name)
+	var attatch_path: String = TagItProjectResource.get_project_folder(_project_hash).path_join("attatchments")
 	
-	if not DirAccess.dir_exists_absolute(full_path):
-		DirAccess.make_dir_recursive_absolute(full_path)
+	if not DirAccess.dir_exists_absolute(attatch_path):
+		DirAccess.make_dir_recursive_absolute(attatch_path)
 	
 	var error: Error = DirAccess.copy_absolute(path, full_path)
 	

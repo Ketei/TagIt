@@ -23,6 +23,10 @@ extends Resource
 @export var lists: Dictionary[String, ProjectList] = {}
 
 
+func _init() -> void:
+	shared_list = ProjectList.new()
+
+
 func new_list(list_id: String) -> ProjectList:
 	if lists.has(list_id):
 		return null

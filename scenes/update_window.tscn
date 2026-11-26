@@ -88,11 +88,3 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_1u7h1")
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
-text = "[font_size=20][b][color=SKY_BLUE]New[/color][/b][/font_size]
-[ul]
- You can now save while on a tool by pressing ctrl+s as long as the tool supports saving.
- You can now set the order of presets by reordering the preset list (Drag and Drop) on the preset tool window (Remember to save)[/ul]
-[font_size=20][b][color=SKY_BLUE]Fixes[/color][/b][/font_size]
-[ul] CRITICAL FIX: Fixed an error where the program wouldn't save a list unless you've clicked on creating a new project first
- Fixed an issue where alternate list icons wouldn't load correctly
- Fixed an issue where non-new templates wouldn't save.[/ul]"

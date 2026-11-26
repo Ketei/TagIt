@@ -32,6 +32,13 @@ static func get_project_path(project_hash: String) -> String:
 	return fullpath
 
 
+static func get_project_folder(project_hash: String) -> String:
+	var path: String = ProjectSettings.globalize_path(RESOURCES_LOCATION)
+	var hash_prefix: String = project_hash.substr(0, 2)
+	var fullpath: String = path.path_join(hash_prefix).path_join(project_hash)
+	return fullpath
+
+
 static func get_thumbnails_path() -> String:
 	var path: String = ProjectSettings.globalize_path(THUMBNAILS_LOCATION)
 	if not path.ends_with("/"):
@@ -113,6 +120,23 @@ func get_project_data(uuid: String) -> TagItProject:
 		return null
 
 
+func get_display_card_data(uuid: String) -> Dictionary:
+	for project in projects:
+		if project["_uuid"] == uuid:
+			var p_name: String = project.get("name")
+			var t_hash: String = project.get("hash", uuid.replace("-", ""))
+			var thumb_path: String = build_thumbnail_path(t_hash + ".webp")
+			var thumb: ImageTexture = null
+			
+			if FileAccess.file_exists(thumb_path):
+				var img: Image = Image.load_from_file(thumb_path)
+				if img != null:
+					thumb = ImageTexture.create_from_image(img)
+			
+			return {"title": p_name, "thumbnail": thumb}
+	return {}
+
+
 func get_project_suggestions(uuid: String) -> Array[String]:
 	for project in projects:
 		if project["_uuid"] == uuid:
@@ -170,13 +194,21 @@ func is_uuid_used(uuid: String) -> bool:
 
 
 func delete_project(project_uuid: String) -> void:
-	for project_idx in range(projects.size()):
+	for project_idx in projects.size():
 		if projects[project_idx]["_uuid"] != project_uuid:
 			continue
-		if not projects[project_idx]["image_path"].is_empty():
-			var thumbnail_path: String = get_thumbnails_path() + projects[project_idx]["image_path"]
-			if FileAccess.file_exists(thumbnail_path):
-				OS.move_to_trash(thumbnail_path)
+		var data: Dictionary = projects[project_idx]
+		var p_hash: String = data.get("uid_hash", project_uuid.replace("-", "_"))
+		var folder: String = get_project_folder(p_hash)
+		
+		if DirAccess.dir_exists_absolute(folder):
+			OS.move_to_trash(folder)
+		
+		var thumb: String = build_thumbnail_path(
+				data.get("image_path", ""))
+		if not thumb.is_empty() and FileAccess.file_exists(thumb):
+			OS.move_to_trash(thumb)
+		
 		projects.remove_at(project_idx)
 		break
 
@@ -186,6 +218,23 @@ func project_exists(project_uuid: String) -> bool:
 		if project.get("_uuid") == project_uuid:
 			return true
 	return false
+
+
+func validate_projects() -> void:
+	for project_idx in range(projects.size() -1, -1, -1):
+		var data: Dictionary = projects[project_idx]
+		var uuid: String = data.get("_uuid", "")
+		if uuid.is_empty():
+			projects.remove_at(project_idx)
+			continue
+		
+		var p_hash: String = data.get("uid_hash", uuid.replace("-", ""))
+		var p_path: String = get_project_path(p_hash)
+		if not FileAccess.file_exists(p_path):
+			projects.remove_at(project_idx)
+			continue
+	
+	save()
 
 
 func save() -> void:

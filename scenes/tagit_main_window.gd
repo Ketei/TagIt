@@ -205,6 +205,8 @@ func _ready() -> void:
 	
 	loaded_project = TagItProject.new()
 	
+	TagItProjectResource.get_projects().validate_projects()
+	
 	sort_submenu = PopupMenu.new()
 	sort_submenu.add_item("Alphabetically", 0)
 	sort_submenu.add_item("Category", 1)
@@ -318,11 +320,12 @@ func _ready() -> void:
 			
 			if projects.project_exists(project_backup.project_uuid):
 				var project: TagItProject = projects.get_project_data(project_backup.project_uuid)
-				loaded_project._uuid = project_backup.project_uuid
-				get_window().title = "TagIt - " + project.title
-				
-				tagger_container.restore_from_project(project)
-				loaded_project = project
+				if project != null:
+					loaded_project._uuid = project_backup.project_uuid
+					get_window().title = "TagIt - " + project.title
+					
+					tagger_container.restore_from_project(project)
+					loaded_project = project
 		set_save_required(true)
 	
 	# --- Window ---
@@ -525,10 +528,16 @@ func save_current_project() -> void:
 				data["title"],
 				data["tags"])
 	
-	if tagger_container.shared_list.image_path != tagger_container.shared_list.origin_path:
+	var old_file: String = tagger_container.shared_list.origin_path
+	var new_path: String = tagger_container.shared_list.image_path
+	if new_path != old_file:
 		var type: String = tagger_container.shared_list.image_type
+		
+		if FileAccess.file_exists(old_file):
+			OS.move_to_trash(old_file)
+		
 		if type == "gif":
-			shared.append_animation(tagger_container.shared_list.origin_path)
+			shared.append_animation(new_path)
 		elif type == "img":
 			var t: ImageTexture = tagger_container.shared_list.image
 			shared.save_list_image(t.get_image())
@@ -951,12 +960,11 @@ func instance_project_loader_selector() -> void:
 	selector.card_deleted.connect(on_selector_project_deleted)
 	
 	for project_uid in projects.get_project_ids():
-		var project: TagItProject = projects.get_project_data(project_uid)
-		var texture: ImageTexture = project.get_project_thumbnail()
+		var data: Dictionary = projects.get_display_card_data(project_uid)
 		selector.add_project(
-			project.title,
+			data.get("title", "[CARD TITLE ERR]"),
 			"",
-			texture,
+			data.get("thumbnail", null),
 			project_uid)
 	selector.play_intro()
 	
@@ -1196,11 +1204,13 @@ func on_selector_project_saved(title: String) -> void:
 				"[TagIt] Saving project with UUID: " + current_project_uuid,
 				DataManager.LogLevel.INFO)
 	
-	if loaded_project._uuid.is_empty():
+	loaded_project.title = title
+	
+	if current_project_uuid.is_empty():
 		loaded_project._uuid = UUID.generate_new()
 		var projects := TagItProjectResource.get_projects()
 		projects.create_from_project(loaded_project)
-	loaded_project.title = title
+		projects.save()
 	
 	save_current_project()
 	
