@@ -95,6 +95,7 @@ var prio_list_node: Control = null
 var sort_submenu: PopupMenu = null
 
 var project_backup: AutoSave = null
+var project_index: TagItProjectResource = null
 
 # ----- Windows -----
 @onready var tagger_container: PanelContainer = $MainContainer/TaggerContainer
@@ -205,7 +206,8 @@ func _ready() -> void:
 	
 	loaded_project = TagItProject.new()
 	
-	TagItProjectResource.get_projects().validate_projects()
+	project_index = TagItProjectResource.get_projects()
+	project_index.validate_projects()
 	
 	sort_submenu = PopupMenu.new()
 	sort_submenu.add_item("Alphabetically", 0)
@@ -316,10 +318,8 @@ func _ready() -> void:
 					true)
 		
 		if not project_backup.project_uuid.is_empty():
-			var projects := TagItProjectResource.get_projects()
-			
-			if projects.project_exists(project_backup.project_uuid):
-				var project: TagItProject = projects.get_project_data(project_backup.project_uuid)
+			if project_index.project_exists(project_backup.project_uuid):
+				var project: TagItProject = project_index.get_project_data(project_backup.project_uuid)
 				if project != null:
 					loaded_project._uuid = project_backup.project_uuid
 					get_window().title = "TagIt - " + project.title
@@ -576,6 +576,10 @@ func save_current_project() -> void:
 			loaded_project.erase_list(existing_list)
 	
 	loaded_project.save()
+	if project_index.set_project_last_update(
+			current_project_uuid,
+			int(Time.get_unix_time_from_system())):
+		project_index.save()
 	set_save_required(false)
 
 
@@ -945,8 +949,6 @@ func instantiate_save_selector() -> void:
 
 
 func instance_project_loader_selector() -> void:
-	var projects := TagItProjectResource.get_projects()
-	
 	backup_timer.paused = true
 	selector = PROJECTS_CONTAINER.instantiate()
 	selector.use_descriptions = false
@@ -959,8 +961,8 @@ func instance_project_loader_selector() -> void:
 	selector.close_pressed.connect(on_selector_close_pressed)
 	selector.card_deleted.connect(on_selector_project_deleted)
 	
-	for project_uid in projects.get_project_ids():
-		var data: Dictionary = projects.get_display_card_data(project_uid)
+	for project_uid in project_index.get_project_ids():
+		var data: Dictionary = project_index.get_display_card_data(project_uid)
 		selector.add_project(
 			data.get("title", "[CARD TITLE ERR]"),
 			"",
@@ -1208,9 +1210,8 @@ func on_selector_project_saved(title: String) -> void:
 	
 	if current_project_uuid.is_empty():
 		loaded_project._uuid = UUID.generate_new()
-		var projects := TagItProjectResource.get_projects()
-		projects.create_from_project(loaded_project)
-		projects.save()
+		project_index.create_from_project(loaded_project)
+		project_index.save()
 	
 	save_current_project()
 	
@@ -1231,8 +1232,7 @@ func on_selector_project_selected(project_uuid: String) -> void:
 				"[TagIt] Opening project with UUID: " + project_uuid,
 				DataManager.LogLevel.INFO)
 	
-	var projects := TagItProjectResource.get_projects()
-	var project: TagItProject = projects.get_project_data(project_uuid)
+	var project: TagItProject = project_index.get_project_data(project_uuid)
 	tagger_container.load_project(project)
 	loaded_project = project
 	
@@ -1253,9 +1253,8 @@ func on_selector_project_deleted(project_uuid: String) -> void:
 				"[TagIt] Deleting project with UUID: " + project_uuid,
 				DataManager.LogLevel.INFO)
 	
-	var projects := TagItProjectResource.get_projects()
-	projects.delete_project(project_uuid)
-	projects.save()
+	project_index.delete_project(project_uuid)
+	project_index.save()
 	
 	if loaded_project._uuid == project_uuid:
 		loaded_project._uuid = ""

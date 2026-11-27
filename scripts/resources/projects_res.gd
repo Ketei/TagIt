@@ -7,6 +7,7 @@ const THUMBNAILS_LOCATION: String = "user://projects/thumbnails/"
 const RESOURCES_LOCATION: String = "user://projects/resources/"
 
 @export var projects: Array[Dictionary] = []
+@export var projects_data: Dictionary[String, Dictionary] = {}
 
 
 static func build_resource_path(project_hash: String, resource_file: String) -> String:
@@ -64,19 +65,20 @@ static func get_projects() -> TagItProjectResource:
 	return TagItProjectResource.new()
 
 
-func create_project(p_name: String) -> String:
-	var project_uuid: String = get_new_project_uuid()
-	projects.append({
-		"_uuid": project_uuid,
-		"uid_hash": project_uuid.replace("-", ""),
-		"name": p_name})
-	return project_uuid
-
-
 func get_project_ids() -> Array[String]:
 	var p_ids: Array[String] = []
-	for project in projects:
-		p_ids.append(project["_uuid"])
+	var p_updates: Dictionary[String, int]
+	for project_id in projects_data:
+		var project: Dictionary = projects_data[project_id]
+		var up_time: int = project.get("last_update", 0)
+		p_updates[project_id] = up_time
+	
+	p_ids.assign(p_updates.keys())
+	
+	p_ids.sort_custom(
+			func (a:String,b:String) -> bool:
+				return p_updates[b] < p_updates[a])
+	
 	return p_ids
 
 
@@ -84,30 +86,33 @@ func create_from_project(project: TagItProject) -> bool:
 	if project._uuid.is_empty() or has_project(project._uuid):
 		return false
 	
-	projects.append({
-		"_uuid": project._uuid,
+	projects_data[project._uuid] = {
 		"uid_hash": project._hash,
-		"name": project.title})
+		"name": project.title}
 	
 	return true
 
 
-func has_project(uuid: String) -> bool:
-	for project in projects:
-		if project["_uuid"] == uuid:
-			return true
+func set_project_last_update(uuid: String, access: int) -> bool:
+	if projects_data.has(uuid):
+		projects_data[uuid]["last_update"] = access
+		return true
 	return false
 
 
+func has_project(uuid: String) -> bool:
+	return projects_data.has(uuid)
+
+
 func get_project_data(uuid: String) -> TagItProject:
-	var p_hash: String = ""
-	for project in projects:
-		if project["_uuid"] == uuid:
-			p_hash = project["uid_hash"]
-			break
+	if not projects_data.has(uuid):
+		return null
+	
+	var p_hash: String = projects_data[uuid].get("uid_hash", "")
 	
 	if p_hash.is_empty():
 		return
+	
 	var project_path: String = get_project_path(p_hash)
 	if not FileAccess.file_exists(project_path):
 		return null
@@ -121,50 +126,21 @@ func get_project_data(uuid: String) -> TagItProject:
 
 
 func get_display_card_data(uuid: String) -> Dictionary:
-	for project in projects:
-		if project["_uuid"] == uuid:
-			var p_name: String = project.get("name")
-			var t_hash: String = project.get("hash", uuid.replace("-", ""))
-			var thumb_path: String = build_thumbnail_path(t_hash + ".webp")
-			var thumb: ImageTexture = null
-			
-			if FileAccess.file_exists(thumb_path):
-				var img: Image = Image.load_from_file(thumb_path)
-				if img != null:
-					thumb = ImageTexture.create_from_image(img)
-			
-			return {"title": p_name, "thumbnail": thumb}
-	return {}
-
-
-func get_project_suggestions(uuid: String) -> Array[String]:
-	for project in projects:
-		if project["_uuid"] == uuid:
-			return project["suggestions"]
-	return Array([], TYPE_STRING, &"", null)
-
-
-func get_project_tags(uuid: String) -> Array[String]:
-	for project in projects:
-		if project["_uuid"] == uuid:
-			return project["tags"]
-	return Array([], TYPE_STRING, &"", null)
-
-
-func overwrite_project(project_uuid: String, p_name: String, tags: Array[String], suggestions: Array[String], groups: Array[int], image_path: String, alt_lists: Array[Dictionary], custom_priorities: Dictionary, suggestion_blacklist: PackedStringArray, group_blacklist: PackedInt64Array) -> void:
-	for project in projects:
-		if not project["_uuid"] == project_uuid:
-			continue
-		project["name"] = p_name
-		project["tags"] = tags
-		project["suggestions"] = suggestions
-		project["groups"] = groups
-		project["image_path"] = image_path
-		project["alt_lists"] = alt_lists
-		project["custom_priorities"] = custom_priorities
-		project["blacklist_tags"] = suggestion_blacklist
-		project["blacklist_groups"] = group_blacklist
-		break
+	if not projects_data.has(uuid):
+		return {}
+	
+	var project: Dictionary  = projects_data[uuid]
+	var p_name: String = project.get("name")
+	var p_hash: String = project["uid_hash"]
+	var thummb_file: String = p_hash + ".webp"
+	var thumb: ImageTexture = null
+	var thumb_path: String = build_thumbnail_path(thummb_file)
+	if FileAccess.file_exists(thumb_path):
+		var img: Image = Image.load_from_file(thumb_path)
+		if img != null:
+			thumb = ImageTexture.create_from_image(img)
+	
+	return {"title": p_name, "thumbnail": thumb}
 
 
 func get_new_project_uuid() -> String:
@@ -172,68 +148,47 @@ func get_new_project_uuid() -> String:
 
 
 func get_project_image_path(uuid: String) -> String:
-	for project in projects:
-		if project["_uuid"] == uuid:
-			var t_hash: String = project["uid_hash"]
-			return t_hash + ".webp"
+	if projects_data.has(uuid):
+		var t_hash: String = projects_data[uuid]["uid_hash"]
+		return t_hash + ".webp"
 	return ""
 
 
 func get_project_title(uuid: String) -> String:
-	for project in projects:
-		if project["_uuid"] == uuid:
-			return project["name"]
-	return ""
-
-
-func is_uuid_used(uuid: String) -> bool:
-	for project in projects:
-		if project.has("_uuid") and project["_uuid"] == uuid:
-			return true
-	return false
+	return projects_data.get(uuid, DictUtils.EMPTY).get("name", "")
 
 
 func delete_project(project_uuid: String) -> void:
-	for project_idx in projects.size():
-		if projects[project_idx]["_uuid"] != project_uuid:
-			continue
-		var data: Dictionary = projects[project_idx]
-		var p_hash: String = data.get("uid_hash", project_uuid.replace("-", "_"))
-		var folder: String = get_project_folder(p_hash)
-		
-		if DirAccess.dir_exists_absolute(folder):
-			OS.move_to_trash(folder)
-		
-		var thumb: String = build_thumbnail_path(
-				data.get("image_path", ""))
-		if not thumb.is_empty() and FileAccess.file_exists(thumb):
-			OS.move_to_trash(thumb)
-		
-		projects.remove_at(project_idx)
-		break
+	if not projects_data.has(project_uuid):
+		return
+	
+	var data: Dictionary = projects_data[project_uuid]
+	var p_hash: String = data.get("uid_hash", project_uuid.replace("-", "_"))
+	var folder: String = get_project_folder(p_hash)
+	
+	if DirAccess.dir_exists_absolute(folder):
+		OS.move_to_trash(folder)
+	
+	var thumb: String = build_thumbnail_path(
+			data.get("image_path", ""))
+	if not thumb.is_empty() and FileAccess.file_exists(thumb):
+		OS.move_to_trash(thumb)
+	
+	projects_data.erase(project_uuid)
 
 
 func project_exists(project_uuid: String) -> bool:
-	for project in projects:
-		if project.get("_uuid") == project_uuid:
-			return true
-	return false
+	return projects_data.has(project_uuid)
 
 
 func validate_projects() -> void:
-	for project_idx in range(projects.size() -1, -1, -1):
-		var data: Dictionary = projects[project_idx]
-		var uuid: String = data.get("_uuid", "")
-		if uuid.is_empty():
-			projects.remove_at(project_idx)
-			continue
-		
-		var p_hash: String = data.get("uid_hash", uuid.replace("-", ""))
+	for project_uuid in projects_data.keys():
+		var data: Dictionary = projects_data[project_uuid]
+		var p_hash: String = data.get("uid_hash", project_uuid.replace("-", ""))
 		var p_path: String = get_project_path(p_hash)
 		if not FileAccess.file_exists(p_path):
-			projects.remove_at(project_idx)
+			projects_data.erase(project_uuid)
 			continue
-	
 	save()
 
 

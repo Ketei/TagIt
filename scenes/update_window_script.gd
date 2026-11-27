@@ -11,7 +11,9 @@ const FIX_STR: String = "[font_size=20][b][color=SKY_BLUE]Fixes[/color][/b][/fon
 @onready var changes_rt_label: RichTextLabel = $MainCenter/MainPanel/MainContainer/InfoContainer/ChangesRTLabel
 
 
-const adds: Array[String] = []
+const adds: Array[String] = [
+	"Projects on the loading window will now be ordered from most-recently updated."
+]
 const fixes: Array[String] = [
 	"Fixed projects not saving images correctly.",
 	"Fixed old project images lingering after removal",

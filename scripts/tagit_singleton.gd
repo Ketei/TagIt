@@ -22,10 +22,10 @@ signal icon_created(icon_id: int)
 const DATABASE_PATH: String = "user://tag_database.db"
 const SEARCH_WILDCARD: String = "*"
 const DB_VERSION: int = 6
-const PROJECTS_VERSION: int = 3
+const PROJECTS_VERSION: int = 4
 const TEMPLATES_VERSION: int = 4
 const STORAGE_VERSION: int = 8
-const TAGIT_VERSION_ARRAY: Array[int] = [3, 7, 3]
+const TAGIT_VERSION_ARRAY: Array[int] = [3, 7, 4]
 const MAX_PARENT_RECURSION: int = 100
 const IMAGE_LIMITS: Vector2i = Vector2i(1000, 1000)
 const LEV_DISTANCE: float = 0.75
@@ -305,6 +305,7 @@ func _get_icon_data(id: int) -> Dictionary: # Maybe integrate up
 func update_projects(from_version: int) -> void:
 	var projects: TagItProjectResource = TagItProjectResource.get_projects()
 	var current_version: int = from_version
+	
 	if current_version == 1:
 		for project in projects.projects:
 			project["_uuid"] = projects.get_new_project_uuid()
@@ -334,7 +335,6 @@ func update_projects(from_version: int) -> void:
 			var img_path_data: Variant = project.get("image_path")
 			
 			var img_file: String = img_path_data if typeof(img_path_data) == TYPE_STRING else ""
-			var project_thumbnail_path: String = ""
 			var shared: ProjectList = ProjectList.new()
 			new_file.shared_list = shared
 			
@@ -342,7 +342,6 @@ func update_projects(from_version: int) -> void:
 			new_file._uuid = uuid
 			
 			if not img_file.is_empty() and img_file.is_valid_filename():
-				project_thumbnail_path = img_file
 				var file_path: String = TagItProjectResource.get_thumbnails_path() + img_file
 				if FileAccess.file_exists(file_path):
 					if file_path.get_extension() != "webp":
@@ -411,8 +410,7 @@ func update_projects(from_version: int) -> void:
 			var new_project: Dictionary[String, Variant] = {
 				"_uuid": uuid,
 				"uid_hash": new_file._hash,
-				"name": new_file.title,
-				"thumbnail": project_thumbnail_path}
+				"name": new_file.title}
 			
 			new_projects.append(new_project)
 			
@@ -422,6 +420,29 @@ func update_projects(from_version: int) -> void:
 			
 		projects.projects = new_projects
 		current_version += 1
+	
+	if current_version == 3:
+		var fake_time: int = 0
+		var new_data: Dictionary[String, Dictionary] = {}
+		for project_d:Dictionary in projects.projects:
+			fake_time += 1
+			var uid_data: Variant = project_d.get("_uuid")
+			var uid: String = ""
+			if typeof(uid_data) == TYPE_STRING:
+				uid = uid_data
+			else:
+				uid = UUID.generate_new()
+			
+			var data: Dictionary = project_d.duplicate(true)
+			
+			data["last_update"] = fake_time
+			
+			data.erase("_uuid")
+			new_data[uid] = data
+			
+		projects.projects_data = new_data
+		projects.projects.clear()
+	
 	projects.save()
 
 
