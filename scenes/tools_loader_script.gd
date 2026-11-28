@@ -84,7 +84,7 @@ func _on_visibility_changed() -> void:
 
 
 func on_template_deleted(template_uuid: String) -> void:
-	if tool_scene != null and tool_scene.TOOL_ID == "templates":
+	if tool_scene != null and tool_scene.tool_id == "templates":
 		tool_scene.on_template_deleted(template_uuid)
 
 

@@ -31,9 +31,11 @@ const ENTER_DURATION: float = 0.7 # Duration for card zoom + fade out
 const ENTER_SCALE_MULTIPLIER: float = 1.6 # Jow large the card zooms as you enter it
 
 const ERASE_BUTTON_FADE: float = 0.2
-const ERASE_BUTTON_GAP_Y: float = 16.0 # Added: base gap above the scaled center card
-const ERASE_LIFT_DISTANCE: float = 140.0 # Added: upward pickup distance
-const ERASE_ANIM_DURATION: float = 0.8 # Added: duration of pickup + fade out
+const ERASE_BUTTON_GAP_Y: float = 16.0
+const ERASE_LIFT_DISTANCE: float = 140.0
+const ERASE_ANIM_DURATION: float = 0.8
+
+const CENTER_SNAP_TOLERANCE: float = 0.02
 
 var _base_viewport_size := Vector2(1280.0, 720.0)
 var _height_ratio: float = 1.0
@@ -68,6 +70,7 @@ var _table_empty: bool = false:
 
 var _left_pile_x: float = 0.0
 var _right_pile_x: float = 0.0
+var _is_center_settled: bool = false
 
 var all_cards: Array[TagItProjectCard] = []
 var active_cards: Array[TagItProjectCard] = []
@@ -96,7 +99,7 @@ func _ready() -> void:
 	_recalculate_viewport_metrics()
 	_setup_search_timer()
 	_setup_deck_buttons()
-	# --- START MODIFICATION ---
+	
 	erase_button.visible = false
 	erase_button.disabled = true
 	erase_button.modulate = Color.TRANSPARENT
@@ -167,13 +170,19 @@ func finish_open_transition(selected_card: TagItProjectCard) -> void:
 		tween.tween_property(card, "position", target_pos, SLIDE_DURATION).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
 		stack_idx += 1
 	
-	# Scale up and fade out the selected card simultaneously ("entering" the card)
 	var enter_scale: Vector2 = Vector2.ONE * (_dynamic_center_scale * ENTER_SCALE_MULTIPLIER)
 	if selected_card != null:
 		tween.tween_property(selected_card, ^"scale", enter_scale, ENTER_DURATION).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
 		tween.tween_property(selected_card, ^"modulate:a", 0.0, ENTER_DURATION).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	tween.tween_property(search_bar, ^"modulate:a", 0.0, ENTER_DURATION).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	tween.tween_property(back_color, ^"color:a", 0.0, BACKGROUND_FADE_TIME).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	
+	if is_instance_valid(_button_tween) and _button_tween.is_valid():
+		_button_tween.kill()
+		_button_tween = null
+		if erase_button.visible:
+			erase_button.disabled = true
+			tween.tween_property(erase_button, ^"modulate", Color.TRANSPARENT, ENTER_DURATION)
 	
 	await tween.finished
 	if selected_card != null:
@@ -309,10 +318,12 @@ func _create_deck_button() -> Button:
 
 func _set_erase_disabled(disabled: bool) -> void:
 	erase_button.disabled = disabled
+	_button_tween = null
 
 
 func _set_erase_button_visible(make_visible: bool) -> void:
 	erase_button.visible = make_visible
+	_button_tween = null
 
 
 func _fade_in_erase_button() -> void:
@@ -358,7 +369,8 @@ func erase_card(card: TagItProjectCard) -> void:
 	if active_idx == -1:
 		return
 	
-	_table_active = false
+	_is_center_settled = false
+	_table_active = true
 	_fade_out_erase_button()
 	
 	all_cards.erase(card)
@@ -436,7 +448,6 @@ func _focus_card_at_index(idx: int) -> void:
 	
 	var focus_tween := create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	focus_tween.tween_property(self, ^"target_scroll", float(idx), FOCUS_DURATION)
-	_fade_in_erase_button()
 	await focus_tween.finished
 	if processing_input:
 		set_process_input(true)
@@ -471,7 +482,7 @@ func _slide_deck_in() -> void:
 		card.rotation = card.pile_rotation
 		card.z_index = all_cards.size() - i
 		
-		var target_pos: Vector2 = Vector2(_right_pile_x, _dynamic_base_y) + stack_offset # Changed: uses _right_pile_x
+		var target_pos: Vector2 = Vector2(_right_pile_x, _dynamic_base_y) + stack_offset
 		tween.tween_property(card, "position", target_pos, SLIDE_DURATION)
 	
 	await tween.finished
@@ -538,8 +549,10 @@ func _recall_all_to_right_pile(ignored_card: TagItProjectCard = null) -> void:
 
 
 func _deal_initial_cards() -> void:
-	_table_active = false
-	
+	_is_center_settled = true
+	_table_active = true
+	_fade_in_erase_button()
+	_gui_active = 1 < active_cards.size()
 	if active_cards.is_empty():
 		return
 	
@@ -553,7 +566,7 @@ func _deal_initial_cards() -> void:
 	await deal_tween.finished
 	
 	_table_active = true
-	_fade_in_erase_button() # Added: card 0 is centered after initial deal
+	_fade_in_erase_button()
 
 
 func _on_deal_step(value: float) -> void:
@@ -568,18 +581,29 @@ func _on_active_cards_size_changed() -> void:
 func _process(delta: float) -> void:
 	scroll_progress = lerpf(scroll_progress, target_scroll, clampf(delta * SMOOTH_SPEED, 0.0, 1.0))
 	_evaluate_active_curve()
+	
+	var nearest_idx: float = roundf(target_scroll)
+	var is_centered_now: bool = is_equal_approx(target_scroll, nearest_idx) and absf(scroll_progress - nearest_idx) <= CENTER_SNAP_TOLERANCE
+	if is_centered_now != _is_center_settled:
+		_is_center_settled = is_centered_now
+		if _is_center_settled:
+			_fade_in_erase_button()
+		else:
+			_fade_out_erase_button()
 
 
 func _gui_input(event: InputEvent) -> void:
 	if not is_table_active or not _gui_active:
 		return
 	if event is InputEventMouseButton and event.pressed:
+		var new_target: float = target_scroll
 		if event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			_fade_out_erase_button()
-			target_scroll = clampf(target_scroll + SCROLL_SPEED, 0.0, float(active_cards.size() - 1))
+			new_target = clampf(target_scroll + SCROLL_SPEED, 0.0, float(active_cards.size() - 1))
 		elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
-			_fade_out_erase_button()
-			target_scroll = clampf(target_scroll - SCROLL_SPEED, 0.0, float(active_cards.size() - 1))
+			new_target = clampf(target_scroll - SCROLL_SPEED, 0.0, float(active_cards.size() - 1))
+		
+		if not is_equal_approx(new_target, target_scroll):
+			target_scroll = new_target
 
 
 func _evaluate_active_curve() -> void:
@@ -618,7 +642,8 @@ func _evaluate_active_curve() -> void:
 
 func _on_search_text_changed(_new_text: String) -> void:
 	search_timer.start()
-	_fade_out_erase_button() # Added: hide while cards recall
+	_is_center_settled = false
+	_fade_out_erase_button()
 	if not _is_recalling:
 		_recall_all_to_right_pile()
 
