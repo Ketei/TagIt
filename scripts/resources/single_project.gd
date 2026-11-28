@@ -15,6 +15,7 @@ extends Resource
 			lists[list]._project_hash = h
 
 @export var title: String = ""
+@export var description: String = ""
 @export var custom_priorities: Dictionary[String, int] = {}
 @export var tag_blacklist: Array[String] = []
 @export var group_blacklist: Array[int] = []

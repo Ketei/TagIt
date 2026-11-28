@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://cfvp8qiqp8y71"]
+
+[ext_resource type="Script" uid="uid://c33um1sd3tjku" path="res://scenes/card_deck.gd" id="1_bfie4"]
+[ext_resource type="Texture2D" uid="uid://04folbrctoj7" path="res://icons/bin_icon.svg" id="2_4tgep"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j7sg3"]
+bg_color = Color(0, 0, 0, 0.5)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="Control" type="Control" unique_id=2035748876]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_bfie4")
+
+[node name="BackColor" type="ColorRect" parent="." unique_id=1717884174]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.70000005)
+
+[node name="SearchContainer" type="PanelContainer" parent="." unique_id=379060844]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -36.25
+offset_top = 10.0
+offset_right = 36.25
+offset_bottom = 45.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_j7sg3")
+
+[node name="SearchBar" type="LineEdit" parent="SearchContainer" unique_id=981358873]
+layout_mode = 2
+placeholder_text = "Search Card..."
+flat = true
+caret_blink = true
+
+[node name="EraseButton" type="Button" parent="." unique_id=373097103]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -16.0
+offset_top = 20.0
+offset_right = 16.0
+offset_bottom = 52.0
+grow_horizontal = 2
+icon = ExtResource("2_4tgep")
+flat = true

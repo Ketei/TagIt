@@ -88,7 +88,8 @@ func create_from_project(project: TagItProject) -> bool:
 	
 	projects_data[project._uuid] = {
 		"uid_hash": project._hash,
-		"name": project.title}
+		"name": project.title,
+		"description": project.description}
 	
 	return true
 
@@ -130,7 +131,8 @@ func get_display_card_data(uuid: String) -> Dictionary:
 		return {}
 	
 	var project: Dictionary  = projects_data[uuid]
-	var p_name: String = project.get("name")
+	var p_name: String = project.get("name", "")
+	var p_desc: String = project.get("description", "")
 	var p_hash: String = project["uid_hash"]
 	var thummb_file: String = p_hash + ".webp"
 	var thumb: ImageTexture = null
@@ -140,7 +142,7 @@ func get_display_card_data(uuid: String) -> Dictionary:
 		if img != null:
 			thumb = ImageTexture.create_from_image(img)
 	
-	return {"title": p_name, "thumbnail": thumb}
+	return {"title": p_name, "description": p_desc, "thumbnail": thumb}
 
 
 func get_new_project_uuid() -> String:
@@ -156,6 +158,20 @@ func get_project_image_path(uuid: String) -> String:
 
 func get_project_title(uuid: String) -> String:
 	return projects_data.get(uuid, DictUtils.EMPTY).get("name", "")
+
+
+func set_project_title(uuid: String, title: String) -> void:
+	if projects_data.has(uuid):
+		projects_data[uuid]["name"] = title
+
+
+func set_project_description(uuid: String, description: String) -> void:
+	if projects_data.has(uuid):
+		projects_data[uuid]["description"] = description
+
+
+func get_project_description(uuid: String) -> String:
+	return projects_data.get(uuid, DictUtils.EMPTY).get("description", "")
 
 
 func delete_project(project_uuid: String) -> void:

@@ -1101,10 +1101,15 @@ func _do_load_template(on_list: String, tags: Array[String], groups: Dictionary[
 	
 	for group_id in groups:
 		var data: Dictionary = groups[group_id]
+		var tags_dict: Dictionary[int, String] = {}
+		for tag in data["tags"]:
+			var id: int = SingletonManager.TagIt.get_tag_id(tag)
+			if 0 < id:
+				tags_dict[id] = tag
 		_add_group_entries_to_tree(
 				group_id,
 				data["title"],
-				data["tags"])
+				tags_dict)
 
 
 func _undo_load_template(on_list: String, tags: Array[String], groups: Dictionary[int, Array]) -> void:

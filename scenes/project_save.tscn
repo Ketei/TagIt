@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://cjxfucvnmwpd1"]
+
+[ext_resource type="Script" uid="uid://cp7s68xutdc5k" path="res://scenes/project_save_overlay.gd" id="1_iulo5"]
+
+[node name="SaveCard" type="Control" unique_id=1692718087]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_iulo5")
+
+[node name="BackColor" type="ColorRect" parent="." unique_id=795631936]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.70000005)
+
+[node name="ButtonsContainer" type="HBoxContainer" parent="." unique_id=266152858]
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -54.0
+offset_top = -40.0
+offset_right = 54.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="CancelButton" type="Button" parent="ButtonsContainer" unique_id=88768954]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Cancel"
+
+[node name="SaveButton" type="Button" parent="ButtonsContainer" unique_id=1022532592]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "Save"

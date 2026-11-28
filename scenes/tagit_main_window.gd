@@ -10,8 +10,9 @@ const SET_DESC_DIALOG = preload("res://scenes/dialogs/set_desc_dialog.tscn")
 const SET_DESC_CATEGORY_DIALOG = preload("res://scenes/dialogs/set_desc_category_dialog.tscn")
 const COLOR_PICKER_DIALOG = preload("res://scenes/dialogs/color_picker_dialog.tscn")
 const NEW_ALIAS_CONFIRM_DIALOG = preload("res://scenes/dialogs/new_alias_confirm_dialog.tscn")
-const PROJECTS_CONTAINER = preload("res://scenes/projects_container.tscn")
-const PROJECTS_CONTAINER_VERTICAL = preload("res://scenes/projects_container_vertical.tscn")
+const CARD_DECK = preload("uid://cfvp8qiqp8y71")
+const PROJECT_SAVE = preload("uid://cjxfucvnmwpd1")
+
 const SUGGENSTION_BLACKLIST = preload("res://scenes/suggenstion_blacklist.tscn")
 const TEXT_LOADER = preload("res://scenes/text_loader.tscn")
 const TAG_EXPORTER = preload("res://scenes/tag_exporter.tscn")
@@ -73,6 +74,13 @@ var current_title: String = "":
 	get():
 		if loaded_project != null:
 			return loaded_project.title
+		return ""
+var current_description: String = "":
+	set(d):
+		return
+	get():
+		if loaded_project != null:
+			return loaded_project.description
 		return ""
 
 var hydrus_connected: bool = false:
@@ -576,10 +584,12 @@ func save_current_project() -> void:
 			loaded_project.erase_list(existing_list)
 	
 	loaded_project.save()
-	if project_index.set_project_last_update(
+	project_index.set_project_last_update(
 			current_project_uuid,
-			int(Time.get_unix_time_from_system())):
-		project_index.save()
+			int(Time.get_unix_time_from_system()))
+	project_index.set_project_title(current_project_uuid, current_title)
+	project_index.set_project_description(current_project_uuid, current_description)
+	project_index.save()
 	set_save_required(false)
 
 
@@ -924,55 +934,91 @@ func instantiate_save_selector() -> void:
 	var texture: Texture2D = tagger_container.get_project_thumbnail_image()
 	backup_timer.paused = true
 	_saving = true
-	selector = PROJECTS_CONTAINER_VERTICAL.instantiate()
-	selector.use_descriptions = false
-	selector.editable_cards = true
-	selector.use_search = false
-	selector.use_save = true
-	selector.dim_background = true
-	selector.use_close = false
-	selector.card_saved.connect(on_selector_project_saved)
-	selector.close_pressed.connect(on_selector_close_pressed.bind(true))
-	add_child(selector)
-	selector.set_emit_signals(false)
-	selector.add_project(
+	selector = PROJECT_SAVE.instantiate()
+	var table: ProjectSaveOverlay = selector
+	add_child(table)
+	await table.open(
 		current_title,
-		"",
-		texture,
-		current_project_uuid,
-		0)
-	selector.play_intro()
-	await selector.intro_finished
-	selector.set_emit_signals(true)
-	selector.focus_title()
+		current_description,
+		texture)
+	
+	var result: Array = await table.project_finished
+	await table.close(result[0], false)
+	
+	table.queue_free()
 	backup_timer.paused = false
+	_saving = false
+	selector = null
+	
+	if not result[0]:
+		return
+	
+	var new_title: String = result[1]
+	var new_description: String = result[2]
+	
+	if SingletonManager.TagIt.verbose:
+		SingletonManager.TagIt.log_silent(
+				"[TagIt] Saving project with UUID: " + current_project_uuid,
+				DataManager.LogLevel.INFO)
+	
+	loaded_project.title = new_title
+	loaded_project.description = new_description
+	
+	if current_project_uuid.is_empty():
+		loaded_project._uuid = UUID.generate_new()
+		project_index.create_from_project(loaded_project)
+		project_index.save()
+	
+	save_current_project()
+	
+	set_save_required(false, false)
+	get_window().title = "TagIt - " + new_title
 
 
 func instance_project_loader_selector() -> void:
+	var card_table: CardDeckTable = CARD_DECK.instantiate()
+	selector = card_table
 	backup_timer.paused = true
-	selector = PROJECTS_CONTAINER.instantiate()
-	selector.use_descriptions = false
-	selector.dim_background = true
-	selector.allow_card_signals = false
-	add_child(selector)
-	selector.focus_main()
-	selector.set_emit_signals(false)
-	selector.card_selected.connect(on_selector_project_selected)
-	selector.close_pressed.connect(on_selector_close_pressed)
-	selector.card_deleted.connect(on_selector_project_deleted)
+	add_child(card_table)
 	
-	for project_uid in project_index.get_project_ids():
-		var data: Dictionary = project_index.get_display_card_data(project_uid)
-		selector.add_project(
-			data.get("title", "[CARD TITLE ERR]"),
-			"",
-			data.get("thumbnail", null),
-			project_uid)
-	selector.play_intro()
+	card_table.project_erase_requested.connect(on_selector_project_deleted)
 	
-	await selector.intro_finished
+	for project in project_index.get_project_ids():
+		var data: Dictionary = project_index.get_display_card_data(project)
+		if data.is_empty():
+			continue
+		
+		card_table.spawn_card(
+			project,
+			data["title"],
+			data["description"],
+			data["thumbnail"])
 	
-	selector.set_emit_signals(true)
+	await card_table.open()
+	var result: Array = await card_table.project_load_requested
+	var project: String = result[0]
+	if project.is_empty():
+		await card_table.finish_open_transition(result[1])
+		card_table.queue_free()
+		selector = null
+		backup_timer.paused = false
+		return
+	
+	if SingletonManager.TagIt.verbose:
+		SingletonManager.TagIt.log_silent(
+				"[TagIt] Opening project with UUID: " + project,
+				DataManager.LogLevel.INFO)
+	
+	var project_data: TagItProject = project_index.get_project_data(project)
+	tagger_container.load_project(project_data)
+	loaded_project = project_data
+	
+	get_window().title = "TagIt - " + project_data.title
+	set_save_required(false, false)
+	
+	await card_table.finish_open_transition(result[1])
+	card_table.queue_free()
+	selector = null
 	backup_timer.paused = false
 
 
@@ -999,29 +1045,33 @@ func on_split_tags(tags: PackedStringArray) -> void:
 
 func instance_preset_selector() -> void:
 	var templates := TemplateResource.get_templates()
-	
-	selector = PROJECTS_CONTAINER.instantiate()
-	selector.dim_background = true
-	add_child(selector)
-	selector.focus_main()
-	selector.set_emit_signals(false)
-	selector.card_selected.connect(on_selector_template_selected)
-	selector.close_pressed.connect(on_selector_close_pressed)
-	selector.card_deleted.connect(on_selector_template_erased)
-	
+	var table: CardDeckTable = CARD_DECK.instantiate()
+	selector = table
+	add_child(table)
+	table.project_erase_requested.connect(on_selector_template_erased)
 	for template_uid in templates.get_template_uuids():
 		var template: TagItTemplate = templates.get_template(template_uid)
 		var texture: ImageTexture = template.get_thumbnail()
-		
-		selector.add_project(
+		table.spawn_card(
+				template_uid,
 				template.title,
 				template.description,
-				texture,
-				template_uid)
+				texture)
 	
-	selector.play_intro()
-	await selector.intro_finished
-	selector.set_emit_signals(true)
+	await table.open()
+	var result: Array = await table.project_load_requested
+	var template_uid: String = result[0]
+	if template_uid.is_empty():
+		await table.finish_open_transition(result[1])
+		table.queue_free()
+		selector = null
+		return
+	
+	var template_data: = templates.get_template(template_uid)
+	tagger_container.load_template(template_data)
+	await table.finish_open_transition(result[1])
+	table.queue_free()
+	selector = null
 
 
 func instantiate_wizard() -> void:
@@ -1247,7 +1297,7 @@ func on_selector_project_selected(project_uuid: String) -> void:
 	selector = null
 
 
-func on_selector_project_deleted(project_uuid: String) -> void:
+func on_selector_project_deleted(project_uuid: String, card: TagItProjectCard) -> void:
 	if SingletonManager.TagIt.verbose:
 		SingletonManager.TagIt.log_silent(
 				"[TagIt] Deleting project with UUID: " + project_uuid,
@@ -1255,10 +1305,15 @@ func on_selector_project_deleted(project_uuid: String) -> void:
 	
 	project_index.delete_project(project_uuid)
 	project_index.save()
+	await get_tree().process_frame
 	
 	if loaded_project._uuid == project_uuid:
 		loaded_project._uuid = ""
 		set_save_required(true)
+	
+	if selector is CardDeckTable:
+		await selector.erase_card(card)
+
 
 
 func on_selector_close_pressed(is_save: bool = false) -> void:
@@ -1289,11 +1344,14 @@ func on_selector_template_selected(template_uuid: String) -> void:
 	SingletonManager.TagIt.settings.request_suggestions = request_suggestions
 
 
-func on_selector_template_erased(template_uuid: String) -> void:
+func on_selector_template_erased(template_uuid: String, card: TagItProjectCard) -> void:
 	tools_panel.on_template_deleted(template_uuid)
 	var templates := TemplateResource.get_templates()
 	templates.erase_template(template_uuid)
 	templates.save()
+	await get_tree().process_frame
+	if selector is CardDeckTable:
+		await selector.erase_card(card)
 
 
 func on_default_site_changed(default_site: int) -> void:
@@ -2684,30 +2742,16 @@ func _notification(what):
 					if process_in:
 						selector.set_process_input(false)
 					
-					var extra_saver := PROJECTS_CONTAINER_VERTICAL.instantiate()
-					extra_saver.group_save_enabled = true
-					extra_saver.use_descriptions = false
-					extra_saver.editable_cards = true
-					extra_saver.use_search = false
-					extra_saver.use_save = true
-					extra_saver.dim_background = true
-					add_child(extra_saver)
-					extra_saver.add_project(
-						current_title,
-						"",
-						texture,
-						current_project_uuid,
-						0)
-					extra_saver.play_intro()
-					await extra_saver.intro_finished
-					extra_saver.set_emit_signals(true)
-					var save_result: Array = await extra_saver.save_finished
-					extra_saver.set_emit_signals(false)
-					if not save_result[0]: # Save was cancelled
-						extra_saver.play_outro()
-						await extra_saver.outro_finished
-						extra_saver.visible = false
-						extra_saver.queue_free()
+					var saver: ProjectSaveOverlay = PROJECT_SAVE.instantiate()
+					add_child(saver)
+					await saver.open(
+							current_title,
+							current_description,
+							texture)
+					var saver_result: Array = await saver.project_finished
+					await saver.close(saver_result[0], false)
+					saver.queue_free()
+					if not saver_result[0]: # Save was cancelled
 						if selector != null:
 							selector.set_process_input(process_in)
 						_saving = false
@@ -2715,7 +2759,8 @@ func _notification(what):
 						return
 					
 					loaded_project._uuid = UUID.generate_new()
-					loaded_project.title = save_result[1]
+					loaded_project.title = saver_result[1]
+					loaded_project.description = saver_result[2]
 				save_current_project()
 			
 			elif result == 2: # Cancel

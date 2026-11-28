@@ -1,6 +1,6 @@
-[gd_scene load_steps=12 format=3 uid="uid://ueqfate2vd1b"]
+[gd_scene format=3 uid="uid://ueqfate2vd1b"]
 
-[ext_resource type="Script" path="res://scenes/card_container_script.gd" id="1_twnfc"]
+[ext_resource type="Script" uid="uid://dpxjjsvyg1jbq" path="res://scenes/card_container_script.gd" id="1_twnfc"]
 [ext_resource type="Texture2D" uid="uid://wjx754svcd1w" path="res://card_gradient.tres" id="1_yvdt5"]
 [ext_resource type="StyleBox" uid="uid://c2ilnkvgxg1mc" path="res://card_title.tres" id="2_brswe"]
 
@@ -59,47 +59,47 @@ Button/styles/hover = SubResource("StyleBoxFlat_rkcsq")
 Button/styles/normal = SubResource("StyleBoxFlat_wbdxc")
 Button/styles/pressed = SubResource("StyleBoxFlat_3atdk")
 
-[node name="CardContainer" type="VBoxContainer"]
+[node name="CardContainer" type="VBoxContainer" unique_id=582767687]
 custom_minimum_size = Vector2(350, 480)
 offset_right = 350.0
 offset_bottom = 480.0
 alignment = 2
 script = ExtResource("1_twnfc")
 
-[node name="MenuCard" type="PanelContainer" parent="."]
+[node name="MenuCard" type="PanelContainer" parent="." unique_id=1558284275]
 custom_minimum_size = Vector2(350, 480)
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxTexture_6gdsv")
 
-[node name="GlowContainer" type="PanelContainer" parent="MenuCard"]
+[node name="GlowContainer" type="PanelContainer" parent="MenuCard" unique_id=708279185]
 visible = false
 show_behind_parent = true
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_lgn1x")
 
-[node name="MainMargin" type="MarginContainer" parent="MenuCard"]
+[node name="MainMargin" type="MarginContainer" parent="MenuCard" unique_id=349567793]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="MainContainer" type="VBoxContainer" parent="MenuCard/MainMargin"]
+[node name="MainContainer" type="VBoxContainer" parent="MenuCard/MainMargin" unique_id=1554227054]
 layout_mode = 2
 
-[node name="TitlePanel" type="PanelContainer" parent="MenuCard/MainMargin/MainContainer"]
+[node name="TitlePanel" type="PanelContainer" parent="MenuCard/MainMargin/MainContainer" unique_id=418712319]
 layout_mode = 2
 mouse_filter = 1
 theme_override_styles/panel = ExtResource("2_brswe")
 
-[node name="TitleMargin" type="MarginContainer" parent="MenuCard/MainMargin/MainContainer/TitlePanel"]
+[node name="TitleMargin" type="MarginContainer" parent="MenuCard/MainMargin/MainContainer/TitlePanel" unique_id=1956564173]
 layout_mode = 2
 theme_override_constants/margin_top = 3
 theme_override_constants/margin_bottom = 3
 
-[node name="TitleLabel" type="Label" parent="MenuCard/MainMargin/MainContainer/TitlePanel/TitleMargin"]
+[node name="TitleLabel" type="Label" parent="MenuCard/MainMargin/MainContainer/TitlePanel/TitleMargin" unique_id=1701209455]
 visible = false
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -110,7 +110,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 text_overrun_behavior = 3
 
-[node name="EditTitleLineEdit" type="LineEdit" parent="MenuCard/MainMargin/MainContainer/TitlePanel/TitleMargin"]
+[node name="EditTitleLineEdit" type="LineEdit" parent="MenuCard/MainMargin/MainContainer/TitlePanel/TitleMargin" unique_id=501142213]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 focus_neighbor_left = NodePath(".")
@@ -125,28 +125,28 @@ alignment = 1
 max_length = 64
 caret_blink = true
 
-[node name="ImagePanel" type="PanelContainer" parent="MenuCard/MainMargin/MainContainer"]
+[node name="ImagePanel" type="PanelContainer" parent="MenuCard/MainMargin/MainContainer" unique_id=95889699]
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 4.0
 mouse_filter = 1
 theme_override_styles/panel = ExtResource("2_brswe")
 
-[node name="ImageMargin" type="MarginContainer" parent="MenuCard/MainMargin/MainContainer/ImagePanel"]
+[node name="ImageMargin" type="MarginContainer" parent="MenuCard/MainMargin/MainContainer/ImagePanel" unique_id=1910282778]
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="Image" type="TextureRect" parent="MenuCard/MainMargin/MainContainer/ImagePanel/ImageMargin"]
+[node name="Image" type="TextureRect" parent="MenuCard/MainMargin/MainContainer/ImagePanel/ImageMargin" unique_id=1836044640]
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 4.0
 expand_mode = 1
 stretch_mode = 6
 
-[node name="DescLabel" type="Label" parent="MenuCard/MainMargin/MainContainer"]
+[node name="DescLabel" type="Label" parent="MenuCard/MainMargin/MainContainer" unique_id=624925160]
 custom_minimum_size = Vector2(330, 80)
 layout_mode = 2
 size_flags_vertical = 3
@@ -155,34 +155,35 @@ text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut in consequat
 autowrap_mode = 3
 text_overrun_behavior = 3
 
-[node name="DescEditTextEdit" type="TextEdit" parent="MenuCard/MainMargin/MainContainer"]
+[node name="DescEditTextEdit" type="TextEdit" parent="MenuCard/MainMargin/MainContainer" unique_id=1274776302]
 visible = false
 layout_mode = 2
 size_flags_vertical = 3
 wrap_mode = 1
 
-[node name="CardSelectButton" type="Button" parent="MenuCard"]
+[node name="CardSelectButton" type="Button" parent="MenuCard" unique_id=1852524262]
+visible = false
 layout_mode = 2
 focus_mode = 0
 theme_override_styles/focus = SubResource("StyleBoxFlat_28kti")
 flat = true
 
-[node name="PanelContainer" type="PanelContainer" parent="MenuCard"]
+[node name="PanelContainer" type="PanelContainer" parent="MenuCard" unique_id=781392422]
 visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_k5bv8")
 
-[node name="MarginContainer" type="MarginContainer" parent="MenuCard/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="MenuCard/PanelContainer" unique_id=2005690361]
 layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_right = 20
 
-[node name="ButtonsContaintainer" type="VBoxContainer" parent="MenuCard/PanelContainer/MarginContainer"]
+[node name="ButtonsContaintainer" type="VBoxContainer" parent="MenuCard/PanelContainer/MarginContainer" unique_id=347510541]
 layout_mode = 2
 theme_override_constants/separation = 50
 alignment = 1
 
-[node name="SelectButton" type="Button" parent="MenuCard/PanelContainer/MarginContainer/ButtonsContaintainer"]
+[node name="SelectButton" type="Button" parent="MenuCard/PanelContainer/MarginContainer/ButtonsContaintainer" unique_id=116105402]
 custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
 focus_neighbor_left = NodePath(".")
@@ -197,7 +198,7 @@ theme = SubResource("Theme_gt3bb")
 disabled = true
 text = "Load"
 
-[node name="DeleteButton" type="Button" parent="MenuCard/PanelContainer/MarginContainer/ButtonsContaintainer"]
+[node name="DeleteButton" type="Button" parent="MenuCard/PanelContainer/MarginContainer/ButtonsContaintainer" unique_id=1585872903]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 focus_neighbor_left = NodePath(".")
@@ -212,7 +213,7 @@ theme = SubResource("Theme_gt3bb")
 disabled = true
 text = "Delete"
 
-[node name="SaveButton" type="Button" parent="."]
+[node name="SaveButton" type="Button" parent="." unique_id=644409123]
 visible = false
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -224,7 +225,7 @@ focus_next = NodePath("../CancelButton")
 focus_previous = NodePath("../MenuCard/MainMargin/MainContainer/TitlePanel/TitleMargin/EditTitleLineEdit")
 text = "Save"
 
-[node name="CancelButton" type="Button" parent="."]
+[node name="CancelButton" type="Button" parent="." unique_id=1549829558]
 visible = false
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2

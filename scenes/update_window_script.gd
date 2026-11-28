@@ -12,14 +12,10 @@ const FIX_STR: String = "[font_size=20][b][color=SKY_BLUE]Fixes[/color][/b][/fon
 
 
 const adds: Array[String] = [
-	"Projects on the loading window will now be ordered from most-recently updated."
+	"Projects and templates have new animations. When selecting a project/template, click it again to load it."
 ]
 const fixes: Array[String] = [
-	"Fixed projects not saving images correctly.",
-	"Fixed old project images lingering after removal",
-	"Fixed non-existing projects showing on open",
-	"Fixed new projects not indexing when saved. Resulting in them not showing when opening projects.",
-	"Fixed new projects main list not being correctly saved/generated."]
+	"Fixed templates not loading their respective tags."]
 
 
 func _ready() -> void:

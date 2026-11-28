@@ -1,0 +1,94 @@
+[gd_scene format=3 uid="uid://ce20cdiuv2qaw"]
+
+[ext_resource type="StyleBox" uid="uid://d1hundb8b5viq" path="res://scenes/card_style_box.tres" id="1_ajriq"]
+[ext_resource type="Texture2D" uid="uid://ck3q7sdlxwwnc" path="res://textures/ready.png" id="2_hxipu"]
+[ext_resource type="StyleBox" uid="uid://dnnqyxqfadf5k" path="res://scenes/card_title_style.tres" id="3_b2a0q"]
+[ext_resource type="StyleBox" uid="uid://bvpf0lpc6mfie" path="res://scenes/card_description_style.tres" id="4_lbb1a"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_galfi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mqt4e"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_luwu0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_poxjl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b111i"]
+
+[node name="ProjectCard" type="PanelContainer" unique_id=898616067]
+custom_minimum_size = Vector2(350, 480)
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_styles/panel = ExtResource("1_ajriq")
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=27917818]
+show_behind_parent = true
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_galfi")
+
+[node name="ColorRect" type="ColorRect" parent="PanelContainer" unique_id=281700940]
+layout_mode = 2
+color = Color(0.1254902, 0.14509805, 0.2509804, 1)
+
+[node name="TextureRect" type="TextureRect" parent="PanelContainer" unique_id=1751604662]
+layout_mode = 2
+texture = ExtResource("2_hxipu")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Control" type="Control" parent="." unique_id=1675977537]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="Control" unique_id=896119954]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 0
+offset_left = 40.0
+offset_top = 308.0
+offset_right = 310.0
+offset_bottom = 356.0
+theme_override_styles/panel = ExtResource("3_b2a0q")
+metadata/_edit_group_ = true
+
+[node name="TitleLabel" type="Label" parent="Control/PanelContainer" unique_id=1810360932]
+layout_mode = 2
+size_flags_vertical = 1
+text = "This is a very regular title scren"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+text_overrun_behavior = 3
+
+[node name="TitleEdit" type="LineEdit" parent="Control/PanelContainer" unique_id=1995772587]
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_mqt4e")
+text = "aaaaaaaa"
+alignment = 1
+flat = true
+caret_blink = true
+
+[node name="PanelContainer2" type="PanelContainer" parent="Control" unique_id=1444520304]
+layout_mode = 0
+offset_top = 364.0
+offset_right = 334.0
+offset_bottom = 433.0
+theme_override_styles/panel = ExtResource("4_lbb1a")
+metadata/_edit_group_ = true
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Control/PanelContainer2" unique_id=1822746572]
+layout_mode = 2
+bbcode_enabled = true
+text = "This here is a basic [color=red]Description![/color]
+are we clear with that?"
+
+[node name="DescEdit" type="TextEdit" parent="Control/PanelContainer2" unique_id=1510647590]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_luwu0")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_poxjl")
+theme_override_styles/read_only = SubResource("StyleBoxEmpty_b111i")
+text = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+wrap_mode = 1
+
+[node name="SelectionButton" type="Button" parent="." unique_id=1381231666]
+visible = false
+layout_mode = 2
+flat = true
