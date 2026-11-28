@@ -14,8 +14,8 @@ const SIDE_DECK_Y: float = -210.0 # Height of the side deck at base resolution
 const PILE_ROTATION_RANGE: float = 0.06
 
 const SEARCH_DEBOUNCE_TIME: float = 0.35
-const SCROLL_SPEED: float = 0.45
-const SMOOTH_SPEED: float = 12.0
+const SCROLL_SPEED: float = 0.30
+const SMOOTH_SPEED: float = 10.0
 const DEAL_DURATION: float = 0.85
 const SLIDE_DURATION: float = 0.85
 
@@ -126,10 +126,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		project_load_requested.emit("", null)
 
 
-func open() -> void:
+func open(grab_text_focus: bool = true) -> void:
 	await _fade_in()
 	await _slide_deck_in()
-	_deal_initial_cards()
+	await _deal_initial_cards()
+	if grab_text_focus:
+		search_bar.grab_focus(true)
 
 
 func spawn_card(project_id: String, card_title: String, card_description: String, card_texture: ImageTexture) -> void:
@@ -162,6 +164,9 @@ func finish_open_transition(selected_card: TagItProjectCard) -> void:
 	var tween := create_tween().set_parallel(true)
 	var stack_idx: int = 0
 	
+	erase_button.disabled = true
+	search_bar.editable = false
+	
 	for i: int in all_cards.size():
 		var card: TagItProjectCard = all_cards[i]
 		if card == selected_card:
@@ -176,13 +181,21 @@ func finish_open_transition(selected_card: TagItProjectCard) -> void:
 		tween.tween_property(selected_card, ^"modulate:a", 0.0, ENTER_DURATION).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	tween.tween_property(search_bar, ^"modulate:a", 0.0, ENTER_DURATION).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	tween.tween_property(back_color, ^"color:a", 0.0, BACKGROUND_FADE_TIME).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(
+		search_container,
+		^"position:y",
+		size.y + 10, # Padding just in case
+		0.5)
 	
 	if is_instance_valid(_button_tween) and _button_tween.is_valid():
 		_button_tween.kill()
 		_button_tween = null
 		if erase_button.visible:
 			erase_button.disabled = true
+			print("Adding erase button!")
 			tween.tween_property(erase_button, ^"modulate", Color.TRANSPARENT, ENTER_DURATION)
+	else:
+		tween.tween_property(erase_button, ^"modulate", Color.TRANSPARENT, ERASE_BUTTON_FADE)
 	
 	await tween.finished
 	if selected_card != null:
@@ -415,6 +428,7 @@ func _on_card_selected(card: TagItProjectCard) -> void:
 	scroll_progress = float(idx)
 	_evaluate_active_curve()
 	
+	_fade_out_erase_button()
 	await _recall_all_to_right_pile(card)
 	await _fade_search()
 	project_load_requested.emit(card.project_id, card)
