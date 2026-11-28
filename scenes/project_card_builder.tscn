@@ -59,6 +59,7 @@ clip_text = true
 text_overrun_behavior = 3
 
 [node name="TitleEdit" type="LineEdit" parent="Control/PanelContainer" unique_id=1995772587]
+visible = false
 layout_mode = 2
 theme_override_styles/focus = SubResource("StyleBoxEmpty_mqt4e")
 text = "aaaaaaaa"
@@ -81,6 +82,7 @@ text = "This here is a basic [color=red]Description![/color]
 are we clear with that?"
 
 [node name="DescEdit" type="TextEdit" parent="Control/PanelContainer2" unique_id=1510647590]
+visible = false
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_luwu0")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_poxjl")

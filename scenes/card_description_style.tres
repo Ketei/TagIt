@@ -1,14 +1,14 @@
 [gd_resource type="StyleBoxTexture" format=3 uid="uid://bvpf0lpc6mfie"]
 
-[sub_resource type="Gradient" id="Gradient_mqt4e"]
+[sub_resource type="Gradient" id="Gradient_38mtf"]
 offsets = PackedFloat32Array(0, 0.1, 0.9, 1)
-colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 0.78431374, 0, 0, 0, 0.78431374, 1, 1, 1, 0)
+colors = PackedColorArray(0, 0, 0, 0, 0.03, 0.03, 0.03, 0.7254902, 0, 0, 0, 0.7254902, 0, 0, 0, 0)
 metadata/_snap_enabled = true
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_galfi"]
-gradient = SubResource("Gradient_mqt4e")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_bdddy"]
+gradient = SubResource("Gradient_38mtf")
 
 [resource]
 content_margin_left = 40.0
 content_margin_right = 40.0
-texture = SubResource("GradientTexture1D_galfi")
+texture = SubResource("GradientTexture2D_bdddy")
