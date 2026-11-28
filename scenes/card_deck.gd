@@ -653,12 +653,16 @@ func _on_search_debounce_finished() -> void:
 	active_cards.clear()
 	side_cards.clear()
 	
-	for card: TagItProjectCard in all_cards:
-		var title: String = card.get_card_title()
-		if query.is_empty() or title.containsn(query):
-			active_cards.append(card)
-		else:
-			side_cards.append(card)
+	if query.is_empty():
+		active_cards = all_cards.duplicate()
+	else:
+		for card: TagItProjectCard in all_cards:
+			var title: String = card.get_card_title()
+			var description: String = card.get_card_description()
+			if query.is_empty() or title.containsn(query) or description.containsn(query):
+				active_cards.append(card)
+			else:
+				side_cards.append(card)
 	
 	if 0 < side_cards.size():
 		var tween := create_tween().set_parallel(true).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)

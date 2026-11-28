@@ -197,7 +197,10 @@ func focus_description(caret_to_end: bool = true) -> void:
 
 
 func get_card_title() -> String:
-	return _title_label.text
+	if edit_mode:
+		return _title_editor.text.strip_edges()
+	else:
+		return _title_label.text
 
 
 func set_card_title(title: String) -> void:
@@ -208,7 +211,10 @@ func set_card_title(title: String) -> void:
 
 
 func get_card_description() -> String:
-	return _description_label.text
+	if edit_mode:
+		return _description_editor.text.strip_edges()
+	else:
+		return _description_label.text
 
 
 func set_card_description(description: String) -> void:

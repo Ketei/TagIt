@@ -44,6 +44,13 @@ var _block_events: bool = false:
 	set(is_blocking):
 		_block_events = is_blocking
 		set_process_input(!is_blocking)
+		match tab_bar.current_tab:
+			0:
+				tagger_container.set_process_input(!is_blocking)
+			1:
+				wiki_panel.set_process_input(!is_blocking)
+			3:
+				tools_panel.set_process_input(!is_blocking)
 var _help_pressed: bool = false
 var _close_signaled: bool = false
 var _cleanup_timeout: bool = false
@@ -764,6 +771,7 @@ func on_file_selected(file_path: String, overwrite: bool, file_dialog: FileDialo
 
 
 func on_export_tags_pressed() -> void:
+	get_viewport().gui_release_focus()
 	selector = TAG_EXPORTER.instantiate()
 	selector.export_tags_pressed.connect(on_tags_exported)
 	selector.export_tags_cancelled.connect(on_tags_export_cancelled)
@@ -931,6 +939,7 @@ func _on_create_alt_list_pressed() -> void:
 
 
 func instantiate_save_selector() -> void:
+	get_viewport().gui_release_focus()
 	var texture: Texture2D = tagger_container.get_project_thumbnail_image()
 	backup_timer.paused = true
 	_saving = true
@@ -976,6 +985,7 @@ func instantiate_save_selector() -> void:
 
 
 func instance_project_loader_selector() -> void:
+	get_viewport().gui_release_focus()
 	var card_table: CardDeckTable = CARD_DECK.instantiate()
 	selector = card_table
 	backup_timer.paused = true
@@ -1023,6 +1033,7 @@ func instance_project_loader_selector() -> void:
 
 
 func instantiate_text_loader() -> void:
+	get_viewport().gui_release_focus()
 	selector = TEXT_LOADER.instantiate()
 	selector.tags_split.connect(on_split_tags)
 	selector.split_cancelled.connect(on_split_cancelled)
@@ -1044,6 +1055,7 @@ func on_split_tags(tags: PackedStringArray) -> void:
 
 
 func instance_preset_selector() -> void:
+	get_viewport().gui_release_focus()
 	var templates := TemplateResource.get_templates()
 	var table: CardDeckTable = CARD_DECK.instantiate()
 	selector = table
@@ -1075,6 +1087,7 @@ func instance_preset_selector() -> void:
 
 
 func instantiate_wizard() -> void:
+	get_viewport().gui_release_focus()
 	var input_silenced: Control = null
 	if tagger_container.visible:
 		input_silenced = tagger_container
@@ -1096,6 +1109,7 @@ func instantiate_wizard() -> void:
 
 
 func instantiate_blacklist() -> void:
+	get_viewport().gui_release_focus()
 	selector = SUGGENSTION_BLACKLIST.instantiate()
 	selector.suggestion_blacklist = tagger_container._suggestion_blacklist
 	selector.group_blacklist = tagger_container._group_blacklist
